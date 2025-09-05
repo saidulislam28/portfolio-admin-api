@@ -1,4 +1,4 @@
-# MERN Starter Kit
+# SpeakingMate Platform
 
 1. `npm run setup`
 2. `npm run install`
