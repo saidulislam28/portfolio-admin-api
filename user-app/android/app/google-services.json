@@ -1,0 +1,57 @@
+{
+  "project_info": {
+    "project_number": "447938351048",
+    "project_id": "speaking-mate-app",
+    "storage_bucket": "speaking-mate-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447938351048:android:3a6abe7b6e01a28ea0bafd",
+        "android_client_info": {
+          "package_name": "com.bitpixelbd.speakingmate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447938351048-0qp70mkt8h8nfkuvoiu85g76drcfh19d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bitpixelbd.speakingmate",
+            "certificate_hash": "85e8d2f6fce8a193d0cf80316bf923819d458e55"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5io-mqxpik2XeiNJASlPy_MRU8Rkl1iQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447938351048:android:2d87a9355a3f2d55a0bafd",
+        "android_client_info": {
+          "package_name": "com.bitpixelbd.speakingmateconsultant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5io-mqxpik2XeiNJASlPy_MRU8Rkl1iQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,362 @@
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button, Form, Input, message, Popconfirm, Space, Switch, Table, Tag, Typography, Upload } from "antd";
+import { useState } from "react";
+
+import { deleteApi, get, patch, post } from "~/services/api/api";
+import { API_FILE_UPLOAD, getUrlForModel } from "~/services/api/endpoints";
+import { HOME_SECTION_TYPES } from "~/store/slices/app/constants";
+const { Title, Text } = Typography;
+const model = 'HomeSection'
+
+const Features = () => {
+
+    const KEY = 'get faq' + model;
+
+    const {
+        isLoading,
+        isError,
+        error,
+        data: fetchData,
+        refetch,
+    } = useQuery({
+        queryKey: [KEY],
+        queryFn: () => get(getUrlForModel(model)),
+        staleTime: 0,
+        select: (data) => {
+            const filteredData = data?.data?.filter(i => i.section_type === HOME_SECTION_TYPES.FAQ)
+            return filteredData ?? []
+        }
+    });
+
+    const [isActive, setIsActive] = useState<boolean | null>(false);
+    const [isAddActive, setIsAddActive] = useState<boolean | null>(false);
+    const [form] = Form.useForm();
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editedItem, setEditedItem] = useState<any>(null);
+
+
+
+    const createData = useMutation({
+        mutationFn: async ({ data }: { data: any }) => await post(getUrlForModel(model), data),
+        onSuccess: () => {
+            message.success("Data submitted successfully!");
+            form.resetFields();
+            setIsActive(false)
+            refetch()
+        },
+        onError: () => {
+            message.error("Something went wrong!");
+        },
+    });
+
+    const updateData = useMutation({
+        mutationFn: async ({ id, data }: { id: string, data: any }) =>
+            await patch(getUrlForModel(model, id), data),
+        onSuccess: () => {
+            message.success("Data updated successfully!");
+            form.resetFields();
+            setIsActive(false);
+            setIsEditing(false);
+            setEditedItem(null);
+            refetch();
+        },
+        onError: () => {
+            message.error("Something went wrong!");
+        },
+    });
+
+    const onFinish = async (formValues: any) => {
+        const payload = {
+            title: formValues.title,
+            sub_title: formValues.sub_title,
+            is_active: isActive,
+            button_text: formValues.buttonText,
+            navigation_link: formValues.navigationLink,
+            content: formValues.cards.map((card, index) => {
+                return {
+                    id: index,
+                    question: card.question,
+                    answer: card.answer
+                };
+            }),
+            section_type: HOME_SECTION_TYPES.FAQ,
+        };
+
+        if (isEditing && editedItem) {
+            updateData.mutate({ id: editedItem.id, data: payload });
+        } else {
+            createData.mutate({ data: payload });
+        }
+    };
+
+
+    const onClickEdit = (record: any) => {
+        setIsEditing(true);
+        setEditedItem(record);
+        setIsAddActive(true);
+        setIsActive(record.is_active);
+
+        // Set form values
+        form.setFieldsValue({
+            title: record.title,
+            sub_title: record.sub_title,
+            buttonText: record.button_text,
+            navigationLink: record.navigation_link,
+            cards: record.content.map((item: any) => ({
+                question: item.question,
+                answer: item.answer,
+            })),
+
+        });
+    };
+
+    const onFinishFailed = (errorInfo: any) => {
+        console.log("Failed:", errorInfo);
+    };
+
+    console.log(fetchData)
+
+
+
+    const columns = [
+        {
+            title: 'Title',
+            dataIndex: 'title',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'sub_title'
+        },
+        {
+            title: 'Is Active',
+            render: (record: any) => {
+                if (record?.is_active) {
+                    return <Tag color="green">Yes</Tag>;
+                }
+                return <Tag color="orange">No</Tag>;
+            },
+        },
+        {
+            title: 'Actions',
+            render: (record: any) => {
+                return (
+                    <Space>
+                        <Button
+                            onClick={() => onClickEdit(record)} type={'link'}
+                        >
+                            <EditOutlined />
+                        </Button>
+                        <Popconfirm
+                            title="Delete this item?"
+                            description="This action cannot be undone"
+                            onConfirm={() => handleDeleteClient(record.id)}
+                            onCancel={() => { }}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button danger type={'link'}>
+                                <DeleteOutlined />
+                            </Button>
+                        </Popconfirm>
+
+                    </Space>
+                );
+            },
+        },
+    ];
+
+    const deleteMutation = useMutation({
+        mutationFn: async (id: any) => await deleteApi(getUrlForModel(model, id)),
+        onSuccess: () => {
+            message.success('Deleted Successfully');
+            refetch();
+        },
+        onError: () => {
+            message.error('Something went wrong');
+        },
+    });
+
+    const handleDeleteClient = (id: any) => {
+        deleteMutation.mutate(id);
+    };
+
+    return (
+        <div style={{
+            margin: "20px auto",
+            background: "#fff",
+            padding: 20,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+        }}>
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+
+            }}>
+
+                <h1 style={{ fontWeight: 'bold', fontSize: 24 }}>FAQ Section</h1>
+
+                <Button
+                    onClick={() => setIsAddActive(prev => !prev)}
+                >
+                    {isAddActive ? 'See List' : 'Add New'}
+                </Button>
+            </div>
+
+            {!isAddActive && (
+                <Table
+                    rowKey="id"
+                    loading={isLoading}
+                    columns={columns}
+                    dataSource={fetchData}
+                />
+            )}
+            {
+                isAddActive && (
+                    <div
+                        style={{
+                            maxWidth: 1000,
+                            margin: "auto",
+                            background: "#fff",
+                            borderRadius: 8,
+                        }}
+                    >
+
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
+                        >
+
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(2, 1fr)',
+                                gap: '16px'
+                            }}>
+                                <Form.Item label={<span style={{ fontWeight: "400", fontSize: 18 }}>Title</span>} name="title"
+                                rules={[{ required: true, message: 'This field is required' }]}
+                                >
+                                    <Input style={{ height: 40 }} placeholder="Section Title" />
+                                </Form.Item>
+
+                                <Form.Item label={<span style={{ fontWeight: "400", fontSize: 18 }}>Description</span>} name="sub_title"
+                                rules={[{ required: true, message: 'This field is required' }]}
+                                >
+                                    <Input style={{ height: 40 }} placeholder="Write the description or short title here" />
+                                </Form.Item>
+                            </div>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(2, 1fr)',
+                                gap: '16px'
+                            }}>
+                                <Form.Item label={<span style={{ fontWeight: "400", fontSize: 18 }}>Button Text</span>} name="buttonText">
+                                    <Input style={{ height: 40 }} placeholder="Button Text" />
+                                </Form.Item>
+
+                                <Form.Item label={<span style={{ fontWeight: "400", fontSize: 18 }}>Navigation Link</span>} name="navigationLink">
+                                    <Input style={{ height: 40 }} placeholder="Navigation link" />
+                                </Form.Item>
+                            </div>
+
+                            <Form.List name="cards">
+                                {(fields, { add, remove }) => (
+                                    <>
+                                    <h1>FAQ</h1>
+                                        {fields.map(({ key, name, ...restField }) => (
+                                            <div key={key} style={{
+                                                display: 'grid',
+                                                gridTemplateColumns: 'repeat(2, 1fr)',
+                                                gap: 20,
+                                                alignItems: 'center',
+                                                border: '1px solid #eee',
+                                                padding: 16,
+                                                borderRadius: 8,
+                                                marginBottom: 8
+                                            }}>
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'question']}
+                                                    label="Question"
+                                                    rules={[{ required: true, message: 'Features title is required' }]}
+                                                >
+                                                    <Input placeholder="Question" />
+                                                </Form.Item>
+
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'answer']}
+                                                    label="Answer"
+                                                    rules={[{ required: true, message: 'Answer is required' }]}
+                                                >
+                                                    <Input placeholder="Write Your answer" />
+                                                </Form.Item>
+                                                <div style={{ gridColumn: '1 / -1', textAlign: 'right' }}>
+                                                    <Button onClick={() => remove(name)} danger>
+                                                        Remove
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <Button onClick={() => add()} type="dashed" style={{ width: '100%',  }}>
+                                          <PlusOutlined />  Add Card
+                                        </Button>
+                                    </>
+                                )}
+                            </Form.List>
+                            <Form.Item label={<span style={{ fontWeight: "400", fontSize: 18 , marginTop: 20}}>Active Status</span>} name='is_active'>
+                            <div>
+                                <Switch
+                                    checked={isActive}
+                                    onChange={(checked) => setIsActive(checked)}
+                                />
+                            </div>
+                        </Form.Item>
+                            <Form.Item>
+                                <div style={{ textAlign: "center" }}>
+                                    <Button
+                                        type="primary"
+                                        htmlType="submit"
+                                        style={{ backgroundColor: "#28a745", borderWidth: 1 }}
+                                    >
+                                        {isEditing ? "Update" : "Submit"}
+                                    </Button>
+                                </div>
+                            </Form.Item>
+                        </Form>
+                    </div>
+
+                )
+            }
+        </div>
+    )
+};
+
+export default Features;
+
+
+// [
+//     {
+//         "id": 13,
+//         "title": "hello title",
+//         "sub_title": "hello description",
+//         "content": [
+//             {
+//                 "id": 0,
+//                 "image": "http://localhost:8000/uploads/1744782534729-3601734.avif",
+//                 "card_title": "card 1",
+//                 "card_description": "card description"
+//             },
+//             {
+//                 "id": 1,
+//                 "image": "http://localhost:8000/uploads/1744782546233-380150935.jpg",
+//                 "card_title": "card 2",
+//                 "card_description": "card description 2"
+//             }
+//         ],
+//         "is_active": false,
+//         "section_type": "ADVANTAGES"
+//     }
+// ]

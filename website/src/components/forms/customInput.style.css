@@ -1,0 +1,40 @@
+.select-options__control {
+  border: 0 !important;
+  cursor: pointer !important;
+}
+
+.css-t3ipsp-control {
+  box-shadow: none !important;
+  border-color: #cccccc !important;
+  cursor: pointer !important;
+  height: 42px;
+}
+
+.css-13cymwt-control {
+  cursor: pointer !important;
+  height: 42px;
+  border-radius: 0 !important;
+}
+
+/* this class for line before the down icon */
+.css-1u9des2-indicatorSeparator {
+  border: 0 !important;
+  display: none;
+}
+
+/* this there class are for select options  */
+.css-1n6sfyn-MenuList {
+  padding: 30px !important;
+}
+
+.css-d7l1ni-option {
+  background-color: #5bbb7b12 !important;
+  color: #000000;
+  cursor: pointer !important;
+}
+
+.css-tr4s17-option {
+  background-color: #5bbb7b12 !important;
+  color: #000000 !important;
+  cursor: pointer !important;
+}

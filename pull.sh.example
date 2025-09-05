@@ -1,0 +1,8 @@
+#!/bin/bash
+
+githubuser=rashidul-hasan
+githubpass=
+repo=starter
+branch=master
+
+git pull "https://$githubuser:$githubpass@github.com/$githubuser/$repo.git" $branch

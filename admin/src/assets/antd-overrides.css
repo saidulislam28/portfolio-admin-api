@@ -1,0 +1,52 @@
+.ant-menu {
+    background-color: #EBEBEB !important;
+}
+
+.ant-menu-item-selected {
+    background-color: #FAFAFA !important;
+    color: #5A4C43 !important;
+    font-weight: 650 !important;
+}
+
+.ant-layout-sider-trigger {
+    background: #EBEBEB !important;
+    color: #5A4C43 !important;
+}
+
+.ant-menu-submenu-selected >.ant-menu-submenu-title {
+    color: #5A4C43 !important;
+    font-weight: 650 !important;
+}
+
+.ant-menu-submenu .ant-menu-item {
+    font-size: 13px !important;
+    font-weight: 450;
+}
+
+.ant-menu-item:hover {
+    color: rgb(148, 189, 115) !important;
+}
+
+.ant-menu-inline .ant-menu-item {
+    height: 25px !important;
+    line-height: 25px !important;
+}
+.ant-menu-inline >.ant-menu-item, .ant-menu-vertical >.ant-menu-item, .ant-menu-inline >.ant-menu-submenu>.ant-menu-submenu-title, .ant-menu-vertical >.ant-menu-submenu>.ant-menu-submenu-title {
+    height: 25px !important;
+    line-height: 25px !important;
+}
+.ant-table-wrapper .ant-table-cell, .ant-table-wrapper .ant-table-thead>tr>th, .ant-table-wrapper .ant-table-tbody>tr>th,
+.ant-table-wrapper .ant-table-tbody>tr>td, .ant-table-wrapper tfoot>tr>th, .ant-table-wrapper tfoot>tr>td {
+    padding: 8px 8px;
+}
+.ant-layout {
+    background: #f1f1f1;
+}
+.ant-menu-item,
+.ant-menu-submenu.ant-menu-submenu-inline > .ant-menu-submenu-title {
+    color: #575757 !important;
+}
+
+.ant-layout-sider {
+    background: #ebebeb !important;
+}

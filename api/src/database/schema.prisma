@@ -1,0 +1,831 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id            Int        @id @default(autoincrement())
+  email         String?    @unique
+  password      String?
+  phone         String?
+  first_name    String?
+  last_name     String?
+  role          AdminRole?
+  push_token    String?
+  profile_photo String?    @db.VarChar(200)
+  timezone      String?    @db.VarChar(20)
+
+  @@map(name: "admin_users")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  AGENT
+}
+
+model AdminPasswordReset {
+  id          Int     @id @default(autoincrement())
+  email       String? @unique @db.VarChar(200)
+  reset_code  String? @db.VarChar(200)
+  reset_token String? @db.VarChar(200)
+
+  @@map(name: "admin_password_resets")
+}
+
+model Attachment {
+  id           Int       @id @default(autoincrement())
+  url          String?
+  datetime     DateTime? @default(now())
+  user_id      Int?
+  care_home_id Int?
+  city_id      Int?
+  short_order  Int?      @default(1)
+
+  @@map(name: "attachments")
+}
+
+model TestUser {
+  id       Int     @id @default(autoincrement())
+  name     String?
+  email    String? @db.VarChar(200)
+  phone    String? @db.VarChar(200)
+  password String?
+
+  @@map(name: "test_users")
+}
+
+model ResetPassword {
+  id          Int      @id @default(autoincrement())
+  email       String?  @unique
+  token       String?
+  otp         String?  @db.VarChar(10)
+  role        String?
+  is_verified Boolean? @default(false)
+
+  @@map(name: "reset_password")
+}
+
+model OtpVerification {
+  id             Int       @id @default(autoincrement())
+  otp            Int?
+  email          String?   @unique @db.VarChar(200)
+  phone          String?   @db.VarChar(200)
+  expires_at     DateTime?
+  created_at     DateTime  @default(now())
+  resend_count   Int       @default(0)
+  last_resend_at DateTime?
+  is_used        Boolean   @default(false)
+
+  @@map(name: "otp_verifications")
+}
+
+model OtpResendLog {
+  id         String   @id @default(cuid())
+  email      String
+  ip_address String
+  user_agent String?
+  created_at DateTime @default(now())
+
+  @@map("otp_resend_logs")
+}
+
+model User {
+  id                   Int                    @id @default(autoincrement())
+  full_name            String?
+  email                String?                @unique
+  phone                String?                @unique
+  password             String?
+  token                String?
+  device_type          String?
+  timezone             String?
+  expected_level       String?
+  is_active            Boolean?               @default(false)
+  created_at           DateTime?              @default(now())
+  updated_at           DateTime?              @updatedAt
+  is_verified          Boolean?               @default(false)
+  is_test_user         Boolean?               @default(false)
+  login_type           LOGIN_TYPE             @default(EMAIL)
+  profile_image        String?
+  role                 USER_ROLE              @default(USER)
+  ratings_given        Rating[]               @relation("user_ratings")
+  payments             Payment[]
+  Notification         Notification[]
+  Appointment          Appointment[]
+  Order                Order[]
+  ScheduleNotification ScheduleNotification[]
+  MockTestFeedback     MockTestFeedback[]
+  CouponUser           CouponUser[]
+
+  @@map("users")
+}
+
+enum USER_ROLE {
+  USER
+  CONSULTANT
+}
+
+enum LOGIN_TYPE {
+  EMAIL
+  GOOGLE
+  FACEBOOK
+  PHONE_NUMBER
+}
+
+model Notification {
+  id            Int         @id @default(autoincrement())
+  title         String?
+  message       String?
+  isRead        Boolean?    @default(false)
+  user_id       Int?
+  consultant_id Int?
+  User          User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  Consultant    Consultant? @relation(fields: [consultant_id], references: [id], onDelete: SetNull)
+  created_at    DateTime?   @default(now())
+  updated_at    DateTime?   @updatedAt
+
+  @@map("notifications")
+}
+
+model Consultant {
+  id                   Int                    @id @default(autoincrement())
+  full_name            String?
+  email                String?                @unique
+  phone                String?                @unique
+  profile_image        String?
+  password             String?
+  token                String?
+  device_type          String?
+  timezone             String?                @default("UTC") // Default timezone
+  is_active            Boolean?               @default(false)
+  is_mocktest          Boolean?               @default(false)
+  is_conversation      Boolean?               @default(false)
+  is_verified          Boolean                @default(false)
+  is_test_user         Boolean                @default(false)
+  bio                  String?
+  experience           Int?
+  skills               String?
+  hourly_rate          Float?
+  available_times      Json? // Store availability rules
+  created_at           DateTime?              @default(now())
+  updated_at           DateTime?              @updatedAt
+  ratings_received     Rating[]               @relation("consultant_ratings")
+  Appointment          Appointment[]
+  Notification         Notification[]
+  ConversationFeedback ConversationFeedback[]
+  MockTestFeedback     MockTestFeedback[]
+  ConsultantWorkHour   ConsultantWorkHour[]
+  ConsultantOffDay     ConsultantOffDay[]
+  ScheduleNotification ScheduleNotification[]
+
+  @@map("consultants")
+}
+
+model Setting {
+  id    Int     @id @default(autoincrement())
+  key   String? @unique
+  value String?
+
+  @@map(name: "settings")
+}
+
+model Admin {
+  id             Int       @id @default(autoincrement())
+  full_name      String?
+  email          String?   @unique
+  phone          String?   @unique
+  password       String?
+  is_super_admin Boolean?  @default(false)
+  is_active      Boolean?  @default(false)
+  created_at     DateTime? @default(now())
+  updated_at     DateTime? @updatedAt
+
+  @@map("admins")
+}
+
+model VideoCall {
+  id             Int       @id @default(autoincrement())
+  agora_channel  String?   @unique
+  appointment_id Int?      @unique
+  started_at     DateTime?
+  ended_at       DateTime?
+
+  Appointment Appointment? @relation(fields: [appointment_id], references: [id])
+
+  @@map("video_calls")
+}
+
+model Rating {
+  id            Int       @id @default(autoincrement())
+  user_id       Int?
+  consultant_id Int?
+  rating        Int?
+  comment       String?
+  created_at    DateTime? @default(now())
+
+  user       User?       @relation("user_ratings", fields: [user_id], references: [id])
+  consultant Consultant? @relation("consultant_ratings", fields: [consultant_id], references: [id])
+
+  @@map("ratings")
+}
+
+model Payment {
+  id             Int            @id @default(autoincrement())
+  user_id        Int?
+  order_id       Int?           @unique
+  amount         Int?
+  currency       String?
+  status         PAYMENT_STATUS @default(PENDING)
+  payment_method String?
+  transaction_id String?
+  paid_at        DateTime?
+
+  User  User?  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Order Order? @relation(fields: [order_id], references: [id], onDelete: SetNull)
+
+  @@map("payments")
+}
+
+enum PAYMENT_STATUS {
+  PENDING
+  FAILED
+  CANCELED
+  PAID
+}
+
+model Package {
+  id                 Int          @id @default(autoincrement())
+  name               String?
+  price_bdt          Int?
+  price_usd          Int?
+  price_bdt_original Int?
+  price_usd_original Int?
+  class_count        Int?
+  sessions_count     Int?
+  class_duration     Int?
+  sort_order         Int?         @default(1)
+  service_type       ServiceType?
+  description        String?
+  image              String?
+  is_active          Boolean?     @default(false)
+  Order              Order[]
+
+  @@map("packages")
+}
+
+model Order {
+  id                  Int                 @id @default(autoincrement())
+  first_name          String?
+  last_name           String?
+  email               String?
+  phone               String?
+  address             String?
+  sslc_transaction_id String?
+  status              OrderStatus?
+  payment_status      OrderPaymentStatus? @default(unpaid)
+  service_type        ServiceType?
+  meta_data           Json?
+  user_id             Int?
+  cod                 Boolean             @default(false)
+  package_id          Int?
+  center_id           Int?
+  delivery_address    String?
+  date                DateTime?           @default(now())
+  subtotal            Float?
+  delivery_charge     Float?
+  order_info          Json?
+  is_archive          Boolean             @default(false)
+  is_send_to_vendor   Boolean             @default(false)
+  total               Float?
+  cancel_reason       String?
+  canceled_at         DateTime?
+  User                User?               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Package             Package?            @relation(fields: [package_id], references: [id], onDelete: Cascade)
+  ExamCenter          ExamCenter?         @relation(fields: [center_id], references: [id], onDelete: Cascade)
+  created_at          DateTime?           @default(now())
+  updated_at          DateTime?           @updatedAt
+  Payment             Payment[]
+  OrderItem           OrderItem[]
+  Appointment         Appointment[]
+  OrderCoupon         OrderCoupon[]
+
+  @@map("orders")
+}
+
+model Book {
+  id           Int         @id @default(autoincrement())
+  title        String?
+  description  String?
+  isbn         String?
+  price        Int?
+  writer       String?
+  category     String?
+  image        String?
+  is_available Boolean?    @default(false)
+  OrderItem    OrderItem[]
+}
+
+model OrderItem {
+  id         Int    @id @default(autoincrement())
+  order_id   Int?
+  book_id    Int?
+  qty        Int?
+  unit_price Int?
+  subtotal   Int?
+  Order      Order? @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  Book       Book?  @relation(fields: [book_id], references: [id], onDelete: SetNull)
+}
+
+model Appointment {
+  id                   Int                   @id @default(autoincrement())
+  start_at             DateTime // Store in UTC
+  end_at               DateTime // Store in UTC
+  status               AppointmentStatus?    @default(INITIATED)
+  duration_in_min      Int                   @default(20) // Default slot duration
+  notes                String?
+  booked_at            DateTime              @default(now())
+  token                String?               @unique // Make unique for security
+  consultant_id        Int?
+  user_id              Int?
+  cancel_reason        String?
+  order_id             Int
+  slot_date            DateTime // Date part only (for easier querying)
+  slot_time            String // Time in HH:mm format (e.g., "10:30")
+  user_timezone        String? // Store user's timezone for reference
+  created_at           DateTime              @default(now())
+  updated_at           DateTime              @updatedAt
+  User                 User?                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Order                Order                 @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  Consultant           Consultant?           @relation(fields: [consultant_id], references: [id], onDelete: Cascade)
+  VideoCall            VideoCall?
+  ConversationFeedback ConversationFeedback?
+  MockTestFeedback     MockTestFeedback?
+
+  @@index([slot_date, slot_time])
+  @@index([start_at])
+  @@map(name: "appointments")
+}
+
+enum AppointmentStatus {
+  INITIATED //order created but payment not done, hide from admin & app & cleanup in scheduled job
+  PENDING // payment done but not assigned any consultant
+  CONFIRMED //consultant assigned
+  CANCELLED
+  COMPLETED //completed by consultant
+  NO_SHOW
+}
+
+model AppSettings {
+  id                    Int      @id @default(autoincrement())
+  slot_duration_minutes Int      @default(20)
+  booking_advance_weeks Int      @default(3)
+  working_hours_start   String   @default("09:00") // Format: HH:mm
+  working_hours_end     String   @default("18:00") // Format: HH:mm
+  working_days          Json     @default("[1,2,3,4,5,6]") // Monday=1, Sunday=7
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+
+  @@map("app_settings")
+}
+
+model DaySchedule {
+  id         Int      @id @default(autoincrement())
+  date       DateTime
+  dateString String
+
+  Slot Slot[]
+
+  @@map(name: "day_schedules")
+}
+
+model Slot {
+  id       Int     @id @default(autoincrement())
+  time     String
+  isBooked Boolean @default(false)
+  isPast   Boolean @default(false)
+
+  day_schedule_id Int
+  DaySchedule     DaySchedule @relation(fields: [day_schedule_id], references: [id], onDelete: Cascade)
+
+  @@map(name: "slots")
+}
+
+model BookVendor {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String?
+  phone      String?
+  address    String?
+  is_active  Boolean   @default(false)
+  created_at DateTime? @default(now())
+  updated_at DateTime  @updatedAt
+
+  @@map("book_vendors")
+}
+
+model ScheduleNotification {
+  id              Int                 @id @default(autoincrement())
+  user_id         Int?
+  consultant_id   Int?
+  User            User?               @relation(fields: [user_id], references: [id])
+  Consultant      Consultant?         @relation(fields: [consultant_id], references: [id])
+  sendAt          DateTime
+  type            NotificationType
+  channel         NotificationChannel
+  payload         Json
+  status          NotificationStatus  @default(PENDING)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  attempts        Int                 @default(0)
+  maxAttempts     Int                 @default(3)
+  NotificationLog NotificationLog[]
+
+  @@index([status, sendAt])
+  @@map("schedule_notifications")
+}
+
+model NotificationLog {
+  id                   Int                  @id @default(autoincrement())
+  ScheduleNotification ScheduleNotification @relation(fields: [notification_id], references: [id])
+  notification_id      Int
+  status               NotificationStatus
+  error_message        String?
+  sent_at              DateTime             @default(now())
+  response_time        Int?
+
+  @@map("notification_logs")
+}
+
+model AppSlider {
+  id         Int     @id @default(autoincrement())
+  url        String
+  sort_order Int     @default(1)
+  is_active  Boolean @default(false)
+
+  @@map("app_sliders")
+}
+
+model VideoSlider {
+  id         Int     @id @default(autoincrement())
+  video_url  String
+  sort_order Int     @default(1)
+  is_active  Boolean @default(false)
+
+  @@map("video_slider")
+}
+
+model ConversationFeedback {
+  id             Int     @id @default(autoincrement())
+  appointment_id Int     @unique
+  testTakerName  String?
+  consultant_id  Int?
+
+  // Fluency & Coherence
+  speaksFluently          Boolean? @default(false)
+  occasionalPauses        Boolean? @default(false)
+  oftenPauses             Boolean? @default(false)
+  disorganizedIdeas       Boolean? @default(false)
+  needsLongerAnswers      Boolean? @default(false)
+  fluencyUseLinkingWords  Boolean? @default(false)
+  fluencyPracticeThinking Boolean? @default(false)
+  fluencySpeakWithDetails Boolean? @default(false)
+
+  // Vocabulary
+  wideVocabularyRange   Boolean? @default(false)
+  repeatsBasicWords     Boolean? @default(false)
+  usesTopicTerms        Boolean? @default(false)
+  wordChoiceErrors      Boolean? @default(false)
+  lacksParaphrasing     Boolean? @default(false)
+  vocabBuildList        Boolean? @default(false)
+  vocabPracticeSynonyms Boolean? @default(false)
+  vocabUseGames         Boolean? @default(false)
+
+  // Grammar
+  mostlyCorrectGrammar    Boolean? @default(false)
+  errorsDontAffect        Boolean? @default(false)
+  limitedSentenceTypes    Boolean? @default(false)
+  frequentGrammarMistakes Boolean? @default(false)
+  needsComplexStructures  Boolean? @default(false)
+  grammarFocusTenses      Boolean? @default(false)
+  grammarUseConditionals  Boolean? @default(false)
+  grammarWriteThenSpeak   Boolean? @default(false)
+
+  // Pronunciation
+  pronunciationClear       Boolean? @default(false)
+  minorPronunciationIssues Boolean? @default(false)
+  mispronouncesKeyWords    Boolean? @default(false)
+  lacksIntonation          Boolean? @default(false)
+  strongL1Influence        Boolean? @default(false)
+  pronShadowSpeakers       Boolean? @default(false)
+  pronRecordAndCheck       Boolean? @default(false)
+  pronPracticePhonemes     Boolean? @default(false)
+
+  overallLevel    String?
+  generalComments String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Appointment Appointment @relation(fields: [appointment_id], references: [id], onDelete: Cascade)
+  Consultant  Consultant? @relation(fields: [consultant_id], references: [id], onDelete: Cascade)
+
+  @@map("conversation_feedbacks")
+}
+
+model MockTestFeedback {
+  id             Int       @id @default(autoincrement())
+  consultant_id  Int?
+  appointment_id Int       @unique
+  // Test metadata
+  testDate       DateTime? @default(now())
+  testTime       String?
+
+  // Overall band score (calculated from 4 criteria)
+  overallBandScore Float @default(0)
+
+  // Individual criteria scores
+  fluencyCoherence Float @default(0)
+  lexicalResource  Float @default(0)
+  grammaticalRange Float @default(0)
+  pronunciation    Float @default(0)
+
+  // Fluency & Coherence feedback options (multiple selection allowed)
+  fluencyFluent         Boolean @default(false)
+  fluencyNaturalFlow    Boolean @default(false)
+  fluencyNeedsCoherence Boolean @default(false)
+  fluencyRepeatsIdeas   Boolean @default(false)
+
+  // Lexical Resource feedback options
+  lexicalGoodVariety   Boolean @default(false)
+  lexicalRepetitive    Boolean @default(false)
+  lexicalTopicMismatch Boolean @default(false)
+  lexicalLimitedRange  Boolean @default(false)
+
+  // Grammatical Range & Accuracy feedback options
+  grammarFrequentErrors Boolean @default(false)
+  grammarTenseIssues    Boolean @default(false)
+  grammarLimitedRange   Boolean @default(false)
+  grammarMostlyAccurate Boolean @default(false)
+
+  // Pronunciation feedback options
+  pronunciationClearSounds       Boolean @default(false)
+  pronunciationGoodStress        Boolean @default(false)
+  pronunciationMispronunciations Boolean @default(false)
+  pronunciationAccentIssues      Boolean @default(false)
+
+  // Section-wise feedback
+  part1Confident        Boolean @default(false)
+  part1ShortAnswer      Boolean @default(false)
+  part1NeedsMoreDetails Boolean @default(false)
+
+  part2WellOrganized Boolean @default(false)
+  part2MissedPoints  Boolean @default(false)
+  part2TooShort      Boolean @default(false)
+
+  part3Insightful    Boolean @default(false)
+  part3Repetitive    Boolean @default(false)
+  part3WellDeveloped Boolean @default(false)
+  part3TooShort      Boolean @default(false)
+
+  // Recommendations (multiple selection allowed)
+  recPracticeCueCard          Boolean @default(false)
+  recExpandTopicVocab         Boolean @default(false)
+  recReduceGrammarMistakes    Boolean @default(false)
+  recWatchNativeConversations Boolean @default(false)
+  recUseLinkingPhrases        Boolean @default(false)
+  recImproveFluency           Boolean @default(false)
+  recImprovePronunciation     Boolean @default(false)
+
+  // Additional notes (optional)
+  additionalNotes String?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Consultant  Consultant? @relation(fields: [consultant_id], references: [id], onDelete: Cascade)
+  Appointment Appointment @relation(fields: [appointment_id], references: [id], onDelete: Cascade)
+  User        User?       @relation(fields: [userId], references: [id])
+  userId      Int?
+
+  @@map("mock_test_feedbacks")
+}
+
+model FeedbackComments {
+  id         Int     @id @default(autoincrement())
+  title      String?
+  desc       String?
+  is_active  Boolean @default(false)
+  sort_order Int?    @default(1)
+
+  @@map("feedback_comments")
+}
+model MockTestComments {
+  id         Int     @id @default(autoincrement())
+  title      String?
+  desc       String?
+  is_active  Boolean @default(false)
+  sort_order Int?    @default(1)
+
+  @@map("mocktest_comments")
+}
+
+model ExamCenter {
+  id         Int     @id @default(autoincrement())
+  name       String
+  sort_order Int?
+  is_active  Boolean @default(false)
+  Order      Order[]
+
+  @@map("exam_centers")
+}
+
+enum NotificationType {
+  APPOINTMENT_REMINDER
+  PAYMENT_REMINDER
+  GENERAL
+  // Add more types as needed
+}
+
+enum NotificationChannel {
+  EMAIL
+  PUSH
+  SMS
+  // Add more channels as needed
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  RETRY
+}
+
+enum HistoryType {
+  info
+  success
+  error
+}
+
+enum ServiceType {
+  book_purchase
+  ielts_gt
+  ielts_academic
+  spoken
+  speaking_mock_test
+  conversation
+  exam_registration
+  study_abroad
+}
+
+enum OrderStatus {
+  Pending
+  Approved
+  Rejected
+  Canceled
+}
+
+enum Progress_Status {
+  Pending
+  Approved
+  Rejected
+  Canceled
+}
+
+enum Order_Progress {
+  Pending
+  Processing
+  Shipped
+  Delivered
+  Cancelled
+}
+
+enum Payment_Status {
+  Paid
+  Pending
+  Failed
+  Refunded
+}
+
+enum OrderPaymentStatus {
+  unpaid
+  partial
+  paid
+}
+
+model Coupon {
+  id               Int          @id @default(autoincrement())
+  code             String       @unique
+  description      String?
+  discount_type    DiscountType
+  discount_value   Float
+  min_order_amount Float?       @default(0)
+  max_discount     Float?
+  max_uses         Int?
+  used_count       Int          @default(0)
+  start_date       DateTime?
+  end_date         DateTime?
+  is_active        Boolean      @default(true)
+  is_global        Boolean      @default(true)
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+
+  // Relationships
+  coupon_users      CouponUser[]
+  coupon_orders     OrderCoupon[]
+  coupon_categories CouponCategory[]
+
+  @@map("coupons")
+}
+
+model CouponUser {
+  id         Int      @id @default(autoincrement())
+  coupon_id  Int
+  user_id    Int
+  created_at DateTime @default(now())
+
+  coupon Coupon @relation(fields: [coupon_id], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([coupon_id, user_id])
+  @@map("coupon_users")
+}
+
+model CouponCategory {
+  id         Int         @id @default(autoincrement())
+  coupon_id  Int
+  category   ServiceType
+  created_at DateTime    @default(now())
+
+  coupon Coupon @relation(fields: [coupon_id], references: [id], onDelete: Cascade)
+
+  @@unique([coupon_id, category])
+  @@map("coupon_categories")
+}
+
+model OrderCoupon {
+  id              Int      @id @default(autoincrement())
+  order_id        Int
+  coupon_id       Int
+  discount_amount Float
+  created_at      DateTime @default(now())
+
+  order  Order  @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  coupon Coupon @relation(fields: [coupon_id], references: [id], onDelete: Cascade)
+
+  @@unique([order_id, coupon_id])
+  @@map("order_coupons")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model ConsultantWorkHour {
+  id            Int      @id @default(autoincrement())
+  consultant_id Int
+  day_of_week   Int // 1=Monday, 2=Tuesday, ..., 7=Sunday
+  start_time    String // Format: "HH:mm" (24-hour format)
+  end_time      String // Format: "HH:mm" (24-hour format)
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  consultant Consultant @relation(fields: [consultant_id], references: [id], onDelete: Cascade)
+
+  @@unique([consultant_id, day_of_week, start_time, end_time])
+  @@index([consultant_id, day_of_week])
+  @@map("consultant_work_hours")
+}
+
+model ConsultantOffDay {
+  id            Int      @id @default(autoincrement())
+  consultant_id Int
+  off_date      DateTime @db.Date // Specific date for off day
+  reason        String? // Optional reason for being off
+  is_recurring  Boolean  @default(false) // For recurring off days (e.g., every Monday)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  consultant Consultant @relation(fields: [consultant_id], references: [id], onDelete: Cascade)
+
+  @@unique([consultant_id, off_date])
+  @@index([consultant_id, off_date])
+  @@map("consultant_off_days")
+}
+
+// Also add this enum for better type safety
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+
+  @@map("day_of_week")
+}

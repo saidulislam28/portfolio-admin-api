@@ -1,0 +1,85 @@
+/* eslint-disable */
+
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+import { BullModule } from '@nestjs/bull';
+import { AdminAuthModule } from './admin-auth/admin-auth.module';
+import { AdminModule } from './admin/admin.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AttachmentsModule } from './attachments/attachments.module';
+import { QUEUE_NAME } from './common/constants';
+import configuration from './config';
+import { CrudModule } from './crud/crud.module';
+import { EmailModule } from './email/email.module';
+import { PrismaModule } from './prisma/prisma.module';
+
+import { UsersController } from './user-dashboard/controllers/user.controller';
+
+
+import { AdminDashboardModule } from './admin-dashboard-api/admin-dashboard.module';
+import { AdminReportModule } from './admin-reports/admin-reports.module';
+import { AppAgoraModule } from './app-agora/app-agora.module';
+import { ConSultantModule } from './consaltant/consultant.module';
+import { ConsultantAppModule } from './consultant-dashboard/consultant-dashboard.module';
+import { DeviceTokenModule } from './notifications/devices/device-token.module';
+import { NotificationModule } from './notifications/notifications.module';
+import { ScheduleNotificationsModule } from './schedule-notification/schedule-notifications.module';
+import { UserAppModule } from './user-app-api/user-app.module';
+import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
+import { AuthModule } from './user/auth.module';
+import { JobsModule } from './jobs/jobs.module';
+import { FcmModule } from './fcm/fcm.module';
+import { UserDashBoardController } from './user/app-user-management.controller';
+import { UserDashBoardService } from './user/app-user-management.service';
+import { UserCacheModule } from './user-cache/user-cache.module';
+import { TimezoneModule } from './timezone/timezone.module';
+import { CommonModule } from './common/common.module';
+
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+        password: process.env.REDIS_PASS
+      },
+    }),
+    BullModule.registerQueueAsync(
+      {
+        name: QUEUE_NAME,
+      }
+    ),
+    PrismaModule,
+    CrudModule,
+    AttachmentsModule,
+    AdminModule,
+    EmailModule,
+    AdminAuthModule,
+    ConSultantModule,
+    AuthModule,
+    NotificationModule,
+    DeviceTokenModule,
+    AppAgoraModule,
+    ScheduleNotificationsModule,
+    AdminDashboardModule,
+    ConsultantAppModule,
+    UserAppModule,
+    AdminReportModule,
+    UserDashboardModule,
+    JobsModule,
+    FcmModule,
+    UserCacheModule,
+    TimezoneModule,
+    CommonModule
+  ],
+  controllers: [AppController, UsersController, UserDashBoardController],
+  providers: [AppService, UserDashBoardService],
+})
+export class AppModule { }

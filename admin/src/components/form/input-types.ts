@@ -1,0 +1,13 @@
+export const INPUT_TEXT = 'text';
+export const INPUT_TEXTAREA = 'textarea';
+export const INPUT_SELECT = 'select';
+export const INPUT_SELECTMULTI = 'select_multi';
+export const INPUT_RADIO = 'radio';
+export const INPUT_EMAIL = 'email';
+export const INPUT_PASSWORD = 'password';
+export const INPUT_CHECKBOX = 'checkbox';
+export const INPUT_NUMBER = 'number';
+export const INPUT_DECIMAL = 'decimal';
+export const INPUT_IMAGE = 'image';
+export const INPUT_VIDEO = 'video';
+export const INPUT_DATE = 'date';

@@ -1,0 +1,272 @@
+import { Body, Injectable, Req, Res } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
+import { images, trimText } from 'src/common/constants';
+
+@Injectable()
+export class SearchService {
+  constructor(private readonly prismaService: PrismaService) { }
+
+  async getAllCareHomes(defaultOptions, where: any) {
+    const page = Number(defaultOptions?.page);
+    const perPage = Number(defaultOptions?.perPage);
+    const skip = page > 0 ? perPage * (page - 1) : 0;
+    const whereClause: any = {};
+    const all_ids = [];
+
+    // if (where.city !== null && where.city !== undefined && where.city !== '') {
+    //   const isPostCode = await this.validatePostcode(where.city)
+    //   if (isPostCode) {
+    //     const homes = await this.prismaService.careHome.findMany({ where: { post_code: where.city }, select: { id: true } })
+    //     const homes_ids = homes?.map((i) => i?.id);
+    //     all_ids.push(homes_ids);
+    //   }
+    //   else {
+    //     const city_name = trimText(where.city);
+    //     const city = await this.prismaService.city.findFirst({
+    //       where: { name: { contains: city_name, mode: 'insensitive' } },
+    //     });
+    //     if (city !== null) {
+    //       const homes = await this.prismaService.careHome.findMany({
+    //         where: { city_id: city.id },
+    //         select: { id: true }
+    //       });
+    //       const homes_ids = homes?.map((i) => Number(i?.id));
+    //       all_ids.push(homes_ids);
+    //     }
+    //     const homes = await this.prismaService.careHome.findMany({ where: { state: { contains: city_name, mode: 'insensitive' } } })
+    //     if (homes !== null) {
+    //       const homes_ids = homes?.map((i) => Number(i?.id));
+    //       all_ids.push(homes_ids);
+    //     }
+    //   }
+    // }
+
+    if (
+      where.community_size !== null &&
+      where.community_size !== undefined &&
+      where.community_size !== ''
+    ) {
+      const size = where.community_size;
+      const msize = size.toUpperCase();
+      // const homes = await this.prismaService.careHome.findMany({
+      //   where: { community_size: msize },
+      // });
+      const homes_ids = homes?.map((i) => i?.id);
+      all_ids.push(homes_ids);
+    }
+
+    if (
+      where.amenity !== null &&
+      where.amenity !== undefined &&
+      where.amenity !== ''
+    ) {
+      const amenities = where?.amenity;
+      const amenity_arr = amenities.split(',');
+      const amenities_ids = [];
+      for (let i = 0; i < amenity_arr.length; i++) {
+        const element = amenity_arr[i];
+        const amenity = await this.prismaService.amenity.findFirst({
+          where: { name: element },
+        });
+        amenities_ids.push(amenity?.id);
+      }
+      const care_homes_ids = [];
+      for (let i = 0; i < amenities_ids.length; i++) {
+        const element = amenities_ids[i];
+        const available_amenity =
+          await this.prismaService.availableAmenities.findFirst({
+            where: { amenity_id: Number(element) },
+          });
+        if (available_amenity !== null && available_amenity !== undefined) {
+          const find = care_homes_ids.find(
+            (i) => i === available_amenity.care_home_id,
+          );
+          if (!find) {
+            care_homes_ids.push(available_amenity.care_home_id);
+          }
+        }
+      }
+      all_ids.push(care_homes_ids);
+    }
+
+    if (
+      where.care_type !== null &&
+      where.care_type !== undefined &&
+      where.care_type !== ''
+    ) {
+      const care_types = where?.care_type;
+      const care_types_arr = care_types.split(',');
+      const care_types_ids = [];
+      for (let i = 0; i < care_types_arr.length; i++) {
+        const element = care_types_arr[i];
+        const care_type = await this.prismaService.careTypes.findFirst({
+          where: { name: element },
+        });
+        care_types_ids.push(care_type?.id);
+      }
+      const care_homes_ids = [];
+      for (let i = 0; i < care_types_ids.length; i++) {
+        const element = care_types_ids[i];
+        const care_service_offer =
+          await this.prismaService.careServiceOfferd.findFirst({
+            where: { care_type_id: Number(element) },
+          });
+        if (care_service_offer !== null && care_service_offer !== undefined) {
+          const find = care_homes_ids.find(
+            (i) => i === care_service_offer.care_home_id,
+          );
+          if (!find) {
+            care_homes_ids.push(care_service_offer.care_home_id);
+          }
+        }
+      }
+      all_ids.push(care_homes_ids);
+    }
+
+    if (
+      where.price !== null &&
+      where.price !== undefined &&
+      !isNaN(where.price)
+    ) {
+      // const homes = await this.prismaService.careHome.findMany();
+      const homes_ids = [];
+      if (where?.price <= 5000) {
+        homes.map((i) => {
+          if (i.price_end !== null && i.price_end <= where.price) {
+            homes_ids.push(i.id);
+          }
+        });
+      } else {
+        homes.map((i) => {
+          if (i.price_start !== null && Number(i.price_start) > 5000) {
+            homes_ids.push(i.id);
+          }
+        });
+      }
+      all_ids.push(homes_ids);
+    }
+
+    if (
+      where.care_type ||
+      where.amenity ||
+      where.community_size ||
+      where.city ||
+      where.price
+    ) {
+      const common_homes = await this.findCommonElements(all_ids);
+      whereClause.id = { in: common_homes };
+    }
+
+    const [total, data] = await Promise.all([
+      this.prismaService.careHome.count({ where: whereClause }),
+      this.prismaService.careHome.findMany({
+        where: whereClause,
+        skip,
+        take: perPage,
+        include: {
+          Review: true,
+          CareServiceOfferd: {
+            include: {
+              CareTypes: true,
+            },
+          },
+          Attachment: {
+            select: {
+              id: true,
+              short_order: true,
+              url: true,
+              datetime: true,
+            }
+          },
+          AvailableAmenities: {
+            include: {
+              Amenity: true
+            }
+          }
+        },
+      }),
+    ]);
+
+
+    const care_home_arr = data?.map((item) => {
+      const all_review_ratings = item?.Review.map((i) => {
+        return i.rating;
+      });
+      let total_reviews_ratings = 0;
+      for (let i = 0; i < all_review_ratings.length; i++) {
+        total_reviews_ratings += all_review_ratings[i];
+      }
+      return {
+        id: item?.id,
+        name: item?.name,
+        address: item?.address,
+        lat: item?.lat,
+        lng: item?.lon,
+        email: item?.email,
+        phone: item?.phone,
+        price_start: item?.price_start,
+        price_end: item?.price_end,
+        slug: item?.slug,
+        desc: item?.desc,
+        short_desc: item?.short_desc,
+        feature_image: item?.feature_image,
+        is_verified: item?.is_verified,
+        services: item?.CareServiceOfferd?.map((item) => {
+          return {
+            name: item?.CareTypes?.name,
+            icon: item?.CareTypes?.icon,
+            bg_color: item?.CareTypes?.bg_color,
+            text_color: item?.CareTypes?.text_color,
+            slug: item?.CareTypes?.slug
+          };
+        }),
+        amanities: item?.AvailableAmenities?.map((item) => {
+          return {
+            name: item?.Amenity?.name,
+            slug: item?.Amenity?.slug
+          };
+        }),
+        total_reviews: item?.Review?.length,
+        total_reviews_ratings: total_reviews_ratings,
+        images: item?.Attachment?.length ? item?.Attachment : images,
+      };
+    });
+
+    const lastPage = Math.ceil(total / perPage);
+    return {
+      data: care_home_arr,
+      meta: {
+        total,
+        lastPage,
+        currentPage: page,
+        perPage,
+        prev: page > 1 ? page - 1 : null,
+        next: page < lastPage ? page + 1 : null,
+      },
+    };
+  }
+
+  async findCommonElements(arr: any) {
+    if (arr.length === 0) {
+      return [];
+    }
+
+    const main = [];
+    const all = [];
+    arr?.map((i) => {
+      i.map((item) => all.push(item));
+    });
+    all.map((item) => {
+      const find = main.find((i) => i === item);
+      if (!find) {
+        main.push(item);
+      }
+    });
+    return main;
+  }
+
+  async validatePostcode(postcode) {
+    const regex = /^-?\d+(\.\d+)?$/;
+    return regex.test(postcode);
+  }
+}

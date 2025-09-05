@@ -1,0 +1,92 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:17
+    container_name: ${PROJECT_NAME}-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    networks:
+      - trackify_internal
+
+  redis:
+    image: redis:7.0.11-alpine
+    ports:
+      - "6379:6379"
+    container_name: ${PROJECT_NAME}-redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
+    volumes:
+      - ./cache:/redis-data
+    networks:
+      - trackify_internal
+      - trackify_web
+
+  server:
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+    container_name: ${PROJECT_NAME}-server
+    restart: always
+    env_file:
+      - ./api/.env
+    ports:
+      - '${API_PORT}:8000'
+    volumes:
+      - ./public/uploads:/public/uploads
+    depends_on:
+      - database
+    networks:
+      - trackify_internal
+      - starter_api
+
+  adminer:
+    image: adminer
+    restart: always
+    container_name: ${PROJECT_NAME}-adminer
+    ports:
+      - '${ADMINER_PORT}:8080'
+    networks:
+      - trackify_internal
+      - trackify_web
+
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+    command: "npm start"
+    container_name: ${PROJECT_NAME}-website
+    ports:
+      - '${WEBSITE_PORT}:3000'
+    env_file:
+      - ./website/.env
+    depends_on:
+      - server
+    networks:
+      - starter_api
+
+  admin-panel:
+    container_name: ${PROJECT_NAME}-admin-panel
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    command: "npm run preview"
+    ports:
+      - '${ADMIN_PANEL_PORT}:8000'
+    env_file:
+      - .env
+    depends_on:
+      - server
+    networks:
+      - starter_api
+
+networks:
+  trackify_internal:
+    internal: true
+  starter_api:
+  trackify_web:

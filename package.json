@@ -1,0 +1,31 @@
+{
+  "name": "starter-system",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "concurrently": "^7.5.0"
+  },
+  "scripts": {
+    "start": "concurrently \"cd api && npm run start:dev\" \"cd admin && npm run dev\" \"cd website && npm run dev\"",
+    "setup": "bash ./setup.sh",
+    "install": "bash ./install.sh"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,606 @@
+{
+	"info": {
+		"_postman_id": "dc229c75-d68c-4fda-8a3a-6aea55c7ac8b",
+		"name": "SpeakingMate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43854461"
+	},
+	"item": [
+		{
+			"name": "app",
+			"item": [
+				{
+					"name": "orders",
+					"item": [
+						{
+							"name": "create order",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"01712345678\",\n    \"address\": \"123 Main St, Dhaka\",\n    \"service_type\": \"speaking_mock_test\",\n    \"subtotal\": 1000,\n    \"delivery_charge\": 0,\n    \"total\": 1000,\n    \"appointments\": [ \n      {\n        \"start_at\": \"2023-12-25T10:00:00Z\",\n        \"notes\": \"IELTS Speaking Test\",\n        \"status\": \"Pending\"\n      },\n      {\n        \"start_at\": \"2023-12-25T10:00:00Z\",\n        \"notes\": \"IELTS Speaking Test\",\n        \"status\": \"Pending\"\n      }\n    ]\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/orders",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "purchase book",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"first_name\": \"Jane\",\n    \"last_name\": \"Smith\",\n    \"email\": \"jane.smith@example.com\",\n    \"phone\": \"01812345678\",\n    \"address\": \"456 Oak St, Dhaka\",\n    \"service_type\": \"book_purchase\",\n    \"subtotal\": 500,\n    \"delivery_charge\": 50,\n    \"total\": 550,\n    \"items\": [\n      {\n        \"book_id\": 1,\n        \"qty\": 2,\n        \"unit_price\": 250\n      }\n    ]\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/orders",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "notification",
+					"item": [
+						{
+							"name": "send-notification to one user",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer ADMIN_TOKEN"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user_id\": 23,\n  \"title\": \"Important Update\",\n  \"message\": \"Your account has been updated. Notification send from Saidul\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/v1/notifications/send-to-user",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"v1",
+										"notifications",
+										"send-to-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "send to all",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer ADMIN_TOKEN"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"System Maintenance\",\n  \"message\": \"We will have a scheduled maintenance tomorrow at 2 AM.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/v1/notifications/send-to-all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"v1",
+										"notifications",
+										"send-to-all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "register device token",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer USER_TOKEN"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"fEXZMEXiSSa8BgVr15VM23:APA91bH_dgDHGrA9C8tpWY023JAVnQBz27-I1LI_MetZFEY5S_GSCOAtmooOxkDGr_FbWsYQudgKALgoCztdzn5nevWxyR_DncYDwvaYEjah4sumZa8VXpo\",\n    \"user_id\": 23\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/v1/device-tokens",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"v1",
+										"device-tokens"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "consultant notification",
+					"item": [
+						{
+							"name": "send-notification to one user",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer ADMIN_TOKEN"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"selected_consultants\": [\n        21\n    ],\n    \"title\": \"Important Update\",\n    \"message\": \"Your account has been updated. Notification send from Saidul\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/v1/consultant/notifications/send-to-consultant",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"v1",
+										"consultant",
+										"notifications",
+										"send-to-consultant"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "send to all",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer ADMIN_TOKEN"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"System saidul\",\n  \"message\": \"We will have a scheduled maintenance tomorrow at 2 AM.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/v1/consultant/notifications/send-to-all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"v1",
+										"consultant",
+										"notifications",
+										"send-to-all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "register device token",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer USER_TOKEN"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"token\": \"fEXZMEXiSSa8BgVr15VM23:APA91bH_dgDHGrA9C8tpWY023JAVnQBz27-I1LI_MetZFEY5S_GSCOAtmooOxkDGr_FbWsYQudgKALgoCztdzn5nevWxyR_DncYDwvaYEjah4sumZa8VXpo\",\n    \"user_id\": 23\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/api/v1/consultant/device-tokens",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"v1",
+										"consultant",
+										"device-tokens"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Agora",
+					"item": [
+						{
+							"name": "get token",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\": 1,\n    \"channelName\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/agora/token",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"agora",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get wildcard token",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/agora/wildcard-token",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"agora",
+										"wildcard-token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "feedback",
+					"item": [
+						{
+							"name": "consultant conversation post feedback",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"appointment_id\": 6,\r\n    \"consultant_id\": 3,\r\n    \"testTakerName\": \"Arman Khan\",\r\n    \"date\": \"2025-07-23T08:00:00.000Z\",\r\n    // Fluency & Coherence\r\n    \"speaksFluently\": true,\r\n    \"occasionalPauses\": false,\r\n    \"oftenPauses\": false,\r\n    \"disorganizedIdeas\": false,\r\n    \"needsLongerAnswers\": true,\r\n    \"fluencyUseLinkingWords\": true,\r\n    \"fluencyPracticeThinking\": false,\r\n    \"fluencySpeakWithDetails\": true,\r\n    // Vocabulary\r\n    \"wideVocabularyRange\": true,\r\n    \"repeatsBasicWords\": false,\r\n    \"usesTopicTerms\": true,\r\n    \"wordChoiceErrors\": false,\r\n    \"lacksParaphrasing\": false,\r\n    \"vocabBuildList\": true,\r\n    \"vocabPracticeSynonyms\": false,\r\n    \"vocabUseGames\": true,\r\n    // Grammar\r\n    \"mostlyCorrectGrammar\": true,\r\n    \"errorsDontAffect\": true,\r\n    \"limitedSentenceTypes\": false,\r\n    \"frequentGrammarMistakes\": false,\r\n    \"needsComplexStructures\": true,\r\n    \"grammarFocusTenses\": true,\r\n    \"grammarUseConditionals\": false,\r\n    \"grammarWriteThenSpeak\": false,\r\n    // Pronunciation\r\n    \"pronunciationClear\": true,\r\n    \"minorPronunciationIssues\": false,\r\n    \"mispronouncesKeyWords\": false,\r\n    \"lacksIntonation\": false,\r\n    \"strongL1Influence\": false,\r\n    \"pronShadowSpeakers\": true,\r\n    \"pronRecordAndCheck\": true,\r\n    \"pronPracticePhonemes\": true,\r\n    \"overallLevel\": \"Intermediate\",\r\n    \"generalComments\": \"Good fluency and vocabulary. dfds sdf dsf sdf dsf sdf ds Needs to work on sentence variety and complex grammar.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/conversation-feedback",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"conversation-feedback"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "consultant mock post feedback",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"consultant_id\": 1,\r\n    \"appointment_id\": 4,\r\n    \"userId\": null,\r\n    \"testDate\": \"2025-07-23T15:00:00.000Z\",\r\n    \"testTime\": \"15:45\",\r\n    \"overallBandScore\": 6.5,\r\n    \"fluencyCoherence\": 6.0,\r\n    \"lexicalResource\": 6.5,\r\n    \"grammaticalRange\": 6.0,\r\n    \"pronunciation\": 7.0,\r\n    \"fluencyFluent\": true,\r\n    \"fluencyNaturalFlow\": false,\r\n    \"fluencyNeedsCoherence\": true,\r\n    \"fluencyRepeatsIdeas\": false,\r\n    \"lexicalGoodVariety\": false,\r\n    \"lexicalRepetitive\": true,\r\n    \"lexicalTopicMismatch\": false,\r\n    \"lexicalLimitedRange\": true,\r\n    \"grammarFrequentErrors\": true,\r\n    \"grammarTenseIssues\": false,\r\n    \"grammarLimitedRange\": true,\r\n    \"grammarMostlyAccurate\": false,\r\n    \"pronunciationClearSounds\": true,\r\n    \"pronunciationGoodStress\": false,\r\n    \"pronunciationMispronunciations\": true,\r\n    \"pronunciationAccentIssues\": false,\r\n    \"part1Confident\": false,\r\n    \"part1ShortAnswer\": true,\r\n    \"part1NeedsMoreDetails\": true,\r\n    \"part2WellOrganized\": false,\r\n    \"part2MissedPoints\": true,\r\n    \"part2TooShort\": true,\r\n    \"part3Insightful\": false,\r\n    \"part3Repetitive\": true,\r\n    \"part3WellDeveloped\": false,\r\n    \"part3TooShort\": true,\r\n    \"recPracticeCueCard\": true,\r\n    \"recExpandTopicVocab\": true,\r\n    \"recReduceGrammarMistakes\": true,\r\n    \"recWatchNativeConversations\": false,\r\n    \"recUseLinkingPhrases\": true,\r\n    \"recImproveFluency\": true,\r\n    \"recImprovePronunciation\": false,\r\n    \"additionalNotes\": \"Needs to work on expanding conversation  answers and reducing hesitation.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/mocktest-feedback",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"mocktest-feedback"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get consultant conversation feedback",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/conversation-feedback",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"conversation-feedback"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get consultant mock feedback",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/api/v1/mocktest-feedback",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"mocktest-feedback"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get-book-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get payment link",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"total_amount\": 100,\n    \"currency\": \"BDT\",\n    \"tran_id\": \"TXN123456\",\n    \"product_name\": \"Product A\",\n    \"product_category\": \"Category A\",\n    \"cus_name\": \"John Doe\",\n    \"cus_email\": \"john.doe@example.com\",\n    \"cus_add1\": \"123 Main St\",\n    \"cus_city\": \"New York\",\n    \"cus_state\": \"NY\",\n    \"cus_postcode\": \"10001\",\n    \"cus_country\": \"USA\",\n    \"cus_phone\": \"+1234567890\",\n    \"success_url\": \"https://example.com/success\",\n    \"fail_url\": \"https://example.com/fail\",\n    \"cancel_url\": \"https://example.com/cancel\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/initiate",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-packages-list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/packages",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"packages"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "get-user-1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "website",
+			"item": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}
