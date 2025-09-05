@@ -44,16 +44,16 @@ const ExamRegistrationFrom = () => {
   };
 
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    address: "",
-    email: "",
-    phone: "",
-    budget: "",
-    ielts_score: "",
-    academic_background: "",
-    destination: "",
-    whatsapp: "",
+    first_name: __DEV__ ? "John" : "",
+    last_name: __DEV__ ? "Doe" : "",
+    address: __DEV__ ? "123 Main St, City, Country" : "",
+    email: __DEV__ ? "john.doe@example.com" : "",
+    phone: __DEV__ ? "01711111111" : "",
+    budget: __DEV__ ? "20000" : "",
+    ielts_score: __DEV__ ? "7.5" : "",
+    academic_background: __DEV__ ? "Bachelor in Computer Science" : "",
+    destination: __DEV__ ? "Canada" : "",
+    whatsapp: __DEV__ ? "01711111111" : "",
   });
 
   const validateForm = () => {
@@ -129,7 +129,6 @@ const ExamRegistrationFrom = () => {
       };
 
       const payload = {
-        user_id: user?.id,
         email: formData?.email,
         first_name: formData?.first_name,
         last_name: formData?.last_name,
@@ -140,8 +139,8 @@ const ExamRegistrationFrom = () => {
       };
 
       const response = await Post(API_USER.create_order, payload);
-      const responseData = response?.data?.data;
-      if (response?.data?.success) {
+      const responseData = response?.data;
+      if (responseData?.success) {
         Alert.alert("Form submitted!", "Our agent will call you within 24h.");
         setFormData({
           first_name: "",
@@ -164,12 +163,6 @@ const ExamRegistrationFrom = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const openTestDatesLink = () => {
-    Linking.openURL(
-      "https://www.britishcouncil.org.bd/en/exam/ielts/dates-fees-locations"
-    );
   };
 
   return (

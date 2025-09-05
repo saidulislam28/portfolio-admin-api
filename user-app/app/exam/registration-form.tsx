@@ -342,7 +342,6 @@ const ExamRegistrationFrom = () => {
       };
 
       const payload = {
-        user_id: user?.id,
         email: formData?.email,
         first_name: formData?.first_name,
         last_name: formData?.last_name,
@@ -353,8 +352,6 @@ const ExamRegistrationFrom = () => {
         service_type: PACKAGE_SERVICE_TYPE.exam_registration,
         order_info: userInfo,
       };
-
-      console.log("payload>>>", payload)
 
       const response = await Post(API_USER.create_order, payload);
       // console.log("response from api exam registration>", response?.data)

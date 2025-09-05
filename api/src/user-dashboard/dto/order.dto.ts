@@ -166,6 +166,14 @@ export class CreateOrderDto {
   @IsNumber()
   @IsOptional()
   package_id?: number;
+  
+  @ApiPropertyOptional({
+    description: 'Center ID if exam registration',
+    example: 1
+  })
+  @IsNumber()
+  @IsOptional()
+  center_id?: number;
 
   @ApiPropertyOptional({
     description: 'Array of appointments for service types that require scheduling',

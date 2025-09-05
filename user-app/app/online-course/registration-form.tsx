@@ -151,7 +151,6 @@ const ExamRegistrationFrom = () => {
       // const stringifyorderInfo = JSON.stringify(orderInfo);
 
       const payload = {
-        user_id: user?.id,
         email: formData?.email,
         first_name: formData?.first_name,
         last_name: formData?.last_name,
@@ -162,11 +161,9 @@ const ExamRegistrationFrom = () => {
         order_info: orderInfo,
       };
 
-      // return console.log("payload>>>", payload)
 
       const response = await Post(API_USER.create_order, payload);
       const responseData = response?.data?.data;
-      console.log("response>>>>>", response);
       if (response?.data?.success) {
         router.push(
           `/sslpay-screen?payment_url=${responseData.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.ielts_academic}&amount=${responseData?.total_amount}`

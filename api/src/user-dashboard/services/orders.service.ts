@@ -253,7 +253,7 @@ export class OrdersService {
       orderData.total = findPackage?.price_bdt
     }
 
-    const {package_id, payment_status, ...rest} = orderData;
+    const {package_id, payment_status, center_id, ...rest} = orderData;
 
     const dataToInsert: Prisma.OrderCreateInput = {
       ...rest,
@@ -267,6 +267,9 @@ export class OrdersService {
 
     if(package_id && payload.service_type !== ServiceType.book_purchase) {
       dataToInsert.Package = {connect: {id: package_id}};
+    }
+    if(center_id && payload.service_type === ServiceType.ielts_academic) {
+      dataToInsert.ExamCenter = {connect: {id: center_id}};
     }
 
     const order: any = await this.prisma.order.create({

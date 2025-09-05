@@ -23,7 +23,6 @@ import { AdminReportModule } from './admin-reports/admin-reports.module';
 import { AppAgoraModule } from './app-agora/app-agora.module';
 import { ConSultantModule } from './consaltant/consultant.module';
 import { ConsultantAppModule } from './consultant-dashboard/consultant-dashboard.module';
-import { DeviceTokenModule } from './notifications/devices/device-token.module';
 import { NotificationModule } from './notifications/notifications.module';
 import { ScheduleNotificationsModule } from './schedule-notification/schedule-notifications.module';
 import { UserAppModule } from './user-app-api/user-app.module';
@@ -65,7 +64,6 @@ import { CommonModule } from './common/common.module';
     ConSultantModule,
     AuthModule,
     NotificationModule,
-    DeviceTokenModule,
     AppAgoraModule,
     ScheduleNotificationsModule,
     AdminDashboardModule,
