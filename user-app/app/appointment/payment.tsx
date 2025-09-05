@@ -290,7 +290,8 @@ export default function PaymentScreen() {
             </View>
           ) : (
             <Text style={styles.paymentButtonText}>
-              Pay BDT {totals.total.toLocaleString()}
+              {/* Pay BDT {totals.total.toLocaleString()} */}
+              Proceed
             </Text>
           )}
         </TouchableOpacity>

@@ -57,7 +57,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="my-appointments"
         options={{
-          title: 'My Appointments',
+          title: 'Appointments',
           tabBarIcon: ({ color, focused }) => (
             <SimpleLineIcons
               size={24}
