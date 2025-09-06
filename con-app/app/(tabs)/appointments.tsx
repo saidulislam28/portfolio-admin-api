@@ -17,10 +17,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Type definitions
 
-export default function AppointmentsScreen({
-  appointmentDetailRoute = ROUTES.APPOINTMENT_DETAIL,
-  autoFetchOnMount = true,
-}) {
+export default function AppointmentsScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
   const [responseData, setResponseData] = useState<any>([]);
@@ -33,7 +30,6 @@ export default function AppointmentsScreen({
       setIsLoading(true);
       const response = await Get(API_CONSULTANT.get_appointments);
 
-      console.log('main resp', response)
       if (response.data) {
         setResponseData(response.data);
         setRefresh(false);
@@ -49,7 +45,6 @@ export default function AppointmentsScreen({
   };
 
   const categorizedAppointments = useMemo(() => {
-    console.log('resp data', responseData)
     return categorizeAppointments(responseData, user_timezone as string);
   }, [responseData]);
 
@@ -61,7 +56,7 @@ export default function AppointmentsScreen({
 
   const handleAppointmentPress = (appointment: Appointment) => {
     router.push({
-      pathname: appointmentDetailRoute as any,
+      pathname: ROUTES.APPOINTMENT_DETAIL as any,
       params: { appointment: JSON.stringify(appointment) },
     });
   };

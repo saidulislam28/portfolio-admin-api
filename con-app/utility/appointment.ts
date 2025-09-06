@@ -121,9 +121,7 @@ function getCurrentTime(): Date {
  * @returns Object with live, past, and upcoming arrays
  */
 function categorizeAppointments(appointments: Appointment[], deviceTimezone: string): CategorizedAppointments {
-const now = getCurrentTime();
-  
-  console.log('dev ti', deviceTimezone, appointments)
+  const now = getCurrentTime();
   const categories: CategorizedAppointments = {
     live: [],
     past: [],

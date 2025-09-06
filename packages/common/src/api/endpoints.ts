@@ -6,7 +6,7 @@ export const API_CONSULTANT = {
   reset: "consultant-auth/reset-password",
   get_live_appointments: "consultant/live/appointments",
   get_appointments: "consultant/appointment/list",
-  appointment_details: "user/appointments",
+  appointment_details: "consultant/appointment-detail/{id}",
   update_appointment: "consultant/appointment",
   update_note: 'consultant/appointment/note',
   feedback_comments: 'feedback-comments',

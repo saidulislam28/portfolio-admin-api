@@ -190,9 +190,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   const handleFetchAppointment = async () => {
     try {
       setRefreshing(true);
-      const response = await Get(`${API_CONSULTANT.appointment}/${appointmentId}`);
-
-      console.log("response from the api>", response)
+      const response = await Get(API_CONSULTANT.appointment_details.replace('{id}', appointmentId));
 
       if (response?.data) {
         setAppointment(response.data);
@@ -457,7 +455,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       {showHeader && (
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => router.replace(customRoutes.myAppointments)}
+            onPress={() => router.replace(ROUTES.MY_APPOINTMENTS)}
             style={styles.backButton}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
@@ -555,28 +553,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               <Text style={styles.clientLevel}>
                 {appointment?.User?.expected_level || "Above 7"} Level
               </Text>
-              <View style={styles.contactInfo}>
-                <Ionicons
-                  name="mail-outline"
-                  size={isTablet ? 20 : 16}
-                  color="#6B7280"
-                />
-                <Text style={[styles.clientEmail, { fontSize: isTablet ? FONT_SIZE_SMALL : 14 }]}>
-                  {appointment?.User?.email}
-                </Text>
-              </View>
-              {appointment?.User?.phone && (
-                <View style={styles.contactInfo}>
-                  <Ionicons
-                    name="call-outline"
-                    size={isTablet ? 20 : 16}
-                    color="#6B7280"
-                  />
-                  <Text style={[styles.clientPhone, { fontSize: isTablet ? FONT_SIZE_SMALL : 14 }]}>
-                    {appointment?.User.phone}
-                  </Text>
-                </View>
-              )}
             </View>
           </View>
         </View>

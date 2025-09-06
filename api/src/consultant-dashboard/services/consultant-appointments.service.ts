@@ -144,15 +144,7 @@ export class ConsultantAppointmentsService {
     const appointment = await this.prismaService.appointment.findFirst({
       where: {
         consultant_id: findConsultant?.id,
-        id: id,
-        Order: {
-          payment_status: OrderPaymentStatus.paid,
-          Payment: {
-            some: {
-              status: PAYMENT_STATUS.PAID
-            }
-          }
-        }
+        id: id
       },
       select: {
         id: true,
