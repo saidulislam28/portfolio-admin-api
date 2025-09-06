@@ -7,7 +7,7 @@ export const getAuthTokenMobile = async () => {
     try {
         const token = await AsyncStorage.getItem('jwt_token');
         // const token = user.token;
-        // console.log("token from auth token", token)
+        console.log("token from auth token", token)
         return token;
     } catch (error) {
         console.error('Error getting token from AsyncStorage:', error);
@@ -15,7 +15,8 @@ export const getAuthTokenMobile = async () => {
     }
 };
 
-export const setAuthTokenMobile = async (token) => {
+export const setAuthTokenMobile = async (token: string) => {
+    console.log('save ss', token)
     try {
         await AsyncStorage.setItem('jwt_token', token);
     } catch (error) {

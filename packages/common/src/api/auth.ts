@@ -1,4 +1,5 @@
 import { getApiClient } from "./apiClient";
+import { API_CONSULTANT } from "./endpoints";
 
 
 
@@ -51,6 +52,32 @@ export interface LoginUserResponse {
   data: User
 }
 
+export interface LoginConsultantResponse {
+  success: boolean;
+  statusCode: number;
+  message?: string;
+  data: {
+    id: number;
+    full_name?: string;
+    email?: string;
+    phone?: string;
+    profile_image?: string;
+    token?: string;
+    device_type?: string | null;
+    timezone?: string;
+    is_active?: boolean;
+    is_mocktest?: boolean;
+    is_conversation?: boolean;
+    is_verified?: boolean;
+    is_test_user?: boolean;
+    bio?: string;
+    experience?: number;
+    skills?: string;
+    hourly_rate?: number;
+    created_at?: string;
+  };
+}
+
 export interface ApiResponse<T> {
   data: T;
   status: number;
@@ -71,6 +98,14 @@ export const loginUser = async (
   phone: string
 ): Promise<LoginUserResponse> => {
   const resp = await getApiClient().post('auth/login', {email, password});
+  return resp.data;
+};
+
+export const loginConsultant = async (
+  email: string,
+  password: string,
+): Promise<LoginConsultantResponse> => {
+  const resp = await getApiClient().post(API_CONSULTANT.login, {email, password});
   return resp.data;
 };
 

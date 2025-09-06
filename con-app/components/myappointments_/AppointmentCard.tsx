@@ -1,4 +1,5 @@
-import { PRIMARY_COLOR } from "@/lib/constants";
+import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
+import { SERVICE_TYPE } from "@/store/slices/app/constants";
 import {
   AppointmentStatus,
   formatAppointmentTime,
@@ -36,46 +37,53 @@ const AppointmentCard: React.FC<AppointmentCardProps> = React.memo(({ appointmen
     }
   }, [appointment.status]);
 
-
-  // console.log("appoitment from card", appointment)
-
+  const renderServiceType = () => {
+    switch (appointment?.Order?.service_type) {
+      case PACKAGE_SERVICE_TYPE.conversation:
+        return "Conversation";
+      case PACKAGE_SERVICE_TYPE.speaking_mock_test  :
+        return "Mock Test";
+      default:
+        return appointment?.Order?.service_type || "N/A";
+    }
+  };
 
   return (
     <TouchableOpacity style={styles.appointmentCard} onPress={handlePress}>
       <View style={styles.cardHeader}>
-        <Text style={styles.serviceType}>{appointment?.type}</Text>
+        <Text style={styles.serviceType}>{renderServiceType()}</Text>
         <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
-          <Text style={styles.statusText}>{appointment?.status}</Text>
+          <Text style={styles.statusText}>{appointment.status}</Text>
         </View>
       </View>
 
       <View style={styles.cardContent}>
-        <Text style={styles.appointmentId}>ID: #{appointment?.id}</Text>
+        <Text style={styles.appointmentId}>ID: #{appointment.id}</Text>
 
-        {appointment?.Consultant && (
+        {appointment.User && (
           <Text style={styles.consultantName}>
-            Consultant: {appointment?.Consultant?.full_name || 'Assigned'}
+            with <Text style={{fontWeight: 'bold'}}>{appointment.User.full_name || ''}</Text>
           </Text>
         )}
 
         <Text style={styles.appointmentTime}>
-          {formatAppointmentTime(appointment?.start_at)}
+          {formatAppointmentTime(appointment.start_at)}
         </Text>
 
         <Text style={styles.duration}>
-          Duration: {appointment?.duration_in_min} minutes
+          Duration: {appointment.duration_in_min} minutes
         </Text>
 
         {appointment.notes && (
           <Text style={styles.notes} numberOfLines={2}>
-            Notes: {appointment?.notes}
+            Notes: {appointment.notes}
           </Text>
         )}
       </View>
 
-      {isCancelled && appointment?.cancel_reason && (
+      {isCancelled && appointment.cancel_reason && (
         <View style={styles.cancelledSection}>
-          <Text style={styles.cancelReason}>Cancelled: {appointment?.cancel_reason}</Text>
+          <Text style={styles.cancelReason}>Cancelled: {appointment.cancel_reason}</Text>
         </View>
       )}
     </TouchableOpacity>

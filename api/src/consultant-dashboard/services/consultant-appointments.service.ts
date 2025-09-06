@@ -6,7 +6,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ConsultantAppointmentsService {
   constructor(private readonly prismaService: PrismaService) { }
 
-  async getAppointmentList(consultant_id: number, type: string) {
+  async getAppointmentList(consultant_id: number) {
+
+    console.log('came hrre', consultant_id)
     // const findConsultant = await this.prismaService.consultant.findFirst({
     //   where: { id: consultant_id, is_active: true, is_verified: true },
     // });

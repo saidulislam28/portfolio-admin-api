@@ -108,20 +108,6 @@ export class ConsultantAuthService {
 
 
   async loginUser(data) {
-    // const isEmail = await this.validateEmail(data.email_or_phone);
-    // let user = null;
-    // if (!isEmail) {
-    //   user = await this.prismaService.user.findFirst({
-    //     where: { phone: data.email_or_phone },
-    //   });
-    // } else {
-    //   user = await this.prismaService.user.findFirst({
-    //     where: { email: data.email_or_phone },
-    //   });
-    // }
-
-    // console.log("hitting data service", data)
-
     const consultant = await this.prismaService.consultant.findFirst({
       where: { email: data.email }
     })
@@ -147,7 +133,6 @@ export class ConsultantAuthService {
       role: Role.Consultant,
     });
     delete consultant['password'];
-    delete consultant['created_at'];
     delete consultant['updated_at'];
     delete consultant['login_type'];
     return {

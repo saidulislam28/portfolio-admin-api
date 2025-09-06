@@ -4,12 +4,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import { FeedbackCommentController } from './controllers/feedback-comments.controller';
 import { FeedbackCommentService } from './services/feedback-comments.service';
-import { ConsultantAppointmentsController } from './controllers/consultant-appointments.controller';
-import { ConsultantAppointmentsService } from './services/consultant-appointments.service';
 
 @Module({
     imports: [PrismaModule],
-    controllers: [ FeedbackCommentController, ConsultantAppointmentsController],
-    providers: [PrismaService, FeedbackCommentService, ConsultantAppointmentsService]
+    controllers: [ FeedbackCommentController],
+    providers: [PrismaService, FeedbackCommentService]
 })
 export class ConSultantModule { }

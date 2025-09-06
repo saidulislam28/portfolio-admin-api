@@ -42,6 +42,31 @@ export interface LoginUserResponse {
     success: boolean;
     data: User;
 }
+export interface LoginConsultantResponse {
+    success: boolean;
+    statusCode: number;
+    message?: string;
+    data: {
+        id: number;
+        full_name?: string;
+        email?: string;
+        phone?: string;
+        profile_image?: string;
+        token?: string;
+        device_type?: string | null;
+        timezone?: string;
+        is_active?: boolean;
+        is_mocktest?: boolean;
+        is_conversation?: boolean;
+        is_verified?: boolean;
+        is_test_user?: boolean;
+        bio?: string;
+        experience?: number;
+        skills?: string;
+        hourly_rate?: number;
+        created_at?: string;
+    };
+}
 export interface ApiResponse<T> {
     data: T;
     status: number;
@@ -49,3 +74,4 @@ export interface ApiResponse<T> {
 }
 export declare const registerUser: (userData: RegisterUserData) => Promise<RegisterUserResponse>;
 export declare const loginUser: (email: string, password: string, phone: string) => Promise<LoginUserResponse>;
+export declare const loginConsultant: (email: string, password: string) => Promise<LoginConsultantResponse>;

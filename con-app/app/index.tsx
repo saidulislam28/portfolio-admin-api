@@ -4,10 +4,9 @@ import { View, ActivityIndicator, ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "./context/useAuth";
 import { registerForPushNotificationsAsync } from "@/lib/notification";
-import { POST_DEVICE_TOKENS } from "@/services/api/endpoints";
 import { RECIPIENT_TYPE } from "@/lib/constants";
 import { ROUTES } from "@/constants/app.routes";
-import { API_CONSULTANT, Post } from "@sm/common";
+import { API_COMMON, Post } from "@sm/common";
 
 export default function Index() {
   const [checkingLaunch, setCheckingLaunch] = useState(true);
@@ -25,7 +24,7 @@ export default function Index() {
       try {
         const userId = Number(user?.id);
         const token = await registerForPushNotificationsAsync();
-        const response = await Post(API_CONSULTANT.post_device_tokens, {
+        const response = await Post(API_COMMON.post_device_tokens, {
           token,
           user_id: userId,
           recipient_type: RECIPIENT_TYPE.Consultant,

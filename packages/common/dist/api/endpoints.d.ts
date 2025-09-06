@@ -12,7 +12,6 @@ export declare const API_CONSULTANT: {
     feedback_comments: string;
     conversation_feedback: string;
     mocktest_feedback: string;
-    appointment: string;
     mocktest_comments: string;
 };
 export declare const API_COMMON: {

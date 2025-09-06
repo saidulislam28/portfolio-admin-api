@@ -12,9 +12,7 @@ export const API_CONSULTANT = {
   feedback_comments: 'feedback-comments',
   conversation_feedback: 'conversation-feedback',
   mocktest_feedback: 'mocktest-feedback',
-  appointment: 'consultant/appointments-list',
   mocktest_comments: 'feedback-comments/mock-test',
-
 };
 
 export const API_COMMON = {

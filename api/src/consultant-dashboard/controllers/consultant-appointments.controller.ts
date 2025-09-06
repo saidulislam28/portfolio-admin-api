@@ -33,11 +33,14 @@ import {
 } from '../dto/consultant.dto';
 import { ConsultantService } from '../services/consultant.service';
 import { ConsultantAppointmentsService } from '../services/consultant-appointments.service';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
+import { Role } from 'src/user-auth/dto/role.enum';
 
 @ApiTags('Consultant: Appointments')
 @ApiBearerAuth()
 @Controller('consultant')
 @UseGuards(JwtAuthGuard, RolesGuard)
+// @HasRoles(Role.Consultant)
 export class ConsultantAppointmentsController {
   constructor(private readonly consultantService: ConsultantAppointmentsService) { }
 
@@ -46,13 +49,6 @@ export class ConsultantAppointmentsController {
     summary: 'Get consultant appointments list',
     description: 'Retrieves appointments for the authenticated consultant, optionally filtered by type.'
   })
-  @ApiQuery({
-    name: 'type',
-    required: false,
-    description: 'Appointment type filter',
-    enum: ['upcoming', 'past', 'live'],
-    example: 'upcoming'
-  })
   @ApiOkResponse({
     type: AppointmentListResponseDto,
     description: 'Appointments list retrieved successfully'
@@ -60,9 +56,9 @@ export class ConsultantAppointmentsController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized - Invalid or missing authentication token'
   })
-  async getAppointmentList(@Req() req, @Query('type') type: string) {
+  async getAppointmentList(@Req() req) {
     const { id: consultant_id } = req?.user;
-    const response = await this.consultantService.getAppointmentList(+consultant_id, type);
+    const response = await this.consultantService.getAppointmentList(+consultant_id);
     return res.success(response)
   }
 

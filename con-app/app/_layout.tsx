@@ -9,8 +9,7 @@ import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryProvider } from "@/providers/QueryProvider";
 import React from "react";
-import { SafeAreaView } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AuthProvider } from "@/app/context/useAuth";
 import Constants from "expo-constants";
 

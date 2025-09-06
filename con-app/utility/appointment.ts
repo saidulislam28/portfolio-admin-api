@@ -2,39 +2,51 @@ import { NativeModules, Platform } from 'react-native';
 
 // Type definitions
 enum AppointmentStatus {
-  INITIATED = 'INITIATED',
-  PENDING = 'PENDING',
-  CONFIRMED = 'confirmed', // Updated to match your API response
+  INITIATED = 'INITIATED', // order created but payment not done, hide from admin & app & cleanup in scheduled job
+  PENDING = 'PENDING', // payment done but not assigned any consultant
+  CONFIRMED = 'CONFIRMED', // consultant assigned
   CANCELLED = 'CANCELLED',
-  COMPLETED = 'completed', // Updated to match your API response
+  COMPLETED = 'COMPLETED', // completed by consultant
   NO_SHOW = 'NO_SHOW'
 }
 
-interface IOrder {
+interface User {
+  full_name: string;
   id: number;
-  service_type: string
+  is_test_user: boolean;
+  profile_image: string;
 }
 
-interface IConsultant {
-  full_name: string
+interface Order {
+  service_type: string;
 }
 
-// Updated interface to match your API response structure
+interface Consultant {
+  // Add consultant properties as needed
+  [key: string]: any;
+}
+
 interface Appointment {
-  id: number;
-  client: string;
-  duration: number;
-  start_at: string;
-  end_at: string;
-  status: string; // Using string to handle both enum and API values
-  notes: string;
-  time: string;
-  type: string;
-  Order: IOrder;
-  Consultant: IConsultant;
+  Consultant: Consultant | null;
+  Order: Order;
+  User: User;
+  booked_at: string;
+  cancel_reason: string | null;
+  consultant_id: number | null;
+  created_at: string;
   duration_in_min: number;
-  cancel_reason: string;
-
+  end_at: string;
+  id: number;
+  notes: string;
+  order_id: number;
+  slot_date: string;
+  slot_time: string;
+  start_at: string;
+  status: AppointmentStatus;
+  token: string;
+  updated_at: string;
+  user_id: number;
+  user_timezone: string;
 }
 
 interface CategorizedAppointments {
@@ -43,150 +55,123 @@ interface CategorizedAppointments {
   upcoming: Appointment[];
 }
 
-// API response structure
-interface AppointmentApiResponse {
-  [date: string]: Appointment[];
-}
-
 /**
  * Get device timezone using React Native specific methods
+ * @returns Device timezone string
  */
 function getDeviceTimezone(): string {
   try {
     if (Platform.OS === 'ios') {
       return NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0] ||
-        Intl.DateTimeFormat().resolvedOptions().timeZone;
+             NativeModules.SettingsManager.settings.AppleLanguages[0] ||
+             Intl.DateTimeFormat().resolvedOptions().timeZone;
     } else if (Platform.OS === 'android') {
       return NativeModules.I18nManager.localeIdentifier ||
-        Intl.DateTimeFormat().resolvedOptions().timeZone;
+             Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
   } catch (error) {
     console.warn('Failed to get device timezone from native modules:', error);
   }
+  
+  // Fallback to Intl API
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
 /**
+ * Get timezone offset in minutes for a given timezone
+ * @param timezone - Timezone string
+ * @param date - Date to get offset for (optional, defaults to now)
+ * @returns Offset in minutes
+ */
+function getTimezoneOffset(timezone: string, date: Date = new Date()): number {
+  // Create a date in UTC
+  const utcDate = new Date(date.toLocaleString("en-CA", { timeZone: "UTC" }));
+  
+  // Create the same date in the target timezone
+  const localDate = new Date(date.toLocaleString("en-CA", { timeZone: timezone }));
+  
+  // Return the difference in minutes
+  return (utcDate.getTime() - localDate.getTime()) / (1000 * 60);
+}
+
+/**
  * Convert UTC time string to a Date object adjusted for device timezone comparison
+ * @param utcTimeString - UTC time string
+ * @param deviceTimezone - Device timezone (optional)
+ * @returns Date object that can be compared with current time
  */
 function parseUTCTimeForComparison(utcTimeString: string): Date {
+  // Simply parse the UTC string - Date constructor handles this correctly
+  // The key insight is that we don't need to convert timezones for comparison
+  // We just need to compare UTC times directly
   return new Date(utcTimeString);
 }
 
 /**
  * Get current time as Date object
+ * @returns Current Date object
  */
 function getCurrentTime(): Date {
   return new Date();
 }
 
 /**
- * Categorizes appointments into live, past, and upcoming categories
- * Handles the new object format with date keys
+ * Categorizes an array of appointments into live, past, and upcoming categories
+ * @param appointments - Array of appointment objects
+ * @returns Object with live, past, and upcoming arrays
  */
-function categorizeAppointments(appointmentsData: any, deviceTimezone: string): CategorizedAppointments {
-  const now = getCurrentTime();
-
+function categorizeAppointments(appointments: Appointment[], deviceTimezone: string): CategorizedAppointments {
+const now = getCurrentTime();
+  
+  console.log('dev ti', deviceTimezone, appointments)
   const categories: CategorizedAppointments = {
     live: [],
     past: [],
     upcoming: []
   };
 
-  if (!appointmentsData) return categories;
-
-  console.log("appointment data from categorize function:", appointmentsData);
-
-  // Handle the new object format: { "2025-08-26": [...], "2025-08-27": [...] }
-  let appointmentsArray: Appointment[] = [];
-
-  if (Array.isArray(appointmentsData)) {
-    // If it's already an array (old format)
-    appointmentsArray = appointmentsData;
-  } else if (typeof appointmentsData === 'object' && appointmentsData !== null) {
-    // If it's an object with date keys (new format)
-    appointmentsArray = Object.values(appointmentsData).flat() as Appointment[];
-  }
-
-  // console.log("Flattened appointments array:", appointmentsArray);
-
-  appointmentsArray.forEach(appointment => {
+  if(appointments === null || appointments === undefined) return categories;
+  
+  appointments.forEach(appointment => {
     const { start_at, end_at, status } = appointment;
-
-    // Parse UTC times directly
+    
+    // Parse UTC times directly - no timezone conversion needed for comparison
+    // Since both current time and appointment times are in UTC context
     const startTime = parseUTCTimeForComparison(start_at);
     const endTime = parseUTCTimeForComparison(end_at);
-
-    // Check if appointment has started and ended
+    
+    // Check if appointment has started (start time has passed)
     const hasStarted = now >= startTime;
+    
+    // Check if appointment has ended (end time has passed)  
     const hasEnded = now >= endTime;
-
-    // Convert status to uppercase for consistent comparison
-    const normalizedStatus = status.toUpperCase();
-
+    
     // Categorization logic
-    if (hasStarted && !hasEnded && 
-        ![AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW]
-        .includes(normalizedStatus as AppointmentStatus)) {
+    if (hasStarted && !hasEnded && ![AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW].includes(status)) {
+      // Live: started but not ended, and not in a terminal state
       categories.live.push(appointment);
-    } else if ([AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW]
-              .includes(normalizedStatus as AppointmentStatus) || hasEnded) {
+    } else if (([AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW].includes(status))) {
+      // Past: started and either in terminal state or time has passed
       categories.past.push(appointment);
-    } else if (!hasStarted && 
-              [AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED]
-              .includes(normalizedStatus as AppointmentStatus)) {
+    } else if (!hasStarted && [AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED].includes(status)) {
+      // Upcoming: not started yet and in active state
       categories.upcoming.push(appointment);
     }
+    // Note: INITIATED appointments are ignored as per the comment in enum
   });
-
-  return categories;
-}
-
-/**
- * Enhanced categorization function that also sorts appointments within categories
- */
-function categorizeAndSortAppointments(appointmentsData: any): CategorizedAppointments {
-  // Handle both array and object formats
-  let appointmentsArray: Appointment[] = [];
   
-  if (Array.isArray(appointmentsData)) {
-    appointmentsArray = appointmentsData;
-  } else if (typeof appointmentsData === 'object' && appointmentsData !== null) {
-    appointmentsArray = Object.values(appointmentsData).flat() as Appointment[];
-  }
-
-  const categories = categorizeAppointments(appointmentsArray, getDeviceTimezone());
-
-  // Sort live appointments by start time (earliest first)
-  categories.live.sort((a, b) => {
-    const timeA = parseUTCTimeForComparison(a.start_at);
-    const timeB = parseUTCTimeForComparison(b.start_at);
-    return timeA.getTime() - timeB.getTime();
-  });
-
-  // Sort past appointments by start time (most recent first)
-  categories.past.sort((a, b) => {
-    const timeA = parseUTCTimeForComparison(a.start_at);
-    const timeB = parseUTCTimeForComparison(b.start_at);
-    return timeB.getTime() - timeA.getTime();
-  });
-
-  // Sort upcoming appointments by start time (soonest first)
-  categories.upcoming.sort((a, b) => {
-    const timeA = parseUTCTimeForComparison(a.start_at);
-    const timeB = parseUTCTimeForComparison(b.start_at);
-    return timeA.getTime() - timeB.getTime();
-  });
-
   return categories;
 }
 
 /**
  * Helper function to format appointment time in user's timezone
+ * @param utcTimeString - UTC time string
+ * @param userTimezone - User's timezone (optional, falls back to device timezone)
+ * @returns Formatted time string
  */
 function formatAppointmentTime(utcTimeString: string, userTimezone?: string): string {
   const timezone = userTimezone || getDeviceTimezone();
+  
   return new Intl.DateTimeFormat('en-US', {
     timeZone: timezone,
     year: 'numeric',
@@ -198,15 +183,65 @@ function formatAppointmentTime(utcTimeString: string, userTimezone?: string): st
   }).format(new Date(utcTimeString));
 }
 
-export {
-  AppointmentStatus,
-  type Appointment,
-  type CategorizedAppointments,
-  type AppointmentApiResponse,
+/**
+ * Enhanced categorization function that also sorts appointments within categories
+ * @param appointments - Array of appointment objects
+ * @returns Object with sorted live, past, and upcoming arrays
+ */
+function categorizeAndSortAppointments(appointments: Appointment[]): CategorizedAppointments {
+  const categories = categorizeAppointments(appointments);
+  
+  // Sort live appointments by start time (earliest first)
+  categories.live.sort((a, b) => {
+    const timeA = parseUTCTimeForComparison(a.start_at);
+    const timeB = parseUTCTimeForComparison(b.start_at);
+    return timeA.getTime() - timeB.getTime();
+  });
+  
+  // Sort past appointments by start time (most recent first)
+  categories.past.sort((a, b) => {
+    const timeA = parseUTCTimeForComparison(a.start_at);
+    const timeB = parseUTCTimeForComparison(b.start_at);
+    return timeB.getTime() - timeA.getTime();
+  });
+  
+  // Sort upcoming appointments by start time (soonest first)
+  categories.upcoming.sort((a, b) => {
+    const timeA = parseUTCTimeForComparison(a.start_at);
+    const timeB = parseUTCTimeForComparison(b.start_at);
+    return timeA.getTime() - timeB.getTime();
+  });
+  
+  return categories;
+}
+
+// Example usage:
+/*
+const appointments: Appointment[] = [
+  // Your appointment objects here
+];
+
+const categorized: CategorizedAppointments = categorizeAppointments(appointments);
+console.log('Live appointments:', categorized.live);
+console.log('Past appointments:', categorized.past);
+console.log('Upcoming appointments:', categorized.upcoming);
+
+// Or use the enhanced version with sorting
+const categorizedAndSorted: CategorizedAppointments = categorizeAndSortAppointments(appointments);
+*/
+
+export { 
+  AppointmentStatus, 
+  type Appointment, 
+  type CategorizedAppointments, 
+  type User, 
+  type Order, 
+  type Consultant,
   getDeviceTimezone,
+  getTimezoneOffset,
   parseUTCTimeForComparison,
   getCurrentTime,
-  categorizeAppointments,
-  categorizeAndSortAppointments,
-  formatAppointmentTime
+  categorizeAppointments, 
+  categorizeAndSortAppointments, 
+  formatAppointmentTime 
 };

@@ -55,20 +55,20 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="my-appointments"
+        name="appointments"
         options={{
           title: 'Appointments',
           tabBarIcon: ({ color, focused }) => (
             <SimpleLineIcons
               size={24}
-              name="calendar"
+              name="drawer"
               color={color}
             />
           )
         }}
       />
       <Tabs.Screen
-        name="appointment_list"
+        name="calendar"
         options={{
           title: 'Calender',
           tabBarIcon: ({ color, focused }) => (

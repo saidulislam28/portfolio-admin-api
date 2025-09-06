@@ -1,7 +1,7 @@
 import { setAuthTokenMobile } from "@/lib/authtokens";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { API_CONSULTANT, Post } from "@sm/common";
+import { API_CONSULTANT, loginConsultant, Post } from "@sm/common";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -40,18 +40,14 @@ export default function LoginScreen() {
     }
 
     try {
-      const result = await Post(API_CONSULTANT.login, { email, password });
-      // console.log("response from login>>>", result?.data?.data)
-      if (!result.data) {
-        Alert.alert("Error", result.error);
+      const result = await loginConsultant(email, password);
+      if (!result.success) {
+        Alert.alert("Error", result.message);
         setLoading(false);
         return;
       }
-
-      console.log("result>>>", result?.data);
-      login(result?.data?.data);
+      login(result?.data, result?.data?.token);
       router.push(ROUTES.HOME);
-      await setAuthTokenMobile(result?.data?.data?.token);
     } catch (error) {
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
       setLoading(false);

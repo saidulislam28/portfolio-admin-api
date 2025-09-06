@@ -90,22 +90,16 @@ const SettingsScreen = () => {
           {user?.email || "user@example.com"}
         </Text>
 
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>24</Text>
-            <Text style={styles.statLabel}>Appointments</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>12</Text>
-            <Text style={styles.statLabel}>Live</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>3</Text>
-            <Text style={styles.statLabel}>Past</Text>
-          </View>
-        </View>
+         {user?.created_at && (
+          <Text style={styles.memberSinceText}>
+            Member since{" "}
+            <Text style={{fontWeight: 'bold'}}>{new Date(user.created_at).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}</Text>
+          </Text>
+        )}
       </View>
 
       {/* Settings List */}
@@ -260,6 +254,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  memberSinceText: {
+  fontSize: 14,
+  color: "#666",
+  marginTop: 8,
+  fontStyle: "italic",
+},
 });
 
 export default SettingsScreen;

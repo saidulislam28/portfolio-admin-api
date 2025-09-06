@@ -23,7 +23,7 @@ export default function AppointmentsScreen({
 }) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
-  const [responseData, setResponseData] = useState<any>({ appointment: [] });
+  const [responseData, setResponseData] = useState<any>([]);
   const [refresh, setRefresh] = useState(false);
   const user_timezone = Localization.getCalendars()[0].timeZone
   const [isLoading, setIsLoading] = useState(false);
@@ -31,10 +31,9 @@ export default function AppointmentsScreen({
   const handleGetConsultantAppointments = async () => {
     try {
       setIsLoading(true);
-      const response = await Get(API_CONSULTANT.appointment);
+      const response = await Get(API_CONSULTANT.get_appointments);
 
-      // console.log("response consultant update>>>>>", response.data)
-
+      console.log('main resp', response)
       if (response.data) {
         setResponseData(response.data);
         setRefresh(false);
@@ -50,6 +49,7 @@ export default function AppointmentsScreen({
   };
 
   const categorizedAppointments = useMemo(() => {
+    console.log('resp data', responseData)
     return categorizeAppointments(responseData, user_timezone as string);
   }, [responseData]);
 
