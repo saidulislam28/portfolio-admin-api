@@ -5,16 +5,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 // Tablet-specific dimensions
 const isTablet = width >= 600;
 const CARD_PADDING = isTablet ? 24 : 16;
-const PROFILE_IMAGE_SIZE = isTablet ? 100 : 60;
-const BUTTON_HEIGHT = isTablet ? 56 : 48;
 const FONT_SIZE_LARGE = isTablet ? 22 : 18;
-const FONT_SIZE_MEDIUM = isTablet ? 18 : 16;
-const FONT_SIZE_SMALL = isTablet ? 16 : 14;
 
 
 const ConsultationNotesCard = ({ appointment, uploadNotes, handleRefresh }: any) => {

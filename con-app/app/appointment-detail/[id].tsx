@@ -1,4 +1,8 @@
+import ConsultationNotesCard from "@/components/appointment-details/ConsultantNoteModal";
+import StatusModal from "@/components/appointment-details/statusModal";
+import { VideoCallButton } from "@/components/appointment-details/video-call-button";
 import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
 import {
   PACKAGE_SERVICE_TYPE,
   PRIMARY_COLOR,
@@ -7,6 +11,7 @@ import {
 import { callService } from "@/services/AgoraCallService";
 import { startAudioService } from "@/services/AudioService";
 import { notificationService } from "@/services/NotificationService";
+import { getStatusColor } from "@/utility/statusColor";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { API_CONSULTANT, Get, Patch, USER_ROLE } from "@sm/common";
@@ -16,8 +21,6 @@ import {
   Alert,
   Dimensions,
   Image,
-  Linking,
-  Modal,
   Platform,
   RefreshControl,
   SafeAreaView,
@@ -28,11 +31,6 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { useAuth } from "../../context/useAuth";
-import ConsultationNotesCard from "./ConsultantNoteModal";
-import { getStatusColor } from "@/utility/statusColor";
-import { VideoCallButton } from "@/components/appointment-details/video-call-button";
-import StatusModal from "@/components/appointment-details/statusModal";
 
 // Define types
 export interface User {
