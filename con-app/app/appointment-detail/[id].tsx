@@ -29,7 +29,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 // Define types
@@ -99,7 +99,7 @@ const BOOKING_STATUS = {
   // NO_SHOW: "NO_SHOW",
 } as const;
 
-type BookingStatus = typeof BOOKING_STATUS[keyof typeof BOOKING_STATUS];
+type BookingStatus = (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS];
 
 const { width, height } = Dimensions.get("window");
 const isTablet = width >= 600;
@@ -110,7 +110,6 @@ const BUTTON_HEIGHT = isTablet ? 64 : 52;
 const FONT_SIZE_LARGE = isTablet ? 22 : 18;
 const FONT_SIZE_MEDIUM = isTablet ? 18 : 16;
 const FONT_SIZE_SMALL = isTablet ? 16 : 14;
-
 
 const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   appointment: propAppointment,
@@ -125,30 +124,32 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     myAppointments: ROUTES.MY_APPOINTMENTS,
     mockFeedback: ROUTES.MOCK_FEEDBACK_PAGE,
     conversationFeedback: ROUTES.CONVERSATION_FEEDBACK_PAGE,
-    callUser: ROUTES.CALL_USER
+    callUser: ROUTES.CALL_USER,
   },
   customConstants = {
     primaryColor: PRIMARY_COLOR,
-    secondaryColor: SECONDARY_COLOR
-  }
+    secondaryColor: SECONDARY_COLOR,
+  },
 }) => {
   const router = useRouter();
   const params = useLocalSearchParams();
 
   // Calculate tablet status - allow override via props
-  const calculatedIsTablet = isTabletOverride !== undefined ? isTabletOverride : width >= 600;
+  const calculatedIsTablet =
+    isTabletOverride !== undefined ? isTabletOverride : width >= 600;
   const isTablet = calculatedIsTablet;
-
-
 
   const [isLoading, setIsLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState("");
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<BookingStatus>(BOOKING_STATUS.PENDING);
+  const [selectedStatus, setSelectedStatus] = useState<BookingStatus>(
+    BOOKING_STATUS.PENDING
+  );
   const [statusCLoading, setStatusCLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [appointment, setAppointment] = useState<Appointment | null>(null); const { user } = useAuth();
+  const [appointment, setAppointment] = useState<Appointment | null>(null);
+  const { user } = useAuth();
 
   const { startCall, isConnecting, isInCall } = useCallStore();
 
@@ -166,7 +167,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     }
     return null;
   };
-
 
   // console.log("apponintment params>>>>", PAppointment)
 
@@ -188,7 +188,9 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   const handleFetchAppointment = async () => {
     try {
       setRefreshing(true);
-      const response = await Get(API_CONSULTANT.appointment_details.replace('{id}', appointmentId));
+      const response = await Get(
+        API_CONSULTANT.appointment_details.replace("{id}", appointmentId)
+      );
 
       if (response?.data) {
         setAppointment(response.data);
@@ -204,25 +206,26 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   };
 
   const handleRefresh = async () => {
-    console.log(
-      "handle refresh"
-    )
+    // console.log("handle refresh");
     await handleFetchAppointment();
   };
 
   const handleStatusChange = () => {
-    setSelectedStatus((appointment?.status as BookingStatus) || BOOKING_STATUS.PENDING);
+    setSelectedStatus(
+      (appointment?.status as BookingStatus) || BOOKING_STATUS.PENDING
+    );
     setIsStatusModalVisible(true);
   };
 
   const handleCancelStatusChange = () => {
     setIsStatusModalVisible(false);
     setIsDropdownOpen(false);
-    setSelectedStatus((appointment?.status as BookingStatus) || BOOKING_STATUS.PENDING);
+    setSelectedStatus(
+      (appointment?.status as BookingStatus) || BOOKING_STATUS.PENDING
+    );
   };
 
   const handleConfirmStatusChange = async () => {
-
     // console.log("selected status", selectedStatus)
 
     setStatusCLoading(true);
@@ -233,13 +236,13 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       );
       // console.log("result is here>>>", result?.data)
       if (result?.data?.success) {
-        setStatusCLoading(false)
+        setStatusCLoading(false);
         handleFetchAppointment();
         handleRefresh();
-        setIsStatusModalVisible(false)
+        setIsStatusModalVisible(false);
       }
     } catch (error: any) {
-      console.log("error>>", error.message)
+      console.log("error>>", error.message);
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
     } finally {
       setStatusCLoading(false);
@@ -257,8 +260,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   };
 
   const startVideoCall = async () => {
-
-    console.log("=== button pressed ===", appointment?.status);
+    console.log("=== button pressed ===", appointment);
 
     try {
       if (onCallStart) {
@@ -269,13 +271,13 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
       // Default implementation
       await callService.initialize();
-      await startCall(appointment?.token, appointment?.consultant_id, {
-        id: appointment?.user_id || 0,
+      await startCall(appointment?.token, Number(appointment?.consultant_id), {
+        id: Number(appointment?.user_id) || 0,
         name: appointment?.User?.full_name || "",
         avatar: appointment?.User?.profile_image,
       });
 
-      const notificationPayload:any = {
+      const notificationPayload: any = {
         ...appointment,
         caller_name: user?.full_name || "",
       };
@@ -291,8 +293,11 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       );
       startAudioService();
       router.push(customRoutes.callUser(Number(appointment?.user_id)));
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to start call:", error);
+      console.error("Failed call:", error);
+      console.error("Error details:", error.response?.data || error.message);
+      Alert.alert("Error", error.message || "Could not update profile");
       Alert.alert(
         "Call Failed",
         "Unable to start the video call. Please try again.",
@@ -309,8 +314,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       hour12: true,
     });
   };
-
-
 
   const getStatusIcon = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -352,7 +355,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   };
 
   useEffect(() => {
-    console.log("use effect 1")
+    console.log("use effect 1");
     const updateCountdown = () => {
       if (!appointment?.start_at) return;
 
@@ -403,10 +406,10 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         { notes: newNote }
       );
 
-      console.log("update note result", result?.data)
+      // console.log("update note result", result?.data);
 
       if (result.success) {
-        setStatusCLoading(false)
+        setStatusCLoading(false);
         handleFetchAppointment();
         handleRefresh();
       }
@@ -433,8 +436,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   const startAt = appointment ? new Date(appointment?.start_at) : new Date();
   const isStarted = startAt <= now && now < endAt;
 
-
-
   if (!appointment) {
     return (
       <SafeAreaView style={styles.container}>
@@ -443,7 +444,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     );
   }
 
-  console.log("appoipntment>>", appointment)
+  // console.log("appoipntment>>", appointment);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -453,7 +454,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       {showHeader && (
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => router.replace(ROUTES.MY_APPOINTMENTS)}
+            onPress={() => router.replace(ROUTES.MY_APPOINTMENTS as any)}
             style={styles.backButton}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
@@ -463,11 +464,21 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               color="#1F2937"
             />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { fontSize: isTablet ? FONT_SIZE_LARGE + 4 : FONT_SIZE_LARGE }]}>
+          <Text
+            style={[
+              styles.headerTitle,
+              { fontSize: isTablet ? FONT_SIZE_LARGE + 4 : FONT_SIZE_LARGE },
+            ]}
+          >
             Appointment Details
           </Text>
           <View style={styles.appointmentIdContainer}>
-            <Text style={[styles.appointmentId, { fontSize: isTablet ? FONT_SIZE_SMALL : 14 }]}>
+            <Text
+              style={[
+                styles.appointmentId,
+                { fontSize: isTablet ? FONT_SIZE_SMALL : 14 },
+              ]}
+            >
               #{appointment?.id}
             </Text>
           </View>
@@ -506,7 +517,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               onPress={handleStatusChange}
               style={[
                 styles.statusButton,
-                { backgroundColor: customConstants.primaryColor }
+                { backgroundColor: customConstants.primaryColor },
               ]}
               activeOpacity={0.7}
             >
@@ -523,7 +534,12 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               size={isTablet ? 28 : 20}
               color={customConstants.primaryColor}
             />
-            <Text style={[styles.cardTitle, { fontSize: isTablet ? FONT_SIZE_LARGE : 16 }]}>
+            <Text
+              style={[
+                styles.cardTitle,
+                { fontSize: isTablet ? FONT_SIZE_LARGE : 16 },
+              ]}
+            >
               User Information
             </Text>
           </View>
@@ -531,13 +547,23 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
           <View style={styles.clientInfo}>
             <Image
               source={{
-                uri: appointment?.User?.profile_image || "https://avatar.iran.liara.run/public",
+                uri:
+                  appointment?.User?.profile_image ||
+                  "https://avatar.iran.liara.run/public",
               }}
-              style={[styles.profileImage, { width: PROFILE_IMAGE_SIZE, height: PROFILE_IMAGE_SIZE }]}
+              style={[
+                styles.profileImage,
+                { width: PROFILE_IMAGE_SIZE, height: PROFILE_IMAGE_SIZE },
+              ]}
             />
             <View style={styles.clientDetails}>
               <View style={styles.nameRow}>
-                <Text style={[styles.clientName, { fontSize: isTablet ? FONT_SIZE_LARGE + 4 : 18 }]}>
+                <Text
+                  style={[
+                    styles.clientName,
+                    { fontSize: isTablet ? FONT_SIZE_LARGE + 4 : 18 },
+                  ]}
+                >
                   {appointment?.User?.full_name}
                 </Text>
                 {appointment?.User?.is_verified && (
@@ -563,7 +589,12 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               size={isTablet ? 28 : 20}
               color={customConstants.primaryColor}
             />
-            <Text style={[styles.cardTitle, { fontSize: isTablet ? FONT_SIZE_LARGE : 16 }]}>
+            <Text
+              style={[
+                styles.cardTitle,
+                { fontSize: isTablet ? FONT_SIZE_LARGE : 16 },
+              ]}
+            >
               Schedule
             </Text>
           </View>
@@ -572,7 +603,12 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             <View style={styles.scheduleRow}>
               <View style={styles.scheduleItem}>
                 <Text style={styles.scheduleLabel}>Date</Text>
-                <Text style={[styles.scheduleValue, { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 }]}>
+                <Text
+                  style={[
+                    styles.scheduleValue,
+                    { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 },
+                  ]}
+                >
                   {formatDate(appointment?.start_at)}
                 </Text>
               </View>
@@ -581,13 +617,23 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             <View style={styles.scheduleRow}>
               <View style={styles.scheduleItem}>
                 <Text style={styles.scheduleLabel}>Start Time</Text>
-                <Text style={[styles.scheduleValue, { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 }]}>
+                <Text
+                  style={[
+                    styles.scheduleValue,
+                    { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 },
+                  ]}
+                >
                   {formatTime(appointment?.start_at)}
                 </Text>
               </View>
               <View style={styles.scheduleItem}>
                 <Text style={styles.scheduleLabel}>End Time</Text>
-                <Text style={[styles.scheduleValue, { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 }]}>
+                <Text
+                  style={[
+                    styles.scheduleValue,
+                    { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 },
+                  ]}
+                >
                   {formatTime(appointment?.end_at)}
                 </Text>
               </View>
@@ -596,13 +642,26 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             <View style={styles.scheduleRow}>
               <View style={styles.scheduleItem}>
                 <Text style={styles.scheduleLabel}>Duration</Text>
-                <Text style={[styles.scheduleValue, { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 }]}>
+                <Text
+                  style={[
+                    styles.scheduleValue,
+                    { fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 },
+                  ]}
+                >
                   {appointment?.duration_in_min} minutes
                 </Text>
               </View>
               <View style={styles.scheduleItem}>
                 <Text style={styles.scheduleLabel}>Starts in:</Text>
-                <Text style={[styles.scheduleValue, { color: "#EF4444", fontSize: isTablet ? FONT_SIZE_MEDIUM : 14 }]}>
+                <Text
+                  style={[
+                    styles.scheduleValue,
+                    {
+                      color: "#EF4444",
+                      fontSize: isTablet ? FONT_SIZE_MEDIUM : 14,
+                    },
+                  ]}
+                >
                   {timeLeft}
                 </Text>
               </View>
@@ -624,12 +683,12 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               startVideoCall={startVideoCall}
             />
 
-
             <TouchableOpacity
               style={[
                 styles.feedbackButton,
                 { height: BUTTON_HEIGHT },
-                appointment?.MockTestFeedback || appointment?.ConversationFeedback
+                appointment?.MockTestFeedback ||
+                appointment?.ConversationFeedback
                   ? styles.feedbackButtonDisabled
                   : styles.feedbackButton,
               ]}
@@ -637,7 +696,8 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               activeOpacity={0.7}
               disabled={
                 !!(
-                  appointment?.MockTestFeedback || appointment?.ConversationFeedback
+                  appointment?.MockTestFeedback ||
+                  appointment?.ConversationFeedback
                 )
               }
             >
@@ -649,10 +709,11 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               <Text
                 style={[
                   styles.feedbackButtonText,
-                  appointment?.MockTestFeedback || appointment?.ConversationFeedback
+                  appointment?.MockTestFeedback ||
+                  appointment?.ConversationFeedback
                     ? styles.disableText
                     : styles.feedbackButtonText,
-                  { color: customConstants.primaryColor }
+                  { color: customConstants.primaryColor },
                 ]}
               >
                 Provide Feedback

@@ -1,18 +1,21 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { AppointmentStatus, OrderPaymentStatus, PAYMENT_STATUS } from '@prisma/client';
+import {
+  AppointmentStatus,
+  OrderPaymentStatus,
+  PAYMENT_STATUS,
+} from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ConsultantAppointmentsService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async getAppointmentList(consultant_id: number) {
-
-    console.log('came hrre', consultant_id)
+    console.log('came hrre', consultant_id);
     // const findConsultant = await this.prismaService.consultant.findFirst({
     //   where: { id: consultant_id, is_active: true, is_verified: true },
     // });
-    
+
     // if (!findConsultant) {
     //   throw new HttpException(
     //     { message: 'consultant not found' },
@@ -65,7 +68,7 @@ export class ConsultantAppointmentsService {
     const findAppointments = await this.prismaService.appointment.findMany({
       where: {
         consultant_id,
-        status: {not: AppointmentStatus.INITIATED},
+        status: { not: AppointmentStatus.INITIATED },
         Order: {
           // payment_status: OrderPaymentStatus.paid,
           // Payment: {
@@ -77,14 +80,26 @@ export class ConsultantAppointmentsService {
       },
       include: {
         User: {
-          select: { id: true, full_name: true, profile_image: true, is_test_user: true },
+          select: {
+            id: true,
+            full_name: true,
+            profile_image: true,
+            is_test_user: true,
+          },
         },
         Order: {
           select: { service_type: true },
         },
         Consultant: {
-          select: { id: true, full_name: true, email: true, phone: true, profile_image: true, is_test_user: true },
-        }
+          select: {
+            id: true,
+            full_name: true,
+            email: true,
+            phone: true,
+            profile_image: true,
+            is_test_user: true,
+          },
+        },
       },
       orderBy: {
         start_at: 'asc',
@@ -121,7 +136,12 @@ export class ConsultantAppointmentsService {
       orderBy: { created_at: 'desc' },
       include: {
         User: {
-          select: { id: true, full_name: true, profile_image: true, is_test_user: true },
+          select: {
+            id: true,
+            full_name: true,
+            profile_image: true,
+            is_test_user: true,
+          },
         },
         Order: {
           select: { service_type: true },
@@ -132,7 +152,7 @@ export class ConsultantAppointmentsService {
 
   async getAppointmentListDetails(consultant_id: number, id: number) {
     const findConsultant = await this.prismaService.consultant.findFirst({
-      where: { id: consultant_id, is_active: true, is_verified: true, },
+      where: { id: consultant_id, is_active: true, is_verified: true },
     });
     if (!findConsultant) {
       throw new HttpException(
@@ -144,7 +164,7 @@ export class ConsultantAppointmentsService {
     const appointment = await this.prismaService.appointment.findFirst({
       where: {
         consultant_id: findConsultant?.id,
-        id: id
+        id: id,
       },
       select: {
         id: true,
@@ -157,8 +177,8 @@ export class ConsultantAppointmentsService {
         created_at: true,
         Order: {
           select: {
-            service_type: true
-          }
+            service_type: true,
+          },
         },
         User: {
           select: {
@@ -169,10 +189,11 @@ export class ConsultantAppointmentsService {
             timezone: true,
             expected_level: true,
             profile_image: true,
-            is_test_user: true
-          }
-        }
-      }
+            is_test_user: true,
+          },
+        },
+        consultant_id: true,
+      },
     });
 
     if (!appointment) {
@@ -187,7 +208,7 @@ export class ConsultantAppointmentsService {
 
   async updateAppointment(consultant_id: number, id: number, payload) {
     const findConsultant = await this.prismaService.consultant.findFirst({
-      where: { id: consultant_id, is_active: true, is_verified: true, },
+      where: { id: consultant_id, is_active: true, is_verified: true },
     });
     if (!findConsultant) {
       throw new HttpException(
@@ -218,20 +239,22 @@ export class ConsultantAppointmentsService {
       );
     }
 
-
-    const updateData = await this.prismaService.appointment.update({ where: { id: Number(appointment.id) }, data: payload })
+    const updateData = await this.prismaService.appointment.update({
+      where: { id: Number(appointment.id) },
+      data: payload,
+    });
     if (!updateData) {
       throw new HttpException(
         { message: 'Something Went wrong! try again' },
         HttpStatus.EARLYHINTS,
       );
-    };
+    }
 
     return updateData;
   }
   async updateAppointMentNote(consultant_id: number, id: number, payload) {
     const findConsultant = await this.prismaService.consultant.findFirst({
-      where: { id: consultant_id, is_active: true, is_verified: true, },
+      where: { id: consultant_id, is_active: true, is_verified: true },
     });
     if (!findConsultant) {
       throw new HttpException(
@@ -263,16 +286,18 @@ export class ConsultantAppointmentsService {
     }
     console.log('Updating appointment ID:', appointment?.id);
 
-
-    const updateData = await this.prismaService.appointment.update({ where: { id: Number(appointment.id) }, data: payload })
+    const updateData = await this.prismaService.appointment.update({
+      where: { id: Number(appointment.id) },
+      data: payload,
+    });
     if (!updateData) {
       throw new HttpException(
         { message: 'Something Went wrong! try again' },
         HttpStatus.EARLYHINTS,
       );
-    };
+    }
 
-    console.log("updated ", updateData)
+    console.log('updated ', updateData);
 
     return updateData;
   }
