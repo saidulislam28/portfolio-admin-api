@@ -34,5 +34,8 @@ export const API_USER = {
     app_settings: "app-setting/app-data",
     book_order: 'app/book-order',
     RESEND_OTP: 'auth/resend-otp',
-    group_order: 'user/orders/grouped-by-service-type'
+    group_order: 'user/orders/grouped-by-service-type',
+    update_profile: 'user-profile/update',
+    user_coupon: 'user/coupons/my-coupons',
+    validate_coupon: 'user/coupons/validate',
 };

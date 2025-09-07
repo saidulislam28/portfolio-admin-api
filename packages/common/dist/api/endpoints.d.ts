@@ -35,4 +35,7 @@ export declare const API_USER: {
     book_order: string;
     RESEND_OTP: string;
     group_order: string;
+    update_profile: string;
+    user_coupon: string;
+    validate_coupon: string;
 };

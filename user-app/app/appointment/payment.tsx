@@ -81,7 +81,7 @@ export default function PaymentScreen() {
 
     setLoadingCoupons(true);
     try {
-      const response = await Get('user/coupons/my-coupons');
+      const response = await Get(API_USER.user_coupon);
 
       console.log("response my coupons", response?.data)
 
@@ -109,7 +109,7 @@ export default function PaymentScreen() {
         serviceType: packageData.service_type,
       };
 
-      const response = await Post('user/coupons/validate', payload);
+      const response = await Post(API_USER.validate_coupon, payload);
 
       console.log("validation response>>", response?.data)
 

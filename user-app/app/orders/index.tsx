@@ -15,63 +15,6 @@ import {
   View,
 } from "react-native";
 
-const mockOrders = [
-  {
-    id: 1,
-    date: "2023-05-15T10:30:00Z",
-    status: "Approved",
-    payment_status: "paid",
-    total: 45.99,
-    books: [
-      {
-        title: "The Great Gatsby",
-        image:
-          "https://m.media-amazon.com/images/I/71FTb9X6wsL._AC_UF1000,1000_QL80_.jpg",
-        qty: 1,
-        price: 12.99,
-      },
-      {
-        title: "To Kill a Mockingbird",
-        image:
-          "https://m.media-amazon.com/images/I/71FxgtFKcQL._AC_UF1000,1000_QL80_.jpg",
-        qty: 1,
-        price: 10.99,
-      },
-    ],
-  },
-  {
-    id: 2,
-    date: "2023-06-20T14:45:00Z",
-    status: "Pending",
-    payment_status: "unpaid",
-    total: 22.99,
-    books: [
-      {
-        title: "1984",
-        image:
-          "https://m.media-amazon.com/images/I/71FxgtFKcQL._AC_UF1000,1000_QL80_.jpg",
-        qty: 1,
-        price: 9.99,
-      },
-    ],
-  },
-  {
-    id: 3,
-    date: "2023-07-05T09:15:00Z",
-    status: "Canceled",
-    payment_status: "refunded",
-    total: 35.97,
-    books: [
-      {
-        title: "The Hobbit",
-        image:
-          "https://m.media-amazon.com/images/I/710+HcoP38L._AC_UF1000,1000_QL80_.jpg",
-        qty: 3,
-        price: 11.99,
-      },
-    ],
-  },
-];
 
 export default function BookOrder() {
   const router = useRouter();
