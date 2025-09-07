@@ -184,7 +184,7 @@ const PaymentSuccessPage = () => {
 
   const handleBackToHome = () => {
     router.dismissAll();
-    router.replace(ROUTES.HOME);
+    router.replace(ROUTES.HOME as any);
   };
 
   return (
