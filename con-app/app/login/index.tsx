@@ -1,7 +1,10 @@
-import { setAuthTokenMobile } from "@/lib/authtokens";
+import smLogo from "@/assets/images/smlogo.png";
+import { BaseButton } from "@/components/BaseButton";
+import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { API_CONSULTANT, loginConsultant, Post } from "@sm/common";
+import { loginConsultant } from "@sm/common";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -17,9 +20,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "@/context/useAuth";
-import { ROUTES } from "@/constants/app.routes";
-import smLogo from "@/assets/images/smlogo.png";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -58,8 +58,8 @@ export default function LoginScreen() {
     <SafeAreaView style={styles.safearea}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.logoContainer}>
-            <Image source={smLogo} style={styles.logo} resizeMode="contain" />
-          </View>
+          <Image source={smLogo} style={styles.logo} resizeMode="contain" />
+        </View>
 
         <Text style={styles.title}>Welcome back</Text>
         <Text style={styles.subtitle}>
@@ -112,11 +112,12 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        {/* <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>
             {loading ? "Loading..." : "Login"}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <BaseButton title="Login" disabled={loading} onPress={handleLogin} />
 
         {/* <View style={styles.dividerContainer}>
           <View style={styles.divider} />
