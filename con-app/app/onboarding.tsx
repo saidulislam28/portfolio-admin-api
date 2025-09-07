@@ -2,10 +2,7 @@
 import React from "react";
 import { View, StyleSheet, StatusBar } from "react-native";
 import { router } from "expo-router";
-// import Onboarding from "react-native-onboarding-swiper";
 import { useOnboardingCheck } from "@/hooks/useOnboardingCheck";
-// import { OnboardingSlide } from "@/components/onboarding/Onboarding-slide";
-// import { onboardingData } from "@/components/onboarding/onboarding-data";
 import { BACKGROUND_COLOR, PRIMARY_COLOR } from "@/lib/constants";
 import { Platform } from "react-native";
 import { ROUTES } from "@/constants/app.routes";

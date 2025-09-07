@@ -1,4 +1,3 @@
-import { API_VERIFY_OTP } from "@/services/api/endpoints";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
