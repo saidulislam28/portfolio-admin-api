@@ -1,6 +1,6 @@
 import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Image } from "react-native";
 
 import { useAuth } from "@/context/useAuth";
@@ -41,6 +41,18 @@ export default function RegisterScreen() {
   const router = useRouter();
   const { register } = useAuth();
 
+  const fillDummyData = useCallback(() => {
+    const randomSuffix = Math.floor(100 + Math.random() * 900);
+    const dummyEmail = `user${randomSuffix}@example.com`;
+
+    setName("John Doe");
+    setEmail(dummyEmail);
+    setPhone(`01712345${randomSuffix}`);
+    setPassword("123456");
+    setConfirmPassword("123456");
+    setExpectedLevel("medium");
+  }, []);
+
   // Email validation regex
   const validateEmail = (email: any) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,7 +68,7 @@ export default function RegisterScreen() {
     const bdPhoneRegex = /^(013|014|015|016|017|018|019)\d{8}$/;
 
     return bdPhoneRegex.test(cleanedPhone);
-  }
+  };
 
   // Password validation (minimum 6 characters)
   const validatePassword = (password: any) => {
@@ -117,18 +129,16 @@ export default function RegisterScreen() {
     };
 
     try {
-      console.log("registration step 1");
       const response = await registerUser(registerData);
       if (response.success) {
-        await AsyncStorage.setItem("email", response?.data?.email as string);
-        router.push(ROUTES.VERIFY_OTP);
+        router.push(`${ROUTES.VERIFY_OTP}?email=${response?.data?.email}`);
       } else {
         // Show API error instead of going to OTP page
         const errorMessage =
           response.message ||
           response.error ||
           "Registration failed. Please try again.";
-        console.log("error registration", response?.error)
+        console.log("error registration", response?.error);
         Alert.alert("Registration Error", errorMessage);
       }
     } catch (error: any) {
@@ -344,7 +354,21 @@ export default function RegisterScreen() {
                 <Text style={styles.registerButtonText}>Register</Text>
               )}
             </TouchableOpacity> */}
-            <BaseButton title="Register" onPress={handleRegister} disabled={loading} />
+            {__DEV__ && (
+              <TouchableOpacity
+                onPress={fillDummyData}
+                style={styles.dummyDataButton}
+              >
+                <Text style={styles.dummyDataButtonText}>
+                  .FILL DUMMY DATA.
+                </Text>
+              </TouchableOpacity>
+            )}
+            <BaseButton
+              title="Register"
+              onPress={handleRegister}
+              isLoading={loading}
+            />
 
             {/* Or Divider */}
             <View style={styles.orContainer}>
@@ -541,5 +565,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: PRIMARY_COLOR,
     fontWeight: "600",
+  },
+  dummyDataButton: {
+    backgroundColor: "#FFD700", // Gold color for visibility
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#FFC107",
+  },
+  dummyDataButtonText: {
+    color: "#000",
+    fontWeight: "bold",
+    fontSize: 14,
+    textTransform: "uppercase",
+    letterSpacing: 1,
   },
 });

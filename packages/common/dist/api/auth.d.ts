@@ -75,3 +75,4 @@ export interface ApiResponse<T> {
 export declare const registerUser: (userData: RegisterUserData) => Promise<RegisterUserResponse>;
 export declare const loginUser: (email: string, password: string, phone: string) => Promise<LoginUserResponse>;
 export declare const loginConsultant: (email: string, password: string) => Promise<LoginConsultantResponse>;
+export declare const verifyOtpUser: (email: string, otp: number) => Promise<LoginConsultantResponse>;

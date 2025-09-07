@@ -102,7 +102,6 @@ export class AuthService {
     });
 
     delete updatedUser['password'];
-    delete updatedUser['created_at'];
     delete updatedUser['updated_at'];
     delete updatedUser['login_type'];
 

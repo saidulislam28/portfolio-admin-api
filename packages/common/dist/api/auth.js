@@ -1,5 +1,5 @@
 import { getApiClient } from "./apiClient";
-import { API_CONSULTANT } from "./endpoints";
+import { API_CONSULTANT, API_USER } from "./endpoints";
 // Updated registerUser function with proper types
 export const registerUser = async (userData) => {
     const resp = await getApiClient().post('auth/register', userData);
@@ -11,6 +11,10 @@ export const loginUser = async (email, password, phone) => {
 };
 export const loginConsultant = async (email, password) => {
     const resp = await getApiClient().post(API_CONSULTANT.login, { email, password });
+    return resp.data;
+};
+export const verifyOtpUser = async (email, otp) => {
+    const resp = await getApiClient().post(API_USER.verify_otp, { email, otp });
     return resp.data;
 };
 // Usage example in the registration screen:

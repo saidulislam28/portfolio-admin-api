@@ -1,7 +1,6 @@
 import { PRIMARY_COLOR } from "@/lib/constants";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_USER, Post } from "@sm/common";
-import { useRouter } from "expo-router";
+import { API_USER, Post, verifyOtpUser } from "@sm/common";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -29,6 +28,7 @@ const VerifyOtpScreen = () => {
 
   const inputs = useRef<TextInput[]>([]);
   const countdownInterval = useRef<NodeJS.Timeout | null>(null);
+  const { email } = useLocalSearchParams()
 
   // Check if OTP is complete
   const isOtpComplete = otp.every((digit) => digit !== "");
@@ -74,26 +74,26 @@ const VerifyOtpScreen = () => {
   const handleVerify = async () => {
     setIsVerifying(true);
 
-    const email = await AsyncStorage.getItem("email");
-
     const otpValue = otp.join("");
     if (!otpValue || otpValue.length < 6) {
       Alert.alert("Error", "Please enter a valid 6-digit OTP");
       setIsVerifying(false);
       return;
     }
+    if (!email) {
+      Alert.alert("Error", "Email not found");
+      setIsVerifying(false);
+      return;
+    }
 
     try {
-      const result = await Post(API_USER.verify_otp, {
-        email,
-        otp: Number(otpValue),
-      });
+      const result = await verifyOtpUser(email, Number(otpValue));
       if (!result.success) {
         Alert.alert("Error", result.error);
         setIsVerifying(false);
         return;
       }
-      login(result?.data?.user);
+      login(result?.data?.user, result?.data?.user?.token);
       router.push(ROUTES.HOME);
     } catch (error: any) {
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
@@ -104,12 +104,9 @@ const VerifyOtpScreen = () => {
   const handleResend = async () => {
     // if (isBlocked || countdown > 0 || resendCount >= 5) return;
 
-    const email = await AsyncStorage.getItem("email");
-    console.log("email", email);
     setIsResending(true);
 
     try {
-      // Mock API call for resend OTP
       const result = await Post(API_USER.RESEND_OTP, { email });
       if (!result.success) {
         Alert.alert("Error", result.error);
@@ -154,7 +151,7 @@ const VerifyOtpScreen = () => {
     >
       <View style={styles.innerContainer}>
         <Text style={styles.title}>Verify Your Email</Text>
-        <Text style={styles.subtitle}>Enter the OTP sent to {tempEmail}</Text>
+        <Text style={styles.subtitle}>Enter the OTP sent to {email}</Text>
 
         <View style={styles.otpContainer}>
           {otp.map((digit, index) => (

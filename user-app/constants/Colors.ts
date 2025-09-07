@@ -37,6 +37,5 @@ export const COLORS = {
   primary: PRIMARY_COLOR,
   bgBlack: "black",
   white: 'white',
-  disabled: 'gray',
-
+  disabled: '#cccccc',
 }

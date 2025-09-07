@@ -1,5 +1,5 @@
 import { getApiClient } from "./apiClient";
-import { API_CONSULTANT } from "./endpoints";
+import { API_CONSULTANT, API_USER } from "./endpoints";
 
 
 
@@ -106,6 +106,15 @@ export const loginConsultant = async (
   password: string,
 ): Promise<LoginConsultantResponse> => {
   const resp = await getApiClient().post(API_CONSULTANT.login, {email, password});
+  return resp.data;
+};
+
+
+export const verifyOtpUser = async (
+  email: string,
+  otp: number,
+): Promise<LoginConsultantResponse> => {
+  const resp = await getApiClient().post(API_USER.verify_otp, {email, otp});
   return resp.data;
 };
 
