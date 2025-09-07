@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, ActivityIndicator, ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAuth } from "./context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { registerForPushNotificationsAsync } from "@/lib/notification";
 import { RECIPIENT_TYPE } from "@/lib/constants";
 import { ROUTES } from "@/constants/app.routes";

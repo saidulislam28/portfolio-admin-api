@@ -1,7 +1,7 @@
 // components/navigation/AppNavigator.tsx
 import React, { useEffect } from "react";
 import { Stack, router } from "expo-router";
-import { useAuth } from "@/app/context/useAuth"; // Adjust import path as needed
+import { useAuth } from "@/context/useAuth"; // Adjust import path as needed
 import { useOnboardingCheck } from "@/hooks/useOnboardingCheck";
 import { LoadingScreen } from "@/app/_layout";
 import { ROUTES } from "@/constants/app.routes";

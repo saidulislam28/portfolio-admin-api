@@ -2,7 +2,7 @@ import { PRIMARY_COLOR } from '@/lib/constants';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { useAuth } from '@/app/context/useAuth';
+import { useAuth } from '@/context/useAuth';
 
 export default function TabLayout() {
   const { user, isLoading } = useAuth();

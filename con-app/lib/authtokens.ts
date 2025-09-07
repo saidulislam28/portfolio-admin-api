@@ -1,4 +1,4 @@
-import { useAuth } from '@/app/context/useAuth';
+import { useAuth } from '@/context/useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const getAuthTokenMobile = async () => {

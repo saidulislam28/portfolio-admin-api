@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useAuth } from '@/app/context/useAuth';
+import { useAuth } from '@/context/useAuth';
 import { PRIMARY_COLOR } from '@/lib/constants';
 import { Platform, StatusBar } from 'react-native';
 import { ROUTES } from '@/constants/app.routes';

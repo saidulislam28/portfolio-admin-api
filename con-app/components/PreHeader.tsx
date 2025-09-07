@@ -1,4 +1,4 @@
-import { useAuth } from '@/app/context/useAuth';
+import { useAuth } from '@/context/useAuth';
 import smLogo from '@/assets/images/smlogo.png';
 import { PRIMARY_COLOR } from '@/lib/constants';
 import { Feather, Ionicons } from '@expo/vector-icons';

@@ -1,4 +1,4 @@
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import PreHeader from "@/components/PreHeader";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { API_CONSULTANT, Get } from "@sm/common";

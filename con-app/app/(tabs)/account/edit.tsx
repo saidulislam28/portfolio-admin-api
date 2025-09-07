@@ -1,4 +1,4 @@
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { useImageUpload } from "@/hooks/useUploadImage";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { Ionicons } from "@expo/vector-icons";

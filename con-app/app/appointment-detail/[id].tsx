@@ -28,7 +28,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "../../context/useAuth";
 import ConsultationNotesCard from "./ConsultantNoteModal";
 import { getStatusColor } from "@/utility/statusColor";
 import { VideoCallButton } from "@/components/appointment-details/video-call-button";
