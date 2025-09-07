@@ -27,7 +27,7 @@ export class PushNotificationProcessor {
     @Inject('UserCacheService') private userCacheService: UserCacheService
   ) {}
 
-  @OnQueueError()
+  // @OnQueueError()
   // onError(err: Error) {
   //   // console.log('Queue error', err);
   // }

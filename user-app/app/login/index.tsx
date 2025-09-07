@@ -21,6 +21,7 @@ import smLogo from "@/assets/images/smlogo.png";
 import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
 import { useSocialAuth } from "@/hooks/useSocialAuth";
+import { BaseButton } from "@/components/BaseButton";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -202,18 +203,22 @@ export default function LoginScreen() {
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
+          <BaseButton title="Login" onPress={handleLogin} disabled={loading} />
+
+
+
           {/* Login Button */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.loginButton, loading && styles.disabledButton]}
             onPress={handleLogin}
             disabled={loading}
           >
-            {loading ? (
+            {/* {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={styles.loginButtonText}>Login</Text>
-            )}
-          </TouchableOpacity>
+            )} 
+            </TouchableOpacity>  */}
 
           {/* Divider */}
           <View style={styles.dividerContainer}>
