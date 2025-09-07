@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,13 +8,14 @@ import {
   Modal,
   FlatList,
   StatusBar,
-  SafeAreaView
-} from 'react-native';
-import { Calendar } from 'react-native-calendars';
-import { Ionicons } from '@expo/vector-icons';
-import { API_CONSULTANT, Get } from '@sm/common';
-import { useRouter } from 'expo-router';
-import { ROUTES } from '@/constants/app.routes';
+  SafeAreaView,
+} from "react-native";
+import { Calendar } from "react-native-calendars";
+import { Ionicons } from "@expo/vector-icons";
+import { API_CONSULTANT, Get } from "@sm/common";
+import { useRouter } from "expo-router";
+import { ROUTES } from "@/constants/app.routes";
+import { BaseButton } from "@/components/BaseButton";
 
 const getTodayDate = () => {
   const today = new Date();
@@ -24,47 +25,45 @@ const getTodayDate = () => {
   return `${year}-${month}-${day}`;
 };
 
-
 const AppointmentManager = () => {
-  const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'timeline'
+  const [viewMode, setViewMode] = useState("calendar"); // 'calendar' or 'timeline'
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [showDayModal, setShowDayModal] = useState(false);
-  const [modalDate, setModalDate] = useState('');
+  const [modalDate, setModalDate] = useState("");
   const [appointmentsData, setappointmentsData] = useState<any>({});
   const router = useRouter();
 
   const fetchAppointment = async () => {
     try {
       const response = await Get(API_CONSULTANT.appointment_calendar);
-      console.log("consultant appointment", response?.data)
-      setappointmentsData(response?.data ?? {})
+      console.log("consultant appointment", response?.data);
+      setappointmentsData(response?.data ?? {});
     } catch (error: any) {
-      console.log("Appointment Fetch Error:", error?.message)
+      console.log("Appointment Fetch Error:", error?.message);
     }
-  }
+  };
 
   useEffect(() => {
-
     fetchAppointment();
-
-  }, [])
+  }, []);
 
   // Prepare marked dates for calendar
   const markedDates = useMemo(() => {
     const marked: any = {};
-    Object.keys(appointmentsData).forEach(date => {
+    Object.keys(appointmentsData).forEach((date) => {
       const count = appointmentsData[date].length;
       marked[date] = {
         marked: true,
-        dotColor: '#4A90E2',
+        dotColor: "#4A90E2",
         customStyles: {
           container: {
-            backgroundColor: count > 3 ? '#FF6B6B' : count > 1 ? '#4ECDC4' : '#95E1D3',
+            backgroundColor:
+              count > 3 ? "#FF6B6B" : count > 1 ? "#4ECDC4" : "#95E1D3",
             borderRadius: 8,
           },
           text: {
-            color: 'white',
-            fontWeight: 'bold',
+            color: "white",
+            fontWeight: "bold",
           },
         },
       };
@@ -73,11 +72,11 @@ const AppointmentManager = () => {
     // Highlight selected date
     if (marked[selectedDate]) {
       marked[selectedDate].selected = true;
-      marked[selectedDate].selectedColor = '#4A90E2';
+      marked[selectedDate].selectedColor = "#4A90E2";
     } else {
       marked[selectedDate] = {
         selected: true,
-        selectedColor: '#4A90E2',
+        selectedColor: "#4A90E2",
       };
     }
 
@@ -86,18 +85,23 @@ const AppointmentManager = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'confirmed': return '#4ECDC4';
-      case 'pending': return '#FFD93D';
-      case 'cancelled': return '#FF6B6B';
-      default: return '#95E1D3';
+      case "confirmed":
+        return "#4ECDC4";
+      case "pending":
+        return "#FFD93D";
+      case "cancelled":
+        return "#FF6B6B";
+      default:
+        return "#95E1D3";
     }
   };
 
   const formatTime = (time) => {
-    const [hour, minute] = time.split(':');
+    const [hour, minute] = time.split(":");
     const hourNum = parseInt(hour);
-    const ampm = hourNum >= 12 ? 'PM' : 'AM';
-    const displayHour = hourNum > 12 ? hourNum - 12 : hourNum === 0 ? 12 : hourNum;
+    const ampm = hourNum >= 12 ? "PM" : "AM";
+    const displayHour =
+      hourNum > 12 ? hourNum - 12 : hourNum === 0 ? 12 : hourNum;
     return `${displayHour}:${minute} ${ampm}`;
   };
 
@@ -106,8 +110,7 @@ const AppointmentManager = () => {
   };
 
   const onDayPress = (day) => {
-
-    console.log("select data", day)
+    console.log("select data", day);
 
     const appointments = getDayAppointments(day.dateString);
     if (appointments.length > 0) {
@@ -122,10 +125,13 @@ const AppointmentManager = () => {
       pathname: ROUTES.APPOINTMENT_DETAIL,
       params: { appointment: JSON.stringify(item) },
     });
-  }
+  };
 
   const renderAppointmentCard = ({ item }: any) => (
-    <TouchableOpacity onPress={() => handlePressAppointment(item)} style={styles.appointmentCard}>
+    <TouchableOpacity
+      onPress={() => handlePressAppointment(item)}
+      style={styles.appointmentCard}
+    >
       <View style={styles.appointmentTime}>
         <Text style={styles.timeText}>{formatTime(item.time)}</Text>
         <Text style={styles.durationText}>{item.duration}min</Text>
@@ -134,7 +140,12 @@ const AppointmentManager = () => {
         <Text style={styles.clientName}>{item.client}</Text>
         <Text style={styles.appointmentType}>{item.type}</Text>
       </View>
-      <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+      <View
+        style={[
+          styles.statusBadge,
+          { backgroundColor: getStatusColor(item.status) },
+        ]}
+      >
         <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
       </View>
     </TouchableOpacity>
@@ -147,17 +158,17 @@ const AppointmentManager = () => {
     return (
       <ScrollView style={styles.timelineContainer}>
         <Text style={styles.dateHeader}>
-          {new Date(selectedDate).toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+          {new Date(selectedDate).toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
           })}
         </Text>
 
-        {hours.map(hour => {
-          const hourAppointments = appointments.filter(apt => {
-            const aptHour = parseInt(apt.time.split(':')[0]);
+        {hours.map((hour) => {
+          const hourAppointments = appointments.filter((apt) => {
+            const aptHour = parseInt(apt.time.split(":")[0]);
             return aptHour === hour;
           });
 
@@ -169,15 +180,27 @@ const AppointmentManager = () => {
                 </Text>
               </View>
               <View style={styles.appointmentSlot}>
-                {hourAppointments.map(apt => (
-                  <TouchableOpacity key={apt.id} style={styles.timelineAppointment}>
+                {hourAppointments.map((apt) => (
+                  <TouchableOpacity
+                    key={apt.id}
+                    style={styles.timelineAppointment}
+                  >
                     <View style={styles.appointmentHeader}>
                       <Text style={styles.timelineClient}>{apt.client}</Text>
-                      <Text style={styles.timelineTime}>{formatTime(apt.time)}</Text>
+                      <Text style={styles.timelineTime}>
+                        {formatTime(apt.time)}
+                      </Text>
                     </View>
                     <Text style={styles.timelineType}>{apt.type}</Text>
-                    <View style={[styles.timelineStatus, { backgroundColor: getStatusColor(apt.status) }]}>
-                      <Text style={styles.timelineStatusText}>{apt.status}</Text>
+                    <View
+                      style={[
+                        styles.timelineStatus,
+                        { backgroundColor: getStatusColor(apt.status) },
+                      ]}
+                    >
+                      <Text style={styles.timelineStatusText}>
+                        {apt.status}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 ))}
@@ -211,20 +234,13 @@ const AppointmentManager = () => {
               Calendar
             </Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={[styles.toggleButton, viewMode === 'timeline' && styles.toggleButtonActive]}
-            onPress={() => setViewMode('timeline')}
-          >
-            <Ionicons name="time" size={20} color={viewMode === 'timeline' ? '#fff' : '#4A90E2'} />
-            <Text style={[styles.toggleText, viewMode === 'timeline' && styles.toggleTextActive]}>
-              Timeline
-            </Text>
-          </TouchableOpacity> */}
+          
+        
         </View>
       </View>
 
       {/* Main Content */}
-      {viewMode === 'calendar' ? (
+      {viewMode === "calendar" ? (
         <ScrollView style={styles.content}>
           <Calendar
             style={styles.calendar}
@@ -233,14 +249,14 @@ const AppointmentManager = () => {
             markedDates={markedDates}
             markingType="custom"
             theme={{
-              backgroundColor: '#ffffff',
-              calendarBackground: '#ffffff',
-              textSectionTitleColor: '#2d4150',
-              dayTextColor: '#2d4150',
-              todayTextColor: '#4A90E2',
-              selectedDayTextColor: '#ffffff',
-              monthTextColor: '#2d4150',
-              arrowColor: '#4A90E2',
+              backgroundColor: "#ffffff",
+              calendarBackground: "#ffffff",
+              textSectionTitleColor: "#2d4150",
+              dayTextColor: "#2d4150",
+              todayTextColor: "#4A90E2",
+              selectedDayTextColor: "#ffffff",
+              monthTextColor: "#2d4150",
+              arrowColor: "#4A90E2",
               textDayFontSize: 16,
               textMonthFontSize: 18,
               textDayHeaderFontSize: 14,
@@ -251,15 +267,21 @@ const AppointmentManager = () => {
             <Text style={styles.legendTitle}>Appointment Load</Text>
             <View style={styles.legendItems}>
               <View style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: '#95E1D3' }]} />
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#95E1D3" }]}
+                />
                 <Text style={styles.legendText}>Light (1)</Text>
               </View>
               <View style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: '#4ECDC4' }]} />
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#4ECDC4" }]}
+                />
                 <Text style={styles.legendText}>Moderate (2-3)</Text>
               </View>
               <View style={styles.legendItem}>
-                <View style={[styles.legendDot, { backgroundColor: '#FF6B6B' }]} />
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#FF6B6B" }]}
+                />
                 <Text style={styles.legendText}>Heavy (4+)</Text>
               </View>
             </View>
@@ -268,17 +290,22 @@ const AppointmentManager = () => {
           {/* Today's Appointments Preview */}
           <View style={styles.todayPreview}>
             <Text style={styles.previewTitle}>
-              {selectedDate === new Date().toISOString().split('T')[0] ? 'Today\'s' : 'Selected Day\'s'} Appointments
+              {selectedDate === new Date().toISOString().split("T")[0]
+                ? "Today's"
+                : "Selected Day's"}{" "}
+              Appointments
             </Text>
             <FlatList
               data={getDayAppointments(selectedDate)}
               renderItem={renderAppointmentCard}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={
                 <View style={styles.emptyState}>
                   <Ionicons name="calendar-outline" size={48} color="#B0BEC5" />
-                  <Text style={styles.emptyStateText}>No appointments scheduled</Text>
+                  <Text style={styles.emptyStateText}>
+                    No appointments scheduled
+                  </Text>
                 </View>
               }
             />
@@ -298,11 +325,11 @@ const AppointmentManager = () => {
         <SafeAreaView style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>
-              {new Date(modalDate).toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+              {new Date(modalDate).toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </Text>
             <TouchableOpacity onPress={() => setShowDayModal(false)}>
@@ -312,7 +339,7 @@ const AppointmentManager = () => {
           <FlatList
             data={getDayAppointments(modalDate)}
             renderItem={renderAppointmentCard}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
             contentContainerStyle={styles.modalList}
           />
         </SafeAreaView>
@@ -324,47 +351,47 @@ const AppointmentManager = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFB',
+    backgroundColor: "#F8FAFB",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 24,
     paddingVertical: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E8ED',
+    borderBottomColor: "#E1E8ED",
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: '700',
-    color: '#1A202C',
+    fontWeight: "700",
+    color: "#1A202C",
   },
   viewToggle: {
-    flexDirection: 'row',
-    backgroundColor: '#F7FAFC',
+    flexDirection: "row",
+    backgroundColor: "#F7FAFC",
     borderRadius: 8,
     padding: 4,
   },
   toggleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,
     gap: 8,
   },
   toggleButtonActive: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: "#4A90E2",
   },
   toggleText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#4A90E2',
+    fontWeight: "600",
+    color: "#4A90E2",
   },
   toggleTextActive: {
-    color: '#fff',
+    color: "#fff",
   },
   content: {
     flex: 1,
@@ -373,7 +400,7 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 12,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -381,27 +408,27 @@ const styles = StyleSheet.create({
   legendContainer: {
     margin: 16,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
   },
   legendTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1A202C',
+    fontWeight: "600",
+    color: "#1A202C",
     marginBottom: 12,
   },
   legendItems: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   legendDot: {
@@ -411,45 +438,45 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 14,
-    color: '#4A5568',
+    color: "#4A5568",
   },
   todayPreview: {
     margin: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
   },
   previewTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1A202C',
+    fontWeight: "600",
+    color: "#1A202C",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E8ED',
+    borderBottomColor: "#E1E8ED",
   },
   appointmentCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: "#F1F5F9",
   },
   appointmentTime: {
     width: 80,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   timeText: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#1A202C',
+    fontWeight: "700",
+    color: "#1A202C",
   },
   durationText: {
     fontSize: 12,
-    color: '#718096',
+    color: "#718096",
     marginTop: 2,
   },
   appointmentDetails: {
@@ -458,12 +485,12 @@ const styles = StyleSheet.create({
   },
   clientName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1A202C',
+    fontWeight: "600",
+    color: "#1A202C",
   },
   appointmentType: {
     fontSize: 14,
-    color: '#4A5568',
+    color: "#4A5568",
     marginTop: 2,
   },
   statusBadge: {
@@ -471,21 +498,21 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
     minWidth: 80,
-    alignItems: 'center',
+    alignItems: "center",
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#fff',
+    fontWeight: "700",
+    color: "#fff",
   },
   emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 48,
   },
   emptyStateText: {
     fontSize: 16,
-    color: '#718096',
+    color: "#718096",
     marginTop: 12,
   },
   timelineContainer: {
@@ -494,106 +521,106 @@ const styles = StyleSheet.create({
   },
   dateHeader: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#1A202C',
+    fontWeight: "700",
+    color: "#1A202C",
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   timeSlot: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 16,
     minHeight: 80,
   },
   timeLabel: {
     width: 100,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     paddingRight: 16,
     paddingTop: 8,
   },
   timeLabelText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#4A5568',
+    fontWeight: "600",
+    color: "#4A5568",
   },
   appointmentSlot: {
     flex: 1,
     borderLeftWidth: 2,
-    borderLeftColor: '#E1E8ED',
+    borderLeftColor: "#E1E8ED",
     paddingLeft: 16,
   },
   timelineAppointment: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 12,
     marginBottom: 8,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
   },
   appointmentHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   timelineClient: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#1A202C',
+    fontWeight: "600",
+    color: "#1A202C",
   },
   timelineTime: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#4A90E2',
+    fontWeight: "600",
+    color: "#4A90E2",
   },
   timelineType: {
     fontSize: 14,
-    color: '#4A5568',
+    color: "#4A5568",
     marginBottom: 8,
   },
   timelineStatus: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
   },
   timelineStatusText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#fff',
+    fontWeight: "600",
+    color: "#fff",
   },
   emptySlot: {
     padding: 16,
     borderRadius: 8,
-    backgroundColor: '#F7FAFC',
-    borderStyle: 'dashed',
+    backgroundColor: "#F7FAFC",
+    borderStyle: "dashed",
     borderWidth: 1,
-    borderColor: '#CBD5E0',
+    borderColor: "#CBD5E0",
   },
   emptySlotText: {
     fontSize: 14,
-    color: '#A0AEC0',
-    textAlign: 'center',
+    color: "#A0AEC0",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#F8FAFB',
+    backgroundColor: "#F8FAFB",
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 24,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E8ED',
+    borderBottomColor: "#E1E8ED",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#1A202C',
+    fontWeight: "700",
+    color: "#1A202C",
   },
   modalList: {
     padding: 16,

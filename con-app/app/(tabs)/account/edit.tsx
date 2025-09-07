@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import { useAuth } from "@/context/useAuth";
 import { useImageUpload } from "@/hooks/useUploadImage";
 import { PRIMARY_COLOR } from "@/lib/constants";
@@ -229,7 +230,7 @@ const EditProfileScreen = () => {
             left={<TextInput.Icon icon="phone" />}
           />
 
-          <Button
+          {/* <Button
             mode="contained"
             onPress={saveProfile}
             style={styles.saveButton}
@@ -237,7 +238,8 @@ const EditProfileScreen = () => {
             disabled={saving || isUploadingImage}
           >
             {saving ? <ActivityIndicator color="white" /> : "Save Changes"}
-          </Button>
+          </Button> */}
+          <BaseButton title="Save Changes" onPress={saveProfile} disabled={saving || isUploadingImage} />
         </Card.Content>
       </Card>
     </View>

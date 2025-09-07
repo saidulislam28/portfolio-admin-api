@@ -1,6 +1,7 @@
 import ConsultationNotesCard from "@/components/appointment-details/ConsultantNoteModal";
 import StatusModal from "@/components/appointment-details/statusModal";
 import { VideoCallButton } from "@/components/appointment-details/video-call-button";
+import { BaseButton } from "@/components/BaseButton";
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
 import {
@@ -683,7 +684,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               startVideoCall={startVideoCall}
             />
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[
                 styles.feedbackButton,
                 { height: BUTTON_HEIGHT },
@@ -718,7 +719,19 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               >
                 Provide Feedback
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+            <BaseButton
+              title="Provide Feedback"
+              onPress={handleSubmitFeedback}
+              disabled={
+                !!(
+                  appointment?.MockTestFeedback ||
+                  appointment?.ConversationFeedback
+                )
+              }
+              variant="outline"
+            />
           </View>
         )}
       </ScrollView>
