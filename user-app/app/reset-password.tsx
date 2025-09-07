@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "./context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
 
 export default function ResetPasswordScreen() {

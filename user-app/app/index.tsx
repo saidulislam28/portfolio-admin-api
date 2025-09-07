@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ToastAndroid, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import "react-native-reanimated";
 import { ROUTES } from "@/constants/app.routes";
 

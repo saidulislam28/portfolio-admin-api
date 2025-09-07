@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
 import { API_USER, Post } from "@sm/common";
 

@@ -5,7 +5,7 @@ import * as Facebook from "expo-auth-session/providers/facebook";
 import * as WebBrowser from "expo-web-browser";
 import { Alert } from 'react-native';
 import { useRouter } from "expo-router";
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { ROUTES } from '@/constants/app.routes';
 
 // Complete the auth session for web browsers

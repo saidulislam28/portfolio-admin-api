@@ -20,7 +20,7 @@ import {
   View,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { API_USER, Post, uploadImageFromApp } from "@sm/common";
 
 // Add this API endpoint constant at the top with your other endpoints

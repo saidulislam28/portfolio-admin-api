@@ -1,4 +1,4 @@
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import CommonHeader from "@/components/CommonHeader";
 import { useImageUpload } from "@/hooks/useUploadImage";
 import { PRIMARY_COLOR } from "@/lib/constants";

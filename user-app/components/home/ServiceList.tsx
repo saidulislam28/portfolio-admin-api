@@ -1,4 +1,4 @@
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { PACKAGE_SERVICE_TYPE } from "@/lib/constants";
 import { useRouter } from "expo-router";
 import React from "react";

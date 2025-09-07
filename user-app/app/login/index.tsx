@@ -18,7 +18,7 @@ import {
   View,
 } from "react-native";
 import smLogo from "@/assets/images/smlogo.png";
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
 import { useSocialAuth } from "@/hooks/useSocialAuth";
 

@@ -3,7 +3,7 @@ import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Image } from "react-native";
 
-import { useAuth } from "@/app/context/useAuth";
+import { useAuth } from "@/context/useAuth";
 import smLogo from "@/assets/images/smlogo.png";
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";

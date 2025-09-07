@@ -1,6 +1,6 @@
 import CommonHeader from '@/components/CommonHeader';
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
-import { useAuth } from '@/app/context/useAuth';
+import { useAuth } from '@/context/useAuth';
 import { API_USER, Post } from '@sm/common';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';

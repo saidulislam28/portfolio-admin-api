@@ -1,4 +1,4 @@
-import { useAuth } from '@/app/context/useAuth';
+import { useAuth } from '@/context/useAuth';
 import CommonHeader from '@/components/CommonHeader';
 import PaymentSummary from '@/components/packages/PaymentSummary';
 import { BLACK, DARK_GRAY, LIGHT_GRAY, PRIMARY_COLOR, WHITE } from '@/lib/constants';

@@ -4,7 +4,7 @@ import { PRIMARY_COLOR } from "@/lib/constants";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { AuthProvider } from "./context/useAuth";
+import { AuthProvider } from "@/context/useAuth";
 import IncomingCallScreen from "@/components/IncomingCallScreen";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Platform } from "react-native";
