@@ -1,7 +1,5 @@
 import CommonHeader from "@/components/CommonHeader";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
-// import { Post } from "@/services/api/api";
-import { API_CREATE_OREDR } from "@/services/api/endpoints";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {

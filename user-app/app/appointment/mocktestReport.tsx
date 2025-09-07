@@ -1,6 +1,4 @@
 import CommonHeader from "@/components/CommonHeader";
-// import { GetOne } from "@/services/api/api";
-import { API_GET_APPOINTMENTS } from "@/services/api/endpoints";
 import { API_USER, GetOne } from "@sm/common";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";

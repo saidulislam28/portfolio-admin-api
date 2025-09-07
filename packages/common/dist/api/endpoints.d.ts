@@ -18,6 +18,7 @@ export declare const API_CONSULTANT: {
 };
 export declare const API_COMMON: {
     post_device_tokens: string;
+    API_UPLOAD_IMAGE: string;
 };
 export declare const API_USER: {
     user_registration: string;

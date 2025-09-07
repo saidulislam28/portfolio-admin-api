@@ -1,9 +1,7 @@
 import CommonHeader from "@/components/CommonHeader";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
-import { API_CREATE_OREDR, API_UPLOAD_IMAGE } from "@/services/api/endpoints";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";

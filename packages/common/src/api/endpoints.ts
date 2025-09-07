@@ -19,7 +19,8 @@ export const API_CONSULTANT = {
 
 export const API_COMMON = {
   post_device_tokens: "user/device-tokens",
-};
+  API_UPLOAD_IMAGE: "/attachments/upload-image",
+}
 
 export const API_USER = {
   user_registration: "auth/register",

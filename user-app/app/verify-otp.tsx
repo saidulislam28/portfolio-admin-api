@@ -1,6 +1,4 @@
 import { PRIMARY_COLOR } from "@/lib/constants";
-// import { Post } from "@/services/api/api";
-import { RESEND_OTP } from "@/services/api/endpoints";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_USER, Post } from "@sm/common";
 import { useRouter } from "expo-router";

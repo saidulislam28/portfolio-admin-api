@@ -17,7 +17,6 @@ import { getAuthTokenMobile } from "@/lib/authToken";
 import { QueryProvider } from "@/providers/QueryProvider";
 
 import Constants from "expo-constants";
-import { baseUrl } from "@/services/api/endpoints";
 
 const config: SmPackageConfig = {
   baseUrl: Constants.expoConfig?.extra?.apiBaseUrl || "",
@@ -32,9 +31,7 @@ export default function HomeLayout() {
     "url base api??????>>>>>",
     Constants.expoConfig?.extra?.apiBaseUrl
   );
-  console.log(
-    "url endpoints api??????>>>>>", baseUrl
-  );
+
 
   return (
     <SafeAreaProvider>

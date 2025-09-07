@@ -1,23 +1,20 @@
 import CommonHeader from "@/components/CommonHeader";
+import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
-// import { Post } from "@/services/api/api";
-import { API_CREATE_OREDR } from "@/services/api/endpoints";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { API_USER, Post } from "@sm/common";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Linking,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { useAuth } from "@/context/useAuth";
-import { ROUTES } from "@/constants/app.routes";
-import { API_USER, Post } from "@sm/common";
 
 const ExamRegistrationFrom = () => {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import { Post } from "@/services/api/api";
+import { Post } from "@sm/common";
 
 interface TokenResponse {
   token: string;

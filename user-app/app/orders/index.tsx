@@ -2,7 +2,6 @@ import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { Book } from "@/lib/data";
-import { BOOK_ORDER } from "@/services/api/endpoints";
 import { API_USER, Get } from "@sm/common";
 import { Stack, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";

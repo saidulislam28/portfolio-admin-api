@@ -1,7 +1,7 @@
 // hooks/useImageUpload.ts
 import { useState } from 'react';
 import Constants from 'expo-constants';
-import { API_UPLOAD_IMAGE } from '@/services/api/endpoints';
+import { API_COMMON } from '@sm/common';
 
 interface UploadImageOptions {
     token?: string;
@@ -34,7 +34,7 @@ export const useImageUpload = () => {
 
             const baseURL = Constants.expoConfig?.extra?.apiBaseUrl;
             // const API_UPLOAD_IMAGE = "/api/upload/image"; // Adjust this to your endpoint
-            const fullURL = `${baseURL}${API_UPLOAD_IMAGE}`;
+            const fullURL = `${baseURL}${API_COMMON.API_UPLOAD_IMAGE}`;
 
             console.log("full url for upload image", fullURL)
 

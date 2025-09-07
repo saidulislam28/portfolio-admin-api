@@ -1,6 +1,5 @@
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";
-// import { Post } from "@/services/api/api";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_USER, Post } from "@sm/common";

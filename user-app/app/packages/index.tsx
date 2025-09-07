@@ -10,8 +10,6 @@ import {
   PRIMARY_COLOR,
   WHITE,
 } from "@/lib/constants";
-// import { Get } from "@/services/api/api";
-import { API_GET_PACKAGES } from "@/services/api/endpoints";
 import { mockUser } from "@/services/mockDataService";
 import { API_USER, Get } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";

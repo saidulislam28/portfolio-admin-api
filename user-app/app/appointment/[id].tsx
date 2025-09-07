@@ -6,7 +6,6 @@ import {
   SECONDARY_COLOR,
 } from "@/lib/constants";
 import { callService } from "@/services/AgoraCallService";
-// import { GetOne } from "@/services/api/api";
 import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
 import { notificationService } from "@/services/NotificationService";

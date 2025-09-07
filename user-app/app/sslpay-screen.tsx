@@ -1,21 +1,10 @@
 import { ROUTES } from "@/constants/app.routes";
 import { PAYMENT_REDIRECT_URI } from "@/lib/constants";
-// import { Post } from '@/services/api/api';
 import { Ionicons } from "@expo/vector-icons";
-// import { API_USER, Post } from "@sm/common";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
 import { WebView } from "react-native-webview";
-
-// type paymentSuccessType = {
-//   canGoBack: boolean;
-//   canGoForward: boolean;
-//   loading: boolean;
-//   target: number;
-//   title: string;
-//   url: string;
-// };
 
 const SslcommerzPaymentScreen = () => {
   const router = useRouter();

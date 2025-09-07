@@ -2,8 +2,6 @@ import CommonHeader from '@/components/CommonHeader';
 import CarouselComponent from '@/components/StaticCarousel';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import { PRIMARY_COLOR } from '@/lib/constants';
-// import { Get } from '@/services/api/api';
-import { APP_SETTINGS_DATA } from '@/services/api/endpoints';
 import { API_USER, Get } from '@sm/common';
 import { Link, Stack } from 'expo-router';
 import { useEffect, useState } from 'react';

@@ -2,8 +2,6 @@ import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { useCart } from "@/hooks/useCart";
 import { PRIMARY_COLOR } from "@/lib/constants";
-// import { GetOne } from "@/services/api/api";
-import { API_GET_BOOKS } from "@/services/api/endpoints";
 import { API_USER, GetOne } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";

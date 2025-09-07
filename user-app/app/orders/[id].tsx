@@ -1,8 +1,6 @@
 // app/orders/[id].tsx
 import CommonHeader from '@/components/CommonHeader';
 import { PRIMARY_COLOR } from '@/lib/constants';
-// import { GetOne } from '@/services/api/api';
-import { BOOK_ORDER } from '@/services/api/endpoints';
 import { API_USER, GetOne } from '@sm/common';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';

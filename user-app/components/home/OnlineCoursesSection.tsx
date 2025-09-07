@@ -1,7 +1,5 @@
 import { ROUTES } from '@/constants/app.routes';
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
-// import { Get } from '@/services/api/api';
-import { API_GET_PACKAGES } from '@/services/api/endpoints';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { API_USER, Get } from '@sm/common';
 import { useRouter } from 'expo-router';
