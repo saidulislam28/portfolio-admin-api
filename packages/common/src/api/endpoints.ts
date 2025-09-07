@@ -2,6 +2,7 @@ export const API_CONSULTANT = {
   regisetr: "consultant-auth/register",
   verifyOtp: "consultant-auth/verify-otp",
   login: "consultant-auth/login",
+  auth: "consultant-auth",
   forget: "consultant-auth/forget-password",
   reset: "consultant-auth/reset-password",
   get_live_appointments: "consultant/live/appointments",

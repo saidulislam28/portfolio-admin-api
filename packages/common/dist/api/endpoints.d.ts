@@ -2,6 +2,7 @@ export declare const API_CONSULTANT: {
     regisetr: string;
     verifyOtp: string;
     login: string;
+    auth: string;
     forget: string;
     reset: string;
     get_live_appointments: string;

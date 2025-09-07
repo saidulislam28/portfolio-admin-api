@@ -2,7 +2,7 @@ import { useAuth } from "@/app/context/useAuth";
 import { useImageUpload } from "@/hooks/useUploadImage";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { Ionicons } from "@expo/vector-icons";
-import { Patch } from "@sm/common";
+import { API_CONSULTANT, Patch } from "@sm/common";
 import { updateCurrentUserProfile } from "@sm/common/src/api/userProfile";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -121,7 +121,7 @@ const EditProfileScreen = () => {
       console.log("Sending update data:", updateProfileData);
 
       // Make API call
-      const response = await Patch(`consultant-auth/${user?.id}`, updateProfileData);
+      const response = await Patch(`${API_CONSULTANT.auth}/${user?.id}`, updateProfileData);
 
       // const responseData = await response.json();
 
