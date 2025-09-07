@@ -3,18 +3,20 @@ import { Module } from '@nestjs/common';
 import { EmailModule } from 'src/email/email.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthModule } from 'src/user/auth.module';
 
+import { AppointmentsCalendarController } from './controllers/appointment-calendar.controller';
 import { ConsultantAuthController } from './controllers/consaltantAuth.controller';
 import { ConsultantController } from './controllers/consultant.controller';
+import { ConsultantAppointmentsController } from './controllers/consultant-appointments.controller';
 import { ConversationfeedbackController } from './controllers/conversation-feedback.controller';
 import { MockTestFeedbackController } from './controllers/mock-test.controller';
+import { AppointmentCalendarService } from './services/appointment-calendar.service';
 import { ConsultantAuthService } from './services/consaltantAuth.service';
 import { ConsultantService } from './services/consultant.service';
+import { ConsultantAppointmentsService } from './services/consultant-appointments.service';
 import { ConversationFeedbackService } from './services/conversation-feedback.service';
 import { MockTestFeedbackService } from './services/mock-test.service';
-import { AuthModule } from 'src/user/auth.module';
-import { ConsultantAppointmentsController } from './controllers/consultant-appointments.controller';
-import { ConsultantAppointmentsService } from './services/consultant-appointments.service';
 
 @Module({
   imports: [
@@ -27,7 +29,8 @@ import { ConsultantAppointmentsService } from './services/consultant-appointment
     MockTestFeedbackController, 
     ConsultantController, 
     ConsultantAuthController,
-    ConsultantAppointmentsController
+    ConsultantAppointmentsController,
+    AppointmentsCalendarController
   ],
   providers: [
     ConversationFeedbackService,
@@ -35,7 +38,8 @@ import { ConsultantAppointmentsService } from './services/consultant-appointment
     MockTestFeedbackService,
     ConsultantService,
     ConsultantAuthService,
-    ConsultantAppointmentsService
+    ConsultantAppointmentsService,
+    AppointmentCalendarService
   ],
   exports: [ConsultantAuthService]
 

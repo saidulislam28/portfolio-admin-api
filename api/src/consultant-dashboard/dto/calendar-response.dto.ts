@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsDateString, IsOptional } from 'class-validator';
 
 export class AppointmentDto {
   @ApiProperty({ example: 1 })
@@ -68,4 +69,15 @@ export class GetAppointmentsResponseDto {
 
   @ApiProperty({ example: 'Appointments retrieved successfully' })
   message: string;
+}
+
+export class GetAppointmentsQueryDto {
+  @ApiPropertyOptional({
+    description: 'Filter appointments by specific date (YYYY-MM-DD format)',
+    example: '2025-08-25',
+    type: String,
+  })
+  @IsOptional()
+  @IsDateString()
+  date?: string;
 }

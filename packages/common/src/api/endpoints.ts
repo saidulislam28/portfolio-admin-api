@@ -7,6 +7,7 @@ export const API_CONSULTANT = {
   get_live_appointments: "consultant/live/appointments",
   get_appointments: "consultant/appointment/list",
   appointment_details: "consultant/appointment-detail/{id}",
+  appointment_calendar: "consultant/appointment/calendar",
   update_appointment: "consultant/appointment",
   update_note: 'consultant/appointment/note',
   feedback_comments: 'feedback-comments',

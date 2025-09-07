@@ -7,6 +7,7 @@ export declare const API_CONSULTANT: {
     get_live_appointments: string;
     get_appointments: string;
     appointment_details: string;
+    appointment_calendar: string;
     update_appointment: string;
     update_note: string;
     feedback_comments: string;

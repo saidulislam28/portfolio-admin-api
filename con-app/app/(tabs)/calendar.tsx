@@ -35,7 +35,7 @@ const AppointmentManager = () => {
 
   const fetchAppointment = async () => {
     try {
-      const response = await Get(API_CONSULTANT.appointment);
+      const response = await Get(API_CONSULTANT.appointment_calendar);
       console.log("consultant appointment", response?.data)
       setappointmentsData(response?.data ?? {})
     } catch (error: any) {
