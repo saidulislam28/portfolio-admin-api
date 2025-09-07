@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import BookingSummary from "@/components/packages/BookingSummary";
 import DateSelector from "@/components/packages/DateSelector";
@@ -82,11 +83,11 @@ export default function DateTimeScreen() {
         prev.map((dateObj) =>
           dateObj.date === date
             ? {
-                ...dateObj,
-                slots: dateObj.slots.map((s) =>
-                  s.id === slot.id ? { ...s, is_booked: false } : s
-                ),
-              }
+              ...dateObj,
+              slots: dateObj.slots.map((s) =>
+                s.id === slot.id ? { ...s, is_booked: false } : s
+              ),
+            }
             : dateObj
         )
       );
@@ -106,8 +107,7 @@ export default function DateTimeScreen() {
     if (selectedSlots.length >= packageData.sessions) {
       Alert.alert(
         "Session Limit Reached",
-        `You can only select ${packageData.sessions} time slot${
-          packageData.sessions > 1 ? "s" : ""
+        `You can only select ${packageData.sessions} time slot${packageData.sessions > 1 ? "s" : ""
         } for this package.`
       );
       return;
@@ -137,11 +137,11 @@ export default function DateTimeScreen() {
           prev.map((dateObj) =>
             dateObj.date === date
               ? {
-                  ...dateObj,
-                  slots: dateObj.slots.map((s) =>
-                    s.id === slot.id ? { ...s, is_booked: true } : s
-                  ),
-                }
+                ...dateObj,
+                slots: dateObj.slots.map((s) =>
+                  s.id === slot.id ? { ...s, is_booked: true } : s
+                ),
+              }
               : dateObj
           )
         );
@@ -166,8 +166,7 @@ export default function DateTimeScreen() {
     if (selectedSlots.length !== packageData.sessions) {
       Alert.alert(
         "Incomplete Selection",
-        `Please select ${packageData.sessions} time slot${
-          packageData.sessions > 1 ? "s" : ""
+        `Please select ${packageData.sessions} time slot${packageData.sessions > 1 ? "s" : ""
         } to continue.`
       );
       return;
@@ -265,7 +264,7 @@ export default function DateTimeScreen() {
           </View>
         </View>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[
             styles.continueButton,
             {
@@ -282,7 +281,10 @@ export default function DateTimeScreen() {
             Continue to Payment ({selectedSlots.length}/{packageData.sessions}{" "}
             selected)
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+        <BaseButton title={` Continue to Payment (${selectedSlots.length}/${packageData.sessions}${" "}
+            selected)`} onPress={handleContinue} disabled={selectedSlots.length !== packageData.sessions} />
       </View>
     </View>
   );

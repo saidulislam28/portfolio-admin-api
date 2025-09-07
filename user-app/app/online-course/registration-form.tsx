@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useAuth } from "@/context/useAuth";
 import { API_USER, Post } from "@sm/common";
+import { BaseButton } from "@/components/BaseButton";
 
 const devFormData = {
   first_name: "John",
@@ -57,17 +58,17 @@ const ExamRegistrationFrom = () => {
     __DEV__
       ? devFormData
       : {
-          first_name: "",
-          last_name: "",
-          address: "",
-          email: "",
-          phone: "",
-          passportFile: null,
-          gender: "",
-          whatsapp_number: "",
-          emergency_contact_name: "",
-          emergency_contact: "",
-        }
+        first_name: "",
+        last_name: "",
+        address: "",
+        email: "",
+        phone: "",
+        passportFile: null,
+        gender: "",
+        whatsapp_number: "",
+        emergency_contact_name: "",
+        emergency_contact: "",
+      }
   );
 
   const validateForm = () => {
@@ -302,13 +303,14 @@ const ExamRegistrationFrom = () => {
         </Text>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.submitButton, isSubmitting && styles.disabledButton]}
           onPress={handleSubmit}
           // disabled={isSubmitting}
         >
           <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <BaseButton title="Submit" onPress={handleSubmit} disabled={isSubmitting} />
       </View>
     </View>
   );

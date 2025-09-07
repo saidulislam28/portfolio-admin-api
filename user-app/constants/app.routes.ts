@@ -30,5 +30,8 @@ export const ROUTES = {
   ONLINE_COURSE: "/online-course",
   STUDY_ABROAD: "/study-abroad",
   CALL: "/call",
-  MY_APPOINTMENT: '(tabs)/mybookings'
+  MY_APPOINTMENT: '(tabs)/mybookings',
+  EXAM_PACKAGES: '/exam/packages',
+  ONLINE_COURSE_PACKAGES: '/online-course/packages',
+  STUDY_ABROAD_REGISTRATION: '/study-abroad/registration-form',
 };

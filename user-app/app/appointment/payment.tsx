@@ -19,6 +19,7 @@ import {
   FlatList
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { BaseButton } from '@/components/BaseButton';
 
 interface Coupon {
   id: number;
@@ -242,6 +243,16 @@ export default function PaymentScreen() {
       <CommonHeader text='Payment details' />
 
       {/* Coupon Section */}
+
+
+      {/* Payment Summary */}
+      <PaymentSummary
+        packageData={packageData}
+        selectedSlots={selectedSlots}
+        totals={totals}
+        discountAmount={discountAmount}
+      />
+
       <View style={styles.couponSection}>
         <Text style={styles.sectionTitle}>Apply Coupon</Text>
 
@@ -268,17 +279,9 @@ export default function PaymentScreen() {
         )}
       </View>
 
-      {/* Payment Summary */}
-      <PaymentSummary
-        packageData={packageData}
-        selectedSlots={selectedSlots}
-        totals={totals}
-        discountAmount={discountAmount}
-      />
-
       {/* Payment Button */}
       <View style={styles.paymentButtonContainer}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.paymentButton, processing && styles.paymentButtonDisabled]}
           onPress={handlePayment}
           disabled={processing}
@@ -290,11 +293,12 @@ export default function PaymentScreen() {
             </View>
           ) : (
             <Text style={styles.paymentButtonText}>
-              {/* Pay BDT {totals.total.toLocaleString()} */}
+              
               Proceed
             </Text>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+          <BaseButton title="Proceed" onPress={handlePayment} disabled={processing} />
 
         <Text style={styles.secureText}>
           🔒 Your payment is secured with 256-bit SSL encryption

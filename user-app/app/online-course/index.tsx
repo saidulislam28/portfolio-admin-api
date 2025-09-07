@@ -1,9 +1,11 @@
+import { BaseButton } from '@/components/BaseButton';
 import CommonHeader from '@/components/CommonHeader';
 import CarouselComponent from '@/components/StaticCarousel';
+import { ROUTES } from '@/constants/app.routes';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import { PRIMARY_COLOR } from '@/lib/constants';
 import { API_USER, Get } from '@sm/common';
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import RenderHTML from 'react-native-render-html';
@@ -18,6 +20,7 @@ interface Content {
 export default function RegistrationLanding() {
     const [content, setContent] = useState<Content>();
     const { width } = useWindowDimensions();
+    const router = useRouter();
     useEffect(() => {
         const fetchContent = async () => {
             try {
@@ -56,7 +59,7 @@ export default function RegistrationLanding() {
                 />
             </ScrollView >
             <View style={styles.stickyButtonContainer}>
-                <Link href="/online-course/packages" asChild>
+                {/* <Link href="/online-course/packages" asChild>
                     <TouchableOpacity
                         style={{
                             backgroundColor: PRIMARY_COLOR,
@@ -65,9 +68,11 @@ export default function RegistrationLanding() {
                             alignItems: 'center'
                         }}
                     >
-                        <Text style={{ color: 'white', fontSize: 18 }}>Continue</Text>
+                        <Text style={{ color: 'white', fontSize: 18 }}>Continue.</Text>
                     </TouchableOpacity>
-                </Link>
+                </Link> */}
+
+                <BaseButton title="Continue" onPress={() => router.push(ROUTES.ONLINE_COURSE_PACKAGES as any)} disabled={false} />
             </View>
         </View>
     );

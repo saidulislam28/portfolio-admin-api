@@ -1,14 +1,16 @@
+import { BaseButton } from '@/components/BaseButton';
 import CommonHeader from '@/components/CommonHeader';
 import CarouselComponent from '@/components/StaticCarousel';
+import { ROUTES } from '@/constants/app.routes';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import { PRIMARY_COLOR } from '@/lib/constants';
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 
 export default function RegistrationLanding() {
     const { width } = useWindowDimensions();
-
+    const router = useRouter();
     const { data: appSettingsData, isLoading, error } = useAppSettings();
     const content = appSettingsData?.study_abroad;
 
@@ -49,7 +51,7 @@ export default function RegistrationLanding() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-              
+
                 <CarouselComponent content={content} />
 
                 <View style={styles.htmlContainer}>
@@ -62,11 +64,9 @@ export default function RegistrationLanding() {
 
             {/* Sticky bottom button */}
             <View style={styles.stickyButtonContainer}>
-                <Link href="/study-abroad/registration-form" asChild>
-                    <TouchableOpacity style={styles.continueButton}>
-                        <Text style={styles.continueButtonText}>Continue</Text>
-                    </TouchableOpacity>
-                </Link>
+                
+
+                <BaseButton title="Continue" onPress={() => router.push(ROUTES.STUDY_ABROAD_REGISTRATION as any)} disabled={false} />
             </View>
         </View>
     );

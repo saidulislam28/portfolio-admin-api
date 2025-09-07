@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import CustomPackageModal from "@/components/packages/CustomPackageModal";
 import PackageCard from "@/components/packages/PackageCard";
@@ -169,7 +170,7 @@ export default function PackagesScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[
             styles.continueButton,
             { backgroundColor: selectedPackage ? PRIMARY_COLOR : DARK_GRAY },
@@ -177,8 +178,10 @@ export default function PackagesScreen() {
           onPress={handleContinue}
           disabled={!selectedPackage}
         >
-          <Text style={styles.continueButtonText}>Continue</Text>
-        </TouchableOpacity>
+          <Text style={styles.continueButtonText}>Continue..</Text>
+        </TouchableOpacity> */}
+
+        <BaseButton title="Continue" onPress={handleContinue} disabled={!selectedPackage} />
       </View>
 
       <CustomPackageModal

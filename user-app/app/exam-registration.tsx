@@ -1,7 +1,9 @@
+import { BaseButton } from '@/components/BaseButton';
 import CommonHeader from '@/components/CommonHeader';
+import { ROUTES } from '@/constants/app.routes';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import { PRIMARY_COLOR } from '@/lib/constants';
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 
@@ -15,7 +17,7 @@ interface Content {
 export default function RegistrationLanding() {
     const { width } = useWindowDimensions();
     const { data: appSettingsData, isLoading, error } = useAppSettings();
-
+    const router = useRouter();
     // console.log("appsetting exam", appSettingsData)
 
     if (isLoading) {
@@ -54,11 +56,12 @@ export default function RegistrationLanding() {
 
             {/* Sticky bottom button */}
             <View style={styles.stickyButtonContainer}>
-                <Link href="/exam/packages" asChild>
-                    <TouchableOpacity style={styles.continueButton}>
-                        <Text style={styles.continueButtonText}>Continue</Text>
-                    </TouchableOpacity>
-                </Link>
+                {/* <Link href="/exam/packages" asChild> */}
+                {/* <TouchableOpacity onPress={() => router.push('/exam/packages')} style={styles.continueButton}>
+                    <Text style={styles.continueButtonText}>Continue.</Text>
+                </TouchableOpacity> */}
+                {/* </Link> */}
+                <BaseButton title="Continue" onPress={() => router.push(ROUTES.EXAM_PACKAGES as any)} disabled={false} />
             </View>
         </View>
     );

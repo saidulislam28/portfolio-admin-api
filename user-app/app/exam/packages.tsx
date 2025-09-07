@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
@@ -50,7 +51,7 @@ export default function PackagesScreen() {
 
     if (selectedPackage && selectedCenter) {
       router.push({
-        pathname: ROUTES.EXAM_REGISTRATION_FORM,
+        pathname: ROUTES.EXAM_REGISTRATION_FORM as any,
         params: {
           packageId: selectedPackage?.toString(),
           center: selectedCenter?.toString(),
@@ -109,7 +110,7 @@ export default function PackagesScreen() {
         )}
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[
             styles.continueButton,
             (!selectedPackage || !selectedCenter) && styles.disabledButton,
@@ -117,8 +118,9 @@ export default function PackagesScreen() {
           onPress={handleContinue}
           disabled={!selectedPackage || !selectedCenter}
         >
-          <Text style={styles.buttonText}>Continue to Registration</Text>
-        </TouchableOpacity>
+          <Text style={styles.buttonText}>Continue to Registration.</Text>
+        </TouchableOpacity> */}
+          <BaseButton title="Continue to Registration" onPress={handleContinue} disabled={!selectedPackage || !selectedCenter} />
       </View>
     </View>
   );

@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
@@ -144,7 +145,7 @@ export default function PackagesScreen() {
         {/* Continue Button */}
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[
             styles.continueButton,
             !selectedPackage && styles.disabledButton,
@@ -153,7 +154,8 @@ export default function PackagesScreen() {
           disabled={!selectedPackage}
         >
           <Text style={styles.buttonText}>Continue to Registration</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <BaseButton title="Continue to Registration" onPress={handleContinue} disabled={!selectedPackage} />
       </View>
     </View>
   );

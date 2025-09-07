@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
@@ -271,13 +272,7 @@ const ExamRegistrationFrom = () => {
         </Text>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <TouchableOpacity
-          style={[styles.submitButton, isSubmitting && styles.disabledButton]}
-          onPress={handleSubmit}
-        // disabled={isSubmitting}
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
+        <BaseButton title="Submit" onPress={handleSubmit} disabled={isSubmitting} />
       </View>
     </View>
   );

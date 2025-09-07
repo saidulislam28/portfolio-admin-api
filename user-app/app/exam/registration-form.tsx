@@ -20,6 +20,7 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useAuth } from "@/context/useAuth";
 import { API_USER, Post, uploadImageFromApp } from "@sm/common";
+import { BaseButton } from "@/components/BaseButton";
 
 // Add this API endpoint constant at the top with your other endpoints
 // Replace with your actual endpoint
@@ -67,23 +68,6 @@ const ExamRegistrationFrom = () => {
     }
   };
 
-  // const loadPackages = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const response: any = await Get(API_GET_PACKAGES);
-  //     if (response.success) {
-  //       const filteredPackages = response?.data?.filter(
-  //         (pkg: any) =>
-  //           pkg?.service_type === PACKAGE_SERVICE_TYPE.exam_registration
-  //       );
-  //       setPackages(filteredPackages);
-  //     }
-  //   } catch (error) {
-  //     Alert.alert("Error", "Failed to load packages");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -169,76 +153,6 @@ const ExamRegistrationFrom = () => {
       }
     } catch (error) {
       Alert.alert("Error", "Failed to select image");
-    }
-  };
-
-  const uploadImage = async (imageUri: string) => {
-    setLoading(true);
-    try {
-      console.log('uploadImage', imageUri)
-      const resp = await uploadImageFromApp(imageUri);
-
-      // const fileName = imageUri.split("/").pop() || "passport.jpg";
-      // const match = /\.(\w+)$/.exec(fileName);
-      // const type = match ? `image/${match[1]}` : "image/jpeg";
-
-      // const formData = new FormData();
-
-      // formData.append("file", {
-      //   uri: imageUri,
-      //   name: fileName,
-      //   type: type,
-      // } as any);
-
-      // formData.append("name", "passport");
-
-      // console.log("Uploading with formData structure:", {
-      //   uri: imageUri,
-      //   name: fileName,
-      //   type: type,
-      // });
-
-      // const baseURL = Constants.expoConfig?.extra?.apiBaseUrl;
-
-      // // const baseURL = "http://192.168.0.100:8000";
-      // // const baseURL = process.env.API_BASE_URL;
-      // const fullURL = `${baseURL}${API_UPLOAD_IMAGE}`;
-      // console.log("full url", fullURL);
-      // console.log("full url>>>", Constants.expoConfig?.extra);
-
-      // const response = await fetch(fullURL, {
-      //   method: "POST",
-      //   body: formData,
-      //   headers: {
-      //     Accept: "application/json",
-      //     ...(token && { Authorization: `Bearer ${token}` }), // Add auth if available
-      //     // DO NOT set Content-Type - let fetch set it automatically for FormData
-      //   },
-      // });
-      // const resp = await Post(API_UPLOAD_IMAGE, formData)
-
-      console.log('auplaidsis', resp)
-
-      // if (!response.ok) {
-      //   const errorText = await response.text();
-      //   console.error("Upload failed:", errorText);
-      //   throw new Error(`HTTP error! status: ${response.status}`);
-      // }
-
-      // const result = await response.json();
-      // console.log("Upload response:", resp);
-
-      // Based on your backend response: { url, name, message }
-      // if (result.url) {
-      //   return result.url;
-      // } else {
-      //   throw new Error(result.message || "Upload failed");
-      // }
-    } catch (error) {
-      console.error("Image upload error:", error);
-      throw new Error("Failed to upload image");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -551,25 +465,7 @@ const ExamRegistrationFrom = () => {
         </Text>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.submitButton,
-            (isSubmitting || isUploadingImage) && styles.disabledButton,
-          ]}
-          onPress={handleSubmit}
-          disabled={isSubmitting || isUploadingImage}
-        >
-          {isSubmitting || isUploadingImage ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator color="white" size="small" />
-              <Text style={styles.buttonText}>
-                {isUploadingImage ? "Uploading Image..." : "Submitting..."}
-              </Text>
-            </View>
-          ) : (
-            <Text style={styles.buttonText}>Submit</Text>
-          )}
-        </TouchableOpacity>
+        <BaseButton title="Submit" onPress={handleSubmit} disabled={isSubmitting || isUploadingImage} />
       </View>
     </View>
   );
