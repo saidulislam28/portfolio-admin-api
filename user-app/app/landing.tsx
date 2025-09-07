@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { ROUTES } from "@/constants/app.routes";
+import { BaseButton } from "@/components/BaseButton";
 
 const LandingPage = () => {
   const router = useRouter();
@@ -67,12 +68,14 @@ const LandingPage = () => {
 
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.primaryButton}
             onPress={handleGetStarted}
           >
             <Text style={styles.primaryButtonText}>Get Started</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          <BaseButton title="Get Started" onPress={handleGetStarted} disabled={false} fullWidth={false} />
 
           <View style={styles.secondaryButtonsRow}>
             <TouchableOpacity
@@ -81,6 +84,7 @@ const LandingPage = () => {
             >
               <Text style={styles.secondaryButtonText}>Login</Text>
             </TouchableOpacity>
+            {/* <BaseButton title="Login" onPress={handleLogin} disabled={false} /> */}
             <TouchableOpacity
               style={styles.registerButton}
               onPress={handleRegister}

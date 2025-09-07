@@ -24,6 +24,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { BaseButton } from "@/components/BaseButton";
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");
@@ -329,7 +330,7 @@ export default function RegisterScreen() {
             </View>
 
             {/* Register Button */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               disabled={loading}
               onPress={handleRegister}
               style={[styles.registerButton, loading && styles.disabledButton]}
@@ -342,7 +343,8 @@ export default function RegisterScreen() {
               ) : (
                 <Text style={styles.registerButtonText}>Register</Text>
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <BaseButton title="Register" onPress={handleRegister} disabled={loading} />
 
             {/* Or Divider */}
             <View style={styles.orContainer}>
