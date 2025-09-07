@@ -2,11 +2,7 @@ import { PRIMARY_COLOR } from '@/lib/constants';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, ActivityIndicator, Dimensions } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-
-
 const { width } = Dimensions.get('window');
-
 // Tablet-specific dimensions
 const isTablet = width >= 600;
 const CARD_PADDING = isTablet ? 24 : 16;

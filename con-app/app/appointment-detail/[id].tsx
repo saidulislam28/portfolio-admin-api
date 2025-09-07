@@ -275,7 +275,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         avatar: appointment?.User?.profile_image,
       });
 
-      const notificationPayload = {
+      const notificationPayload:any = {
         ...appointment,
         caller_name: user?.full_name || "",
       };
