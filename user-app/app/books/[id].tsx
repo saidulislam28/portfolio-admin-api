@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { useCart } from "@/hooks/useCart";
@@ -21,13 +22,13 @@ export default function BookDetailsScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { width } = useWindowDimensions();
-  
+
   const {
-  items: cartItems,
-  summary: cartSummary,
-  loading: cartLoading,
-  addItemToCart,
-} = useCart();
+    items: cartItems,
+    summary: cartSummary,
+    loading: cartLoading,
+    addItemToCart,
+  } = useCart();
 
   const [bookDetails, setBookDetails] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -53,7 +54,7 @@ export default function BookDetailsScreen() {
   const handleAddToCart = async () => {
     if (!bookDetails?.id) return;
     console.log('add', bookDetails)
-    
+
     // Use the cart hook to add item to cart
     addItemToCart(
       bookDetails.id.toString(),
@@ -114,18 +115,19 @@ export default function BookDetailsScreen() {
               </Text>
               <TouchableOpacity
                 style={styles.viewCartButtonSmall}
-                onPress={() => router.push(ROUTES.CART)}
+                onPress={() => router.push(ROUTES.CART as any)}
               >
                 <Text style={styles.viewCartText}>View Cart</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity
-              style={styles.addToCartButton}
-              onPress={handleAddToCart}
-            >
-              <Text style={styles.addToCartText}>Add to Cart</Text>
-            </TouchableOpacity>
+            // <TouchableOpacity
+            //   style={styles.addToCartButton}
+            //   onPress={handleAddToCart}
+            // >
+            //   <Text style={styles.addToCartText}>Add to Cart</Text>
+            // </TouchableOpacity>
+            <BaseButton title="Enroll Now" onPress={handleAddToCart} disabled={false} />
           )}
         </View>
       </ScrollView>
@@ -144,7 +146,7 @@ export default function BookDetailsScreen() {
 
           <TouchableOpacity
             style={styles.viewCartButton}
-            onPress={() => router.push(ROUTES.CART)}
+            onPress={() => router.push(ROUTES.CART as any)}
           >
             <Text style={styles.viewCartText}>View Cart</Text>
           </TouchableOpacity>

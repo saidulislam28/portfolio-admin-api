@@ -13,23 +13,24 @@ import {
   View,
 } from "react-native";
 import { useCart, useCartActions } from "@/hooks/useCart"; // Updated import
+import { BaseButton } from "@/components/BaseButton";
 
 export default function CartScreen() {
   const router = useRouter();
-  
+
   // Use the cart hooks
   const {
     itemsArray: cartItems,
     summary: cartSummary,
     loading: cartLoading,
   } = useCart();
-  
+
   // Get the actions from useCartActions
-  const { 
-    clearAllItems, 
-    removeItem, 
-    incrementItem, 
-    decrementItem 
+  const {
+    clearAllItems,
+    removeItem,
+    incrementItem,
+    decrementItem
   } = useCartActions();
 
   const handleCheckout = () => {
@@ -37,7 +38,7 @@ export default function CartScreen() {
       Alert.alert("Empty Cart", "Please add items to cart before checkout.");
       return;
     }
-    router.push(ROUTES.CHECKOUT);
+    router.push(ROUTES.CHECKOUT as any);
   };
 
   // Clear entire cart
@@ -84,12 +85,13 @@ export default function CartScreen() {
 
         <View style={styles.emptyCart}>
           <Text style={styles.emptyCartText}>Your cart is empty</Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.continueShopping}
-            onPress={() => router.push(ROUTES.BOOKS)}
+            onPress={() => router.push(ROUTES.BOOKS as any)}
           >
             <Text style={styles.continueShoppingText}>Continue Shopping</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <BaseButton title="Continue Shopping" onPress={() => router.push(ROUTES.BOOKS as any)} disabled={false} />
         </View>
       </View>
     );
@@ -109,7 +111,7 @@ export default function CartScreen() {
       <ScrollView style={styles.cartList}>
         {cartItems.map((cartItem) => {
           const { bookId, quantity, bookDetails } = cartItem;
-          
+
           return (
             <View key={bookId} style={styles.cartItem}>
               <Image

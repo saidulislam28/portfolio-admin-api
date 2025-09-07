@@ -6,6 +6,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
+import { BaseButton } from '@/components/BaseButton';
 
 export default function CheckoutScreen() {
   const router = useRouter();
@@ -249,38 +250,6 @@ export default function CheckoutScreen() {
             placeholder="Enter full address"
           />
         </View>
-
-        {/* <View style={styles.formGroup}>
-          <Text style={styles.label}>City</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.city}
-            onChangeText={(text) => handleChange("city", text)}
-            placeholder="Enter city"
-          />
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Post Code</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.zipCode}
-            onChangeText={(text) => handleChange("zipCode", text)}
-            keyboardType="numeric"
-            placeholder="Enter post code"
-          />
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Country</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.country}
-            onChangeText={(text) => handleChange("country", text)}
-            placeholder="Enter country"
-          />
-        </View> */}
-
         <TouchableOpacity
           style={styles.radioOption}
           onPress={() => handlePaymentMethodChange(false)}
@@ -302,19 +271,9 @@ export default function CheckoutScreen() {
           <Text style={styles.radioText}>Cash on delivery</Text>
         </TouchableOpacity>
       </ScrollView>
+      
       <View style={styles.stickyButtonContainer}>
-
-        <Pressable
-          style={[styles.payButton, processing && styles.disabledButton]}
-          onPress={handleCheckout}
-          disabled={processing}
-        >
-          {processing ? (
-            <ActivityIndicator color="#fff" size="small" />
-          ) : (
-            <Text style={styles.payButtonText}>Complete Payment</Text>
-          )}
-        </Pressable>
+        <BaseButton title="Procced" onPress={handleCheckout} disabled={processing} />
       </View>
     </View>
   );

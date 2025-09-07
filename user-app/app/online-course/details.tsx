@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";
@@ -221,7 +222,7 @@ const PackageDetails = () => {
         </View>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <Pressable
+        {/* <Pressable
           style={[
             styles.enrollButton,
             !packages?.is_active && styles.enrollButtonDisabled,
@@ -237,7 +238,8 @@ const PackageDetails = () => {
           >
             {packages?.is_active ? "Enroll Now" : "Currently Unavailable"}
           </Text>
-        </Pressable>
+        </Pressable> */}
+        <BaseButton title="Enroll Now" onPress={handleBuyCourses} disabled={!packages?.is_active} />
       </View>
     </View>
   );
