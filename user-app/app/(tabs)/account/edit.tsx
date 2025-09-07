@@ -17,6 +17,7 @@ import {
   View,
 } from "react-native";
 import { Button, Card, Text, TextInput } from "react-native-paper";
+import { BaseButton } from "@/components/BaseButton";
 
 interface IFormData {
   name: string;
@@ -28,7 +29,11 @@ interface IFormData {
 const EditProfileScreen = () => {
   const { user, updateUser, token } = useAuth();
   const router = useRouter();
-  const { uploadImage, isLoading: isUploadingImage, error: uploadError } = useImageUpload();
+  const {
+    uploadImage,
+    isLoading: isUploadingImage,
+    error: uploadError,
+  } = useImageUpload();
 
   const [formData, setFormData] = useState<IFormData>({
     name: user?.full_name || "",
@@ -100,12 +105,19 @@ const EditProfileScreen = () => {
       let imageUrl = formData.profile_image;
 
       // Upload image if it's changed and is a local file
-      if (imageChanged && formData.profile_image && formData.profile_image.startsWith('file://')) {
+      if (
+        imageChanged &&
+        formData.profile_image &&
+        formData.profile_image.startsWith("file://")
+      ) {
         try {
           imageUrl = await uploadImage(formData.profile_image);
           console.log("Uploaded image URL:", imageUrl);
         } catch (uploadErr) {
-          Alert.alert("Upload Error", "Failed to upload profile image. Please try again.");
+          Alert.alert(
+            "Upload Error",
+            "Failed to upload profile image. Please try again."
+          );
           setSaving(false);
           return;
         }
@@ -130,7 +142,7 @@ const EditProfileScreen = () => {
           full_name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          profile_image: imageUrl
+          profile_image: imageUrl,
         });
 
         Alert.alert("Success", "Profile updated successfully");
@@ -138,7 +150,6 @@ const EditProfileScreen = () => {
       } else {
         throw new Error(response?.message || "Failed to update profile");
       }
-
     } catch (err: any) {
       console.error("Profile update error:", err);
       console.error("Error details:", err.response?.data || err.message);
@@ -159,7 +170,9 @@ const EditProfileScreen = () => {
 
           {/* Show upload error if any */}
           {uploadError && (
-            <Text style={styles.errorText}>Image upload error: {uploadError}</Text>
+            <Text style={styles.errorText}>
+              Image upload error: {uploadError}
+            </Text>
           )}
 
           {/* Avatar Section */}
@@ -226,7 +239,7 @@ const EditProfileScreen = () => {
             left={<TextInput.Icon icon="phone" />}
           />
 
-          <Button
+          {/* <Button
             mode="contained"
             onPress={saveProfile}
             style={styles.saveButton}
@@ -234,7 +247,12 @@ const EditProfileScreen = () => {
             disabled={saving || isUploadingImage}
           >
             {saving ? <ActivityIndicator color="white" /> : "Save Changes"}
-          </Button>
+          </Button> */}
+          <BaseButton
+            title="Save Changes"
+            onPress={saveProfile}
+            disabled={saving || isUploadingImage}
+          />
         </Card.Content>
       </Card>
     </View>

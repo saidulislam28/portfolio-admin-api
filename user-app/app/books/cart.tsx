@@ -26,12 +26,8 @@ export default function CartScreen() {
   } = useCart();
 
   // Get the actions from useCartActions
-  const {
-    clearAllItems,
-    removeItem,
-    incrementItem,
-    decrementItem
-  } = useCartActions();
+  const { clearAllItems, removeItem, incrementItem, decrementItem } =
+    useCartActions();
 
   const handleCheckout = () => {
     if (cartSummary.totalItems === 0) {
@@ -91,7 +87,17 @@ export default function CartScreen() {
           >
             <Text style={styles.continueShoppingText}>Continue Shopping</Text>
           </TouchableOpacity> */}
-          <BaseButton title="Continue Shopping" onPress={() => router.push(ROUTES.BOOKS as any)} disabled={false} />
+          <BaseButton
+            title="Continue Shopping"
+            onPress={() => router.push(ROUTES.BOOKS as any)}
+            disabled={false}
+            variant="outline"
+          />
+          <BaseButton
+            title="Return Home"
+            onPress={() => router.push(ROUTES.HOME as any)}
+            disabled={false}
+          />
         </View>
       </View>
     );
@@ -125,7 +131,9 @@ export default function CartScreen() {
                   {bookDetails.title}
                 </Text>
                 <Text style={styles.bookPrice}>BDT {bookDetails.price}</Text>
-                <Text style={styles.bookWriter}>By: {bookDetails.writer || "Unknown"}</Text>
+                <Text style={styles.bookWriter}>
+                  By: {bookDetails.writer || "Unknown"}
+                </Text>
 
                 <View style={styles.quantityControls}>
                   <TouchableOpacity
@@ -133,7 +141,12 @@ export default function CartScreen() {
                     onPress={() => decrementItem(bookId)}
                     disabled={quantity <= 1}
                   >
-                    <Text style={[styles.quantityButtonText, quantity <= 1 && styles.disabledButton]}>
+                    <Text
+                      style={[
+                        styles.quantityButtonText,
+                        quantity <= 1 && styles.disabledButton,
+                      ]}
+                    >
                       -
                     </Text>
                   </TouchableOpacity>

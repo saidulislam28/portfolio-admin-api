@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button, Card, Text, TextInput } from 'react-native-paper';
-import { useRouter } from 'expo-router';
-import CommonHeader from '@/components/CommonHeader';
-import { PRIMARY_COLOR } from '@/lib/constants';
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { Button, Card, Text, TextInput } from "react-native-paper";
+import { useRouter } from "expo-router";
+import CommonHeader from "@/components/CommonHeader";
+import { PRIMARY_COLOR } from "@/lib/constants";
+import { BaseButton } from "@/components/BaseButton";
 
 const ChangePasswordScreen = () => {
   const router = useRouter();
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -25,17 +26,17 @@ const ChangePasswordScreen = () => {
     const newErrors = {};
 
     if (!passwordData.currentPassword) {
-      newErrors.currentPassword = 'Current password is required';
+      newErrors.currentPassword = "Current password is required";
     }
 
     if (!passwordData.newPassword) {
-      newErrors.newPassword = 'New password is required';
+      newErrors.newPassword = "New password is required";
     } else if (passwordData.newPassword.length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters';
+      newErrors.newPassword = "Password must be at least 6 characters";
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -59,8 +60,8 @@ const ChangePasswordScreen = () => {
 
   const renderPasswordStrength = (password) => {
     const strength = getPasswordStrength(password);
-    const colors = ['#ff0000', '#ff4500', '#ffa500', '#9acd32', '#008000'];
-    const labels = ['Very Weak', 'Weak', 'Moderate', 'Strong', 'Very Strong'];
+    const colors = ["#ff0000", "#ff4500", "#ffa500", "#9acd32", "#008000"];
+    const labels = ["Very Weak", "Weak", "Moderate", "Strong", "Very Strong"];
 
     return (
       <View style={styles.strengthContainer}>
@@ -70,7 +71,9 @@ const ChangePasswordScreen = () => {
               key={i}
               style={[
                 styles.strengthSegment,
-                { backgroundColor: i <= strength ? colors[strength] : '#e0e0e0' },
+                {
+                  backgroundColor: i <= strength ? colors[strength] : "#e0e0e0",
+                },
               ]}
             />
           ))}
@@ -94,7 +97,9 @@ const ChangePasswordScreen = () => {
           <TextInput
             label="Current Password"
             value={passwordData.currentPassword}
-            onChangeText={(text) => handlePasswordChange('currentPassword', text)}
+            onChangeText={(text) =>
+              handlePasswordChange("currentPassword", text)
+            }
             error={!!errors.currentPassword}
             style={styles.input}
             mode="outlined"
@@ -108,7 +113,7 @@ const ChangePasswordScreen = () => {
           <TextInput
             label="New Password"
             value={passwordData.newPassword}
-            onChangeText={(text) => handlePasswordChange('newPassword', text)}
+            onChangeText={(text) => handlePasswordChange("newPassword", text)}
             error={!!errors.newPassword}
             style={styles.input}
             mode="outlined"
@@ -123,7 +128,9 @@ const ChangePasswordScreen = () => {
           <TextInput
             label="Confirm New Password"
             value={passwordData.confirmPassword}
-            onChangeText={(text) => handlePasswordChange('confirmPassword', text)}
+            onChangeText={(text) =>
+              handlePasswordChange("confirmPassword", text)
+            }
             error={!!errors.confirmPassword}
             style={styles.input}
             mode="outlined"
@@ -134,14 +141,19 @@ const ChangePasswordScreen = () => {
             <Text style={styles.errorText}>{errors.confirmPassword}</Text>
           )}
 
-          <Button
+          {/* <Button
             mode="contained"
             onPress={savePassword}
             style={styles.saveButton}
             labelStyle={styles.buttonLabel}
           >
             Change Password
-          </Button>
+          </Button> */}
+          <BaseButton
+            title="Change Password"
+            onPress={savePassword}
+            disabled={false}
+          />
         </Card.Content>
       </Card>
     </View>
@@ -151,7 +163,7 @@ const ChangePasswordScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     // padding: 16,
   },
   section: {
@@ -160,15 +172,15 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   input: {
     marginBottom: 8,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginBottom: 12,
     marginLeft: 8,
     fontSize: 12,
@@ -179,16 +191,16 @@ const styles = StyleSheet.create({
     backgroundColor: PRIMARY_COLOR,
   },
   buttonLabel: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   strengthContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   strengthBar: {
-    flexDirection: 'row',
+    flexDirection: "row",
     height: 4,
     flex: 1,
     marginRight: 8,
@@ -201,7 +213,7 @@ const styles = StyleSheet.create({
   },
   strengthText: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

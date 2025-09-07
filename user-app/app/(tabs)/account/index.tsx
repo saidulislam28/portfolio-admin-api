@@ -9,8 +9,15 @@ import {
 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Avatar, Button, Card, Divider, Text } from "react-native-paper";
+import { BaseButton } from "@/components/BaseButton";
 
 const SettingsScreen = () => {
   const router = useRouter();
@@ -94,11 +101,13 @@ const SettingsScreen = () => {
         {user?.created_at && (
           <Text style={styles.memberSinceText}>
             Member since{" "}
-            <Text style={{fontWeight: 'bold'}}>{new Date(user.created_at).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              {new Date(user.created_at).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </Text>
           </Text>
         )}
       </View>
@@ -126,7 +135,7 @@ const SettingsScreen = () => {
       </Card>
 
       {/* Logout Button */}
-      <Button
+      {/* <Button
         mode="contained"
         onPress={() => {
           Alert.alert(
@@ -145,7 +154,25 @@ const SettingsScreen = () => {
         contentStyle={{ flexDirection: "row-reverse" }}
       >
         Log Out
-      </Button>
+      </Button> */}
+
+      <View style={{ width: "90%", marginHorizontal: "auto" }}>
+        <BaseButton
+          title="Logout"
+          onPress={() => {
+            Alert.alert(
+              "Confirm Logout",
+              "Are you sure you want to log out?",
+              [
+                { text: "Cancel", style: "cancel" },
+                { text: "Log Out", style: "destructive", onPress: logout },
+              ],
+              { cancelable: true }
+            );
+          }}
+          disabled={false}
+        />
+      </View>
     </ScrollView>
   );
 };
@@ -266,11 +293,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   memberSinceText: {
-  fontSize: 14,
-  color: "#666",
-  marginTop: 8,
-  fontStyle: "italic",
-},
+    fontSize: 14,
+    color: "#666",
+    marginTop: 8,
+    fontStyle: "italic",
+  },
 });
 
 export default SettingsScreen;

@@ -1,4 +1,7 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
+import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
 import {
   AppointmentStatus,
   PACKAGE_SERVICE_TYPE,
@@ -6,8 +9,6 @@ import {
   SECONDARY_COLOR,
 } from "@/lib/constants";
 import { callService } from "@/services/AgoraCallService";
-import { useAuth } from "@/context/useAuth";
-import { ROUTES } from "@/constants/app.routes";
 import { notificationService } from "@/services/NotificationService";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -24,8 +25,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -180,8 +180,8 @@ const AppointmentDetailPage = () => {
     serviceType === PACKAGE_SERVICE_TYPE.speaking_mock_test
       ? appointment?.MockTestFeedback == null
       : serviceType === PACKAGE_SERVICE_TYPE.conversation
-        ? appointment?.ConversationFeedback == null
-        : true;
+      ? appointment?.ConversationFeedback == null
+      : true;
 
   const handleFeedback = () => {
     if (serviceType === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
@@ -197,15 +197,13 @@ const AppointmentDetailPage = () => {
     });
   };
 
-
-
-
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      <CommonHeader onPress={() => router.replace(ROUTES.MY_APPOINTMENT as any)} />
+      <CommonHeader
+        onPress={() => router.replace(ROUTES.MY_APPOINTMENT as any)}
+      />
 
       <ScrollView
         style={styles.content}
@@ -361,7 +359,7 @@ const AppointmentDetailPage = () => {
           </TouchableOpacity> */}
 
           <View style={styles.secondaryButtons}>
-            <TouchableOpacity style={styles.secondaryButton}>
+            {/* <TouchableOpacity style={styles.secondaryButton}>
               <MaterialIcons name="message" size={18} color={PRIMARY_COLOR} />
               <Text style={styles.secondaryButtonText}>Message</Text>
             </TouchableOpacity>
@@ -386,10 +384,29 @@ const AppointmentDetailPage = () => {
               >
                 Call
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+            <View style={{ flex: 1 }}>
+              <BaseButton
+                title="Message"
+                onPress={() => console.log("nothing")}
+                disabled={false}
+                variant="outline"
+                fullWidth={false}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <BaseButton
+                title="Call"
+                onPress={startVideoCall}
+                disabled={false}
+                variant="outline"
+                fullWidth={false}
+              />
+            </View>
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[
               styles.feedbackButton,
               isDisabled && styles.feedbackButtonDisabled,
@@ -407,10 +424,18 @@ const AppointmentDetailPage = () => {
             >
               Feedback Report
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          <BaseButton
+            title=" Feedback Report"
+            onPress={handleFeedback}
+            disabled={isDisabled}
+            variant="primary"
+            fullWidth={false}
+          />
         </View>
       </ScrollView>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 

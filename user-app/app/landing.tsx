@@ -75,22 +75,45 @@ const LandingPage = () => {
             <Text style={styles.primaryButtonText}>Get Started</Text>
           </TouchableOpacity> */}
 
-          <BaseButton title="Get Started" onPress={handleGetStarted} disabled={false} fullWidth={false} />
+          <BaseButton
+            title="Get Started"
+            onPress={handleGetStarted}
+            disabled={false}
+            fullWidth={false}
+          />
 
           <View style={styles.secondaryButtonsRow}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.secondaryButton}
               onPress={handleLogin}
             >
               <Text style={styles.secondaryButtonText}>Login</Text>
             </TouchableOpacity>
-            {/* <BaseButton title="Login" onPress={handleLogin} disabled={false} /> */}
+            
             <TouchableOpacity
               style={styles.registerButton}
               onPress={handleRegister}
             >
               <Text style={styles.registerButtonText}>Register</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <View style={{ flex: 1 }}>
+              <BaseButton
+                title="Login"
+                onPress={handleLogin}
+                disabled={false}
+                variant="outline"
+                fullWidth={false}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <BaseButton
+                title="Register"
+                onPress={handleRegister}
+                disabled={false}
+                variant="primary"
+                fullWidth={false}
+              />
+            </View>
           </View>
         </View>
       </View>
