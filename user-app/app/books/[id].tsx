@@ -39,7 +39,7 @@ export default function BookDetailsScreen() {
         setLoading(true);
         const book = await GetOne(API_USER.get_books, Number(id));
         console.log("book from fetching>>", book)
-        if (book.success) {
+        if (book?.success) {
           setBookDetails(book?.data ?? {});
         }
       } catch (error) {
@@ -109,16 +109,19 @@ export default function BookDetailsScreen() {
 
           {/* Add to Cart Button - Show different UI if already in cart */}
           {isBookInCart ? (
-            <View style={styles.inCartContainer}>
-              <Text style={styles.inCartText}>
-                {cartItemQuantity} {cartItemQuantity === 1 ? "item" : "items"} in cart
-              </Text>
-              <TouchableOpacity
-                style={styles.viewCartButtonSmall}
-                onPress={() => router.push(ROUTES.CART as any)}
-              >
-                <Text style={styles.viewCartText}>View Cart</Text>
-              </TouchableOpacity>
+            <View style={{ paddingBottom: 150 }}>
+
+              <View style={styles.inCartContainer}>
+                <Text style={styles.inCartText}>
+                  {cartItemQuantity} {cartItemQuantity === 1 ? "item" : "items"} in cart
+                </Text>
+                <TouchableOpacity
+                  style={styles.viewCartButtonSmall}
+                  onPress={() => router.push(ROUTES.CART as any)}
+                >
+                  <Text style={styles.viewCartText}>View Cart</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ) : (
 
@@ -127,26 +130,26 @@ export default function BookDetailsScreen() {
         </View>
         {/* Cart Summary - Show only if items in cart */}
 
-        {cartSummary.totalItems > 0 && (
-          <View style={styles.cartSummary}>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryText}>
-                {cartSummary.totalItems} {cartSummary.totalItems === 1 ? "item" : "items"}
-              </Text>
-              <Text style={styles.summaryPrice}>
-                BDT {cartSummary.subtotal.toFixed(2)}
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              style={styles.viewCartButton}
-              onPress={() => router.push(ROUTES.CART as any)}
-            >
-              <Text style={styles.viewCartText}>View Cart</Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </ScrollView>
+      {cartSummary.totalItems > 0 && (
+        <View style={styles.cartSummary}>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryText}>
+              {cartSummary.totalItems} {cartSummary.totalItems === 1 ? "item" : "items"}
+            </Text>
+            <Text style={styles.summaryPrice}>
+              BDT {cartSummary.subtotal.toFixed(2)}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.viewCartButton}
+            onPress={() => router.push(ROUTES.CART as any)}
+          >
+            <Text style={styles.viewCartText}>View Cart</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
