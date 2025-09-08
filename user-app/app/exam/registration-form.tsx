@@ -465,7 +465,7 @@ const ExamRegistrationFrom = () => {
         </Text>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <BaseButton title="Submit" onPress={handleSubmit} disabled={isSubmitting || isUploadingImage} />
+        <BaseButton title="Submit" onPress={handleSubmit} isLoading={isSubmitting || isUploadingImage} />
       </View>
     </View>
   );

@@ -272,7 +272,7 @@ const ExamRegistrationFrom = () => {
         </Text>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <BaseButton title="Submit" onPress={handleSubmit} disabled={isSubmitting} />
+        <BaseButton title="Submit" onPress={handleSubmit} isLoading={isSubmitting} />
       </View>
     </View>
   );

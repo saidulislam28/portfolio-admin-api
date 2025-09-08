@@ -81,12 +81,6 @@ export default function CartScreen() {
 
         <View style={styles.emptyCart}>
           <Text style={styles.emptyCartText}>Your cart is empty</Text>
-          {/* <TouchableOpacity
-            style={styles.continueShopping}
-            onPress={() => router.push(ROUTES.BOOKS as any)}
-          >
-            <Text style={styles.continueShoppingText}>Continue Shopping</Text>
-          </TouchableOpacity> */}
           <BaseButton
             title="Continue Shopping"
             onPress={() => router.push(ROUTES.BOOKS as any)}

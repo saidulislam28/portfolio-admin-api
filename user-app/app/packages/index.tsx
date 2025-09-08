@@ -170,17 +170,6 @@ export default function PackagesScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        {/* <TouchableOpacity
-          style={[
-            styles.continueButton,
-            { backgroundColor: selectedPackage ? PRIMARY_COLOR : DARK_GRAY },
-          ]}
-          onPress={handleContinue}
-          disabled={!selectedPackage}
-        >
-          <Text style={styles.continueButtonText}>Continue..</Text>
-        </TouchableOpacity> */}
-
         <BaseButton title="Continue" onPress={handleContinue} disabled={!selectedPackage} />
       </View>
 

@@ -238,20 +238,10 @@ const EditProfileScreen = () => {
             keyboardType="phone-pad"
             left={<TextInput.Icon icon="phone" />}
           />
-
-          {/* <Button
-            mode="contained"
-            onPress={saveProfile}
-            style={styles.saveButton}
-            labelStyle={styles.buttonLabel}
-            disabled={saving || isUploadingImage}
-          >
-            {saving ? <ActivityIndicator color="white" /> : "Save Changes"}
-          </Button> */}
           <BaseButton
             title="Save Changes"
             onPress={saveProfile}
-            disabled={saving || isUploadingImage}
+            isLoading={saving || isUploadingImage}
           />
         </Card.Content>
       </Card>

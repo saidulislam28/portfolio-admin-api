@@ -180,8 +180,8 @@ const AppointmentDetailPage = () => {
     serviceType === PACKAGE_SERVICE_TYPE.speaking_mock_test
       ? appointment?.MockTestFeedback == null
       : serviceType === PACKAGE_SERVICE_TYPE.conversation
-      ? appointment?.ConversationFeedback == null
-      : true;
+        ? appointment?.ConversationFeedback == null
+        : true;
 
   const handleFeedback = () => {
     if (serviceType === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
@@ -353,39 +353,7 @@ const AppointmentDetailPage = () => {
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
-          {/* <TouchableOpacity style={styles.primaryButton} onPress={startVideoCall}>
-            <MaterialIcons name="video-call" size={20} color="white" />
-            <Text style={styles.primaryButtonText}>Start Video Call</Text>
-          </TouchableOpacity> */}
-
           <View style={styles.secondaryButtons}>
-            {/* <TouchableOpacity style={styles.secondaryButton}>
-              <MaterialIcons name="message" size={18} color={PRIMARY_COLOR} />
-              <Text style={styles.secondaryButtonText}>Message</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.secondaryButton
-              ]}
-              onPress={startVideoCall}
-              activeOpacity={1
-              }
-            >
-              <MaterialIcons
-                name="phone"
-                size={18}
-                color={PRIMARY_COLOR}
-              />
-              <Text
-                style={[
-                  styles.secondaryButtonText
-                ]}
-              >
-                Call
-              </Text>
-            </TouchableOpacity> */}
-
             <View style={{ flex: 1 }}>
               <BaseButton
                 title="Message"
@@ -399,37 +367,17 @@ const AppointmentDetailPage = () => {
               <BaseButton
                 title="Call"
                 onPress={startVideoCall}
-                disabled={false}
+                isLoading={isConnecting}
                 variant="outline"
                 fullWidth={false}
               />
             </View>
           </View>
 
-          {/* <TouchableOpacity
-            style={[
-              styles.feedbackButton,
-              isDisabled && styles.feedbackButtonDisabled,
-            ]}
-            activeOpacity={0.7}
-            disabled={isDisabled}
-            onPress={handleFeedback}
-          >
-            <MaterialIcons name="feedback" size={18} color={PRIMARY_COLOR} />
-            <Text
-              style={[
-                styles.feedbackButtonText,
-                isDisabled && styles.disableText,
-              ]}
-            >
-              Feedback Report
-            </Text>
-          </TouchableOpacity> */}
-
           <BaseButton
             title=" Feedback Report"
             onPress={handleFeedback}
-            disabled={isDisabled}
+            isLoading={isDisabled}
             variant="primary"
             fullWidth={false}
           />

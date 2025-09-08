@@ -303,14 +303,7 @@ const ExamRegistrationFrom = () => {
         </Text>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        {/* <TouchableOpacity
-          style={[styles.submitButton, isSubmitting && styles.disabledButton]}
-          onPress={handleSubmit}
-          // disabled={isSubmitting}
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity> */}
-        <BaseButton title="Submit" onPress={handleSubmit} disabled={isSubmitting} />
+        <BaseButton title="Submit" onPress={handleSubmit} isLoading={isSubmitting} />
       </View>
     </View>
   );

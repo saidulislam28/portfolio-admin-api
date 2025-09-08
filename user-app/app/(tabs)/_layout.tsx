@@ -4,19 +4,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 export default function TabLayout() {
-  
-  // if (isLoading) {
-  //   return (
-  //     <View>
-  //       <ActivityIndicator size="large" color="#6C63FF" />
-  //     </View>
-  //   );
-  // }
-  // if(user){
-  //   return <Redirect href="/login" />
-  // }else{
-  //   <Redirect href="/login" />
-  // }
+
   
   return (
     <Tabs

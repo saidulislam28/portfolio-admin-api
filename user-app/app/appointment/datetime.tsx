@@ -263,26 +263,6 @@ export default function DateTimeScreen() {
             <Text style={styles.legendText}>Booked</Text>
           </View>
         </View>
-
-        {/* <TouchableOpacity
-          style={[
-            styles.continueButton,
-            {
-              backgroundColor:
-                selectedSlots.length === packageData.sessions
-                  ? PRIMARY_COLOR
-                  : DARK_GRAY,
-            },
-          ]}
-          onPress={handleContinue}
-          disabled={selectedSlots.length !== packageData.sessions}
-        >
-          <Text style={styles.continueButtonText}>
-            Continue to Payment ({selectedSlots.length}/{packageData.sessions}{" "}
-            selected)
-          </Text>
-        </TouchableOpacity> */}
-
         <BaseButton title={` Continue to Payment (${selectedSlots.length}/${packageData.sessions}${" "}
             selected)`} onPress={handleContinue} disabled={selectedSlots.length !== packageData.sessions} />
       </View>

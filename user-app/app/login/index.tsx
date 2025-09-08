@@ -203,23 +203,7 @@ export default function LoginScreen() {
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <BaseButton title="Login" onPress={handleLogin} disabled={loading} />
-
-
-
-          {/* Login Button */}
-          {/* <TouchableOpacity
-            style={[styles.loginButton, loading && styles.disabledButton]}
-            onPress={handleLogin}
-            disabled={loading}
-          >
-            {/* {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.loginButtonText}>Login</Text>
-            )} 
-            </TouchableOpacity>  */}
-
+          <BaseButton title="Login" onPress={handleLogin} isLoading={loading} />
           {/* Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />

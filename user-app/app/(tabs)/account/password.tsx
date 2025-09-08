@@ -14,6 +14,7 @@ const ChangePasswordScreen = () => {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handlePasswordChange = (name, value) => {
     setPasswordData({
@@ -44,10 +45,12 @@ const ChangePasswordScreen = () => {
   };
 
   const savePassword = () => {
+    setLoading(true)
     if (validatePasswordForm()) {
       // In a real app, you would call an API here
       router.back();
     }
+    setLoading(false)
   };
 
   const getPasswordStrength = (password) => {
@@ -140,19 +143,10 @@ const ChangePasswordScreen = () => {
           {errors.confirmPassword && (
             <Text style={styles.errorText}>{errors.confirmPassword}</Text>
           )}
-
-          {/* <Button
-            mode="contained"
-            onPress={savePassword}
-            style={styles.saveButton}
-            labelStyle={styles.buttonLabel}
-          >
-            Change Password
-          </Button> */}
           <BaseButton
             title="Change Password"
             onPress={savePassword}
-            disabled={false}
+            isLoading={loading}
           />
         </Card.Content>
       </Card>

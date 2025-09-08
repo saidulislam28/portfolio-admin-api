@@ -55,12 +55,7 @@ export default function RegistrationLanding() {
             </ScrollView>
 
             {/* Sticky bottom button */}
-            <View style={styles.stickyButtonContainer}>
-                {/* <Link href="/exam/packages" asChild> */}
-                {/* <TouchableOpacity onPress={() => router.push('/exam/packages')} style={styles.continueButton}>
-                    <Text style={styles.continueButtonText}>Continue.</Text>
-                </TouchableOpacity> */}
-                {/* </Link> */}
+            <View style={styles.stickyButtonContainer}>               
                 <BaseButton title="Continue" onPress={() => router.push(ROUTES.EXAM_PACKAGES as any)} disabled={false} />
             </View>
         </View>

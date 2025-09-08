@@ -145,16 +145,6 @@ export default function PackagesScreen() {
         {/* Continue Button */}
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        {/* <TouchableOpacity
-          style={[
-            styles.continueButton,
-            !selectedPackage && styles.disabledButton,
-          ]}
-          onPress={handleContinue}
-          disabled={!selectedPackage}
-        >
-          <Text style={styles.buttonText}>Continue to Registration</Text>
-        </TouchableOpacity> */}
         <BaseButton title="Continue to Registration" onPress={handleContinue} disabled={!selectedPackage} />
       </View>
     </View>

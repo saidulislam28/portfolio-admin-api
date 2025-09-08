@@ -271,9 +271,9 @@ export default function CheckoutScreen() {
           <Text style={styles.radioText}>Cash on delivery</Text>
         </TouchableOpacity>
       </ScrollView>
-      
+
       <View style={styles.stickyButtonContainer}>
-        <BaseButton title="Procced" onPress={handleCheckout} disabled={processing} />
+        <BaseButton title="Procced" onPress={handleCheckout} isLoading={processing} />
       </View>
     </View>
   );

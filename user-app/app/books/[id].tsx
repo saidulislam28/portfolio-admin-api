@@ -121,13 +121,8 @@ export default function BookDetailsScreen() {
               </TouchableOpacity>
             </View>
           ) : (
-            // <TouchableOpacity
-            //   style={styles.addToCartButton}
-            //   onPress={handleAddToCart}
-            // >
-            //   <Text style={styles.addToCartText}>Add to Cart</Text>
-            // </TouchableOpacity>
-            <BaseButton title="Enroll Now" onPress={handleAddToCart} disabled={false} />
+
+            <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
           )}
         </View>
       </ScrollView>

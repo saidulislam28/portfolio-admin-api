@@ -133,29 +133,6 @@ const SettingsScreen = () => {
           </React.Fragment>
         ))}
       </Card>
-
-      {/* Logout Button */}
-      {/* <Button
-        mode="contained"
-        onPress={() => {
-          Alert.alert(
-            "Confirm Logout",
-            "Are you sure you want to log out?",
-            [
-              { text: "Cancel", style: "cancel" },
-              { text: "Log Out", style: "destructive", onPress: logout }
-            ],
-            { cancelable: true }
-          );
-        }}
-        style={styles.logoutButton}
-        labelStyle={styles.logoutButtonLabel}
-        icon="logout"
-        contentStyle={{ flexDirection: "row-reverse" }}
-      >
-        Log Out
-      </Button> */}
-
       <View style={{ width: "90%", marginHorizontal: "auto" }}>
         <BaseButton
           title="Logout"
@@ -170,7 +147,7 @@ const SettingsScreen = () => {
               { cancelable: true }
             );
           }}
-          disabled={false}
+          isLoading={false}
         />
       </View>
     </ScrollView>

@@ -281,24 +281,7 @@ export default function PaymentScreen() {
 
       {/* Payment Button */}
       <View style={styles.paymentButtonContainer}>
-        {/* <TouchableOpacity
-          style={[styles.paymentButton, processing && styles.paymentButtonDisabled]}
-          onPress={handlePayment}
-          disabled={processing}
-        >
-          {processing ? (
-            <View style={styles.processingContainer}>
-              <ActivityIndicator color={WHITE} size="small" />
-              <Text style={styles.processingText}>Processing...</Text>
-            </View>
-          ) : (
-            <Text style={styles.paymentButtonText}>
-              
-              Proceed
-            </Text>
-          )}
-        </TouchableOpacity> */}
-          <BaseButton title="Proceed" onPress={handlePayment} disabled={processing} />
+        <BaseButton title="Proceed" onPress={handlePayment} isLoading={processing} />
 
         <Text style={styles.secureText}>
           🔒 Your payment is secured with 256-bit SSL encryption

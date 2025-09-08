@@ -222,23 +222,6 @@ const PackageDetails = () => {
         </View>
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        {/* <Pressable
-          style={[
-            styles.enrollButton,
-            !packages?.is_active && styles.enrollButtonDisabled,
-          ]}
-          disabled={!packages?.is_active}
-          onPress={handleBuyCourses}
-        >
-          <Text
-            style={[
-              styles.enrollButtonText,
-              !packages?.is_active && styles.enrollButtonTextDisabled,
-            ]}
-          >
-            {packages?.is_active ? "Enroll Now" : "Currently Unavailable"}
-          </Text>
-        </Pressable> */}
         <BaseButton title="Enroll Now" onPress={handleBuyCourses} disabled={!packages?.is_active} />
       </View>
     </View>

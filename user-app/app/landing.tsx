@@ -68,12 +68,7 @@ const LandingPage = () => {
 
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
-          {/* <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={handleGetStarted}
-          >
-            <Text style={styles.primaryButtonText}>Get Started</Text>
-          </TouchableOpacity> */}
+      
 
           <BaseButton
             title="Get Started"
@@ -83,19 +78,6 @@ const LandingPage = () => {
           />
 
           <View style={styles.secondaryButtonsRow}>
-            {/* <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={handleLogin}
-            >
-              <Text style={styles.secondaryButtonText}>Login</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.registerButton}
-              onPress={handleRegister}
-            >
-              <Text style={styles.registerButtonText}>Register</Text>
-            </TouchableOpacity> */}
             <View style={{ flex: 1 }}>
               <BaseButton
                 title="Login"

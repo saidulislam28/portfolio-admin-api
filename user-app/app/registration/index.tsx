@@ -338,22 +338,6 @@ export default function RegisterScreen() {
                 </Picker>
               </View>
             </View>
-
-            {/* Register Button */}
-            {/* <TouchableOpacity
-              disabled={loading}
-              onPress={handleRegister}
-              style={[styles.registerButton, loading && styles.disabledButton]}
-            >
-              {loading ? (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="small" color="#fff" />
-                  <Text style={styles.loadingText}>Registering...</Text>
-                </View>
-              ) : (
-                <Text style={styles.registerButtonText}>Register</Text>
-              )}
-            </TouchableOpacity> */}
             {__DEV__ && (
               <TouchableOpacity
                 onPress={fillDummyData}

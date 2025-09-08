@@ -59,19 +59,6 @@ export default function RegistrationLanding() {
                 />
             </ScrollView >
             <View style={styles.stickyButtonContainer}>
-                {/* <Link href="/online-course/packages" asChild>
-                    <TouchableOpacity
-                        style={{
-                            backgroundColor: PRIMARY_COLOR,
-                            padding: 15,
-                            borderRadius: 8,
-                            alignItems: 'center'
-                        }}
-                    >
-                        <Text style={{ color: 'white', fontSize: 18 }}>Continue.</Text>
-                    </TouchableOpacity>
-                </Link> */}
-
                 <BaseButton title="Continue" onPress={() => router.push(ROUTES.ONLINE_COURSE_PACKAGES as any)} disabled={false} />
             </View>
         </View>
