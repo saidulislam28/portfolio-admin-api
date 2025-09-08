@@ -51,17 +51,18 @@ export default function ResetPasswordScreen() {
         email_or_phone,
       });
 
-      if (!result.success) {
-        Alert.alert("Error", result.error);
+      if (!result?.data?.success) {
+        Alert.alert('Error', result.error);
         setLoading(false);
         return;
       }
       await AsyncStorage.removeItem("email");
 
-      login(result.data);
-      router.push(ROUTES.HOME as any);
-    } catch (error:any) {
-      Alert.alert("Error", error?.message ?? "An unexpected error occurred");
+      login(result?.data?.data);
+      router.push(ROUTES.HOME);
+
+    } catch (error) {
+      Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
       setLoading(false);
     }
   };

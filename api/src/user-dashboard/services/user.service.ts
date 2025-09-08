@@ -10,7 +10,6 @@ export class UserService {
 
   async findAppointments(user_id: number) {
 
-    console.log('here com', user_id)
     const findAppointments = await this.prismaService.appointment.findMany({
       where: {
         user_id,
@@ -40,7 +39,6 @@ export class UserService {
       },
     });
 
-    console.log('data gt', findAppointments)
     // const now = new Date();
     // const twelveHoursLater = new Date(now.getTime() + 12 * 60 * 60 * 1000);
 

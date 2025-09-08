@@ -29,7 +29,7 @@ export default function Index() {
           user_id: userId,
           recipient_type: RECIPIENT_TYPE.Consultant,
         });
-        if (response?.success) {
+        if (response?.data?.success) {
           ToastAndroid.show(
             "Device token sent successfully",
             ToastAndroid.SHORT

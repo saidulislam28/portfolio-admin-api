@@ -24,7 +24,7 @@ export class CallApi {
         channelName: request.channelName,
         userId: request.userId,
       });
-      return response;
+      return response.data;
     } catch (error) {
       console.error("Failed to fetch Agora token:", error);
       throw error;
