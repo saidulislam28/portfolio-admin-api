@@ -124,6 +124,13 @@ android {
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def formattedDate = new Date().format("yyyy-MM-dd")
+            def newName = "user-app-${formattedDate}.apk"
+            outputFileName = newName
+        }
+    }
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
