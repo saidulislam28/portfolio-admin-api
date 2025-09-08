@@ -19,7 +19,7 @@ export class MockTestFeedbackService {
   async createFeedback(data, id: number) {
 
 
-    console.log("data>>>", data)
+    // console.log("data>>>", data)
 
 
     if (!data.appointment_id) {

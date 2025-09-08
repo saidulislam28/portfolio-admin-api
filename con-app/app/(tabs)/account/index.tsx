@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Avatar, Button, Card, Divider, Text } from "react-native-paper";
+import { BaseButton } from "@/components/BaseButton";
 
 const SettingsScreen = () => {
   const router = useRouter();
@@ -90,10 +91,10 @@ const SettingsScreen = () => {
           {user?.email || "user@example.com"}
         </Text>
 
-         {user?.created_at && (
+        {user?.created_at && (
           <Text style={styles.memberSinceText}>
             Member since{" "}
-            <Text style={{fontWeight: 'bold'}}>{new Date(user.created_at).toLocaleDateString("en-GB", {
+            <Text style={{ fontWeight: 'bold' }}>{new Date(user.created_at).toLocaleDateString("en-GB", {
               day: "numeric",
               month: "long",
               year: "numeric",
@@ -124,17 +125,7 @@ const SettingsScreen = () => {
         ))}
       </Card>
 
-      {/* Logout Button */}
-      <Button
-        mode="contained"
-        onPress={logout}
-        style={styles.logoutButton}
-        labelStyle={styles.logoutButtonLabel}
-        icon="logout"
-        contentStyle={{ flexDirection: "row-reverse" }}
-      >
-        Log Out
-      </Button>
+      <BaseButton title="Log Out" onPress={logout} variant="outline" />
     </ScrollView>
   );
 };
@@ -255,11 +246,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   memberSinceText: {
-  fontSize: 14,
-  color: "#666",
-  marginTop: 8,
-  fontStyle: "italic",
-},
+    fontSize: 14,
+    color: "#666",
+    marginTop: 8,
+    fontStyle: "italic",
+  },
 });
 
 export default SettingsScreen;
