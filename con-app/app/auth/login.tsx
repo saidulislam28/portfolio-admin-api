@@ -8,7 +8,6 @@ import { loginConsultant } from "@sm/common";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
   Image,
   Platform,
   SafeAreaView,
@@ -16,25 +15,40 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { InputField } from "@/components/InputField"; // Import the InputField component
 
 export default function LoginScreen() {
   const router = useRouter();
   const { login }: any = useAuth();
-  const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const { logout }: any = useAuth();
 
   const handleLogin = async () => {
     setLoading(true);
+    setErrors({}); // Clear previous errors
 
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+    // Validate inputs
+    const newErrors: { email?: string; password?: string } = {};
+    
+    if (!email) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+    
+    if (!password) {
+      newErrors.password = "Password is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       setLoading(false);
       return;
     }
@@ -42,16 +56,28 @@ export default function LoginScreen() {
     try {
       const result = await loginConsultant(email, password);
       if (!result.success) {
-        Alert.alert("Error", result.message);
+        setErrors({ password: result.message });
         setLoading(false);
         return;
       }
       login(result?.data, result?.data?.token);
       router.push(ROUTES.HOME);
     } catch (error) {
-      Alert.alert("Error", error?.message ?? "An unexpected error occurred");
+      setErrors({ password: error?.message ?? "An unexpected error occurred" });
       setLoading(false);
     }
+  };
+
+  const handleFocus = (fieldKey: string) => {
+    setFocusedField(fieldKey);
+    // Clear error for this field when focused
+    if (errors[fieldKey as keyof typeof errors]) {
+      setErrors(prev => ({ ...prev, [fieldKey]: undefined }));
+    }
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
   };
 
   return (
@@ -68,41 +94,35 @@ export default function LoginScreen() {
         </Text>
 
         {/* Email Input */}
-        <View style={styles.inputContainer}>
-          <MaterialCommunityIcons
-            name="email-outline"
-            size={20}
-            style={styles.icon}
-          />
-          <TextInput
-            placeholder="Enter your Email"
-            style={styles.input}
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
+        <InputField
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          error={errors.email}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          fieldKey="email"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("email")}
+          onBlur={handleBlur}
+          placeholder="Enter your Email"
+          testID="email-input"
+        />
 
         {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Feather name="lock" size={20} style={styles.icon} />
-          <TextInput
-            placeholder="Enter your Password"
-            secureTextEntry={!passwordVisible}
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity
-            onPress={() => setPasswordVisible(!passwordVisible)}
-          >
-            <Feather
-              name={passwordVisible ? "eye" : "eye-off"}
-              size={20}
-              style={styles.iconRight}
-            />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          error={errors.password}
+          isPassword={true}
+          fieldKey="password"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("password")}
+          onBlur={handleBlur}
+          placeholder="Enter your Password"
+          testID="password-input"
+        />
 
         <TouchableOpacity
           onPress={() => router.push(ROUTES.FORGET_PASSWORD)}
@@ -154,31 +174,6 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     width: "100%", // Full width for proper text centering
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    width: "100%",
-    backgroundColor: "#f9f9f9",
-  },
-  icon: {
-    marginRight: 8,
-    color: "#888",
-  },
-  iconRight: {
-    color: "#888",
-  },
-  input: {
-    flex: 1,
-    fontSize: 14,
-    paddingVertical: 0,
-    textAlign: "center", // Center-align input text
-  },
   forgotPassword: {
     width: "100%",
     alignItems: "center", // Center the forgot password link
@@ -188,19 +183,5 @@ const styles = StyleSheet.create({
     color: PRIMARY_COLOR,
     fontSize: 13,
     textAlign: "center", // Center-align text
-  },
-  loginButton: {
-    backgroundColor: PRIMARY_COLOR,
-    borderRadius: 8,
-    paddingVertical: 14,
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 20,
-  },
-  loginButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-    textAlign: "center", // Center-align button text
   },
 });

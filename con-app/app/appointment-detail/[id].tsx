@@ -682,44 +682,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             <VideoCallButton
               status={appointment?.status}
               startVideoCall={startVideoCall}
-            />
-
-            {/* <TouchableOpacity
-              style={[
-                styles.feedbackButton,
-                { height: BUTTON_HEIGHT },
-                appointment?.MockTestFeedback ||
-                appointment?.ConversationFeedback
-                  ? styles.feedbackButtonDisabled
-                  : styles.feedbackButton,
-              ]}
-              onPress={handleSubmitFeedback}
-              activeOpacity={0.7}
-              disabled={
-                !!(
-                  appointment?.MockTestFeedback ||
-                  appointment?.ConversationFeedback
-                )
-              }
-            >
-              <MaterialIcons
-                name="feedback"
-                size={isTablet ? 24 : 18}
-                color={customConstants.primaryColor}
-              />
-              <Text
-                style={[
-                  styles.feedbackButtonText,
-                  appointment?.MockTestFeedback ||
-                  appointment?.ConversationFeedback
-                    ? styles.disableText
-                    : styles.feedbackButtonText,
-                  { color: customConstants.primaryColor },
-                ]}
-              >
-                Provide Feedback
-              </Text>
-            </TouchableOpacity> */}
+            />         
 
             <BaseButton
               title="Provide Feedback"

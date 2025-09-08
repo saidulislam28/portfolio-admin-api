@@ -125,28 +125,28 @@ export default function BookDetailsScreen() {
             <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
           )}
         </View>
-      </ScrollView>
+        {/* Cart Summary - Show only if items in cart */}
 
-      {/* Cart Summary - Show only if items in cart */}
-      {cartSummary.totalItems > 0 && (
-        <View style={styles.cartSummary}>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryText}>
-              {cartSummary.totalItems} {cartSummary.totalItems === 1 ? "item" : "items"}
-            </Text>
-            <Text style={styles.summaryPrice}>
-              BDT {cartSummary.subtotal.toFixed(2)}
-            </Text>
+        {cartSummary.totalItems > 0 && (
+          <View style={styles.cartSummary}>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryText}>
+                {cartSummary.totalItems} {cartSummary.totalItems === 1 ? "item" : "items"}
+              </Text>
+              <Text style={styles.summaryPrice}>
+                BDT {cartSummary.subtotal.toFixed(2)}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.viewCartButton}
+              onPress={() => router.push(ROUTES.CART as any)}
+            >
+              <Text style={styles.viewCartText}>View Cart</Text>
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            style={styles.viewCartButton}
-            onPress={() => router.push(ROUTES.CART as any)}
-          >
-            <Text style={styles.viewCartText}>View Cart</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+        )}
+      </ScrollView>
     </View>
   );
 }
