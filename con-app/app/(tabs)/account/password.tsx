@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Button, Card, Text, TextInput } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { Platform, StatusBar } from 'react-native';
+import { BaseButton } from '@/components/BaseButton';
 const ChangePasswordScreen = () => {
   const router = useRouter();
   const [passwordData, setPasswordData] = useState({
@@ -130,15 +131,7 @@ const ChangePasswordScreen = () => {
           {errors.confirmPassword && (
             <Text style={styles.errorText}>{errors.confirmPassword}</Text>
           )}
-
-          <Button
-            mode="contained"
-            onPress={savePassword}
-            style={styles.saveButton}
-            labelStyle={styles.buttonLabel}
-          >
-            Change Password
-          </Button>
+          <BaseButton title="Save Changes" onPress={savePassword} isLoading={false} />
         </Card.Content>
       </Card>
     </View>

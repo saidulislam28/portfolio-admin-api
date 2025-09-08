@@ -2,6 +2,7 @@ import { PRIMARY_COLOR } from '@/lib/constants';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, ActivityIndicator, Dimensions } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { BaseButton } from '../BaseButton';
 const { width } = Dimensions.get('window');
 // Tablet-specific dimensions
 const isTablet = width >= 600;
@@ -76,25 +77,8 @@ const ConsultationNotesCard = ({ appointment, uploadNotes, handleRefresh }: any)
                         />
 
                         <View style={styles.modalButtons}>
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.cancelButton]}
-                                onPress={() => setIsModalVisible(false)}
-                                disabled={isLoading}
-                            >
-                                <Text style={styles.buttonText}>Cancel</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                style={[styles.modalButton, styles.addButtonModal]}
-                                onPress={handleAddNote}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? (
-                                    <ActivityIndicator color="#fff" />
-                                ) : (
-                                    <Text style={styles.buttonText}>{appointment?.notes ? 'Update' : 'Add'}</Text>
-                                )}
-                            </TouchableOpacity>
+                            <BaseButton title="Cancel" onPress={() => setIsModalVisible(false)} isLoading={false} />
+                            <BaseButton title="Add Note" onPress={handleAddNote} isLoading={isLoading} />
                         </View>
                     </View>
                 </View>

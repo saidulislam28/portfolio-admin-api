@@ -110,37 +110,7 @@ export default function LoginScreen() {
         >
           <Text style={styles.forgotPasswordText}>Forgot password?</Text>
         </TouchableOpacity>
-
-        {/* Login Button */}
-        {/* <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>
-            {loading ? "Loading..." : "Login"}
-          </Text>
-        </TouchableOpacity> */}
-        <BaseButton title="Login" disabled={loading} onPress={handleLogin} />
-
-        {/* <View style={styles.dividerContainer}>
-          <View style={styles.divider} />
-          <Text style={styles.orText}>or</Text>
-          <View style={styles.divider} />
-        </View>
-
-        <View style={styles.socialContainer}>
-          <TouchableOpacity style={styles.socialButton}>
-            <Feather name="phone" size={18} color={PRIMARY_COLOR} />
-            <Text style={styles.socialButtonText}>Phone Number</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.socialButton}>
-            <AntDesign name="google" size={18} color={PRIMARY_COLOR} />
-            <Text style={styles.socialButtonText}>Google</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Link style={{marginTop:20}} href={'/registration'}>
-          <Text style={styles.joinText}>
-            Don’t have an account? <Text style={styles.joinLink}>Join us</Text>
-          </Text>
-        </Link> */}
+        <BaseButton title="Login" isLoading={loading} onPress={handleLogin} />
       </ScrollView>
     </SafeAreaView>
   );

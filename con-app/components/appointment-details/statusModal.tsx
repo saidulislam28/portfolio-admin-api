@@ -5,6 +5,7 @@ import { Dimensions, StatusBar, StyleSheet } from 'react-native';
 import { Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { Modal, Text, View } from 'react-native';
+import { BaseButton } from '../BaseButton';
 const { width, height } = Dimensions.get("window");
 const isTablet = width >= 600;
 // Constants that depend on tablet status
@@ -98,29 +99,8 @@ const StatusModal = ({
 
                     {/* Modal Buttons */}
                     <View style={styles.modalButtons}>
-                        <TouchableOpacity
-                            style={styles.cancelButton}
-                            onPress={handleCancelStatusChange}
-                            activeOpacity={0.7}
-                        >
-                            <Text style={[styles.cancelButtonText, { fontSize: isTablet ? FONT_SIZE_MEDIUM : 16 }]}>
-                                Cancel
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            disabled={statusCLoading}
-                            style={[
-                                styles.confirmButton,
-                                { backgroundColor: customConstants.primaryColor },
-                                statusCLoading && styles.disabledButton,
-                            ]}
-                            onPress={handleConfirmStatusChange}
-                            activeOpacity={0.7}
-                        >
-                            <Text style={[styles.confirmButtonText, { fontSize: isTablet ? FONT_SIZE_MEDIUM : 16 }]}>
-                                {statusCLoading ? "Processing..." : "Confirm"}
-                            </Text>
-                        </TouchableOpacity>
+                        <BaseButton title="Cancel" fullWidth={false} variant='outline' onPress={handleCancelStatusChange} isLoading={false} />
+                        <BaseButton title="Confirm" fullWidth={false} onPress={handleConfirmStatusChange} isLoading={statusCLoading} />
                     </View>
                 </View>
             </View>

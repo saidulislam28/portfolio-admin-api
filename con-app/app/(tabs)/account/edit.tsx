@@ -239,7 +239,7 @@ const EditProfileScreen = () => {
           >
             {saving ? <ActivityIndicator color="white" /> : "Save Changes"}
           </Button> */}
-          <BaseButton title="Save Changes" onPress={saveProfile} disabled={saving || isUploadingImage} />
+          <BaseButton title="Save Changes" onPress={saveProfile} isLoading={saving || isUploadingImage} />
         </Card.Content>
       </Card>
     </View>

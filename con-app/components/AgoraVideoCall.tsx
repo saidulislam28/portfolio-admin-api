@@ -1,31 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Text, 
-  SafeAreaView, 
-  Platform,
-  AppState,
-  Dimensions,
-  Vibration
-} from 'react-native';
-import { 
-  createAgoraRtcEngine, 
-  IRtcEngine, 
-  ChannelProfileType, 
-  ClientRoleType, 
-  RtcSurfaceView,
-  VideoSourceType
-} from 'react-native-agora';
-import { StatusBar } from 'expo-status-bar';
+import { APP_ID } from '@/lib/constants';
 import { Ionicons } from '@expo/vector-icons';
-import * as Device from 'expo-device';
-import { APP_ID, CHANNEL_NAME, TOKEN } from '@/lib/constants';
-import { PermissionsAndroid } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
 import ExpoPip from 'expo-pip';
-import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  AppState,
+  Dimensions,
+  PermissionsAndroid,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import {
+  ChannelProfileType,
+  ClientRoleType,
+  createAgoraRtcEngine,
+  IRtcEngine,
+  RtcSurfaceView
+} from 'react-native-agora';
 
 // Configure notifications
 Notifications.setNotificationHandler({

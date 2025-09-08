@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import Logo from "@/components/Logo";
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";
@@ -514,19 +515,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
       {/* Submit Button */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.submitButton,
-            customStyles.button,
-            loading && styles.disableButton,
-          ]}
-          onPress={handleSubmit}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>
-            {loading ? "Submitting..." : "Submit Feedback"}
-          </Text>
-        </TouchableOpacity>
+        <BaseButton title="Submit Feedback" onPress={handleSubmit} isLoading={loading} />
       </View>
     </View>
   );

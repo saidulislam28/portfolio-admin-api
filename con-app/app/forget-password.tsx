@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -63,13 +64,7 @@ export default function LoginScreen() {
             onChangeText={setEmail}
           />
         </View>
-
-        {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-          <Text style={styles.loginButtonText}>
-            {loading ? "Loading..." : "submit"}
-          </Text>
-        </TouchableOpacity>
+        <BaseButton title="Submit" onPress={handleSubmit} isLoading={loading} />
 
         <TouchableOpacity
           onPress={() => router.push(ROUTES.LOGIN)}

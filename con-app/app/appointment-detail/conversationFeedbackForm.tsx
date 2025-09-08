@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import Logo from "@/components/Logo";
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";
@@ -548,21 +549,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
             onChangeText={handleGeneralCommentsChange}
           />
         </View>
-
-        <TouchableOpacity
-          style={[
-            styles.submitButton,
-            loading && styles.disabledButton,
-            submitButtonStyle,
-          ]}
-          onPress={handleSubmit}
-          activeOpacity={0.8}
-          disabled={loading}
-        >
-          <Text style={styles.submitButtonText}>
-            {loading ? loadingText : submitButtonText}
-          </Text>
-        </TouchableOpacity>
+        <BaseButton title="Submit Feedback" onPress={handleSubmit} variant="primary" isLoading={loading} />
       </ScrollView>
     </View>
   );
