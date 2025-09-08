@@ -1,8 +1,9 @@
 import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
+import { InputField } from "@/components/InputField"; // Add this import
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
+import { PACKAGE_SERVICE_TYPE } from "@/lib/constants";
 import { API_USER, Post } from "@sm/common";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -12,8 +13,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View
 } from "react-native";
 
@@ -23,6 +22,8 @@ const ExamRegistrationFrom = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   if (isLoading || user === null) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -55,6 +56,7 @@ const ExamRegistrationFrom = () => {
   });
 
   const validateForm = () => {
+    const newErrors: Record<string, string> = {};
     const requiredFields = [
       "first_name",
       "last_name",
@@ -64,46 +66,48 @@ const ExamRegistrationFrom = () => {
       "address",
     ];
 
+    // Check required fields
     for (const field of requiredFields) {
       if (!formData[field]?.trim()) {
-        Alert.alert(
-          "Validation Error",
-          `${field.replace("_", " ")} is required`
-        );
-        return false;
+        newErrors[field] = `${field.replace("_", " ")} is required`;
       }
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      Alert.alert("Validation Error", "Please enter a valid email address");
-      return false;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
     }
 
     // Phone validation (basic)
     const phoneRegex = /^01[3-9]\d{8}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      Alert.alert(
-        "Validation Error",
-        "Please enter a valid Bangladeshi phone number"
-      );
-      return false;
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      newErrors.phone = "Please enter a valid Bangladeshi phone number";
     }
 
     // WhatsApp validation
-    if (!phoneRegex.test(formData.whatsapp)) {
-      Alert.alert("Validation Error", "Please enter a valid WhatsApp number");
-      return false;
+    if (formData.whatsapp && !phoneRegex.test(formData.whatsapp)) {
+      newErrors.whatsapp = "Please enter a valid WhatsApp number";
     }
 
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  // console.log("idddsss..>>>>", packageId, JSON.parse(center))
-
-  const handleChange = (name: any, value: any) => {
+  const handleChange = (name: keyof typeof formData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleFocus = (fieldKey: string) => {
+    setFocusedField(fieldKey);
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
   };
 
   const handleSubmit = async () => {
@@ -152,7 +156,8 @@ const ExamRegistrationFrom = () => {
           destination: "",
           whatsapp: "",
         });
-        router.push(ROUTES.HOME);
+        setErrors({});
+        router.push(ROUTES.HOME as any);
         setIsSubmitting(false);
       }
     } catch (error) {
@@ -169,102 +174,137 @@ const ExamRegistrationFrom = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.header}>Submit Your Study Abroad Inquiry</Text>
 
-        <Text style={styles.label}>First Name*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Given Name as passport"
-          keyboardType="default"
+        <InputField
+          label="First Name*"
+          fieldKey="first_name"
           value={formData.first_name}
           onChangeText={(text) => handleChange("first_name", text)}
-        />
-        <Text style={styles.label}>Last Name*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Surname as passport"
+          placeholder="Given Name as passport"
           keyboardType="default"
+          error={errors.first_name}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("first_name")}
+          onBlur={handleBlur}
+        />
+
+        <InputField
+          label="Last Name*"
+          fieldKey="last_name"
           value={formData.last_name}
           onChangeText={(text) => handleChange("last_name", text)}
+          placeholder="Surname as passport"
+          keyboardType="default"
+          error={errors.last_name}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("last_name")}
+          onBlur={handleBlur}
         />
-        <Text style={styles.label}>Email No.*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Email address"
-          keyboardType="email-address"
+
+        <InputField
+          label="Email No.*"
+          fieldKey="email"
           value={formData.email}
           onChangeText={(text) => handleChange("email", text)}
+          placeholder="Write Email address"
+          keyboardType="email-address"
+          error={errors.email}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("email")}
+          onBlur={handleBlur}
         />
 
-        <Text style={styles.label}>Cell Phone No.*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Cell Phone Number"
-          keyboardType="phone-pad"
+        <InputField
+          label="Cell Phone No.*"
+          fieldKey="phone"
           value={formData.phone}
           onChangeText={(text) => handleChange("phone", text)}
-        />
-        <Text style={styles.label}>Whatsapp No.*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write whatsapp Phone Number"
+          placeholder="Write Cell Phone Number"
           keyboardType="phone-pad"
+          error={errors.phone}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("phone")}
+          onBlur={handleBlur}
+        />
+
+        <InputField
+          label="Whatsapp No.*"
+          fieldKey="whatsapp"
           value={formData.whatsapp}
           onChangeText={(text) => handleChange("whatsapp", text)}
+          placeholder="Write whatsapp Phone Number"
+          keyboardType="phone-pad"
+          error={errors.whatsapp}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("whatsapp")}
+          onBlur={handleBlur}
         />
 
-        <Text style={styles.label}>Permanent Address*</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Write parmanent address"
-          keyboardType="default"
+        <InputField
+          label="Permanent Address*"
+          fieldKey="address"
           value={formData.address}
           onChangeText={(text) => handleChange("address", text)}
+          placeholder="Write permanent address"
+          keyboardType="default"
+          error={errors.address}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("address")}
+          onBlur={handleBlur}
         />
 
-        <Text style={styles.label}>Preferred Study Destination*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write your destination"
+        <InputField
+          label="Preferred Study Destination*"
+          fieldKey="destination"
           value={formData.destination}
           onChangeText={(text) => handleChange("destination", text)}
+          placeholder="Write your destination"
+          error={errors.destination}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("destination")}
+          onBlur={handleBlur}
         />
 
-        <Text style={styles.label}>Academic Background*</Text>
-        <TextInput
-          style={styles.input}
-          // style={[styles.input, errors.shippingAddress && styles.inputError]}
+        <InputField
+          label="Academic Background*"
+          fieldKey="academic_background"
+          value={formData.academic_background}
+          onChangeText={(text) => handleChange("academic_background", text)}
           placeholder="Write academic background"
           multiline
           numberOfLines={4}
-          value={formData.academic_background}
-          onChangeText={(text) => handleChange("academic_background", text)}
+          error={errors.academic_background}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("academic_background")}
+          onBlur={handleBlur}
         />
-        <Text style={styles.label}>IELTS Score*</Text>
-        <TextInput
-          style={styles.input}
-          // style={[styles.input, errors.shippingAddress && styles.inputError]}
+
+        <InputField
+          label="IELTS Score*"
+          fieldKey="ielts_score"
+          value={formData.ielts_score}
+          onChangeText={(text) => handleChange("ielts_score", text)}
           placeholder="Write IELTS Score"
           multiline
           numberOfLines={4}
-          value={formData.ielts_score}
-          onChangeText={(text) => handleChange("ielts_score", text)}
+          error={errors.ielts_score}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("ielts_score")}
+          onBlur={handleBlur}
         />
-        <Text style={styles.label}>Budget*</Text>
-        <TextInput
-          style={styles.input}
-          // style={[styles.input, errors.shippingAddress && styles.inputError]}
+
+        <InputField
+          label="Budget*"
+          fieldKey="budget"
+          value={formData.budget}
+          onChangeText={(text) => handleChange("budget", text)}
           placeholder="Write budget"
           multiline
           numberOfLines={4}
-          value={formData.budget}
-          onChangeText={(text) => handleChange("budget", text)}
+          error={errors.budget}
+          focusedField={focusedField}
+          onFocus={() => handleFocus("budget")}
+          onBlur={handleBlur}
         />
-
-        {/* <Text style={styles.label}>Upload Passport Information page*</Text>
-            <Text style={styles.subLabel}>(JPG, JPEG, PNG, PDF) Limit 2MB</Text> */}
-        {/* <FileUpload
-                onFileSelected={(file) => handleChange('passportFile', file)}
-            /> */}
 
         <Text style={styles.note}>
           Register for IELTS with us today, and our booking agent will contact
@@ -296,36 +336,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 30, // Account for safe area
+    paddingBottom: 30,
     borderTopWidth: 1,
     borderTopColor: "#f0f0f0",
-    elevation: 8, // Android shadow
-    shadowColor: "#000", // iOS shadow
+    elevation: 8,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: -2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-  },
-  dateText: {
-    marginTop: 20,
-    fontSize: 16,
-  },
-  dateInputWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
-    backgroundColor: "#fff",
-  },
-  dateInputText: {
-    fontSize: 16,
-    color: "#333",
   },
   header: {
     fontSize: 20,
@@ -334,89 +355,12 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
   },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 15,
-    marginBottom: 5,
-    color: "#333",
-  },
-  subLabel: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  inputError: {
-    borderColor: "red",
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    marginBottom: 5,
-    overflow: "hidden",
-  },
-  // picker: {
-  //     height: 50,
-  //     width: '100%'
-  // },
-  pickerWrapper: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    overflow: "hidden",
-  },
-  picker: {
-    height: 54,
-    width: "100%",
-  },
-  error: {
-    color: "red",
-    fontSize: 12,
-    marginBottom: 10,
-  },
-  link: {
-    color: "#1a73e8",
-    textDecorationLine: "underline",
-    marginBottom: 20,
-  },
   note: {
     marginTop: 20,
     marginBottom: 20,
     fontStyle: "italic",
     textAlign: "center",
     color: "#555",
-  },
-  submitButton: {
-    backgroundColor: PRIMARY_COLOR,
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  disabledButton: {
-    backgroundColor: "#cccccc",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  backButton: {
-    color: PRIMARY_COLOR,
-    fontSize: 18,
-    fontWeight: "600",
-    marginLeft: 10,
-    marginTop: 25,
-    marginBottom: 5,
   },
 });
 

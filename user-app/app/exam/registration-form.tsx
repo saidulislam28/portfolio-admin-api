@@ -1,7 +1,11 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
+import { InputField } from "@/components/InputField"; // Import the InputField component
+import { useAuth } from "@/context/useAuth";
+import { PACKAGE_SERVICE_TYPE } from "@/lib/constants";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+import { API_USER, Post } from "@sm/common";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -13,17 +17,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useAuth } from "@/context/useAuth";
-import { API_USER, Post, uploadImageFromApp } from "@sm/common";
-import { BaseButton } from "@/components/BaseButton";
-
-// Add this API endpoint constant at the top with your other endpoints
-// Replace with your actual endpoint
 
 const ExamRegistrationFrom = () => {
   const { packageId, center } = useLocalSearchParams();
@@ -33,13 +30,14 @@ const ExamRegistrationFrom = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Image picker states
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   useEffect(() => {
-    // loadPackages();
     requestPermissions();
   }, []);
 
@@ -48,7 +46,6 @@ const ExamRegistrationFrom = () => {
   }
 
   const requestPermissions = async () => {
-    // Request camera permissions
     const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
     if (cameraPermission.status !== "granted") {
       Alert.alert(
@@ -57,7 +54,6 @@ const ExamRegistrationFrom = () => {
       );
     }
 
-    // Request media library permissions
     const mediaPermission =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (mediaPermission.status !== "granted") {
@@ -67,7 +63,6 @@ const ExamRegistrationFrom = () => {
       );
     }
   };
-
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -96,9 +91,12 @@ const ExamRegistrationFrom = () => {
     passportFile: null,
   });
 
-
   const handleChange = (name: any, value: any) => {
     setFormData((prev: any) => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
   };
 
   const showImagePickerOptions = () => {
@@ -127,7 +125,6 @@ const ExamRegistrationFrom = () => {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
-        // aspect: [4, 3],
         quality: 0.8,
       });
 
@@ -144,7 +141,6 @@ const ExamRegistrationFrom = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
-        // aspect: [4, 3],
         quality: 0.8,
       });
 
@@ -157,6 +153,7 @@ const ExamRegistrationFrom = () => {
   };
 
   const validateForm = () => {
+    const newErrors: Record<string, string> = {};
     const requiredFields = [
       "first_name",
       "last_name",
@@ -168,58 +165,33 @@ const ExamRegistrationFrom = () => {
 
     for (const field of requiredFields) {
       if (!formData[field]?.trim()) {
-        Alert.alert(
-          "Validation Error",
-          `${field.replace("_", " ")} is required`
-        );
-        return false;
+        newErrors[field] = `${field.replace("_", " ")} is required`;
       }
     }
 
     if (!selectedDate) {
-      Alert.alert("Validation Error", "Please select a test date");
-      return false;
+      newErrors.test_date = "Please select a test date";
     }
-
-    // if (!selectedImage) {
-    //   Alert.alert(
-    //     "Validation Error",
-    //     "Please upload your passport information page"
-    //   );
-    //   return false;
-    // }
-    // if (!selectedImage) {
-    //   Alert.alert(
-    //     "Validation Error",
-    //     "Please upload your passport information page"
-    //   );
-    //   return false;
-    // }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      Alert.alert("Validation Error", "Please enter a valid email address");
-      return false;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
     }
 
     // Phone validation (basic)
     const phoneRegex = /^01[3-9]\d{8}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      Alert.alert(
-        "Validation Error",
-        "Please enter a valid Bangladeshi phone number"
-      );
-      return false;
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      newErrors.phone = "Please enter a valid Bangladeshi phone number";
     }
 
     // WhatsApp validation
-    if (!phoneRegex.test(formData.whatsapp)) {
-      Alert.alert("Validation Error", "Please enter a valid WhatsApp number");
-      return false;
+    if (formData.whatsapp && !phoneRegex.test(formData.whatsapp)) {
+      newErrors.whatsapp = "Please enter a valid WhatsApp number";
     }
 
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
@@ -236,21 +208,15 @@ const ExamRegistrationFrom = () => {
     }
 
     try {
-      // First upload the image
-      // setIsUploadingImage(true);
-      // const imageUrl = await uploadImage(selectedImage!);
-      // setIsUploadingImage(false);
-
       const userInfo = {
         education_level: formData?.educationLevel,
         occupation: formData?.occupation,
         shipping_address: formData?.shippingAddress,
-        // passport_file: imageUrl ?? null, // Use the uploaded image URL
-        passport_file: null, // Use the uploaded image URL
+        passport_file: null,
         exam_date: selectedDate?.toISOString(),
         exam_canter: +center,
         whatsapp: formData?.whatsapp,
-        notes: formData?.notes || "", // Optional field
+        notes: formData?.notes || "",
       };
 
       const payload = {
@@ -266,11 +232,9 @@ const ExamRegistrationFrom = () => {
       };
 
       const response = await Post(API_USER.create_order, payload);
-      // console.log("response from api exam registration>", response?.data)
       const responseData = response?.data?.data;
 
       if (response?.data?.success) {
-        //routes remain
         router.push(
           `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.exam_registration}&amount=${responseData?.total_amount}`
         );
@@ -279,7 +243,6 @@ const ExamRegistrationFrom = () => {
       }
     } catch (error) {
       console.error("Registration failed:", error);
-      console.error("Registration failed:>>", error.message);
       Alert.alert("Error", "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -293,6 +256,14 @@ const ExamRegistrationFrom = () => {
     );
   };
 
+  const handleFocus = (fieldKey: string) => {
+    setFocusedField(fieldKey);
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
+  };
+
   return (
     <View style={styles.container}>
       <CommonHeader />
@@ -300,13 +271,16 @@ const ExamRegistrationFrom = () => {
         <Text style={styles.header}>IELTS Test Registration Form</Text>
 
         <Text style={styles.label}>Choose Test Date*</Text>
-
         <TouchableOpacity onPress={openTestDatesLink}>
           <Text style={styles.link}>Check Available Test Dates</Text>
         </TouchableOpacity>
+        
         <Text style={styles.label}>Choosen Test Date*</Text>
         <TouchableOpacity
-          style={styles.dateInputWrapper}
+          style={[
+            styles.dateInputWrapper,
+            errors.test_date && styles.inputError
+          ]}
           onPress={showDatePicker}
         >
           <Text style={styles.dateInputText}>
@@ -314,6 +288,7 @@ const ExamRegistrationFrom = () => {
           </Text>
           <MaterialIcons name="calendar-today" size={24} color="#555" />
         </TouchableOpacity>
+        {errors.test_date && <Text style={styles.errorText}>{errors.test_date}</Text>}
 
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
@@ -322,62 +297,90 @@ const ExamRegistrationFrom = () => {
           onCancel={hideDatePicker}
         />
 
-        <Text style={styles.label}>First Name*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="First Name as passport"
-          keyboardType="default"
+        <InputField
+          label="First Name*"
           value={formData.first_name}
           onChangeText={(text) => handleChange("first_name", text)}
+          error={errors.first_name}
+          fieldKey="first_name"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("first_name")}
+          onBlur={handleBlur}
+          placeholder="First Name as passport"
+          keyboardType="default"
         />
 
-        <Text style={styles.label}>Last Name*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name as passport"
-          keyboardType="default"
+        <InputField
+          label="Last Name*"
           value={formData.last_name}
           onChangeText={(text) => handleChange("last_name", text)}
+          error={errors.last_name}
+          fieldKey="last_name"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("last_name")}
+          onBlur={handleBlur}
+          placeholder="Last Name as passport"
+          keyboardType="default"
         />
 
-        <Text style={styles.label}>Email No.*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Email address"
-          keyboardType="email-address"
+        <InputField
+          label="Email*"
           value={formData.email}
           onChangeText={(text) => handleChange("email", text)}
+          error={errors.email}
+          fieldKey="email"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("email")}
+          onBlur={handleBlur}
+          placeholder="Write Email address"
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
 
-        <Text style={styles.label}>Cell Phone No.*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Cell Phone Number"
-          keyboardType="phone-pad"
+        <InputField
+          label="Cell Phone No.*"
           value={formData.phone}
           onChangeText={(text) => handleChange("phone", text)}
+          error={errors.phone}
+          fieldKey="phone"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("phone")}
+          onBlur={handleBlur}
+          placeholder="Write Cell Phone Number"
+          keyboardType="phone-pad"
         />
 
-        <Text style={styles.label}>WhatsApp Number*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write WhatsApp Number"
-          keyboardType="phone-pad"
+        <InputField
+          label="WhatsApp Number*"
           value={formData.whatsapp}
           onChangeText={(text) => handleChange("whatsapp", text)}
+          error={errors.whatsapp}
+          fieldKey="whatsapp"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("whatsapp")}
+          onBlur={handleBlur}
+          placeholder="Write WhatsApp Number"
+          keyboardType="phone-pad"
         />
 
-        <Text style={styles.label}>Permanent Address*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write permanent address"
-          keyboardType="default"
+        <InputField
+          label="Permanent Address*"
           value={formData.address}
           onChangeText={(text) => handleChange("address", text)}
+          error={errors.address}
+          fieldKey="address"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("address")}
+          onBlur={handleBlur}
+          placeholder="Write permanent address"
+          keyboardType="default"
         />
 
         <Text style={styles.label}>Level of Education*</Text>
-        <View style={styles.pickerWrapper}>
+        <View style={[
+          styles.pickerWrapper,
+          errors.educationLevel && styles.inputError
+        ]}>
           <Picker
             selectedValue={formData.educationLevel}
             onValueChange={(itemValue) =>
@@ -399,33 +402,47 @@ const ExamRegistrationFrom = () => {
             <Picker.Item label="Post-graduate" value="post_graduate" />
           </Picker>
         </View>
+        {errors.educationLevel && <Text style={styles.errorText}>{errors.educationLevel}</Text>}
 
-        <Text style={styles.label}>Occupation*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write your profession"
+        <InputField
+          label="Occupation*"
           value={formData.occupation}
           onChangeText={(text) => handleChange("occupation", text)}
+          error={errors.occupation}
+          fieldKey="occupation"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("occupation")}
+          onBlur={handleBlur}
+          placeholder="Write your profession"
+          keyboardType="default"
         />
 
-        <Text style={styles.label}>Certificate Shipping Address*</Text>
-        <TextInput
-          style={styles.input}
+        <InputField
+          label="Certificate Shipping Address*"
+          value={formData.shippingAddress}
+          onChangeText={(text) => handleChange("shippingAddress", text)}
+          error={errors.shippingAddress}
+          fieldKey="shippingAddress"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("shippingAddress")}
+          onBlur={handleBlur}
           placeholder="Write address"
           multiline
           numberOfLines={4}
-          value={formData.shippingAddress}
-          onChangeText={(text) => handleChange("shippingAddress", text)}
         />
 
-        <Text style={styles.label}>Notes</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
+        <InputField
+          label="Notes"
+          value={formData.notes}
+          onChangeText={(text) => handleChange("notes", text)}
+          error={errors.notes}
+          fieldKey="notes"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("notes")}
+          onBlur={handleBlur}
           placeholder="Any additional notes (optional)"
           multiline
           numberOfLines={3}
-          value={formData.notes}
-          onChangeText={(text) => handleChange("notes", text)}
         />
 
         <Text style={styles.label}>Upload Passport Information Page*</Text>
@@ -489,21 +506,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 30, // Account for safe area
+    paddingBottom: 30,
     borderTopWidth: 1,
     borderTopColor: "#f0f0f0",
-    elevation: 8, // Android shadow
-    shadowColor: "#000", // iOS shadow
+    elevation: 8,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: -2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-  },
-  dateText: {
-    marginTop: 20,
-    fontSize: 16,
   },
   dateInputWrapper: {
     flexDirection: "row",
@@ -513,7 +526,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 8,
     padding: 12,
-    marginBottom: 10,
+    marginBottom: 5,
     backgroundColor: "#fff",
   },
   dateInputText: {
@@ -539,41 +552,24 @@ const styles = StyleSheet.create({
     color: "#666",
     marginBottom: 10,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: "top",
-  },
   inputError: {
-    borderColor: "red",
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    marginBottom: 5,
-    overflow: "hidden",
+    borderColor: "#DC3545",
   },
   pickerWrapper: {
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 6,
     overflow: "hidden",
+    marginBottom: 5,
   },
   picker: {
     height: 54,
     width: "100%",
   },
-  error: {
-    color: "red",
-    fontSize: 12,
+  errorText: {
+    color: "#DC3545",
+    fontSize: 14,
+    marginTop: 8,
     marginBottom: 10,
   },
   link: {
@@ -587,26 +583,6 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
     color: "#555",
-  },
-  submitButton: {
-    backgroundColor: PRIMARY_COLOR,
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  disabledButton: {
-    backgroundColor: "#cccccc",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  loadingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
   },
   imagePickerButton: {
     flexDirection: "row",
