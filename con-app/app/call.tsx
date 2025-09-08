@@ -1,10 +1,9 @@
 import { useCallService } from '@/services/AgoraCallService';
 import { stopAudioService } from '@/services/AudioService';
-import { notificationService } from '@/services/NotificationService';
 import { useCallControls, useCallInfo, useCallStore } from '@/zustand/callStore';
 import { useLoading } from '@/zustand/commonStore';
 import { Ionicons } from '@expo/vector-icons';
-import { USER_ROLE } from '@sm/common';
+import { sendCallEndNotificationToUser, USER_ROLE } from '@sm/common';
 import { useKeepAwake } from 'expo-keep-awake';
 import { router } from 'expo-router';
 import { useSearchParams } from 'expo-router/build/hooks';
@@ -218,7 +217,7 @@ export default function CallScreen() {
     } catch (error) {
       console.error('Error ending call:', error);
     } finally {
-      userId && await notificationService.endCall(Number(userId), USER_ROLE.user);
+      userId && await sendCallEndNotificationToUser(3); // TODO fix hardcoded
       setLoading(false);
       router.back();
     }

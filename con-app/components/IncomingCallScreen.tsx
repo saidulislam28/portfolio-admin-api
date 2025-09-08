@@ -1,9 +1,8 @@
 import { ROUTES } from '@/constants/app.routes';
 import { callService } from '@/services/AgoraCallService';
-import { notificationService } from '@/services/NotificationService';
 import { stopRingtone } from '@/services/ringtoneService';
 import { useCallStore } from '@/zustand/callStore';
-import { replacePlaceholders, USER_ROLE } from '@sm/common';
+import { replacePlaceholders, sendCallEndNotificationToUser, USER_ROLE } from '@sm/common';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -14,7 +13,7 @@ const IncomingCallScreen = () => {
     const ignoreCall = async () => {
         hideCallScreen();
         stopRingtone();
-        await notificationService.endCall(incomingCallInfo?.additionalInfo?.user_id, USER_ROLE.user);
+        await sendCallEndNotificationToUser(1); //TODO fix
     }
     const receiveCall = async () => {
         await callService.initialize(); // Replace with your App ID

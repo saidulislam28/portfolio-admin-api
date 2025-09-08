@@ -11,11 +11,10 @@ import {
 } from "@/lib/constants";
 import { callService } from "@/services/AgoraCallService";
 import { startAudioService } from "@/services/AudioService";
-import { notificationService } from "@/services/NotificationService";
 import { getStatusColor } from "@/utility/statusColor";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { API_CONSULTANT, Get, Patch, replacePlaceholders, USER_ROLE } from "@sm/common";
+import { API_CONSULTANT, Get, Patch, replacePlaceholders, sendCallStartNotificationToUser, USER_ROLE } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -120,15 +119,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   showHeader = true,
   showActions = true,
   isTabletOverride,
-  customRoutes = {
-    myAppointments: ROUTES.MY_APPOINTMENTS,
-    mockFeedback: ROUTES.MOCK_FEEDBACK_PAGE,
-    conversationFeedback: ROUTES.CONVERSATION_FEEDBACK_PAGE,
-  },
-  customConstants = {
-    primaryColor: PRIMARY_COLOR,
-    secondaryColor: SECONDARY_COLOR,
-  },
 }: any) => {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -279,20 +269,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         avatar: appointment?.User?.profile_image,
       } as any);
 
-      const notificationPayload: any = {
-        ...appointment,
-        caller_name: user?.full_name || "",
-      };
-
-      if (user?.profile_image) {
-        notificationPayload.caller_image = user.profile_image;
-      }
-
-      await notificationService.startCall(
-        appointment?.User?.id || 0,
-        USER_ROLE.user,
-        notificationPayload
-      );
+      await sendCallStartNotificationToUser(appointment.id);
       startAudioService();
       router.push(replacePlaceholders(ROUTES.CALL_USER, {id: appointment?.User?.id}));
     } catch (error: any) {
@@ -341,7 +318,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       PACKAGE_SERVICE_TYPE.speaking_mock_test
     ) {
       return router.push({
-        pathname: customRoutes.mockFeedback,
+        pathname: ROUTES.MOCK_FEEDBACK_PAGE,
         params: {
           consultant_id: JSON.stringify(user?.id),
           appointment: JSON.stringify(appointment),
@@ -349,7 +326,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       });
     }
     router.push({
-      pathname: customRoutes.conversationFeedback,
+      pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE,
       params: {
         consultant_id: JSON.stringify(user?.id),
         appointment: JSON.stringify(appointment),
@@ -495,8 +472,8 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor={customConstants.primaryColor}
-            colors={[customConstants.primaryColor]}
+            tintColor={PRIMARY_COLOR}
+            colors={[PRIMARY_COLOR]}
           />
         }
       >
@@ -520,7 +497,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               onPress={handleStatusChange}
               style={[
                 styles.statusButton,
-                { backgroundColor: customConstants.primaryColor },
+                { backgroundColor: PRIMARY_COLOR },
               ]}
               activeOpacity={0.7}
             >
@@ -535,7 +512,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             <MaterialIcons
               name="person"
               size={isTablet ? 28 : 20}
-              color={customConstants.primaryColor}
+              color={PRIMARY_COLOR}
             />
             <Text
               style={[
@@ -590,7 +567,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             <MaterialIcons
               name="schedule"
               size={isTablet ? 28 : 20}
-              color={customConstants.primaryColor}
+              color={PRIMARY_COLOR}
             />
             <Text
               style={[
@@ -712,7 +689,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         setSelectedStatus={setSelectedStatus}
         getStatusColor={getStatusColor}
         handleConfirmStatusChange={handleConfirmStatusChange}
-        customConstants={customConstants}
         statusCLoading={statusCLoading}
       />
     </SafeAreaView>

@@ -15,6 +15,8 @@ export declare const API_CONSULTANT: {
     conversation_feedback: string;
     mocktest_feedback: string;
     mocktest_comments: string;
+    send_start_call_notification: string;
+    send_end_call_notification: string;
 };
 export declare const API_COMMON: {
     post_device_tokens: string;

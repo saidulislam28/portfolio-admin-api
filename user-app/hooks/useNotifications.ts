@@ -2,6 +2,7 @@ import { ROUTES } from '@/constants/app.routes';
 import { callService, useCallService } from '@/services/AgoraCallService';
 import { displayIncomingCallNotification, displayOngoingCallNotification, removeChannelNotification } from '@/services/CallNotification';
 import { notificationService } from '@/services/NotificationService';
+import { CallStartPushNotificationDataPayload } from '@/types/push-notifications';
 import { useCallStore } from '@/zustand/callStore';
 import notifee, { Event, EventType } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
@@ -102,16 +103,16 @@ export const useNotifications = () => {
         await notificationService.endCall(data?.additionalInfo?.consultant_id, USER_ROLE.consultant);
     }
 
-    const receiveCall = async (callInfo: any) => {
+    const receiveCall = async (callInfo: CallStartPushNotificationDataPayload) => {
         console.log('receiveCall', callInfo)
         await callService.initialize();
         await startCall(
-            callInfo?.additionalInfo?.token,
-            callInfo?.additionalInfo?.user_id,
+            callInfo?.appointment_token,
+            callInfo?.user_id,
             {
-                id: callInfo?.additionalInfo?.Consultant?.id,
-                name: callInfo?.caller_name ?? callInfo?.additionalInfo?.Consultant?.full_name,
-                avatar: callInfo?.caller_image ?? callInfo?.additionalInfo?.Consultant?.profile_image,
+                id: callInfo?.consultant_id,
+                name: callInfo?.consultant_name,
+                avatar: callInfo?.consultant_image,
             }
         );
         router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: callInfo?.additionalInfo?.Consultant?.id }) as any)

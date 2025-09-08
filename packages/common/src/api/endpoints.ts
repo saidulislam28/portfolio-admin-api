@@ -15,6 +15,8 @@ export const API_CONSULTANT = {
   conversation_feedback: 'conversation-feedback',
   mocktest_feedback: 'mocktest-feedback',
   mocktest_comments: 'feedback-comments/mock-test',
+  send_start_call_notification: 'notifications/start-call',
+  send_end_call_notification: 'notifications/end-call'
 };
 
 export const API_COMMON = {

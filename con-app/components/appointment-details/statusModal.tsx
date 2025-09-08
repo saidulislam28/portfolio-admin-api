@@ -26,7 +26,6 @@ const StatusModal = ({
     setSelectedStatus,
     getStatusColor,
     handleConfirmStatusChange,
-    customConstants,
     statusCLoading
 
 }: any) => {
