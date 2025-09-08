@@ -73,6 +73,7 @@ export default function AppointmentsScreen() {
     handleGetConsultantAppointments();
   }, [activeTab]);
 
+  console.log('kata', categorizedAppointments)
   return (
     <View style={styles.container}>
       <LiveAppointments

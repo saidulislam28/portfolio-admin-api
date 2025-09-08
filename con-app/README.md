@@ -1,4 +1,8 @@
-# Welcome to your Expo app 👋
+# DO NOT RUN EXPO PREBUILD
+
+THis project has native code modifications. so do not run expo prebuild command becuase that will remove all changes.
+Maybe later we can turn this into expo native modules
+
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 

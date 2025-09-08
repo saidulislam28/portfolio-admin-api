@@ -145,7 +145,7 @@ function categorizeAppointments(appointments: Appointment[], deviceTimezone: str
     const hasEnded = now >= endTime;
     
     // Categorization logic
-    if (hasStarted && !hasEnded && ![AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW].includes(status)) {
+    if (hasStarted && AppointmentStatus.CONFIRMED === status) {
       // Live: started but not ended, and not in a terminal state
       categories.live.push(appointment);
     } else if (([AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW].includes(status))) {

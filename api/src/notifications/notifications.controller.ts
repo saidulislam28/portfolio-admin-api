@@ -50,7 +50,7 @@ export class NotificationController {
       await this.notificationService.sendCallNotification(payload);
       return res.success(true);
     } catch (error) {
-      console.log("Notification sernd",error)
+      console.log("Notification send",error)
       return res.error("Error");
     }
   }

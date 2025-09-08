@@ -53,14 +53,14 @@ export default function ResetPasswordScreen() {
         email_or_phone
       });
 
-      if (!result.success) {
+      if (!result?.data?.success) {
         Alert.alert('Error', result.error);
         setLoading(false);
         return;
       }
       await AsyncStorage.removeItem('email');
 
-      login(result.data);
+      login(result?.data?.data);
       router.push(ROUTES.HOME);
 
     } catch (error) {

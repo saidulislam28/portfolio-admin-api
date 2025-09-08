@@ -54,7 +54,7 @@ const VerifyOtpScreen = () => {
         email,
         top: Number(otpValue),
       });
-      if (!result.success) {
+      if (!result?.data?.success) {
         Alert.alert("Error", result.error);
         setIsVerifying(false);
         return;

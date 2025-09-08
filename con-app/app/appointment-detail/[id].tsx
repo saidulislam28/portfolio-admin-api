@@ -15,7 +15,7 @@ import { notificationService } from "@/services/NotificationService";
 import { getStatusColor } from "@/utility/statusColor";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { API_CONSULTANT, Get, Patch, USER_ROLE } from "@sm/common";
+import { API_CONSULTANT, Get, Patch, replacePlaceholders, USER_ROLE } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -83,7 +83,6 @@ export interface AppointmentDetailPageProps {
     myAppointments: string;
     mockFeedback: string;
     conversationFeedback: string;
-    callUser: (userId: number) => string;
   };
   customConstants?: {
     primaryColor?: string;
@@ -125,7 +124,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     myAppointments: ROUTES.MY_APPOINTMENTS,
     mockFeedback: ROUTES.MOCK_FEEDBACK_PAGE,
     conversationFeedback: ROUTES.CONVERSATION_FEEDBACK_PAGE,
-    callUser: ROUTES.CALL_USER,
   },
   customConstants = {
     primaryColor: PRIMARY_COLOR,
@@ -273,7 +271,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       // Default implementation
       await callService.initialize();
       await startCall(appointment?.token, Number(appointment?.consultant_id), {
-        id: Number(appointment?.user_id) || 0,
+        id: Number(appointment?.User?.id) || 0,
         name: appointment?.User?.full_name || "",
         avatar: appointment?.User?.profile_image,
       });
@@ -288,12 +286,12 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       }
 
       await notificationService.startCall(
-        appointment?.user_id || 0,
+        appointment?.User?.id || 0,
         USER_ROLE.user,
         notificationPayload
       );
       startAudioService();
-      router.push(customRoutes.callUser(Number(appointment?.user_id)));
+      router.push(replacePlaceholders(ROUTES.CALL_USER, {id: appointment?.User?.id}));
     } catch (error: any) {
       console.error("Failed to start call:", error);
       console.error("Failed call:", error);

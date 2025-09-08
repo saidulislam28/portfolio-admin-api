@@ -2,7 +2,7 @@ export const ROUTES = {
   ACCOUNT_EDIT: '/account/edit',
   APPOINTMENT_DETAIL: `/appointment-detail/[id]`,
   MY_APPOINTMENTS: "/appointments",
-  CALL_USER: (id: number) => `/call?user_id=${id}`,
+  CALL_USER: `/call?user_id={id}`,
   MOCK_FEEDBACK_PAGE: "/appointment-detail/mockFeedbackModal",
   CONVERSATION_FEEDBACK_PAGE: "/appointment-detail/conversationFeedbackForm",
   LOGIN: "/login",
