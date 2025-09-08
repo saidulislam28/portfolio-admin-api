@@ -14,7 +14,7 @@ import { PRIMARY_COLOR } from '@/lib/constants';
 import { Platform, StatusBar } from 'react-native';
 import { ROUTES } from '@/constants/app.routes';
 import { API_CONSULTANT, Post } from '@sm/common';
-import { InputField } from '@/components/InputField'; // Import the InputField component
+import { InputField } from '@/components/InputField';
 
 export default function ResetPasswordScreen() {
   const router = useRouter();

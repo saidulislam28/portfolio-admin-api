@@ -18,7 +18,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { InputField } from "@/components/InputField"; // Import the InputField component
+import { InputField } from "@/components/InputField";
 
 export default function LoginScreen() {
   const router = useRouter();

@@ -15,7 +15,7 @@ import {
   View,
 } from "react-native";
 import { Platform, StatusBar } from "react-native";
-import { InputField } from "@/components/InputField"; // Import the InputField component
+import { InputField } from "@/components/InputField";
 
 export default function ForgetScreen() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function ForgetScreen() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    setError(undefined); // Clear previous error
+    setError(undefined);
 
     // Validate email
     if (!email) {
