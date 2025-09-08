@@ -1,17 +1,17 @@
-import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Image } from "react-native";
 
-import { useAuth } from "@/context/useAuth";
 import smLogo from "@/assets/images/smlogo.png";
+import { BaseButton } from "@/components/BaseButton";
+import { InputField } from "@/components/InputField";
 import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
 import { PRIMARY_COLOR } from "@/lib/constants";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { registerUser } from "@sm/common";
 import {
-  ActivityIndicator,
   Alert,
   Keyboard,
   KeyboardAvoidingView,
@@ -19,13 +19,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
-import { BaseButton } from "@/components/BaseButton";
-import { InputField } from "@/components/InputField"; // Adjust path as needed
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");

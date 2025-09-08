@@ -1,20 +1,19 @@
+import { BaseButton } from '@/components/BaseButton';
 import CommonHeader from '@/components/CommonHeader';
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
+import { InputField } from '@/components/InputField';
 import { useAuth } from '@/context/useAuth';
+import { useAppSettings } from '@/hooks/queries/useAppSettings';
+import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
+import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
+import { validateEmail, validatePhone } from '@/utility/validator';
 import { API_USER, Post } from '@sm/common';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
-import { BaseButton } from '@/components/BaseButton';
-import { InputField } from '@/components/InputField'; // Import your InputField component
-import { validateEmail, validatePhone } from '@/utility/validator';
-import { useAppSettings } from '@/hooks/queries/useAppSettings';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  // Updated hook destructuring to use the new items and summary properties
   const {
     data: appSettingsData,
     error,

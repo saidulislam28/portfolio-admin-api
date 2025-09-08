@@ -1,5 +1,10 @@
+import smLogo from "@/assets/images/smlogo.png";
+import { BaseButton } from "@/components/BaseButton";
+import { InputField } from "@/components/InputField";
+import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
+import { useSocialAuth } from "@/hooks/useSocialAuth";
 import { PRIMARY_COLOR } from "@/lib/constants";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { loginUser, LoginUserResponse } from "@sm/common";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -16,12 +21,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import smLogo from "@/assets/images/smlogo.png";
-import { useAuth } from "@/context/useAuth";
-import { ROUTES } from "@/constants/app.routes";
-import { useSocialAuth } from "@/hooks/useSocialAuth";
-import { BaseButton } from "@/components/BaseButton";
-import { InputField } from "@/components/InputField";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -33,7 +32,6 @@ export default function LoginScreen() {
   const [passwordError, setPasswordError] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Use the custom social auth hook
   const {
     socialLoading,
     isGoogleLoading,

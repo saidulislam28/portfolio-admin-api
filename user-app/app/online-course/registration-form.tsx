@@ -1,6 +1,6 @@
 import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
-import { InputField } from "@/components/InputField"; // Import the InputField component
+import { InputField } from "@/components/InputField";
 import { useAuth } from "@/context/useAuth";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
 import { validateEmail, validatePhone } from "@/utility/validator";
