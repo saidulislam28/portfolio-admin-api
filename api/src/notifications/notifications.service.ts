@@ -219,15 +219,15 @@ export class NotificationService {
 
     const data: CallStartPushNotificationDataPayload = {
       caller_name: appointment?.Consultant?.full_name ?? "Consultant",
-      caller_image: appointment?.Consultant?.profile_image ?? "",
+      caller_image: appointment?.Consultant?.profile_image ?? "test",
       title: "Test",
       app: "Speaking Mate platform",
       event_type: 'incoming_call',
       user_id: `${appointment?.user_id}`,
       consultant_id: `${appointment.consultant_id}`,
-      consultant_name: appointment.Consultant.full_name,
-      consultant_image: appointment.Consultant.profile_image,
-      appointment_token: appointment.token
+      consultant_name: appointment.Consultant.full_name ?? "Consultant",
+      consultant_image: appointment.Consultant.profile_image ?? "test",
+      appointment_token: `${appointment.token}`
     }
 
     const msg = await this.firebaseAdmin.messaging().send({
