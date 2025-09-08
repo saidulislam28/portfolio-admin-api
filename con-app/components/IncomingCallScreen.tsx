@@ -1,8 +1,9 @@
+import { ROUTES } from '@/constants/app.routes';
 import { callService } from '@/services/AgoraCallService';
 import { notificationService } from '@/services/NotificationService';
 import { stopRingtone } from '@/services/ringtoneService';
 import { useCallStore } from '@/zustand/callStore';
-import { USER_ROLE } from '@sm/common';
+import { replacePlaceholders, USER_ROLE } from '@sm/common';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -25,7 +26,7 @@ const IncomingCallScreen = () => {
         await hideCallScreen();
 
         // Navigate to call screen
-        router.push(`/call?user_id=${incomingCallInfo?.additionalInfo?.user_id}`);
+        router.push(replacePlaceholders(ROUTES.CALL_USER, { id: incomingCallInfo?.additionalInfo?.user_id }) as any);
     }
 
     return (

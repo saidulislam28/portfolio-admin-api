@@ -5,6 +5,7 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ROUTES } from '@/constants/app.routes';
 
 export default function PreHeader() {
   const { user, isLoading }: any = useAuth();
@@ -34,7 +35,7 @@ export default function PreHeader() {
                 </Text>
               </View>
               :
-              <TouchableOpacity onPress={() => router.replace('/login')}>
+              <TouchableOpacity onPress={() => router.replace(ROUTES.LOGIN as any)}>
                 <View style={styles.loginButton}>
                   <Text style={styles.loginButtonText}>
                     Login
@@ -46,13 +47,6 @@ export default function PreHeader() {
       </View>
 
       <View style={styles.rightContainer}>
-        {/* <Ionicons name="notifications" size={24} color={PRIMARY_COLOR} /> */}
-        {/* <TouchableOpacity onPress={()=> router.push('/cart')} style={styles.CartContainer}>
-          <Ionicons name="cart-outline" size={24} style={styles.cartIcon} color={PRIMARY_COLOR} />
-          <Text style={styles.CartCount}>{totalItems ?? 0}</Text>
-        </TouchableOpacity> */}
-
-
         {
           user ? <>
             {
