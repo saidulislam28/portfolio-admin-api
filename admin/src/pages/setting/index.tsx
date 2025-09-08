@@ -189,7 +189,7 @@ const Settings = () => {
                 >
                     <h3 style={{ borderBottom: '1px ridge' }}>Contact</h3>
 
-                    <Form.Item label="Email" name="email">
+                    <Form.Item label="Email." name="email">
                         <Input type="email" />
                     </Form.Item>
                     <Form.Item label="Phone" name="phone">
@@ -298,6 +298,9 @@ const Settings = () => {
                     </Form.Item>
 
                     <Form.Item label="Brand Url" name="brand_url">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Delivery Charge" name="delivery_charge">
                         <Input />
                     </Form.Item>
 

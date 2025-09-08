@@ -65,6 +65,10 @@ const AppointmentDetailPage = () => {
       handleFetchAppointment();
     }
   }, [id]);
+
+
+  
+
   // Add this refresh handler function
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -377,7 +381,7 @@ const AppointmentDetailPage = () => {
           <BaseButton
             title=" Feedback Report"
             onPress={handleFeedback}
-            isLoading={isDisabled}
+            disabled={isDisabled}
             variant="primary"
             fullWidth={false}
           />

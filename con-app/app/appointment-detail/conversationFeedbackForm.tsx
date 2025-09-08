@@ -268,7 +268,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     }: {
       label: string;
       field: keyof FeedbackData;
-      isChecked: boolean;
+      isChecked: any;
       onPress: () => void;
     }) => {
       return (

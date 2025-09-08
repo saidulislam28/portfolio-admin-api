@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ConsultantAppointmentsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async getAppointmentList(consultant_id: number) {
     console.log('came hrre', consultant_id);
@@ -166,6 +166,7 @@ export class ConsultantAppointmentsService {
         consultant_id: findConsultant?.id,
         id: id,
       },
+
       select: {
         id: true,
         start_at: true,
@@ -193,6 +194,8 @@ export class ConsultantAppointmentsService {
           },
         },
         consultant_id: true,
+        MockTestFeedback: true,
+        ConversationFeedback: true
       },
     });
 
@@ -202,6 +205,7 @@ export class ConsultantAppointmentsService {
         HttpStatus.NOT_FOUND,
       );
     }
+    
 
     return appointment;
   }

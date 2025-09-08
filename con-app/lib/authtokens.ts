@@ -7,7 +7,7 @@ export const getAuthTokenMobile = async () => {
     try {
         const token = await AsyncStorage.getItem('jwt_token');
         // const token = user.token;
-        console.log("token from auth token", token)
+        // console.log("token from auth token", token)
         return token;
     } catch (error) {
         console.error('Error getting token from AsyncStorage:', error);

@@ -7,11 +7,19 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
 import { BaseButton } from '@/components/BaseButton';
+import { InputField } from '@/components/InputField'; // Import your InputField component
+import { validateEmail, validatePhone } from '@/utility/validator';
+import { useAppSettings } from '@/hooks/queries/useAppSettings';
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   // Updated hook destructuring to use the new items and summary properties
+  const {
+    data: appSettingsData,
+    error,
+    isSuccess: isSettingsFetchSuccess,
+  } = useAppSettings();
   const { items } = useCart();
   const { totalItems, subtotal, loading: cartLoading } = useCartSummary();
   const { clearAllItems } = useCartActions();
@@ -28,13 +36,26 @@ export default function CheckoutScreen() {
     isCOD: false,
   });
 
+  const charge = appSettingsData?.base_data?.delivery_charge;
+
   const [processing, setProcessing] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
+
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   const handlePaymentMethodChange = (isCOD: boolean) => {
@@ -58,34 +79,34 @@ export default function CheckoutScreen() {
   };
 
   const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
     const requiredFields = [
       'firstName', 'lastName', 'email', 'phone',
       'address'
     ];
 
+    // Check required fields
     for (const field of requiredFields) {
       if (!formData[field]?.trim()) {
-        Alert.alert('Validation Error', `${field.replace('_', ' ')} is required`);
-        return false;
+        newErrors[field] = `${field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} is required`;
       }
     }
+
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      Alert.alert('Validation Error', 'Please enter a valid email address');
-      return false;
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.error!;
     }
 
     // Phone validation (basic)
-    const phoneRegex = /^01[3-9]\d{8}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      Alert.alert('Validation Error', 'Please enter a valid Bangladeshi phone number');
-      return false;
+    const phoneValidation = validatePhone(formData.phone);
+    if (!phoneValidation.isValid) {
+      newErrors.phone = phoneValidation.error!;
     }
 
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
-
 
   const handleCheckout = async () => {
     if (!validateForm()) {
@@ -95,7 +116,7 @@ export default function CheckoutScreen() {
     try {
       setProcessing(true);
 
-      const deliveryCharge = 50;
+      const deliveryCharge = Number(charge);
       // Use the summary object for the subtotal
       const total = subtotal + deliveryCharge;
       const itemsToPurchase = prepareItemsArray();
@@ -167,7 +188,7 @@ export default function CheckoutScreen() {
     );
   }
 
-  const deliveryCharge: number = 50;
+  const deliveryCharge: number = Number(charge);
   // Use the summary object for the subtotal
   const total = subtotal + deliveryCharge;
 
@@ -199,57 +220,74 @@ export default function CheckoutScreen() {
         </View>
 
         <Text style={styles.sectionTitle}>Shipping Information</Text>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>First Name</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.firstName}
-            onChangeText={(text) => handleChange("firstName", text)}
-            placeholder="Enter first name"
-          />
-        </View>
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Last Name</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.lastName}
-            onChangeText={(text) => handleChange("lastName", text)}
-            placeholder="Enter last name"
-          />
-        </View>
+        <InputField
+          label="First Name"
+          fieldKey="firstName"
+          value={formData.firstName}
+          onChangeText={(text) => handleChange("firstName", text)}
+          error={errors.firstName}
+          placeholder="Enter first name"
+          focusedField={focusedField}
+          onFocus={() => setFocusedField("firstName")}
+          onBlur={() => setFocusedField(null)}
+        />
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.email}
-            onChangeText={(text) => handleChange("email", text)}
-            keyboardType="email-address"
-            placeholder="Enter email address"
-          />
-        </View>
+        <InputField
+          label="Last Name"
+          fieldKey="lastName"
+          value={formData.lastName}
+          onChangeText={(text) => handleChange("lastName", text)}
+          error={errors.lastName}
+          placeholder="Enter last name"
+          focusedField={focusedField}
+          onFocus={() => setFocusedField("lastName")}
+          onBlur={() => setFocusedField(null)}
+        />
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Phone</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.phone}
-            onChangeText={(text) => handleChange("phone", text)}
-            keyboardType="phone-pad"
-            placeholder="Enter phone number"
-          />
-        </View>
+        <InputField
+          label="Email"
+          fieldKey="email"
+          value={formData.email}
+          onChangeText={(text) => handleChange("email", text)}
+          error={errors.email}
+          keyboardType="email-address"
+          placeholder="Enter email address"
+          focusedField={focusedField}
+          onFocus={() => setFocusedField("email")}
+          onBlur={() => setFocusedField(null)}
+        />
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Address</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.address}
-            onChangeText={(text) => handleChange("address", text)}
-            placeholder="Enter full address"
-          />
-        </View>
+        <InputField
+          label="Phone"
+          fieldKey="phone"
+          value={formData.phone}
+          onChangeText={(text) => handleChange("phone", text)}
+          error={errors.phone}
+          keyboardType="phone-pad"
+          placeholder="Enter phone number"
+          focusedField={focusedField}
+          onFocus={() => setFocusedField("phone")}
+          onBlur={() => setFocusedField(null)}
+        />
+
+        <InputField
+          label="Address"
+          fieldKey="address"
+          value={formData.address}
+          onChangeText={(text) => handleChange("address", text)}
+          error={errors.address}
+          placeholder="Enter full address"
+          focusedField={focusedField}
+          onFocus={() => setFocusedField("address")}
+          onBlur={() => setFocusedField(null)}
+          multiline={true}
+          numberOfLines={3}
+        />
+
+        {/* Payment Method Section */}
+        <Text style={styles.sectionTitle}>Payment Method</Text>
+
         <TouchableOpacity
           style={styles.radioOption}
           onPress={() => handlePaymentMethodChange(false)}

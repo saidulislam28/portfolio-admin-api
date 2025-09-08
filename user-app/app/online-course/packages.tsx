@@ -145,7 +145,7 @@ export default function PackagesScreen() {
         {/* Continue Button */}
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-        <BaseButton title="Continue to Registration" onPress={handleContinue} disabled={!selectedPackage} />
+        <BaseButton title="Continue" onPress={handleContinue} disabled={!selectedPackage} />
       </View>
     </View>
   );

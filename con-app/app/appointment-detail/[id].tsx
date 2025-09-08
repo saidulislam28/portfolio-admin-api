@@ -129,7 +129,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     primaryColor: PRIMARY_COLOR,
     secondaryColor: SECONDARY_COLOR,
   },
-}) => {
+}: any) => {
   const router = useRouter();
   const params = useLocalSearchParams();
 
@@ -191,7 +191,10 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         API_CONSULTANT.appointment_details.replace("{id}", appointmentId)
       );
 
+      // console.log("fetching appointment details from api:", response?.data)
+
       if (response?.data) {
+
         setAppointment(response.data);
       } else {
         Alert.alert("Error", "Failed to fetch appointment details");
@@ -274,7 +277,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         id: Number(appointment?.User?.id) || 0,
         name: appointment?.User?.full_name || "",
         avatar: appointment?.User?.profile_image,
-      });
+      } as any);
 
       const notificationPayload: any = {
         ...appointment,
@@ -330,6 +333,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   };
 
   const handleSubmitFeedback = () => {
+    console.log("feebdback click")
     if (!appointment) return;
 
     if (
@@ -443,7 +447,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     );
   }
 
-  // console.log("appoipntment>>", appointment);
+  // console.log("appoipntment details>>", appointment);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -681,43 +685,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               status={appointment?.status}
               startVideoCall={startVideoCall}
             />
-
-            {/* <TouchableOpacity
-              style={[
-                styles.feedbackButton,
-                { height: BUTTON_HEIGHT },
-                appointment?.MockTestFeedback ||
-                appointment?.ConversationFeedback
-                  ? styles.feedbackButtonDisabled
-                  : styles.feedbackButton,
-              ]}
-              onPress={handleSubmitFeedback}
-              activeOpacity={0.7}
-              disabled={
-                !!(
-                  appointment?.MockTestFeedback ||
-                  appointment?.ConversationFeedback
-                )
-              }
-            >
-              <MaterialIcons
-                name="feedback"
-                size={isTablet ? 24 : 18}
-                color={customConstants.primaryColor}
-              />
-              <Text
-                style={[
-                  styles.feedbackButtonText,
-                  appointment?.MockTestFeedback ||
-                  appointment?.ConversationFeedback
-                    ? styles.disableText
-                    : styles.feedbackButtonText,
-                  { color: customConstants.primaryColor },
-                ]}
-              >
-                Provide Feedback
-              </Text>
-            </TouchableOpacity> */}
 
             <BaseButton
               title="Provide Feedback"

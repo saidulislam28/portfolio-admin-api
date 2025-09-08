@@ -1,3 +1,4 @@
+import { BaseButton } from "@/components/BaseButton";
 import { ROUTES } from "@/constants/app.routes";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -34,8 +35,8 @@ export default function LoginScreen() {
       }
 
       await AsyncStorage.setItem("email", result?.data?.email);
-      router.push(ROUTES.RESET_PASSWORD);
-    } catch (error) {
+      router.push(ROUTES.RESET_PASSWORD as any);
+    } catch (error: any) {
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
       setLoading(false);
     }
@@ -63,17 +64,12 @@ export default function LoginScreen() {
             value={email}
             onChangeText={setEmail}
           />
-        </View>
 
-        {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-          <Text style={styles.loginButtonText}>
-            {loading ? "Loading..." : "submit"}
-          </Text>
-        </TouchableOpacity>
+        </View>
+        <BaseButton title="Submit" onPress={handleSubmit} isLoading={loading} />
 
         <TouchableOpacity
-          onPress={() => router.push(ROUTES.LOGIN)}
+          onPress={() => router.push(ROUTES.LOGIN as any)}
           style={styles.backToLogin}
         >
           <Text style={styles.backToLoginText}>

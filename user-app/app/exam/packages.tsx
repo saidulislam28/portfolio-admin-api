@@ -110,7 +110,7 @@ export default function PackagesScreen() {
         )}
       </ScrollView>
       <View style={styles.stickyButtonContainer}>
-          <BaseButton title="Continue to Registration" onPress={handleContinue} disabled={!selectedPackage || !selectedCenter} />
+          <BaseButton title="Continue" onPress={handleContinue} disabled={!selectedPackage || !selectedCenter} />
       </View>
     </View>
   );

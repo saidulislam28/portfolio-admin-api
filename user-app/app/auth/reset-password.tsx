@@ -51,17 +51,30 @@ export default function ResetPasswordScreen() {
         email_or_phone,
       });
 
+<<<<<<< HEAD:con-app/app/reset-password.tsx
+      if (!result?.data?.success) {
+        Alert.alert('Error', result.error);
+=======
       if (!result.success) {
         Alert.alert("Error", result.error);
+>>>>>>> f6d3efbe8b83cc0daa395dc0b6f0a02742d86458:user-app/app/auth/reset-password.tsx
         setLoading(false);
         return;
       }
       await AsyncStorage.removeItem("email");
 
-      login(result.data);
+<<<<<<< HEAD:con-app/app/reset-password.tsx
+      login(result?.data?.data);
       router.push(ROUTES.HOME);
+
     } catch (error) {
+      Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
+=======
+      login(result.data);
+      router.push(ROUTES.HOME as any);
+    } catch (error:any) {
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
+>>>>>>> f6d3efbe8b83cc0daa395dc0b6f0a02742d86458:user-app/app/auth/reset-password.tsx
       setLoading(false);
     }
   };

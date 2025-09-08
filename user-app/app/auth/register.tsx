@@ -25,6 +25,7 @@ import {
   View,
 } from "react-native";
 import { BaseButton } from "@/components/BaseButton";
+import { InputField } from "@/components/InputField"; // Adjust path as needed
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");
@@ -32,11 +33,19 @@ export default function RegisterScreen() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [expectedLevel, setExpectedLevel] = useState("");
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  // Error states
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    expectedLevel: "",
+  });
 
   const router = useRouter();
   const { register } = useAuth();
@@ -51,7 +60,24 @@ export default function RegisterScreen() {
     setPassword("123456");
     setConfirmPassword("123456");
     setExpectedLevel("medium");
+
+    // Clear errors when filling dummy data
+    setErrors({
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      expectedLevel: "",
+    });
   }, []);
+
+  // Clear specific error when user starts typing
+  const clearError = (field: keyof typeof errors) => {
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: "" }));
+    }
+  };
 
   // Email validation regex
   const validateEmail = (email: any) => {
@@ -75,50 +101,80 @@ export default function RegisterScreen() {
     return password.length >= 6;
   };
 
-  const handleRegister = async () => {
-    // Dismiss keyboard
-    Keyboard.dismiss();
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      expectedLevel: "",
+    };
 
-    setLoading(true);
-    setError("");
+    let isValid = true;
 
-    // Normalize email
+    // Normalize email and phone
     const cleanedEmail = email.replace(/\s+/g, "").toLowerCase();
     const cleanedPhone = phone.replace(/\s+/g, "");
 
-    // Required field check
-    if (!name || !cleanedEmail || !password || !expectedLevel) {
-      Alert.alert("Error", "Please fill all required fields.");
-      setLoading(false);
-      return;
+    // Required field validation
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
     }
 
-    // Email validation
-    if (!validateEmail(cleanedEmail)) {
-      Alert.alert("Invalid Email", "Please enter a valid email address.");
-      setLoading(false);
-      return;
+    if (!cleanedEmail) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!validateEmail(cleanedEmail)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
     }
 
     // Phone validation (if phone is provided)
     // if (cleanedPhone && !validateBDPhone(cleanedPhone)) {
-    //   Alert.alert(
-    //     "Invalid Phone Number",
-    //     "Please enter a valid Bangladesh phone number (e.g., 01712345678 or +8801712345678)."
-    //   );
-    //   setLoading(false);
-    //   return;
+    //   newErrors.phone = "Please enter a valid Bangladesh phone number (e.g., 01712345678)";
+    //   isValid = false;
     // }
 
-    // Password validation
-    if (!validatePassword(password)) {
-      Alert.alert(
-        "Invalid Password",
-        "Password must be at least 6 characters long."
-      );
-      setLoading(false);
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (!validatePassword(password)) {
+      newErrors.password = "Password must be at least 6 characters long";
+      isValid = false;
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
+    if (!expectedLevel) {
+      newErrors.expectedLevel = "Please select your expected level";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleRegister = async () => {
+    // Dismiss keyboard
+    Keyboard.dismiss();
+
+    if (!validateForm()) {
       return;
     }
+
+    setLoading(true);
+
+    // Normalize email
+    const cleanedEmail = email.replace(/\s+/g, "").toLowerCase();
+    const cleanedPhone = phone.replace(/\s+/g, "");
 
     const registerData: any = {
       full_name: name,
@@ -131,7 +187,7 @@ export default function RegisterScreen() {
     try {
       const response = await registerUser(registerData);
       if (response.success) {
-        router.push(`${ROUTES.VERIFY_OTP}?email=${response?.data?.email}`);
+        router.push(`${ROUTES.VERIFY_OTP}?email=${response?.data?.email}` as any);
       } else {
         // Show API error instead of going to OTP page
         const errorMessage =
@@ -164,7 +220,6 @@ export default function RegisterScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.safeArea}>
-        {/* <CommonHeader /> */}
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -186,137 +241,115 @@ export default function RegisterScreen() {
               scholarship for abroad studies.
             </Text>
 
-            {/* Name Field */}
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Name</Text>
-              <View style={styles.inputContainer}>
-                <MaterialCommunityIcons
-                  name="account-outline"
-                  size={20}
-                  style={styles.icon}
-                />
-                <TextInput
-                  placeholder="Enter Your Name"
-                  style={styles.input}
-                  value={name}
-                  onChangeText={setName}
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-              </View>
+
+            <View style={{ width: '100%' }}>
+              {/* Name Field */}
+
+              <InputField
+                label="Name"
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                  clearError('name');
+                }}
+                error={errors.name}
+                placeholder="Enter Your Name"
+                fieldKey="name"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('name')}
+                onBlur={() => setFocusedField(null)}
+                returnKeyType="next"
+                testID="name-input"
+              />
+
+              {/* Email Field */}
+              <InputField
+                label="Email"
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  clearError('email');
+                }}
+                error={errors.email}
+                placeholder="Enter Your Email"
+                fieldKey="email"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField(null)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                returnKeyType="next"
+                testID="email-input"
+              />
+
+              {/* Phone Field */}
+              <InputField
+                label="Phone"
+                value={phone}
+                onChangeText={(text) => {
+                  setPhone(text);
+                  clearError('phone');
+                }}
+                error={errors.phone}
+                placeholder="01712345678"
+                fieldKey="phone"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('phone')}
+                onBlur={() => setFocusedField(null)}
+                keyboardType="phone-pad"
+                returnKeyType="next"
+                testID="phone-input"
+              />
+
+              {/* Password Field */}
+              <InputField
+                label="Password"
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  clearError('password');
+                }}
+                error={errors.password}
+                placeholder="Enter Your Password"
+                fieldKey="password"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
+                isPassword={true}
+                returnKeyType="next"
+                testID="password-input"
+              />
+
+              {/* Confirm Password Field */}
+              <InputField
+                label="Confirm Password"
+                value={confirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  clearError('confirmPassword');
+                }}
+                error={errors.confirmPassword}
+                placeholder="Confirm Your Password"
+                fieldKey="confirmPassword"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('confirmPassword')}
+                onBlur={() => setFocusedField(null)}
+                isPassword={true}
+                returnKeyType="next"
+                testID="confirm-password-input"
+              />
+
             </View>
 
-            {/* Email Field */}
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Email</Text>
-              <View style={styles.inputContainer}>
-                <MaterialCommunityIcons
-                  name="email-outline"
-                  size={20}
-                  style={styles.icon}
-                />
-                <TextInput
-                  placeholder="Enter Your Email"
-                  style={styles.input}
-                  keyboardType="email-address"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-              </View>
-            </View>
-
-            {/* Phone Field */}
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Phone</Text>
-              <View style={styles.inputContainer}>
-                <MaterialCommunityIcons
-                  name="phone-outline"
-                  size={20}
-                  style={styles.icon}
-                />
-                <TextInput
-                  placeholder="01712345678"
-                  style={styles.input}
-                  keyboardType="phone-pad"
-                  value={phone}
-                  onChangeText={setPhone}
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-              </View>
-            </View>
-
-            {/* Password Field */}
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Password</Text>
-              <View style={styles.inputContainer}>
-                <MaterialCommunityIcons
-                  name="lock-outline"
-                  size={20}
-                  style={styles.icon}
-                />
-                <TextInput
-                  placeholder="Enter Your Password"
-                  secureTextEntry={!passwordVisible}
-                  style={styles.input}
-                  value={password}
-                  onChangeText={setPassword}
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-                <TouchableOpacity
-                  onPress={() => setPasswordVisible(!passwordVisible)}
-                >
-                  <Feather
-                    name={passwordVisible ? "eye" : "eye-off"}
-                    size={20}
-                    style={styles.iconRight}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.helperText}>Must be 6 characters</Text>
-            </View>
-
-            {/* Confirm Password Field */}
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>Confirm Password</Text>
-              <View style={styles.inputContainer}>
-                <MaterialCommunityIcons
-                  name="lock-outline"
-                  size={20}
-                  style={styles.icon}
-                />
-                <TextInput
-                  placeholder="Confirm Your Password"
-                  secureTextEntry={!confirmPasswordVisible}
-                  style={styles.input}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    setConfirmPasswordVisible(!confirmPasswordVisible)
-                  }
-                >
-                  <Feather
-                    name={confirmPasswordVisible ? "eye" : "eye-off"}
-                    size={20}
-                    style={styles.iconRight}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.helperText}>Must be 6 characters</Text>
-            </View>
 
             {/* Expected Level Field */}
             <View style={styles.fieldContainer}>
               <Text style={styles.fieldLabel}>Expected Level</Text>
-              <View style={styles.pickerContainer}>
+              <View style={[
+                styles.pickerContainer,
+                focusedField === 'expectedLevel' && styles.pickerContainerFocused,
+                errors.expectedLevel && styles.pickerContainerError
+              ]}>
                 <MaterialCommunityIcons
                   name="calendar-account-outline"
                   size={20}
@@ -324,7 +357,10 @@ export default function RegisterScreen() {
                 />
                 <Picker
                   selectedValue={expectedLevel}
-                  onValueChange={(itemValue) => setExpectedLevel(itemValue)}
+                  onValueChange={(itemValue) => {
+                    setExpectedLevel(itemValue);
+                    clearError('expectedLevel');
+                  }}
                   style={styles.picker}
                 >
                   <Picker.Item
@@ -337,7 +373,11 @@ export default function RegisterScreen() {
                   <Picker.Item label="High (above 7)" value="high" />
                 </Picker>
               </View>
+              {errors.expectedLevel && (
+                <Text style={styles.errorText}>{errors.expectedLevel}</Text>
+              )}
             </View>
+
             {__DEV__ && (
               <TouchableOpacity
                 onPress={fillDummyData}
@@ -348,6 +388,7 @@ export default function RegisterScreen() {
                 </Text>
               </TouchableOpacity>
             )}
+
             <BaseButton
               title="Register"
               onPress={handleRegister}
@@ -383,7 +424,7 @@ export default function RegisterScreen() {
             {/* Login Link */}
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Have an account? </Text>
-              <Link href={"/login"}>
+              <Link href={ROUTES.LOGIN as any}>
                 <Text style={styles.loginLink}>Login</Text>
               </Link>
             </View>
@@ -431,83 +472,41 @@ const styles = StyleSheet.create({
   },
   fieldContainer: {
     width: "100%",
-    marginBottom: 20,
+    marginBottom: 16,
   },
   fieldLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#333",
-    marginBottom: 8,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#E5E5E5",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    backgroundColor: "#F8F8F8",
+    fontSize: 14,
+    color: "#212529",
+    marginBottom: 6,
   },
   pickerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: "#E5E5E5",
+    borderColor: "#CED4DA",
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 12,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#FFFFFF",
+    height: 48,
+  },
+  pickerContainerFocused: {
+    borderColor: "#0D6EFD",
+  },
+  pickerContainerError: {
+    borderColor: "#DC3545",
   },
   icon: {
     marginRight: 12,
     color: "#999",
   },
-  iconRight: {
-    marginLeft: 12,
-    color: "#999",
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: "#333",
-  },
   picker: {
     flex: 1,
     color: "#333",
   },
-  helperText: {
-    fontSize: 12,
-    color: PRIMARY_COLOR,
-    marginTop: 4,
-    marginLeft: 4,
-  },
-  registerButton: {
-    backgroundColor: PRIMARY_COLOR,
-    borderRadius: 8,
-    paddingVertical: 16,
-    alignItems: "center",
-    width: "100%",
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  disabledButton: {
-    opacity: 0.7,
-  },
-  registerButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  loadingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loadingText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-    marginLeft: 8,
+  errorText: {
+    color: "#DC3545",
+    fontSize: 14,
+    marginTop: 8,
   },
   orContainer: {
     marginVertical: 20,

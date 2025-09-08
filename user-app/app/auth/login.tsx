@@ -13,7 +13,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -22,15 +21,17 @@ import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
 import { useSocialAuth } from "@/hooks/useSocialAuth";
 import { BaseButton } from "@/components/BaseButton";
+import { InputField } from "@/components/InputField";
 
 export default function LoginScreen() {
   const router = useRouter();
   const { login }: any = useAuth();
-  const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // Use the custom social auth hook
   const {
@@ -45,25 +46,33 @@ export default function LoginScreen() {
     const cleanedEmail = email.replace(/\s+/g, "").toLowerCase();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Clear previous email error
+    // Clear previous errors
     setEmailError("");
+    setPasswordError("");
 
-    if (!cleanedEmail || !password) {
-      if (!cleanedEmail) {
-        setEmailError("Email is required");
-      }
-      Alert.alert("Error", "Please fill in all fields");
+    let isValid = true;
+
+    if (!cleanedEmail) {
+      setEmailError("Email is required");
+      isValid = false;
+    }
+
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
+
+    if (!isValid) {
       return false;
     }
 
     if (!emailRegex.test(cleanedEmail)) {
-      setEmailError("Incorrect Email");
-      Alert.alert("Error", "Please enter a valid email address");
+      setEmailError("Please enter a valid email address");
       return false;
     }
 
     if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters");
+      setPasswordError("Password must be at least 6 characters");
       return false;
     }
 
@@ -97,7 +106,7 @@ export default function LoginScreen() {
       console.log("Error status:", status);
 
       if (status === 401) {
-        Alert.alert("Unauthorized", "Invalid email or password.");
+        setPasswordError("Invalid email or password");
       } else if (status === 500) {
         Alert.alert("Server Error", "Something went wrong on the server.");
       } else {
@@ -113,6 +122,21 @@ export default function LoginScreen() {
     if (emailError) {
       setEmailError("");
     }
+  };
+
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    if (passwordError) {
+      setPasswordError("");
+    }
+  };
+
+  const handleFieldFocus = (fieldKey: string) => {
+    setFocusedField(fieldKey);
+  };
+
+  const handleFieldBlur = () => {
+    setFocusedField(null);
   };
 
   return (
@@ -138,62 +162,37 @@ export default function LoginScreen() {
           </Text>
 
           {/* Email Input */}
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Email</Text>
-            <View
-              style={[styles.inputContainer, emailError && styles.inputError]}
-            >
-              <MaterialCommunityIcons
-                name="email-outline"
-                size={20}
-                style={styles.icon}
-              />
-              <TextInput
-                placeholder="info@gmail.com"
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={handleEmailChange}
-                placeholderTextColor="#999"
-              />
-            </View>
-            {emailError ? (
-              <View style={styles.errorContainer}>
-                <MaterialCommunityIcons
-                  name="alert"
-                  size={16}
-                  color="#FF4444"
-                />
-                <Text style={styles.errorText}>{emailError}</Text>
-              </View>
-            ) : null}
-          </View>
+          <View style={{ width: '100%' }}>
+            <InputField
+              label="Email"
+              value={email}
+              onChangeText={handleEmailChange}
+              error={emailError}
+              fieldKey="email"
+              focusedField={focusedField}
+              onFocus={() => handleFieldFocus("email")}
+              onBlur={handleFieldBlur}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholder="info@gmail.com"
+              testID="email-input"
+            />
 
-          {/* Password Input */}
-          <View style={styles.fieldContainer}>
-            <Text style={styles.label}>Password</Text>
-            <View style={styles.inputContainer}>
-              <Feather name="lock" size={20} style={styles.icon} />
-              <TextInput
-                placeholder="Enter Your Password"
-                secureTextEntry={!passwordVisible}
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                autoCapitalize="none"
-                placeholderTextColor="#999"
-              />
-              <TouchableOpacity
-                onPress={() => setPasswordVisible(!passwordVisible)}
-              >
-                <Feather
-                  name={passwordVisible ? "eye" : "eye-off"}
-                  size={20}
-                  style={styles.iconRight}
-                />
-              </TouchableOpacity>
-            </View>
+            {/* Password Input */}
+            <InputField
+              label="Password"
+              value={password}
+              onChangeText={handlePasswordChange}
+              error={passwordError}
+              isPassword={true}
+              fieldKey="password"
+              focusedField={focusedField}
+              onFocus={() => handleFieldFocus("password")}
+              onBlur={handleFieldBlur}
+              autoCapitalize="none"
+              placeholder="Enter Your Password"
+              testID="password-input"
+            />
           </View>
 
           <TouchableOpacity
@@ -204,6 +203,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <BaseButton title="Login" onPress={handleLogin} isLoading={loading} />
+
           {/* Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
@@ -251,7 +251,7 @@ export default function LoginScreen() {
           {/* Join Us Link */}
           <View style={styles.signupContainer}>
             <Text style={styles.joinText}>Don't have an account? </Text>
-            <Link href={"/registration"}>
+            <Link href={ROUTES.REGISTRATION as any}>
               <Text style={styles.joinLink}>Join Us</Text>
             </Link>
           </View>
@@ -294,55 +294,6 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     lineHeight: 20,
   },
-  fieldContainer: {
-    width: "100%",
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-    marginBottom: 8,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    width: "100%",
-    backgroundColor: "#fff",
-    minHeight: 48,
-  },
-  inputError: {
-    borderColor: "#FF4444",
-    backgroundColor: "#FFF5F5",
-  },
-  icon: {
-    marginRight: 12,
-    color: "#888",
-  },
-  iconRight: {
-    marginLeft: 8,
-    color: "#888",
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: "#000",
-  },
-  errorContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 6,
-  },
-  errorText: {
-    fontSize: 14,
-    color: "#FF4444",
-    marginLeft: 4,
-  },
   forgotPassword: {
     alignSelf: "flex-end",
     marginBottom: 30,
@@ -352,23 +303,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
-  loginButton: {
-    backgroundColor: PRIMARY_COLOR,
-    borderRadius: 8,
-    paddingVertical: 16,
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 30,
-    minHeight: 52,
-    justifyContent: "center",
-  },
   disabledButton: {
     opacity: 0.7,
-  },
-  loginButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 16,
   },
   dividerContainer: {
     flexDirection: "row",

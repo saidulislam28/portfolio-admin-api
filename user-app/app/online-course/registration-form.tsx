@@ -1,5 +1,10 @@
+import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
+import { InputField } from "@/components/InputField"; // Import the InputField component
+import { useAuth } from "@/context/useAuth";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
+import { validateEmail, validatePhone } from "@/utility/validator";
+import { API_USER, Post } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -9,13 +14,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { useAuth } from "@/context/useAuth";
-import { API_USER, Post } from "@sm/common";
-import { BaseButton } from "@/components/BaseButton";
 
 const devFormData = {
   first_name: "John",
@@ -36,6 +36,8 @@ const ExamRegistrationFrom = () => {
   const { user, isLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -72,6 +74,7 @@ const ExamRegistrationFrom = () => {
   );
 
   const validateForm = () => {
+    const newErrors: Record<string, string> = {};
     const requiredFields = [
       "first_name",
       "last_name",
@@ -79,48 +82,56 @@ const ExamRegistrationFrom = () => {
       "phone",
       "whatsapp_number",
       "address",
+      "gender",
+      "emergency_contact_name",
+      "emergency_contact"
     ];
 
     for (const field of requiredFields) {
       if (!formData[field]?.trim()) {
-        Alert.alert(
-          "Validation Error",
-          `${field.replace("_", " ")} is required`
-        );
-        return false;
+        newErrors[field] = `${field.replace(/_/g, ' ')} is required`;
       }
     }
 
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      Alert.alert("Validation Error", "Please enter a valid email address");
-      return false;
+    // Email validation
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.error!;
     }
 
-    // Phone validation (basic)
-    const phoneRegex = /^01[3-9]\d{8}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      Alert.alert(
-        "Validation Error",
-        "Please enter a valid Bangladeshi phone number"
-      );
-      return false;
+    // Phone validation using reusable function
+    const phoneValidation = validatePhone(formData.phone);
+    if (!phoneValidation.isValid) {
+      newErrors.phone = phoneValidation.error!;
+    }
+    const whatsappValidation = validatePhone(formData.whatsapp_number);
+    if (!whatsappValidation.isValid) {
+      newErrors.whatsapp_number = whatsappValidation.error!;
+    }
+    const emergencyValidation = validatePhone(formData.emergency_contact);
+    if (!emergencyValidation.isValid) {
+      newErrors.emergency_contact = emergencyValidation.error!;
     }
 
-    // WhatsApp validation
-    if (!phoneRegex.test(formData.whatsapp_number)) {
-      Alert.alert("Validation Error", "Please enter a valid WhatsApp number");
-      return false;
-    }
-
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
-
-  // console.log("idddsss..>>>>", packageId, JSON.parse(center))
 
   const handleChange = (name: any, value: any) => {
     setFormData((prev: any) => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleFocus = (fieldKey: string) => {
+    setFocusedField(fieldKey);
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
   };
 
   const handleSubmit = async () => {
@@ -147,8 +158,6 @@ const ExamRegistrationFrom = () => {
         passport_file: formData?.passportFile,
       };
 
-      // const stringifyorderInfo = JSON.stringify(orderInfo);
-
       const payload = {
         email: formData?.email,
         first_name: formData?.first_name,
@@ -160,7 +169,6 @@ const ExamRegistrationFrom = () => {
         order_info: orderInfo,
       };
 
-
       const response = await Post(API_USER.create_order, payload);
       const responseData = response?.data?.data;
       if (response?.data?.success) {
@@ -168,11 +176,10 @@ const ExamRegistrationFrom = () => {
           `/sslpay-screen?payment_url=${responseData.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.ielts_academic}&amount=${responseData?.total_amount}`
         );
         setIsSubmitting(false);
-        // router.push('/exam/success');
       }
     } catch (error) {
       console.error("Registration failed:", error.message);
-      alert("Registration failed. Please try again.");
+      Alert.alert("Error", "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -189,114 +196,126 @@ const ExamRegistrationFrom = () => {
       <CommonHeader />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.header}>Course Enrollment Form</Text>
-        <Text style={styles.label}>First Name*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          keyboardType="default"
+
+        <InputField
+          label="First Name*"
           value={formData.first_name}
           onChangeText={(text) => handleChange("first_name", text)}
-        />
-        <Text style={styles.label}>Last Name*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Last name"
+          error={errors.first_name}
+          fieldKey="first_name"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("first_name")}
+          onBlur={handleBlur}
+          placeholder="First Name"
           keyboardType="default"
+        />
+
+        <InputField
+          label="Last Name*"
           value={formData.last_name}
           onChangeText={(text) => handleChange("last_name", text)}
-        />
-        <Text style={styles.label}>Gender*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Your Gender"
+          error={errors.last_name}
+          fieldKey="last_name"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("last_name")}
+          onBlur={handleBlur}
+          placeholder="Last name"
           keyboardType="default"
+        />
+
+        <InputField
+          label="Gender*"
           value={formData.gender}
           onChangeText={(text) => handleChange("gender", text)}
+          error={errors.gender}
+          fieldKey="gender"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("gender")}
+          onBlur={handleBlur}
+          placeholder="Write Your Gender"
+          keyboardType="default"
         />
-        <Text style={styles.label}>Email*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Email address"
-          keyboardType="email-address"
+
+        <InputField
+          label="Email*"
           value={formData.email}
           onChangeText={(text) => handleChange("email", text)}
+          error={errors.email}
+          fieldKey="email"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("email")}
+          onBlur={handleBlur}
+          placeholder="Write Email address"
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
 
-        <Text style={styles.label}>Phone*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Phone Number"
-          keyboardType="phone-pad"
+        <InputField
+          label="Phone*"
           value={formData.phone}
           onChangeText={(text) => handleChange("phone", text)}
-        />
-        <Text style={styles.label}>Whatsapp No.*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write Whatsapp Phone Number"
+          error={errors.phone}
+          fieldKey="phone"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("phone")}
+          onBlur={handleBlur}
+          placeholder="Write Phone Number"
           keyboardType="phone-pad"
+        />
+
+        <InputField
+          label="Whatsapp No.*"
           value={formData.whatsapp_number}
           onChangeText={(text) => handleChange("whatsapp_number", text)}
+          error={errors.whatsapp_number}
+          fieldKey="whatsapp_number"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("whatsapp_number")}
+          onBlur={handleBlur}
+          placeholder="Write Whatsapp Phone Number"
+          keyboardType="phone-pad"
         />
 
-        <Text style={styles.label}>Address*</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Write parmanent address"
-          keyboardType="default"
+        <InputField
+          label="Address*"
           value={formData.address}
           onChangeText={(text) => handleChange("address", text)}
+          error={errors.address}
+          fieldKey="address"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("address")}
+          onBlur={handleBlur}
+          placeholder="Write permanent address"
+          keyboardType="default"
         />
-        {/* 
-            <Text style={styles.label}>Level of Education*</Text> */}
-        {/* <View style={styles.pickerWrapper}>
-                <Picker
-                    selectedValue={formData.educationLevel}
-                    onValueChange={(itemValue) => handleChange('educationLevel', itemValue)}
-                    style={styles.picker}
-                    prompt="Select your education level"
-                >
-                    <Picker.Item label="Select your education level" value="" />
-                    <Picker.Item label="Secondary (up to 16 years)" value="secondary_up_to_16" />
-                    <Picker.Item label="Secondary (16-19 years)" value="secondary_16_19" />
-                    <Picker.Item label="Degree (or equivalent)" value="degree" />
-                    <Picker.Item label="Post-graduate" value="post_graduate" />
-                </Picker>
-            </View> */}
 
-        {/* <View style={styles.pickerWrapper}>
-                <BottomSheetDropdown
-                    value={formData.educationLevel}
-                    onSelect={(itemValue) => handleChange('educationLevel', itemValue)}
-                    placeholder="Select your education level"
-                    items={[
-                        { label: "Secondary (up to 16 years)", value: "secondary_up_to_16" },
-                        { label: "Secondary (16-19 years)", value: "secondary_16_19" },
-                        { label: "Degree (or equivalent)", value: "degree" },
-                        { label: "Post-graduate", value: "post_graduate" },
-                    ]}
-                />
-            </View> */}
-
-        <Text style={styles.label}>Emergency Contact Name*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write emegergency contact name"
-          multiline
-          numberOfLines={4}
+        <InputField
+          label="Emergency Contact Name*"
           value={formData.emergency_contact_name}
           onChangeText={(text) => handleChange("emergency_contact_name", text)}
-        />
-        <Text style={styles.label}>Emergency Contact*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Write address"
+          error={errors.emergency_contact_name}
+          fieldKey="emergency_contact_name"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("emergency_contact_name")}
+          onBlur={handleBlur}
+          placeholder="Write emergency contact name"
           multiline
           numberOfLines={4}
+        />
+
+        <InputField
+          label="Emergency Contact*"
           value={formData.emergency_contact}
           onChangeText={(text) => handleChange("emergency_contact", text)}
+          error={errors.emergency_contact}
+          fieldKey="emergency_contact"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("emergency_contact")}
+          onBlur={handleBlur}
+          placeholder="Write emergency contact number"
+          keyboardType="phone-pad"
         />
+
         <Text style={styles.note}>
           Register for IELTS with us today, and our booking agent will contact
           you to schedule TWO FREE Video Call Speaking Mock Test.
@@ -326,11 +345,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 30, // Account for safe area
+    paddingBottom: 30,
     borderTopWidth: 1,
     borderTopColor: "#f0f0f0",
-    elevation: 8, // Android shadow
-    shadowColor: "#000", // iOS shadow
+    elevation: 8,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: -2,
@@ -394,10 +413,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     overflow: "hidden",
   },
-  // picker: {
-  //     height: 50,
-  //     width: '100%'
-  // },
   pickerWrapper: {
     borderWidth: 1,
     borderColor: "#ccc",
