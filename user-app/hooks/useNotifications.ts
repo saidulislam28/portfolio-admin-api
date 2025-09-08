@@ -1,7 +1,6 @@
 import { ROUTES } from '@/constants/app.routes';
 import { callService, useCallService } from '@/services/AgoraCallService';
 import { displayIncomingCallNotification, displayOngoingCallNotification, removeChannelNotification } from '@/services/CallNotification';
-import { notificationService } from '@/services/NotificationService';
 import { CallStartPushNotificationDataPayload } from '@/types/push-notifications';
 import { useCallStore } from '@/zustand/callStore';
 import notifee, { Event, EventType } from '@notifee/react-native';
@@ -115,7 +114,7 @@ export const useNotifications = () => {
                 avatar: callInfo?.consultant_image,
             }
         );
-        router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: callInfo?.additionalInfo?.Consultant?.id }) as any)
+        router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: callInfo?.consultant_id }) as any)
     }
 
     useEffect(() => {

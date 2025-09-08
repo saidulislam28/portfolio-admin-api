@@ -1,11 +1,8 @@
 import { useCallService } from '@/services/AgoraCallService';
-import { notificationService } from '@/services/NotificationService';
 import { useCallControls, useCallInfo, useCallStore } from '@/zustand/callStore';
 import { Ionicons } from '@expo/vector-icons';
-import { USER_ROLE } from '@sm/common';
 import { useKeepAwake } from 'expo-keep-awake';
 import { router } from 'expo-router';
-import { useSearchParams } from 'expo-router/build/hooks';
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, PanResponder } from 'react-native';
 import {
@@ -24,9 +21,6 @@ import { RtcSurfaceView, VideoContentHint, VideoViewSetupMode } from 'react-nati
 
 const { width, height } = Dimensions.get('window');
 
-const otherParticipant = 'other'
-const appointmentTitle = 'appointmentTitle'
-
 export default function CallScreen() {
   useKeepAwake();
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -34,7 +28,6 @@ export default function CallScreen() {
   const [share, setShare] = useState(false);
   const [screenSharingUid, setScreenSharingUid] = useState<number | null>(null);
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
-  const consultantId = useSearchParams().get("consultant_id");
   const {
     isInCall,
     isConnecting,
@@ -196,7 +189,8 @@ export default function CallScreen() {
       await leaveChannel();
       endCall();
       router.back();
-      consultantId && await notificationService.endCall(Number(consultantId), USER_ROLE.consultant)
+      // consultantId && await notificationService.endCall(Number(consultantId), USER_ROLE.consultant)
+      // TODO send end call notification to consultant
     } catch (error) {
       console.error('Error ending call:', error);
       endCall();

@@ -106,7 +106,7 @@ export const useCallStore = create<CallStore>()((set, get) => ({
 
       const response = await callApi.getAgoraToken({
         channelName: appointmentToken,
-        userId,
+        userId: Number(userId),
       });
       const { token, channelName } = response;
 

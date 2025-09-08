@@ -74,6 +74,19 @@ const SettingsScreen = () => {
     },
   ];
 
+  const onPressLogout = () => {
+    logout();
+    // Alert.alert(
+    //   "Confirm Logout",
+    //   "Are you sure you want to log out?",
+    //   [
+    //     { text: "Cancel", style: "cancel" },
+    //     { text: "Log Out", style: "destructive", onPress: logout },
+    //   ],
+    //   { cancelable: true }
+    // );
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Profile Header */}
@@ -134,21 +147,7 @@ const SettingsScreen = () => {
         ))}
       </Card>
       <View style={{ width: "90%", marginHorizontal: "auto" }}>
-        <BaseButton
-          title="Logout"
-          onPress={() => {
-            Alert.alert(
-              "Confirm Logout",
-              "Are you sure you want to log out?",
-              [
-                { text: "Cancel", style: "cancel" },
-                { text: "Log Out", style: "destructive", onPress: logout },
-              ],
-              { cancelable: true }
-            );
-          }}
-          isLoading={false}
-        />
+        <BaseButton title="Logout" onPress={onPressLogout} isLoading={false} />
       </View>
     </ScrollView>
   );

@@ -9,10 +9,9 @@ import {
   SECONDARY_COLOR,
 } from "@/lib/constants";
 import { callService } from "@/services/AgoraCallService";
-import { notificationService } from "@/services/NotificationService";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { API_USER, GetOne, replacePlaceholders, USER_ROLE } from "@sm/common";
+import { API_USER, GetOne, replacePlaceholders } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -81,15 +80,6 @@ const AppointmentDetailPage = () => {
     await callService.initialize(); // Replace with your App ID
     // Start the call process
     await startCall(appointment?.token, user?.id);
-    notificationService.startCall(
-      appointment?.Consultant?.id,
-      USER_ROLE.consultant,
-      {
-        ...appointment,
-        caller_name: user?.full_name,
-        user_id: user?.id,
-      }
-    );
     //router remain
     router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: appointment?.Consultant?.id }) as any);
 
@@ -358,7 +348,7 @@ const AppointmentDetailPage = () => {
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
-          <View style={styles.secondaryButtons}>
+          {/* <View style={styles.secondaryButtons}>
             <View style={{ flex: 1 }}>
               <BaseButton
                 title="Message"
@@ -377,7 +367,7 @@ const AppointmentDetailPage = () => {
                 fullWidth={false}
               />
             </View>
-          </View>
+          </View> */}
 
           <BaseButton
             title=" Feedback Report"

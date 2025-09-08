@@ -12,35 +12,8 @@ export const DARK_GRAY = '#6c757d';
 export const WHITE = '#ffffff';
 export const BLACK = '#000000';
 
-// Package prices
-export const PACKAGE_PRICES = {
-  SINGLE: 200,
-  THREE: 550,
-  FIVE: 900,
-  MOCK_TEST_RATE: 180,
-  PARTNER_CONVERSATION_RATE: 150
-};
-
 // Currency multiplier for foreigners
 export const FOREIGN_CURRENCY_MULTIPLIER = 1.5;
-
-// Time slots
-export const TIME_SLOTS = [
-  '10:00 AM', '10:20 AM', '10:40 AM',
-  '11:00 AM', '11:20 AM', '11:40 AM',
-  '12:00 PM', '12:20 PM', '12:40 PM',
-  '01:00 PM', '01:20 PM', '01:40 PM',
-  '02:00 PM', '02:20 PM', '02:40 PM',
-  '03:00 PM', '03:20 PM', '03:40 PM',
-  '04:00 PM', '04:20 PM', '04:40 PM',
-  '05:00 PM', '05:20 PM', '05:40 PM',
-  '06:00 PM', '06:20 PM', '06:40 PM',
-  '07:00 PM', '07:20 PM', '07:40 PM',
-  '08:00 PM',
-  '12:00 PM',
-  '10:00 PM',
-  '11:00 PM'
-];
 
 export const PACKAGE_SERVICE_TYPE = {
   book_purchase: 'book_purchase',
