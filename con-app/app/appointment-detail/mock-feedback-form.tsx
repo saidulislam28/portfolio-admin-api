@@ -77,6 +77,9 @@ export type FeedbackFormData = {
 
   // Additional notes
   additionalNotes: string;
+
+  // Overall level
+  overallLevel?: string;
 };
 
 export type MockTestFeedbackPageProps = {
@@ -169,7 +172,7 @@ const defaultInitialFeedback: FeedbackFormData = {
 
 const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   apiEndpoint = API_CONSULTANT.mocktest_feedback,
-  commentsEndpoint = API_CONSULTANT.feedback_comments,
+  commentsEndpoint = API_CONSULTANT.mocktest_comments,
   successRoute = ROUTES.MY_APPOINTMENTS,
   title = "Mock Test Feedback Form",
   showLogo = true,
@@ -181,8 +184,10 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 }) => {
   const params = useLocalSearchParams();
   const [loading, setLoading] = useState(false);
-  const [comments, setComments] = useState(false);
+  const [comments, setComments] = useState<any[]>([]);
   const router = useRouter();
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null); // UI only
+
 
   // Form state with merged initial feedback
   const [feedback, setFeedback] = useState<FeedbackFormData>({
@@ -241,6 +246,13 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
       [field]: value,
     }));
   };
+  const handleLevelChange = useCallback((level: any) => {
+    setSelectedLevel(level.title); // Only for UI (radio active)
+    setFeedback((prev) => ({
+      ...prev,
+      additionalNotes: level.desc, // Only store desc
+    }));
+  }, []);
 
   const parseAppointment = params.appointment
     ? JSON.parse(params.appointment as string)
@@ -255,6 +267,9 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
       consultant_id,
       appointment_id: parseAppointment?.id,
     };
+
+    // return
+    console.log("handle mock test submit", finalFeedback)
 
     // Allow custom transformation before submission
     if (onBeforeSubmit) {
@@ -498,6 +513,30 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
           ])}
         </View>
 
+        {/* Comments Section */}
+        {comments.length > 0 && (
+          <View style={[styles.section, customStyles.section]}>
+            <Text style={styles.sectionHeader}>Overall Conversation Level</Text>
+            <View style={styles.radioGroup}>
+              {comments.map((level) => (
+                <TouchableOpacity
+                  key={level.id}
+                  style={styles.radioOption}
+                  onPress={() => handleLevelChange(level)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.radioCircle}>
+                    {selectedLevel === level.title && (
+                      <View style={styles.radioChecked} />
+                    )}
+                  </View>
+                  <Text style={styles.radioLabel}>{level.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* Additional Notes */}
         <View style={[styles.section, customStyles.section]}>
           <Text style={styles.sectionHeader}>Additional Notes</Text>
@@ -522,7 +561,6 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 };
 
 const styles = StyleSheet.create({
-  // ... (keep all the existing styles unchanged)
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
@@ -530,18 +568,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     padding: 30,
     paddingBottom: 100,
-  },
-  header: {
-    marginBottom: 30,
-    alignItems: "center",
-  },
-  headerText: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 25,
-    textAlign: "center",
-    color: PRIMARY_COLOR,
-    marginLeft: 30,
   },
   headerContainer: {
     flexDirection: "row",
@@ -558,16 +584,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  title: {
-    fontSize: 32,
+  headerText: {
+    fontSize: 22,
     fontWeight: "bold",
-    color: "#2c3e50",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 20,
-    color: "#7f8c8d",
-    marginBottom: 20,
+    marginBottom: 25,
+    textAlign: "center",
+    color: PRIMARY_COLOR,
+    marginLeft: 30,
   },
   section: {
     backgroundColor: "white",
@@ -676,6 +699,38 @@ const styles = StyleSheet.create({
     color: "#7f8c8d",
     marginTop: 5,
   },
+  radioGroup: {
+    marginTop: 10,
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    marginBottom: 8,
+    // backgroundColor: "#f8f9fa",
+  },
+  radioCircle: {
+    height: 24,
+    width: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "#3a86ff",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  radioChecked: {
+    height: 14,
+    width: 14,
+    borderRadius: 7,
+    backgroundColor: "#3a86ff",
+  },
+  radioLabel: {
+    fontSize: 16,
+    color: "#34495e",
+  },
   notesInput: {
     borderWidth: 1,
     borderColor: "#bdc3c7",
@@ -686,6 +741,12 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
     fontSize: 16,
     lineHeight: 24,
+  },
+  selectedCommentNote: {
+    marginTop: 10,
+    fontSize: 14,
+    color: "#3498db",
+    fontStyle: "italic",
   },
   buttonContainer: {
     position: "absolute",
@@ -701,23 +762,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
-  },
-  submitButton: {
-    backgroundColor: "#2ecc71",
-    padding: 18,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  disableButton: {
-    backgroundColor: "gray",
-    padding: 18,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 18,
   },
 });
 

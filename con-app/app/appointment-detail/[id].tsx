@@ -131,7 +131,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     primaryColor: PRIMARY_COLOR,
     secondaryColor: SECONDARY_COLOR,
   },
-}) => {
+}: any) => {
   const router = useRouter();
   const params = useLocalSearchParams();
 
@@ -193,7 +193,10 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         API_CONSULTANT.appointment_details.replace("{id}", appointmentId)
       );
 
+      // console.log("fetching appointment details from api:", response?.data)
+
       if (response?.data) {
+
         setAppointment(response.data);
       } else {
         Alert.alert("Error", "Failed to fetch appointment details");
@@ -272,11 +275,11 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
       // Default implementation
       await callService.initialize();
-      await startCall(appointment?.token, Number(appointment?.consultant_id), {
+      await startCall(appointment?.token as any, Number(appointment?.consultant_id), {
         id: Number(appointment?.user_id) || 0,
         name: appointment?.User?.full_name || "",
         avatar: appointment?.User?.profile_image,
-      });
+      } as any);
 
       const notificationPayload: any = {
         ...appointment,
@@ -332,6 +335,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   };
 
   const handleSubmitFeedback = () => {
+    console.log("feebdback click")
     if (!appointment) return;
 
     if (
@@ -445,7 +449,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     );
   }
 
-  // console.log("appoipntment>>", appointment);
+  // console.log("appoipntment details>>", appointment);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -682,7 +686,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             <VideoCallButton
               status={appointment?.status}
               startVideoCall={startVideoCall}
-            />         
+            />
 
             <BaseButton
               title="Provide Feedback"

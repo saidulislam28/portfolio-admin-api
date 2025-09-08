@@ -522,6 +522,11 @@ export class AppointmentResponseDto {
     Order: {
         service_type: string;
     };
+    @IsOptional()
+    MockTestFeedback?: any;
+
+    @IsOptional()
+    ConversationFeedback?: any
 }
 
 export class AppointmentListResponseDto {

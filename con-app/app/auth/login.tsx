@@ -36,13 +36,13 @@ export default function LoginScreen() {
 
     // Validate inputs
     const newErrors: { email?: string; password?: string } = {};
-    
+
     if (!email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "Please enter a valid email";
     }
-    
+
     if (!password) {
       newErrors.password = "Password is required";
     }
@@ -93,36 +93,40 @@ export default function LoginScreen() {
           scholarship for abroad studies
         </Text>
 
-        {/* Email Input */}
-        <InputField
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          error={errors.email}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          fieldKey="email"
-          focusedField={focusedField}
-          onFocus={() => handleFocus("email")}
-          onBlur={handleBlur}
-          placeholder="Enter your Email"
-          testID="email-input"
-        />
+        <View style={{width: "100%"}}>
+          {/* Email Input */}
+          <InputField
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            error={errors.email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            fieldKey="email"
+            focusedField={focusedField}
+            onFocus={() => handleFocus("email")}
+            onBlur={handleBlur}
+            placeholder="Enter your Email"
+            testID="email-input"
+          />
 
-        {/* Password Input */}
-        <InputField
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          error={errors.password}
-          isPassword={true}
-          fieldKey="password"
-          focusedField={focusedField}
-          onFocus={() => handleFocus("password")}
-          onBlur={handleBlur}
-          placeholder="Enter your Password"
-          testID="password-input"
-        />
+          {/* Password Input */}
+          <InputField
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            error={errors.password}
+            isPassword={true}
+            fieldKey="password"
+            focusedField={focusedField}
+            onFocus={() => handleFocus("password")}
+            onBlur={handleBlur}
+            placeholder="Enter your Password"
+            testID="password-input"
+          />
+
+        </View>
+
 
         <TouchableOpacity
           onPress={() => router.push(ROUTES.FORGET_PASSWORD)}

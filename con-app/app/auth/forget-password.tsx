@@ -75,21 +75,25 @@ export default function ForgetScreen() {
           Enter your email for forget password
         </Text>
 
-        {/* Email Input */}
-        <InputField
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          error={error}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          fieldKey="email"
-          focusedField={focusedField}
-          onFocus={() => handleFocus("email")}
-          onBlur={handleBlur}
-          placeholder="Enter your Email"
-          testID="email-input"
-        />
+        <View style={{ width: "100%" }}>
+          {/* Email Input */}
+          <InputField
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            error={error}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            fieldKey="email"
+            focusedField={focusedField}
+            onFocus={() => handleFocus("email")}
+            onBlur={handleBlur}
+            placeholder="Enter your Email"
+            testID="email-input"
+          />
+
+        </View>
+
 
         <BaseButton title="Submit" onPress={handleSubmit} isLoading={loading} />
 

@@ -104,6 +104,7 @@ export class ConsultantAppointmentsController {
   async getAppointMentDetail(@Req() req, @Param() param: { id: string }) {
     const { id: consultant_id } = req?.user;
     const response = await this.consultantService.getAppointmentListDetails(+consultant_id, +param?.id);
+    console.log("appointment details response>>", response)
     return res.success(response)
   }
 
