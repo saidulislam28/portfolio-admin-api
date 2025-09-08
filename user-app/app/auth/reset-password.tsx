@@ -144,7 +144,7 @@ export default function ResetPasswordScreen() {
 
         {/* Back to Login Link */}
         <TouchableOpacity
-          onPress={() => router.push("/login")}
+          onPress={() => router.push(ROUTES.LOGIN as any)}
           style={styles.backToLogin}
         >
           <Text style={styles.backToLoginText}>

@@ -12,7 +12,7 @@ import { callService } from "@/services/AgoraCallService";
 import { notificationService } from "@/services/NotificationService";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { API_USER, GetOne, USER_ROLE } from "@sm/common";
+import { API_USER, GetOne, replacePlaceholders, USER_ROLE } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -67,7 +67,7 @@ const AppointmentDetailPage = () => {
   }, [id]);
 
 
-  
+
 
   // Add this refresh handler function
   const handleRefresh = async () => {
@@ -91,7 +91,8 @@ const AppointmentDetailPage = () => {
       }
     );
     //router remain
-    router.push(`/call?consultant_id=${appointment?.Consultant?.id}`);
+    router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: appointment?.Consultant?.id }) as any);
+
   };
 
   const formatDate = (dateString: any) => {

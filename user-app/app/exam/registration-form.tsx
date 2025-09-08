@@ -1,12 +1,13 @@
 import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import { InputField } from "@/components/InputField";
+import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
 import { PACKAGE_SERVICE_TYPE } from "@/lib/constants";
 import { validateEmail, validatePhone } from "@/utility/validator";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import { API_USER, Post } from "@sm/common";
+import { API_USER, Post, replacePlaceholders } from "@sm/common";
 import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -237,9 +238,7 @@ const ExamRegistrationFrom = () => {
       const responseData = response?.data?.data;
 
       if (response?.data?.success) {
-        router.push(
-          `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.exam_registration}&amount=${responseData?.total_amount}`
-        );
+        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { payment_url: responseData?.payment_url, service_type: PACKAGE_SERVICE_TYPE?.exam_registration, amount: responseData?.total_amount }) as any);
       } else {
         Alert.alert("Error", "Registration failed. Please try again.");
       }

@@ -35,7 +35,7 @@ export default function PreHeader() {
               <Text style={styles.loginButtonText}>{user?.full_name}</Text>
             </View>
           ) : (
-            <TouchableOpacity onPress={() => router.replace("/login")}>
+            <TouchableOpacity onPress={() => router.replace(ROUTES.LOGIN as any)}>
               <View style={styles.loginButton}>
                 <Text style={styles.loginButtonText}>Login</Text>
               </View>

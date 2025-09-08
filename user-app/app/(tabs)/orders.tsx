@@ -1,3 +1,4 @@
+import { ROUTES } from '@/constants/app.routes';
 import { PACKAGE_SERVICE_TYPE } from '@/lib/constants';
 import { Order, SectionData } from '@/types/group-order';
 import { displayPrice } from '@/utility/price';
@@ -43,7 +44,7 @@ const OrdersScreen = () => {
 
   const handleNavigate = (item: any) => {
     router.push({
-      pathname: '/group-order/[id]',
+      pathname: ROUTES.GROUP_ORDER as any,
       params: { order: JSON.stringify(item), id: item?.id }
     })
   }

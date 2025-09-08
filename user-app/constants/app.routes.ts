@@ -36,4 +36,9 @@ export const ROUTES = {
   EXAM_PACKAGES: '/exam/packages',
   ONLINE_COURSE_PACKAGES: '/online-course/packages',
   STUDY_ABROAD_REGISTRATION: '/study-abroad/registration-form',
+  CALL_CONSULTANT: `/call?consultant_id={id}`,
+  GROUP_ORDER: '/group-order/[id]',
+  SSL_PAYMENT: `/sslpay-screen?payment_url={payment_url}&service_type={service_type}&amount={amount}`,
+  PAYMENT_SUCCESS: `/payment-success?service_type={service_type}`,
+  INCOMING_SCREEN: "/incoming-call",
 };

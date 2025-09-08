@@ -2,7 +2,7 @@ import { useAuth } from '@/context/useAuth';
 import CommonHeader from '@/components/CommonHeader';
 import PaymentSummary from '@/components/packages/PaymentSummary';
 import { BLACK, DARK_GRAY, LIGHT_GRAY, PRIMARY_COLOR, WHITE } from '@/lib/constants';
-import { API_USER, Post, Get } from '@sm/common';
+import { API_USER, Post, Get, replacePlaceholders } from '@sm/common';
 import * as Localization from 'expo-localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BaseButton } from '@/components/BaseButton';
+import { ROUTES } from '@/constants/app.routes';
 
 interface Coupon {
   id: number;
@@ -187,7 +188,8 @@ export default function PaymentScreen() {
       const responseData = response?.data?.data;
 
       if (response?.data?.success) {
-        router.push(`/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${params.service_type}&amount=${responseData?.total_amount}`);
+        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { payment_url: responseData?.payment_url, service_type: params?.service_type, amount: responseData?.total_amount }) as any);
+        // router.push(`/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${params.service_type}&amount=${responseData?.total_amount}`);
       }
     } catch (error: any) {
       console.log('Full error:', error);

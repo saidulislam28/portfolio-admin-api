@@ -1,12 +1,13 @@
 import { BaseButton } from '@/components/BaseButton';
 import CommonHeader from '@/components/CommonHeader';
 import { InputField } from '@/components/InputField';
+import { ROUTES } from '@/constants/app.routes';
 import { useAuth } from '@/context/useAuth';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
 import { validateEmail, validatePhone } from '@/utility/validator';
-import { API_USER, Post } from '@sm/common';
+import { API_USER, Post, replacePlaceholders } from '@sm/common';
 import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -143,12 +144,13 @@ export default function CheckoutScreen() {
         // REMAIN ROUTES
         if (formData.isCOD) {
           return router.push(
-            `/payment-success?service_type=${PACKAGE_SERVICE_TYPE.book_purchase}`
+            replacePlaceholders(ROUTES.PAYMENT_SUCCESS, { service_type: PACKAGE_SERVICE_TYPE.book_purchase }) as any
           );
         }
-        router.push(
-          `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.book_purchase}&amount=${responseData?.total_amount}`
-        );
+
+        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { payment_url: responseData?.payment_url, service_type: PACKAGE_SERVICE_TYPE.book_purchase, amount: responseData?.total_amount }) as any);
+        // `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.book_purchase}&amount=${responseData?.total_amount}`
+
       } else {
         throw new Error("Failed to place order");
       }

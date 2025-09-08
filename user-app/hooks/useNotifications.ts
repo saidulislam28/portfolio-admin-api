@@ -1,10 +1,11 @@
+import { ROUTES } from '@/constants/app.routes';
 import { callService, useCallService } from '@/services/AgoraCallService';
 import { displayIncomingCallNotification, displayOngoingCallNotification, removeChannelNotification } from '@/services/CallNotification';
 import { notificationService } from '@/services/NotificationService';
 import { useCallStore } from '@/zustand/callStore';
 import notifee, { Event, EventType } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
-import { NotificationChannel, NotificationEventName, USER_ROLE } from '@sm/common';
+import { NotificationChannel, NotificationEventName, replacePlaceholders, USER_ROLE } from '@sm/common';
 import * as Notifications from 'expo-notifications';
 import ExpoPip from 'expo-pip';
 import { useRouter } from 'expo-router';
@@ -39,11 +40,11 @@ export const useNotifications = () => {
             if (isInCall === false) return;
             await leaveChannel();
             endCall();
-            router.replace("/");
+            router.replace(ROUTES.HOME as any);
         } catch (error) {
             console.error('Error ending call:', error);
             endCall();
-            router.replace("/");
+            router.replace(ROUTES.HOME as any);
         }
     };
 
@@ -72,7 +73,7 @@ export const useNotifications = () => {
         const data = detail?.notification?.data;
         if (detail.notification?.android?.channelId === NotificationChannel.call) {
             if (type === EventType.PRESS) {
-                isInCall && router.replace("/call")
+                isInCall && router.replace(ROUTES.CALL as any)
             }
             return;
         }
@@ -88,7 +89,7 @@ export const useNotifications = () => {
         } else if (type == EventType.DISMISSED) {
             await declineCall(data);
         } else if (type == EventType.PRESS) {
-            router.push("/incoming-call");
+            router.push(ROUTES.INCOMING_SCREEN as any);
         }
         else {
             console.log("Unhandled Event Action ", type)
@@ -113,7 +114,7 @@ export const useNotifications = () => {
                 avatar: callInfo?.caller_image ?? callInfo?.additionalInfo?.Consultant?.profile_image,
             }
         );
-        router.push(`/call?consultant_id=${callInfo?.additionalInfo?.Consultant?.id}`);
+        router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: callInfo?.additionalInfo?.Consultant?.id }) as any)
     }
 
     useEffect(() => {

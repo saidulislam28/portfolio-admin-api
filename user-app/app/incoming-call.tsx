@@ -1,8 +1,9 @@
+import { ROUTES } from '@/constants/app.routes';
 import { callService } from '@/services/AgoraCallService';
 import { notificationService } from '@/services/NotificationService';
 import { stopRingtone } from '@/services/ringtoneService';
 import { useCallStore } from '@/zustand/callStore';
-import { USER_ROLE } from '@sm/common';
+import { replacePlaceholders, USER_ROLE } from '@sm/common';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -25,8 +26,7 @@ const IncomingCallScreen = () => {
         );
         // stopRingtone();
         hideCallScreen();
-        // REMAIN ROUTES
-        router.push(`/call?consultant_id=${incomingCallInfo?.additionalInfo?.Consultant?.id}`);
+        router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: incomingCallInfo?.additionalInfo?.Consultant?.id }) as any);
     }
 
     return (

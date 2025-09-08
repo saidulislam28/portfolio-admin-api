@@ -43,7 +43,7 @@ const SslcommerzPaymentScreen = () => {
           },
           {
             text: "Cancel",
-            onPress: () => router.replace("/"),
+            onPress: () => router.replace(ROUTES.HOME as any),
             style: "cancel",
           },
         ]
@@ -61,7 +61,7 @@ const SslcommerzPaymentScreen = () => {
             text: "Go to home",
             onPress: () => {
               router.dismissAll();
-              router.replace(ROUTES.HOME);
+              router.replace(ROUTES.HOME as any);
             },
             style: "cancel",
           },
@@ -259,15 +259,15 @@ const SslcommerzPaymentScreen = () => {
         // Security settings
         allowsBackForwardNavigationGestures={false}
         allowsLinkPreview={false}
-        // SSL/TLS settings
-        // onShouldStartLoadWithRequest={(request) => {
-        //   // Only allow HTTPS URLs for security
-        //   if (request.url.startsWith('https://') || request.url.startsWith('about:')) {
-        //     return true;
-        //   }
-        //   console.warn('Blocked non-HTTPS request:', request.url);
-        //   return false;
-        // }}
+      // SSL/TLS settings
+      // onShouldStartLoadWithRequest={(request) => {
+      //   // Only allow HTTPS URLs for security
+      //   if (request.url.startsWith('https://') || request.url.startsWith('about:')) {
+      //     return true;
+      //   }
+      //   console.warn('Blocked non-HTTPS request:', request.url);
+      //   return false;
+      // }}
       />
 
       {/* {webViewLoading && (

@@ -54,7 +54,6 @@ export default function CourseInfo({ categoryData }) {
 
                     ToastAndroid.show('Category Deleted', ToastAndroid.SHORT)
 
-                    router.replace('/(tabs)')
                 }
             }
         ])

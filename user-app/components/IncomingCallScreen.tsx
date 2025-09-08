@@ -1,6 +1,8 @@
+import { ROUTES } from '@/constants/app.routes';
 import { callService } from '@/services/AgoraCallService';
 import { stopRingtone } from '@/services/ringtoneService';
 import { useCallStore } from '@/zustand/callStore';
+import { replacePlaceholders } from '@sm/common';
 import { router } from 'expo-router';
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
@@ -22,9 +24,9 @@ const IncomingCallScreen = () => {
         stopRingtone();
         hideCallScreen();
         //ROUTES REMAIN
-        router.push(`/call?consultant_id=${incomingCallInfo?.additionalInfo?.Consultant?.id}`);
+        router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: incomingCallInfo?.additionalInfo?.Consultant?.id }) as any)
     }
-    
+
     return (
         <Modal
             visible={showCallScreen}

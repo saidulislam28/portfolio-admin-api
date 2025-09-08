@@ -1,10 +1,11 @@
 import { BaseButton } from "@/components/BaseButton";
 import CommonHeader from "@/components/CommonHeader";
 import { InputField } from "@/components/InputField";
+import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
 import { validateEmail, validatePhone } from "@/utility/validator";
-import { API_USER, Post } from "@sm/common";
+import { API_USER, Post, replacePlaceholders } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -172,9 +173,7 @@ const ExamRegistrationFrom = () => {
       const response = await Post(API_USER.create_order, payload);
       const responseData = response?.data?.data;
       if (response?.data?.success) {
-        router.push(
-          `/sslpay-screen?payment_url=${responseData.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.ielts_academic}&amount=${responseData?.total_amount}`
-        );
+        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { payment_url: responseData?.payment_url, service_type: PACKAGE_SERVICE_TYPE?.ielts_academic, amount: responseData?.total_amount }) as any);
         setIsSubmitting(false);
       }
     } catch (error) {

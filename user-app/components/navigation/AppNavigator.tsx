@@ -4,6 +4,7 @@ import { Stack, router } from 'expo-router';
 import { useAuth } from '@/context/useAuth'; // Adjust import path as needed
 import { useOnboardingCheck } from '@/hooks/useOnboardingCheck';
 import { LoadingScreen } from '@/app/_layout';
+import { ROUTES } from '@/constants/app.routes';
 
 export const AppNavigator = () => {
   const { isCheckingOnboarding, hasCompletedOnboarding } = useOnboardingCheck();
@@ -19,7 +20,6 @@ export const AppNavigator = () => {
   const handleNavigation = () => {
     // First check: Has user completed onboarding?
     if (!hasCompletedOnboarding) {
-      router.replace('/onboarding');
       return;
     }
 
@@ -31,10 +31,10 @@ export const AppNavigator = () => {
     // Second check: Is user authenticated?
     if (user) {
       // User is authenticated, go to main app
-      router.replace('/(tabs)');
+      router.replace(ROUTES.TABS);
     } else {
       // User is not authenticated, go to auth screens
-      router.replace('/login'); // Adjust this route based on your auth screen
+      router.replace(ROUTES.LOGIN); // Adjust this route based on your auth screen
     }
   };
 
@@ -49,23 +49,23 @@ export const AppNavigator = () => {
         headerShown: false
       }}
     >
-      <Stack.Screen 
+      <Stack.Screen
         name='onboarding'
         options={{
           headerShown: false
-        }} 
+        }}
       />
-      <Stack.Screen 
+      <Stack.Screen
         name='(tabs)'
         options={{
           headerShown: false
-        }} 
+        }}
       />
-      <Stack.Screen 
+      <Stack.Screen
         name='auth'
         options={{
           headerShown: false
-        }} 
+        }}
       />
     </Stack>
   );
