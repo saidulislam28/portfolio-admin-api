@@ -9,11 +9,17 @@ import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
 import { BaseButton } from '@/components/BaseButton';
 import { InputField } from '@/components/InputField'; // Import your InputField component
 import { validateEmail, validatePhone } from '@/utility/validator';
+import { useAppSettings } from '@/hooks/queries/useAppSettings';
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   // Updated hook destructuring to use the new items and summary properties
+  const {
+    data: appSettingsData,
+    error,
+    isSuccess: isSettingsFetchSuccess,
+  } = useAppSettings();
   const { items } = useCart();
   const { totalItems, subtotal, loading: cartLoading } = useCartSummary();
   const { clearAllItems } = useCartActions();
@@ -29,6 +35,8 @@ export default function CheckoutScreen() {
     country: "",
     isCOD: false,
   });
+
+  const charge = appSettingsData?.base_data?.delivery_charge;
 
   const [processing, setProcessing] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -108,7 +116,7 @@ export default function CheckoutScreen() {
     try {
       setProcessing(true);
 
-      const deliveryCharge = 50;
+      const deliveryCharge = Number(charge);
       // Use the summary object for the subtotal
       const total = subtotal + deliveryCharge;
       const itemsToPurchase = prepareItemsArray();
@@ -180,7 +188,7 @@ export default function CheckoutScreen() {
     );
   }
 
-  const deliveryCharge: number = 50;
+  const deliveryCharge: number = Number(charge);
   // Use the summary object for the subtotal
   const total = subtotal + deliveryCharge;
 

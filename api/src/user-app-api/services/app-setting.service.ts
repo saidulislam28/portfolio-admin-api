@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AppSettingService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async getHomeData() {
     const settings = await this.prismaService.setting.findMany();
@@ -29,6 +29,7 @@ export class AppSettingService {
       linkedin: settingData?.linkedin,
       brand_name: settingData?.brand_name,
       brand_url: settingData?.brand_url,
+      delivery_charge: settingData?.delivery_charge
     };
 
     const slider_data = await this.prismaService.appSlider.findMany({
