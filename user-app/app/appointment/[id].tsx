@@ -377,7 +377,7 @@ const AppointmentDetailPage = () => {
           <BaseButton
             title=" Feedback Report"
             onPress={handleFeedback}
-            isLoading={isDisabled}
+            disabled={isDisabled}
             variant="primary"
             fullWidth={false}
           />
