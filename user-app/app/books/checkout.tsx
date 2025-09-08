@@ -8,6 +8,7 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, Text
 import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
 import { BaseButton } from '@/components/BaseButton';
 import { InputField } from '@/components/InputField'; // Import your InputField component
+import { validateEmail, validatePhone } from '@/utility/validator';
 
 export default function CheckoutScreen() {
   const router = useRouter();
@@ -31,14 +32,14 @@ export default function CheckoutScreen() {
 
   const [processing, setProcessing] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors(prev => {
@@ -70,7 +71,7 @@ export default function CheckoutScreen() {
   };
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: { [key: string]: string } = {};
     const requiredFields = [
       'firstName', 'lastName', 'email', 'phone',
       'address'
@@ -82,21 +83,17 @@ export default function CheckoutScreen() {
         newErrors[field] = `${field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} is required`;
       }
     }
-    
+
     // Email validation
-    if (formData.email?.trim()) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        newErrors.email = 'Please enter a valid email address';
-      }
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.error!;
     }
 
     // Phone validation (basic)
-    if (formData.phone?.trim()) {
-      const phoneRegex = /^01[3-9]\d{8}$/;
-      if (!phoneRegex.test(formData.phone)) {
-        newErrors.phone = 'Please enter a valid Bangladeshi phone number';
-      }
+    const phoneValidation = validatePhone(formData.phone);
+    if (!phoneValidation.isValid) {
+      newErrors.phone = phoneValidation.error!;
     }
 
     setErrors(newErrors);
@@ -215,7 +212,7 @@ export default function CheckoutScreen() {
         </View>
 
         <Text style={styles.sectionTitle}>Shipping Information</Text>
-        
+
         <InputField
           label="First Name"
           fieldKey="firstName"
@@ -282,7 +279,7 @@ export default function CheckoutScreen() {
 
         {/* Payment Method Section */}
         <Text style={styles.sectionTitle}>Payment Method</Text>
-        
+
         <TouchableOpacity
           style={styles.radioOption}
           onPress={() => handlePaymentMethodChange(false)}

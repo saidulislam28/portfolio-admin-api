@@ -3,6 +3,7 @@ import CommonHeader from "@/components/CommonHeader";
 import { InputField } from "@/components/InputField"; // Import the InputField component
 import { useAuth } from "@/context/useAuth";
 import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
+import { validateEmail, validatePhone } from "@/utility/validator";
 import { API_USER, Post } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
@@ -93,25 +94,24 @@ const ExamRegistrationFrom = () => {
     }
 
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.email && !emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+    // Email validation
+    const emailValidation = validateEmail(formData.email);
+    if (!emailValidation.isValid) {
+      newErrors.email = emailValidation.error!;
     }
 
-    // Phone validation (basic)
-    const phoneRegex = /^01[3-9]\d{8}$/;
-    if (formData.phone && !phoneRegex.test(formData.phone)) {
-      newErrors.phone = "Please enter a valid Bangladeshi phone number";
+    // Phone validation using reusable function
+    const phoneValidation = validatePhone(formData.phone);
+    if (!phoneValidation.isValid) {
+      newErrors.phone = phoneValidation.error!;
     }
-
-    // WhatsApp validation
-    if (formData.whatsapp_number && !phoneRegex.test(formData.whatsapp_number)) {
-      newErrors.whatsapp_number = "Please enter a valid WhatsApp number";
+    const whatsappValidation = validatePhone(formData.whatsapp_number);
+    if (!whatsappValidation.isValid) {
+      newErrors.whatsapp_number = whatsappValidation.error!;
     }
-
-    // Emergency contact validation
-    if (formData.emergency_contact && !phoneRegex.test(formData.emergency_contact)) {
-      newErrors.emergency_contact = "Please enter a valid emergency contact number";
+    const emergencyValidation = validatePhone(formData.emergency_contact);
+    if (!emergencyValidation.isValid) {
+      newErrors.emergency_contact = emergencyValidation.error!;
     }
 
     setErrors(newErrors);
@@ -196,7 +196,7 @@ const ExamRegistrationFrom = () => {
       <CommonHeader />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.header}>Course Enrollment Form</Text>
-        
+
         <InputField
           label="First Name*"
           value={formData.first_name}
