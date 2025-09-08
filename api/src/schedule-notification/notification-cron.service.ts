@@ -12,7 +12,6 @@ export class NotificationCronService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    this.logger.debug('Running notification scheduler cron job');
     try {
       await this.schedulerService.processPendingNotifications();
     } catch (error) {

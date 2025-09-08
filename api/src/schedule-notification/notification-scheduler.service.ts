@@ -24,12 +24,10 @@ export class NotificationSchedulerService {
     }
 
     async processPendingNotifications(batchSize = 100): Promise<void> {
-        this.logger.log('Starting to process pending notifications...');
 
         const pendingNotifications: ScheduleNotification[] = await this.notificationService.getPendingNotifications(batchSize);
 
         if (pendingNotifications.length === 0) {
-            this.logger.log('No pending notifications found.');
             return;
         }
 

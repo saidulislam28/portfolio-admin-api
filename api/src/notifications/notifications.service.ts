@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { USER_ROLE } from '@prisma/client';
+import { Prisma, USER_ROLE } from '@prisma/client';
 import * as admin from 'firebase-admin';
 import { NotificationEventName, RECIPIENT_TYPE } from 'src/common/constants';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { SendAllUserDto, SendCallingNotificationDto, SendNotificationDto } from './dto/notification.dto';
+import { CallStartPushNotificationDataPayload } from 'src/types/push-notifications';
 
 @Injectable()
 export class NotificationService {
@@ -201,52 +202,38 @@ export class NotificationService {
     });
   }
 
-  async sendCallNotification({ receiver_id, event_title, event_name, receiver_role, additionalInfo = {} }: SendCallingNotificationDto) {
-    if (!receiver_id) {
-      throw new HttpException("Receiver Must be need", HttpStatus.BAD_REQUEST);
-    }
-    const receiver = receiver_role === USER_ROLE.CONSULTANT ?
-      await this.prisma.consultant.findFirst({ where: { id: receiver_id } })
-      :
-      await this.prisma.user.findFirst({ where: { id: receiver_id } });
+  async sendCallNotification(payload: SendCallingNotificationDto) {
+    const appointment = 
+      await this.prisma.appointment.findFirst(
+        {
+ where: { id: payload.appointment_id },
+        include: {
+          User: true,
+          Consultant: true
+        }
+      });
 
-    if (!receiver) {
+    if (!appointment) {
       throw new HttpException("Receiver Not Found", HttpStatus.NOT_FOUND);
     }
 
-    if (!receiver?.token) {
-      throw new HttpException("Token Empty", HttpStatus.NOT_FOUND);
-    }
-
-    let event_type = null;
-
-    switch (event_name) {
-      case NotificationEventName.start_call:
-        event_type = NotificationEventName.incoming_call;
-        break;
-      default:
-        event_type = event_name;
-        break;
-    }
-
-    const data: any = {
-      caller_name: additionalInfo?.caller_name ?? "Speaking Mate",
+    const data: CallStartPushNotificationDataPayload = {
+      caller_name: appointment?.Consultant?.full_name ?? "Consultant",
+      caller_image: appointment?.Consultant?.profile_image ?? "",
       title: "Test",
       app: "Speaking Mate platform",
-      event_type,
+      event_type: 'incoming_call',
+      user_id: `${appointment?.user_id}`,
+      consultant_id: `${appointment.consultant_id}`,
+      consultant_name: appointment.Consultant.full_name,
+      consultant_image: appointment.Consultant.profile_image,
+      appointment_token: appointment.token
     }
-
-    if (additionalInfo) {
-      data.additionalInfo = JSON.stringify(additionalInfo);
-    }
-
 
     const msg = await this.firebaseAdmin.messaging().send({
-      token: receiver.token,
+      token: appointment?.User?.token,
       data,
-      android: {
-        priority: "high"
-      }
+      android: {priority: "high"}
     })
 
     return msg;
