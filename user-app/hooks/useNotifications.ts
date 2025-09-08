@@ -96,11 +96,13 @@ export const useNotifications = () => {
     }
 
     const declineCall = async (data: any) => {
+        console.log('declineCall', data)
         hideCallScreen();
         await notificationService.endCall(data?.additionalInfo?.consultant_id, USER_ROLE.consultant);
     }
 
     const receiveCall = async (callInfo: any) => {
+        console.log('receiveCall', callInfo)
         await callService.initialize();
         await startCall(
             callInfo?.additionalInfo?.token,
@@ -129,12 +131,14 @@ export const useNotifications = () => {
     useEffect(() => {
         // Foreground FCM
         const unsubscribe = messaging().onMessage(async (remoteMessage: any) => {
+            console.log('FCM got foreground', remoteMessage.data)
             const { event_type } = remoteMessage.data;
             await eventActions(event_type, remoteMessage?.data)
         });
 
         //Background FCM
         messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log('FCM got background', remoteMessage.data)
             const { event_type } = remoteMessage.data || {};
             await eventActions(event_type as string, remoteMessage.data);
         });

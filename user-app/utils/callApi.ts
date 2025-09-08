@@ -43,7 +43,7 @@ export class CallApi {
     //   }
 
     //   const data = await response.json();
-      return response;
+      return response?.data;
     } catch (error) {
       console.error('Failed to fetch Agora token:', error);
       throw error;
