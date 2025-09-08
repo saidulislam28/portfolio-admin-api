@@ -162,36 +162,38 @@ export default function LoginScreen() {
           </Text>
 
           {/* Email Input */}
-          <InputField
-            label="Email"
-            value={email}
-            onChangeText={handleEmailChange}
-            error={emailError}
-            fieldKey="email"
-            focusedField={focusedField}
-            onFocus={() => handleFieldFocus("email")}
-            onBlur={handleFieldBlur}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholder="info@gmail.com"
-            testID="email-input"
-          />
+          <View style={{ width: '100%' }}>
+            <InputField
+              label="Email"
+              value={email}
+              onChangeText={handleEmailChange}
+              error={emailError}
+              fieldKey="email"
+              focusedField={focusedField}
+              onFocus={() => handleFieldFocus("email")}
+              onBlur={handleFieldBlur}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              placeholder="info@gmail.com"
+              testID="email-input"
+            />
 
-          {/* Password Input */}
-          <InputField
-            label="Password"
-            value={password}
-            onChangeText={handlePasswordChange}
-            error={passwordError}
-            isPassword={true}
-            fieldKey="password"
-            focusedField={focusedField}
-            onFocus={() => handleFieldFocus("password")}
-            onBlur={handleFieldBlur}
-            autoCapitalize="none"
-            placeholder="Enter Your Password"
-            testID="password-input"
-          />
+            {/* Password Input */}
+            <InputField
+              label="Password"
+              value={password}
+              onChangeText={handlePasswordChange}
+              error={passwordError}
+              isPassword={true}
+              fieldKey="password"
+              focusedField={focusedField}
+              onFocus={() => handleFieldFocus("password")}
+              onBlur={handleFieldBlur}
+              autoCapitalize="none"
+              placeholder="Enter Your Password"
+              testID="password-input"
+            />
+          </View>
 
           <TouchableOpacity
             onPress={() => router.push(ROUTES.FORGET_PASSWORD as any)}
@@ -201,7 +203,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <BaseButton title="Login" onPress={handleLogin} isLoading={loading} />
-          
+
           {/* Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
@@ -249,7 +251,7 @@ export default function LoginScreen() {
           {/* Join Us Link */}
           <View style={styles.signupContainer}>
             <Text style={styles.joinText}>Don't have an account? </Text>
-            <Link href={"/registration"}>
+            <Link href={ROUTES.REGISTRATION as any}>
               <Text style={styles.joinLink}>Join Us</Text>
             </Link>
           </View>

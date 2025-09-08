@@ -187,7 +187,7 @@ export default function RegisterScreen() {
     try {
       const response = await registerUser(registerData);
       if (response.success) {
-        router.push(`${ROUTES.VERIFY_OTP as any}?email=${response?.data?.email}`);
+        router.push(`${ROUTES.VERIFY_OTP}?email=${response?.data?.email}` as any);
       } else {
         // Show API error instead of going to OTP page
         const errorMessage =
@@ -241,100 +241,106 @@ export default function RegisterScreen() {
               scholarship for abroad studies.
             </Text>
 
-            {/* Name Field */}
-            <InputField
-              label="Name"
-              value={name}
-              onChangeText={(text) => {
-                setName(text);
-                clearError('name');
-              }}
-              error={errors.name}
-              placeholder="Enter Your Name"
-              fieldKey="name"
-              focusedField={focusedField}
-              onFocus={() => setFocusedField('name')}
-              onBlur={() => setFocusedField(null)}
-              returnKeyType="next"
-              testID="name-input"
-            />
 
-            {/* Email Field */}
-            <InputField
-              label="Email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                clearError('email');
-              }}
-              error={errors.email}
-              placeholder="Enter Your Email"
-              fieldKey="email"
-              focusedField={focusedField}
-              onFocus={() => setFocusedField('email')}
-              onBlur={() => setFocusedField(null)}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              returnKeyType="next"
-              testID="email-input"
-            />
+            <View style={{ width: '100%' }}>
+              {/* Name Field */}
 
-            {/* Phone Field */}
-            <InputField
-              label="Phone"
-              value={phone}
-              onChangeText={(text) => {
-                setPhone(text);
-                clearError('phone');
-              }}
-              error={errors.phone}
-              placeholder="01712345678"
-              fieldKey="phone"
-              focusedField={focusedField}
-              onFocus={() => setFocusedField('phone')}
-              onBlur={() => setFocusedField(null)}
-              keyboardType="phone-pad"
-              returnKeyType="next"
-              testID="phone-input"
-            />
+              <InputField
+                label="Name"
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                  clearError('name');
+                }}
+                error={errors.name}
+                placeholder="Enter Your Name"
+                fieldKey="name"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('name')}
+                onBlur={() => setFocusedField(null)}
+                returnKeyType="next"
+                testID="name-input"
+              />
 
-            {/* Password Field */}
-            <InputField
-              label="Password"
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                clearError('password');
-              }}
-              error={errors.password}
-              placeholder="Enter Your Password"
-              fieldKey="password"
-              focusedField={focusedField}
-              onFocus={() => setFocusedField('password')}
-              onBlur={() => setFocusedField(null)}
-              isPassword={true}
-              returnKeyType="next"
-              testID="password-input"
-            />
+              {/* Email Field */}
+              <InputField
+                label="Email"
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  clearError('email');
+                }}
+                error={errors.email}
+                placeholder="Enter Your Email"
+                fieldKey="email"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField(null)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                returnKeyType="next"
+                testID="email-input"
+              />
 
-            {/* Confirm Password Field */}
-            <InputField
-              label="Confirm Password"
-              value={confirmPassword}
-              onChangeText={(text) => {
-                setConfirmPassword(text);
-                clearError('confirmPassword');
-              }}
-              error={errors.confirmPassword}
-              placeholder="Confirm Your Password"
-              fieldKey="confirmPassword"
-              focusedField={focusedField}
-              onFocus={() => setFocusedField('confirmPassword')}
-              onBlur={() => setFocusedField(null)}
-              isPassword={true}
-              returnKeyType="next"
-              testID="confirm-password-input"
-            />
+              {/* Phone Field */}
+              <InputField
+                label="Phone"
+                value={phone}
+                onChangeText={(text) => {
+                  setPhone(text);
+                  clearError('phone');
+                }}
+                error={errors.phone}
+                placeholder="01712345678"
+                fieldKey="phone"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('phone')}
+                onBlur={() => setFocusedField(null)}
+                keyboardType="phone-pad"
+                returnKeyType="next"
+                testID="phone-input"
+              />
+
+              {/* Password Field */}
+              <InputField
+                label="Password"
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  clearError('password');
+                }}
+                error={errors.password}
+                placeholder="Enter Your Password"
+                fieldKey="password"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
+                isPassword={true}
+                returnKeyType="next"
+                testID="password-input"
+              />
+
+              {/* Confirm Password Field */}
+              <InputField
+                label="Confirm Password"
+                value={confirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  clearError('confirmPassword');
+                }}
+                error={errors.confirmPassword}
+                placeholder="Confirm Your Password"
+                fieldKey="confirmPassword"
+                focusedField={focusedField}
+                onFocus={() => setFocusedField('confirmPassword')}
+                onBlur={() => setFocusedField(null)}
+                isPassword={true}
+                returnKeyType="next"
+                testID="confirm-password-input"
+              />
+
+            </View>
+
 
             {/* Expected Level Field */}
             <View style={styles.fieldContainer}>
@@ -418,7 +424,7 @@ export default function RegisterScreen() {
             {/* Login Link */}
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Have an account? </Text>
-              <Link href={"/login"}>
+              <Link href={ROUTES.LOGIN as any}>
                 <Text style={styles.loginLink}>Login</Text>
               </Link>
             </View>

@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
+import { BaseButton } from "@/components/BaseButton";
 
 const VerifyOtpScreen = () => {
   const { verifyOtp, tempEmail, login }: any = useAuth();
@@ -87,14 +88,14 @@ const VerifyOtpScreen = () => {
     }
 
     try {
-      const result = await verifyOtpUser(email, Number(otpValue));
+      const result: any = await verifyOtpUser(email, Number(otpValue));
       if (!result.success) {
         Alert.alert("Error", result.error);
         setIsVerifying(false);
         return;
       }
       login(result?.data?.user, result?.data?.user?.token);
-      router.push(ROUTES.HOME);
+      router.push(ROUTES.HOME as any);
     } catch (error: any) {
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
       setIsVerifying(false);
@@ -128,7 +129,7 @@ const VerifyOtpScreen = () => {
       //   Alert.alert('Success', 'OTP has been resent to your email');
       //   startCountdown();
       // }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error?.message);
     } finally {
       setIsResending(false);
@@ -168,26 +169,7 @@ const VerifyOtpScreen = () => {
             />
           ))}
         </View>
-
-        <TouchableOpacity
-          style={[
-            styles.button,
-            (!isOtpComplete || isVerifying) && styles.buttonDisabled,
-          ]}
-          onPress={handleVerify}
-          disabled={!isOtpComplete || isVerifying}
-        >
-          {isVerifying ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="white" />
-              <Text style={[styles.buttonText, styles.loadingText]}>
-                Verifying...
-              </Text>
-            </View>
-          ) : (
-            <Text style={styles.buttonText}>Verify</Text>
-          )}
-        </TouchableOpacity>
+        <BaseButton title="Verify" onPress={handleVerify} isLoading={isVerifying} />
 
         <View style={styles.resendSection}>
           {isBlocked ? (
@@ -216,28 +198,7 @@ const VerifyOtpScreen = () => {
               )}
             </View>
           )}
-
-          <TouchableOpacity
-            style={[
-              styles.resendButton,
-              isResendDisabled && styles.resendButtonDisabled,
-            ]}
-            onPress={handleResend}
-            disabled={isResendDisabled}
-          >
-            <Text
-              style={[
-                styles.resendButtonText,
-                isResendDisabled && styles.resendButtonTextDisabled,
-              ]}
-            >
-              {isBlocked
-                ? "Contact Support"
-                : isResending
-                  ? "Sending..."
-                  : "Resend OTP"}
-            </Text>
-          </TouchableOpacity>
+          <BaseButton title="Resend Otp" onPress={handleResend} isLoading={isResending} />
         </View>
       </View>
     </KeyboardAvoidingView>
