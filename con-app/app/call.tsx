@@ -42,7 +42,7 @@ export default function CallScreen() {
   const service_type = useSearchParams().get("service_type");
   const { setLoading } = useLoading();
 
-  console.log("service type from call page>>", service_type)
+  // console.log("service type from call page>>", service_type)
 
   // Bottom sheet ref
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -136,12 +136,15 @@ export default function CallScreen() {
   };
 
   const performEndCall = async () => {
+    console.log("hitting end call")
     setLoading(true)
     try {
       await leaveChannel();
       await endCall();
       stopAudioService();
       sendCallEndNotificationToUser(Number(appointmentId))
+      console.log("hitting end call 11")
+
       if (service_type === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
         return router.push({
           pathname: ROUTES.MOCK_FEEDBACK_PAGE as any,
@@ -160,6 +163,7 @@ export default function CallScreen() {
         }
       });
 
+      console.log("hitting end call 2")
 
 
     } catch (error) {
@@ -167,7 +171,7 @@ export default function CallScreen() {
       router.back();
     } finally {
       if (userId) {
-        await sendCallEndNotificationToUser(3); // TODO fix hardcoded
+        await sendCallEndNotificationToUser(Number(appointmentId)); // TODO fix hardcoded
       }
       setLoading(false);
     }

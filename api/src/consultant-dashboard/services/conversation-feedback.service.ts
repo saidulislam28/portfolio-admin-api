@@ -25,6 +25,8 @@ export class ConversationFeedbackService {
       consultant_id: id ? Number(id) : null,
     };
 
+    console.log("feedback data conversation", feedbackData)
+
     const feedback = await this.prisma.conversationFeedback.create({
       data: feedbackData,
       include: {

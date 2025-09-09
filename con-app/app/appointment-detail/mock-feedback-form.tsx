@@ -263,14 +263,14 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   const parseAppointment = params.appointment
     ? JSON.parse(params.appointment as string)
     : null;
-  const consultant_id = params.consultant_id;
+  const consultant_id = params.consultant_id ? JSON.parse(params?.consultant_id as string) : null
 
   // Submit handler
   const handleSubmit = async () => {
     let finalFeedback = {
       ...feedback,
       overallBandScore: calculateOverallBand(),
-      consultant_id,
+      consultant_id: Number(consultant_id),
       appointment_id: parseAppointment?.id,
     };
 
