@@ -34,6 +34,7 @@ export interface FeedbackData {
   // Fluency & Coherence
   speaksFluently: boolean;
   occasionalPauses: boolean;
+  mark_assignment_complete: boolean;
   oftenPauses: boolean;
   disorganizedIdeas: boolean;
   needsLongerAnswers: boolean;
@@ -112,6 +113,7 @@ const getInitialFeedbackState = (): FeedbackData => ({
   testTakerName: "",
   // Fluency & Coherence
   speaksFluently: false,
+  mark_assignment_complete: false,
   occasionalPauses: false,
   oftenPauses: false,
   disorganizedIdeas: false,
@@ -483,6 +485,15 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           },
         ],
       },
+      // {
+      //   title: "Update Status",
+      //   items: [
+      //     {
+      //       label: "Mark appointment as complete.",
+      //       field: "mark_assignment_complete",
+      //     },
+      //   ],
+      // },
     ],
     []
   );
