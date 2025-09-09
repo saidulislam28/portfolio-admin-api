@@ -150,7 +150,7 @@ const now = getCurrentTime();
     if (hasStarted && !hasEnded && ![AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW].includes(status)) {
       // Live: started but not ended, and not in a terminal state
       categories.live.push(appointment);
-    } else if (([AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW].includes(status))) {
+    } else if (([AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW,].includes(status))) {
       // Past: started and either in terminal state or time has passed
       categories.past.push(appointment);
     } else if (!hasStarted && [AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED].includes(status)) {

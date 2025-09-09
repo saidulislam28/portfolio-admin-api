@@ -38,41 +38,6 @@ export class UserService {
         start_at: 'asc',
       },
     });
-
-    // const now = new Date();
-    // const twelveHoursLater = new Date(now.getTime() + 12 * 60 * 60 * 1000);
-
-    // const categorizedAppointments = {
-    //   upcoming: [] as any[],
-    //   live: [] as any[],
-    //   past: [] as any[],
-    // };
-
-    // for (const appointment of findAppointments) {
-    //   const startAt = new Date(appointment.start_at);
-
-    //   if (startAt < now) {
-    //     categorizedAppointments.past.push(appointment);
-    //   } else if (startAt <= twelveHoursLater) {
-    //     categorizedAppointments.live.push(appointment);
-    //   } else {
-    //     categorizedAppointments.upcoming.push(appointment);
-    //   }
-    // }
-
-    // categorizedAppointments.upcoming.sort(
-    //   (a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime(),
-    // );
-
-    // categorizedAppointments.live.sort(
-    //   (a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime(),
-    // );
-
-    // categorizedAppointments.past.sort(
-    //   (a, b) => new Date(b.start_at).getTime() - new Date(a.start_at).getTime(),
-    // );
-
-    // return categorizedAppointments;
     return findAppointments;
   }
 

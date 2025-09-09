@@ -33,7 +33,7 @@ const AppointmentsScreen: React.FC = () => {
     setIsLoading(true);
     const response = await Get(API_USER.get_appointments);
     if (response.success) {
-      setAppointments(response.data);
+      setAppointments(response?.data);
       setRefresh(false);
       setIsLoading(false);
       return;
