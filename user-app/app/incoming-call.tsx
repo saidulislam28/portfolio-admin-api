@@ -2,7 +2,7 @@ import { ROUTES } from '@/constants/app.routes';
 import { callService } from '@/services/AgoraCallService';
 import { stopRingtone } from '@/services/ringtoneService';
 import { useCallStore } from '@/zustand/callStore';
-import { replacePlaceholders } from '@sm/common';
+import { replacePlaceholders, sendCallEndNotificationToConsultant } from '@sm/common';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -15,6 +15,8 @@ const IncomingCallScreen = () => {
         stopRingtone();
         // await notificationService.endCall(incomingCallInfo?.additionalInfo?.consultant_id, USER_ROLE.consultant);
         // TODO send end call push to consultant
+
+        sendCallEndNotificationToConsultant(incomingCallInfo?.appointmentId)
         router.back();
     }
 
