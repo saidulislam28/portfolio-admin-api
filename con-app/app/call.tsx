@@ -36,6 +36,7 @@ export default function CallScreen() {
   const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
   const userId = useSearchParams().get("user_id");
+  const appointmentId = useSearchParams().get("appointment_id");
   const { setLoading } = useLoading()
 
   // Bottom sheet ref
@@ -135,6 +136,7 @@ export default function CallScreen() {
       await leaveChannel();
       await endCall();
       stopAudioService();
+      sendCallEndNotificationToUser(Number(appointmentId))
 
       // Navigate to feedback screen after ending call
       router.push({
