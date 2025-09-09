@@ -27,6 +27,9 @@ export type FeedbackFormData = {
   pronunciation: number;
 
   // Fluency & Coherence feedback
+  mark_assignment_complete: boolean;
+
+
   fluencyFluent: boolean;
   fluencyNaturalFlow: boolean;
   fluencyNeedsCoherence: boolean;
@@ -116,6 +119,9 @@ const defaultInitialFeedback: FeedbackFormData = {
   lexicalResource: 0,
   grammaticalRange: 0,
   pronunciation: 0,
+
+  mark_assignment_complete: false,
+
 
   // Fluency & Coherence feedback
   fluencyFluent: false,
@@ -512,6 +518,18 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
             },
           ])}
         </View>
+
+        {/* update status  */}
+        {/* <View style={[styles.section, customStyles.section]}>
+          <Text style={styles.sectionHeader}>Recommendations</Text>
+          {renderCheckboxGroup([
+            {
+              label: "Mark assignment as complete",
+              field: "mark_assignment_complete",
+            },
+
+          ])}
+        </View> */}
 
         {/* Comments Section */}
         {comments.length > 0 && (

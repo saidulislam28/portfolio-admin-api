@@ -11,6 +11,13 @@ export class CreateConversationFeedbackDto {
   appointment_id: number;
 
   @ApiPropertyOptional({
+    example: true
+  })
+  @IsBoolean()
+  @IsOptional()
+  mark_assignment_complete?: boolean;
+
+  @ApiPropertyOptional({
     description: 'Test taker name',
     example: 'John Doe'
   })

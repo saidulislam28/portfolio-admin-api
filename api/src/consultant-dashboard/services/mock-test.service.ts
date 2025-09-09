@@ -3,6 +3,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { PrismaService } from 'src/prisma/prisma.service'; // Adjust path as needed
 import { MockFeedbackPdfGenerate } from '../utils/mock-pdf';
 import EmailService from 'src/email/email.service';
+import { AppointmentStatus } from '@prisma/client';
 
 @Injectable()
 export class MockTestFeedbackService {
@@ -17,19 +18,17 @@ export class MockTestFeedbackService {
   }
 
   async createFeedback(data, id: number) {
-
-
-    // console.log("data>>>", data)
-
-
     if (!data.appointment_id) {
       throw new BadRequestException('Appointment ID is required');
     }
+
+    const { mark_assignment_complete, ...payload } = data;
+
     try {
 
       const feedbackData = {
-        ...data,
-        appointment_id: Number(data.appointment_id),
+        ...payload,
+        appointment_id: Number(payload?.appointment_id),
         consultant_id: id ? Number(id) : null
       };
 
@@ -59,6 +58,15 @@ export class MockTestFeedbackService {
       });
       // return
 
+
+      if (mark_assignment_complete) {
+        await this.prisma.appointment.update({
+          where: { id: feedback.Appointment.id },
+          data: { status: AppointmentStatus.COMPLETED }
+        })
+      }
+
+
       console.log("feedback mocktest user email>>", feedback?.Appointment?.User?.email)
 
       if (!feedback) throw new NotFoundException('Order not found');
@@ -69,8 +77,6 @@ export class MockTestFeedbackService {
         feedback,
         pdfBuffer
       );
-
-
       return sendEmail;
 
 

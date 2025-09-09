@@ -3,6 +3,7 @@ import EmailService from 'src/email/email.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { generateFeedbackPDF } from '../utils/pdf';
+import { AppointmentStatus } from '@prisma/client';
 
 @Injectable()
 export class ConversationFeedbackService {
@@ -15,9 +16,12 @@ export class ConversationFeedbackService {
       throw new BadRequestException('Appointment ID is required');
     }
 
+    const { mark_assignment_complete, ...payload } = data;
+
+
     const feedbackData = {
-      ...data,
-      appointment_id: Number(data.appointment_id),
+      ...payload,
+      appointment_id: Number(payload.appointment_id),
       consultant_id: id ? Number(id) : null,
     };
 
@@ -43,6 +47,13 @@ export class ConversationFeedbackService {
         }
       }
     });
+
+    if (mark_assignment_complete) {
+      await this.prisma.appointment.update({
+        where: { id: feedback.Appointment.id },
+        data: { status: AppointmentStatus.COMPLETED }
+      })
+    }
 
     console.log("feedback conversation user email", feedback.Appointment.User.email)
 

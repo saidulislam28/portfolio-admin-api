@@ -26,6 +26,15 @@ export class CreateMockTestFeedbackDto {
   @IsOptional()
   testDate?: string;
 
+
+  @ApiPropertyOptional({
+    example: true
+  })
+  @IsBoolean()
+  @IsOptional()
+  mark_assignment_complete?: boolean;
+
+
   @ApiPropertyOptional({
     description: 'Test time',
     example: '10:00 AM'

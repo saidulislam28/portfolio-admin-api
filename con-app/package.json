@@ -81,7 +81,8 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "zustand": "^5.0.5",
-    "expo-localization": "~16.0.1"
+    "expo-localization": "~16.0.1",
+    "react-native-gesture-handler": "~2.20.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
