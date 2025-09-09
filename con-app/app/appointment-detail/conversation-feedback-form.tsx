@@ -175,7 +175,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const parseAppointment =
     propAppointment ||
     (params.appointment ? JSON.parse(params.appointment as string) : null);
-  const consultant_id = propConsultantId || params.consultant_id;
+  const consultant_id = propConsultantId || (params.consultant_id ? JSON.parse(params?.consultant_id as string) : null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackData>(
@@ -222,12 +222,18 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     fetchComments();
   }, [params]);
 
+
+  // console.log("paramasss from conversation feedback", parseAppointment)
+  // console.log("paramasss from conversation id>>>", consultant_id)
+
   const handleSubmit = useCallback(async () => {
     const finalFeedback = {
       ...feedback,
-      consultant_id,
-      appointment_id: parseAppointment?.id,
+      consultant_id: Number(consultant_id),
+      appointment_id: Number(parseAppointment?.id),
     };
+
+    // return console.log("idssss>>", finalFeedback?.consultant_id)
 
     try {
       setLoading(true);
@@ -485,20 +491,22 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           },
         ],
       },
-      // {
-      //   title: "Update Status",
-      //   items: [
-      //     {
-      //       label: "Mark appointment as complete.",
-      //       field: "mark_assignment_complete",
-      //     },
-      //   ],
-      // },
+
     ],
     []
   );
 
   const sectionsToRender = customSections || defaultSections;
+
+  const updateSection = [{
+    title: "Mark Appointment",
+    items: [
+      {
+        label: "Mark appointment as complete.",
+        field: "mark_assignment_complete",
+      },
+    ],
+  },]
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -516,7 +524,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         </View>
 
         {/* Sections */}
-        {sectionsToRender.map((section, index) =>
+        {sectionsToRender.map((section: any, index) =>
           renderTwoColumnSection(
             section.title,
             section.items,

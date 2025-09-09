@@ -4,7 +4,7 @@ import * as admin from 'firebase-admin';
 import { NotificationEventName, RECIPIENT_TYPE } from 'src/common/constants';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-import { SendAllUserDto, SendCallingNotificationDto, SendNotificationDto } from './dto/notification.dto';
+import { CallEndPushNotificationDataPayload, SendAllUserDto, SendCallingNotificationDto, SendNotificationDto } from './dto/notification.dto';
 import { CallStartPushNotificationDataPayload } from 'src/types/push-notifications';
 
 @Injectable()
@@ -202,39 +202,138 @@ export class NotificationService {
     });
   }
 
-  async sendCallNotification(payload: SendCallingNotificationDto) {
-    const appointment = 
-      await this.prisma.appointment.findFirst(
-        {
- where: { id: payload.appointment_id },
-        include: {
-          User: true,
-          Consultant: true
-        }
-      });
+  async sendConsultantStartCallNotification(payload: SendCallingNotificationDto) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: { id: payload.appointment_id },
+      include: {
+        User: true,
+        Consultant: true
+      }
+    });
 
-    if (!appointment) {
+    if (!appointment || !appointment.User) {
       throw new HttpException("Receiver Not Found", HttpStatus.NOT_FOUND);
     }
 
     const data: CallStartPushNotificationDataPayload = {
-      caller_name: appointment?.Consultant?.full_name ?? "Consultant",
-      caller_image: appointment?.Consultant?.profile_image ?? "test",
-      title: "Test",
+      caller_name: appointment.Consultant?.full_name ?? "Consultant",
+      caller_image: appointment.Consultant?.profile_image ?? "test",
+      title: "Incoming Call",
       app: "Speaking Mate platform",
       event_type: 'incoming_call',
-      user_id: `${appointment?.user_id}`,
+      user_id: `${appointment.user_id}`,
       consultant_id: `${appointment.consultant_id}`,
       consultant_name: appointment.Consultant.full_name ?? "Consultant",
       consultant_image: appointment.Consultant.profile_image ?? "test",
       appointment_token: `${appointment.token}`
-    }
+    };
 
     const msg = await this.firebaseAdmin.messaging().send({
-      token: appointment?.User?.token,
+      token: appointment.User.token,
       data,
-      android: {priority: "high"}
-    })
+      android: { priority: "high" }
+    });
+
+    return msg;
+  }
+
+  async sendConsultantEndCallNotification(payload: SendCallingNotificationDto) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: { id: payload.appointment_id },
+      include: {
+        User: true,
+        Consultant: true
+      }
+    });
+
+    if (!appointment || !appointment.User) {
+      throw new HttpException("Receiver Not Found", HttpStatus.NOT_FOUND);
+    }
+
+    const data: CallEndPushNotificationDataPayload = {
+      title: "Call Ended",
+      app: "Speaking Mate platform",
+      event_type: 'call_ended',
+      user_id: `${appointment.user_id}`,
+      consultant_id: `${appointment.consultant_id}`,
+      consultant_name: appointment.Consultant.full_name ?? "Consultant",
+      ended_by: 'consultant',
+      appointment_token: `${appointment.token}`
+    };
+
+    const msg = await this.firebaseAdmin.messaging().send({
+      token: appointment.User.token,
+      data,
+      android: { priority: "high" }
+    });
+
+    return msg;
+  }
+
+  async sendUserStartCallNotification(payload: SendCallingNotificationDto) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: { id: payload.appointment_id },
+      include: {
+        User: true,
+        Consultant: true
+      }
+    });
+
+    if (!appointment || !appointment.Consultant) {
+      throw new HttpException("Receiver Not Found", HttpStatus.NOT_FOUND);
+    }
+
+    const data: CallStartPushNotificationDataPayload = {
+      caller_name: appointment.User?.full_name ?? "User",
+      caller_image: appointment.User?.profile_image ?? "test",
+      title: "Incoming Call",
+      app: "Speaking Mate platform",
+      event_type: 'incoming_call',
+      user_id: `${appointment.user_id}`,
+      consultant_id: `${appointment.consultant_id}`,
+      user_name: appointment.User.full_name ?? "User",
+      user_image: appointment.User.profile_image ?? "test",
+      appointment_token: `${appointment.token}`
+    };
+
+    const msg = await this.firebaseAdmin.messaging().send({
+      token: appointment.Consultant.token,
+      data,
+      android: { priority: "high" }
+    });
+
+    return msg;
+  }
+
+  async sendUserEndCallNotification(payload: SendCallingNotificationDto) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: { id: payload.appointment_id },
+      include: {
+        User: true,
+        Consultant: true
+      }
+    });
+
+    if (!appointment || !appointment.Consultant) {
+      throw new HttpException("Receiver Not Found", HttpStatus.NOT_FOUND);
+    }
+
+    const data: CallEndPushNotificationDataPayload = {
+      title: "Call Ended",
+      app: "Speaking Mate platform",
+      event_type: 'call_ended',
+      user_id: `${appointment.user_id}`,
+      consultant_id: `${appointment.consultant_id}`,
+      user_name: appointment.User.full_name ?? "User",
+      ended_by: 'user',
+      appointment_token: `${appointment.token}`
+    };
+
+    const msg = await this.firebaseAdmin.messaging().send({
+      token: appointment.Consultant.token,
+      data,
+      android: { priority: "high" }
+    });
 
     return msg;
   }

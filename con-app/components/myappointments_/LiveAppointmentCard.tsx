@@ -1,6 +1,6 @@
 import { Appointment } from "@/utility/appointment";
 import React, { useCallback } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import AppointmentCard from "./AppointmentCard";
 const LiveAppointments: React.FC<{
   liveAppointments: Appointment[];
@@ -15,16 +15,19 @@ const LiveAppointments: React.FC<{
   }
 
   return (
-    <View style={styles.liveSection}>
-      <Text style={styles.liveSectionTitle}>🔴 Live Appointments</Text>
-      <FlatList
-        data={liveAppointments}
-        renderItem={renderLiveAppointment}
-        keyExtractor={(item) => `live-${item.id}`}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={false}
-      />
-    </View>
+    <ScrollView style={styles.container}>
+
+      <View style={styles.liveSection}>
+        <Text style={styles.liveSectionTitle}>🔴 Live Appointments</Text>
+        <FlatList
+          data={liveAppointments}
+          renderItem={renderLiveAppointment}
+          keyExtractor={(item) => `live-${item.id}`}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+        />
+      </View>
+    </ScrollView>
   );
 });
 
