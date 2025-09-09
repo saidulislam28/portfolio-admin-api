@@ -125,7 +125,11 @@ export default function BookDetailsScreen() {
             </View>
           ) : (
 
-            <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
+            <View style={{paddingBottom: 100}}>
+              <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
+
+            </View>
+
           )}
         </View>
         {/* Cart Summary - Show only if items in cart */}
