@@ -28,7 +28,9 @@ export class CreateMockTestFeedbackDto {
 
 
   @ApiPropertyOptional({
-    example: true
+    example: true,
+    description: "Appopintment status will update based on this"
+
   })
   @IsBoolean()
   @IsOptional()
