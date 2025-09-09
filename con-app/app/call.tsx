@@ -24,6 +24,8 @@ import {
 } from 'react-native';
 import { RtcSurfaceView, VideoViewSetupMode, } from 'react-native-agora';
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { PACKAGE_SERVICE_TYPE } from '@/lib/constants';
+import { ROUTES } from '@/constants/app.routes';
 const { width, height } = Dimensions.get('window');
 
 const appointmentTitle = 'appointmentTitle'
@@ -36,7 +38,11 @@ export default function CallScreen() {
   const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
   const userId = useSearchParams().get("user_id");
-  const { setLoading } = useLoading()
+  const appointmentId = useSearchParams().get("appointment_id");
+  const service_type = useSearchParams().get("service_type");
+  const { setLoading } = useLoading();
+
+  // console.log("service type from call page>>", service_type)
 
   // Bottom sheet ref
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -130,27 +136,42 @@ export default function CallScreen() {
   };
 
   const performEndCall = async () => {
+    console.log("hitting end call")
     setLoading(true)
     try {
       await leaveChannel();
       await endCall();
       stopAudioService();
+      sendCallEndNotificationToUser(Number(appointmentId))
+      console.log("hitting end call 11")
 
-      // Navigate to feedback screen after ending call
+      if (service_type === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
+        return router.push({
+          pathname: ROUTES.MOCK_FEEDBACK_PAGE as any,
+          params: {
+            consultant_id: JSON.stringify(userId),
+            appointment: JSON.stringify({ id: appointmentId }),
+          }
+        });
+      }
+
       router.push({
-        pathname: "/appointment-detail/mock-feedback-form",
+        pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE as any,
         params: {
-          callDuration: callDuration.toString(),
-          participantId: otherParticipant?.id,
-          participantName: otherParticipant?.name
+          consultant_id: JSON.stringify(userId),
+          appointment: JSON.stringify({ id: appointmentId }),
         }
       });
+
+      console.log("hitting end call 2")
+
+
     } catch (error) {
       console.error('Error ending call:', error);
       router.back();
     } finally {
       if (userId) {
-        await sendCallEndNotificationToUser(3); // TODO fix hardcoded
+        await sendCallEndNotificationToUser(Number(appointmentId)); // TODO fix hardcoded
       }
       setLoading(false);
     }

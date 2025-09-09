@@ -263,19 +263,19 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   const parseAppointment = params.appointment
     ? JSON.parse(params.appointment as string)
     : null;
-  const consultant_id = params.consultant_id;
+  const consultant_id = params.consultant_id ? JSON.parse(params?.consultant_id as string) : null
 
   // Submit handler
   const handleSubmit = async () => {
     let finalFeedback = {
       ...feedback,
       overallBandScore: calculateOverallBand(),
-      consultant_id,
+      consultant_id: Number(consultant_id),
       appointment_id: parseAppointment?.id,
     };
 
     // return
-    console.log("handle mock test submit", finalFeedback)
+    // return console.log("handle mock test submit", finalFeedback?.mark_assignment_complete)
 
     // Allow custom transformation before submission
     if (onBeforeSubmit) {
@@ -519,17 +519,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
           ])}
         </View>
 
-        {/* update status  */}
-        {/* <View style={[styles.section, customStyles.section]}>
-          <Text style={styles.sectionHeader}>Recommendations</Text>
-          {renderCheckboxGroup([
-            {
-              label: "Mark assignment as complete",
-              field: "mark_assignment_complete",
-            },
 
-          ])}
-        </View> */}
 
         {/* Comments Section */}
         {comments.length > 0 && (
@@ -554,6 +544,18 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
             </View>
           </View>
         )}
+
+        {/* update status  */}
+        {/* <View style={[styles.section, customStyles.section]}>
+          <Text style={{ color: PRIMARY_COLOR, fontSize: 24, fontWeight: 600 }}>Mark assignment *</Text>
+          {renderCheckboxGroup([
+            {
+              label: "Mark assignment as complete",
+              field: "mark_assignment_complete",
+            },
+
+          ])}
+        </View> */}
 
         {/* Additional Notes */}
         <View style={[styles.section, customStyles.section]}>
