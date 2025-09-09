@@ -1,16 +1,24 @@
-import { BaseButton } from '@/components/BaseButton';
-import CommonHeader from '@/components/CommonHeader';
-import { InputField } from '@/components/InputField';
-import { ROUTES } from '@/constants/app.routes';
-import { useAuth } from '@/context/useAuth';
-import { useAppSettings } from '@/hooks/queries/useAppSettings';
-import { useCart, useCartActions, useCartSummary } from '@/hooks/useCart';
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
-import { validateEmail, validatePhone } from '@/utility/validator';
-import { API_USER, Post, replacePlaceholders } from '@sm/common';
-import { Stack, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { BaseButton } from "@/components/BaseButton";
+import CommonHeader from "@/components/CommonHeader";
+import { InputField } from "@/components/InputField";
+import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
+import { useAppSettings } from "@/hooks/queries/useAppSettings";
+import { useCart, useCartActions, useCartSummary } from "@/hooks/useCart";
+import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
+import { validateEmail, validatePhone } from "@/utility/validator";
+import { API_USER, Post, replacePlaceholders } from "@sm/common";
+import { Stack, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function CheckoutScreen() {
   const router = useRouter();
@@ -36,7 +44,8 @@ export default function CheckoutScreen() {
     isCOD: false,
   });
 
-  const charge = appSettingsData?.base_data?.delivery_charge;
+  const charge = appSettingsData?.base_data?.delivery_charge ?? 0;
+  const deliveryCharge = Number(charge);
 
   const [processing, setProcessing] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -50,7 +59,7 @@ export default function CheckoutScreen() {
 
     // Clear error for this field when user starts typing
     if (errors[field]) {
-      setErrors(prev => {
+      setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
@@ -67,13 +76,13 @@ export default function CheckoutScreen() {
 
   // Updated function to work with the new 'items' object structure
   const prepareItemsArray = () => {
-    console.log('rep', items)
+    console.log("rep", items);
     return Object.entries(items).map(([bookId, item]) => {
       return {
         book_id: parseInt(bookId),
         qty: item.quantity,
         unit_price: item.bookDetails.price,
-        subtotal: Number(item.quantity) * Number(item.bookDetails.price)
+        subtotal: Number(item.quantity) * Number(item.bookDetails.price),
       };
     });
   };
@@ -81,14 +90,19 @@ export default function CheckoutScreen() {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
     const requiredFields = [
-      'firstName', 'lastName', 'email', 'phone',
-      'address'
+      "firstName",
+      "lastName",
+      "email",
+      "phone",
+      "address",
     ];
 
     // Check required fields
     for (const field of requiredFields) {
       if (!formData[field]?.trim()) {
-        newErrors[field] = `${field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} is required`;
+        newErrors[field] = `${field
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase())} is required`;
       }
     }
 
@@ -116,7 +130,6 @@ export default function CheckoutScreen() {
     try {
       setProcessing(true);
 
-      const deliveryCharge = Number(charge);
       // Use the summary object for the subtotal
       const total = subtotal + deliveryCharge;
       const itemsToPurchase = prepareItemsArray();
@@ -140,25 +153,32 @@ export default function CheckoutScreen() {
 
       if (response?.data?.success) {
         // Use the new clearAllItems action
-        clearAllItems()
+        clearAllItems();
         // REMAIN ROUTES
         if (formData.isCOD) {
           return router.push(
-            replacePlaceholders(ROUTES.PAYMENT_SUCCESS, { service_type: PACKAGE_SERVICE_TYPE.book_purchase }) as any
+            replacePlaceholders(ROUTES.PAYMENT_SUCCESS, {
+              service_type: PACKAGE_SERVICE_TYPE.book_purchase,
+            }) as any
           );
         }
 
-        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { payment_url: responseData?.payment_url, service_type: PACKAGE_SERVICE_TYPE.book_purchase, amount: responseData?.total_amount }) as any);
+        router.push(
+          replacePlaceholders(ROUTES.SSL_PAYMENT, {
+            payment_url: responseData?.payment_url,
+            service_type: PACKAGE_SERVICE_TYPE.book_purchase,
+            amount: responseData?.total_amount,
+          }) as any
+        );
         // `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.book_purchase}&amount=${responseData?.total_amount}`
-
       } else {
         throw new Error("Failed to place order");
       }
     } catch (error: any) {
-      console.log('Full error:', error);
-      console.log('Error response:', error.response?.data);
-      console.log('Error status:', error.response?.status);
-      console.log('Error headers:', error.response?.headers);
+      console.log("Full error:", error);
+      console.log("Error response:", error.response?.data);
+      console.log("Error status:", error.response?.status);
+      console.log("Error headers:", error.response?.headers);
 
       Alert.alert(
         "Order Failed",
@@ -188,8 +208,6 @@ export default function CheckoutScreen() {
       </View>
     );
   }
-
-  const deliveryCharge: number = Number(charge);
   // Use the summary object for the subtotal
   const total = subtotal + deliveryCharge;
 
@@ -312,7 +330,11 @@ export default function CheckoutScreen() {
       </ScrollView>
 
       <View style={styles.stickyButtonContainer}>
-        <BaseButton title="Procced" onPress={handleCheckout} isLoading={processing} />
+        <BaseButton
+          title="Procced"
+          onPress={handleCheckout}
+          isLoading={processing}
+        />
       </View>
     </View>
   );
@@ -321,22 +343,21 @@ export default function CheckoutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-
+    backgroundColor: "#fff",
   },
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 150, // Add padding to account for sticky button
   },
   stickyButtonContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingTop: 5,
     paddingBottom: 30,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: "#f0f0f0",
     elevation: 8,
-    shadowColor: '#000', // iOS shadow
+    shadowColor: "#000", // iOS shadow
     shadowOffset: {
       width: 0,
       height: -2,
