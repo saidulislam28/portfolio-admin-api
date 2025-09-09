@@ -15,8 +15,9 @@ export const API_CONSULTANT = {
   conversation_feedback: 'conversation-feedback',
   mocktest_feedback: 'mocktest-feedback',
   mocktest_comments: 'feedback-comments/mock-test',
-  send_start_call_notification: 'notifications/start-call',
-  send_end_call_notification: 'notifications/end-call'
+  send_start_call_notification: 'notifications/consultant-start-call',
+  send_end_call_notification: 'notifications/consultant-end-call',
+
 };
 
 export const API_COMMON = {
@@ -43,4 +44,6 @@ export const API_USER = {
   update_profile: 'user-profile/update',
   user_coupon: 'user/coupons/my-coupons',
   validate_coupon: 'user/coupons/validate',
+  send_start_call_notification: 'notifications/user-start-call',
+  send_end_call_notification: 'notifications/user-end-call',
 };
