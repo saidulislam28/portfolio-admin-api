@@ -4,8 +4,8 @@ import * as admin from 'firebase-admin';
 import { NotificationEventName, RECIPIENT_TYPE } from 'src/common/constants';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-import { CallEndPushNotificationDataPayload, SendAllUserDto, SendCallingNotificationDto, SendNotificationDto } from './dto/notification.dto';
-import { CallStartPushNotificationDataPayload } from 'src/types/push-notifications';
+import { SendAllUserDto, SendCallingNotificationDto, SendNotificationDto } from './dto/notification.dto';
+import { CallEndPushNotificationDataPayload, CallStartPushNotificationDataPayload } from 'src/types/push-notifications';
 
 @Injectable()
 export class NotificationService {

@@ -82,30 +82,3 @@ export class SendCallingNotificationDto {
   @IsNotEmpty()
   appointment_id: number;
 }
-
-export interface CallStartPushNotificationDataPayload {
-  caller_name: string;
-  caller_image: string;
-  title: string;
-  app: string;
-  event_type: 'incoming_call';
-  user_id: string;
-  consultant_id: string;
-  consultant_name?: string;
-  consultant_image?: string;
-  user_name?: string;
-  user_image?: string;
-  appointment_token: string;
-}
-
-export interface CallEndPushNotificationDataPayload {
-  title: string;
-  app: string;
-  event_type: 'call_ended';
-  user_id: string;
-  consultant_id: string;
-  consultant_name?: string;
-  user_name?: string;
-  ended_by: 'user' | 'consultant';
-  appointment_token: string;
-}
