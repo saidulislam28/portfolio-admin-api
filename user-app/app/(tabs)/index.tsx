@@ -11,7 +11,7 @@ import { PRIMARY_COLOR } from "@/lib/constants";
 import { HomeSection } from "@/types/home";
 import { useRouter } from "expo-router";
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View, Button } from "react-native";
 
 const homeSections: HomeSection[] = [
   { id: "1", sortOrder: 1, type: "header" },
@@ -115,6 +115,8 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
       />
+
+      {__DEV__ && <Button title='Payment success test screen' onPress={() => router.push('/test-screens/payment-success-test')}/>}
     </View>
   );
 }

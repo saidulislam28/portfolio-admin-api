@@ -364,6 +364,7 @@ model Appointment {
   VideoCall            VideoCall?
   ConversationFeedback ConversationFeedback?
   MockTestFeedback     MockTestFeedback?
+  AppointmentLog       AppointmentLog[]
 
   @@index([slot_date, slot_time])
   @@index([start_at])
@@ -622,6 +623,7 @@ model FeedbackComments {
 
   @@map("feedback_comments")
 }
+
 model MockTestComments {
   id         Int     @id @default(autoincrement())
   title      String?
@@ -828,4 +830,22 @@ enum DayOfWeek {
   SUNDAY
 
   @@map("day_of_week")
+}
+
+enum LogLevel {
+  info
+  error
+  debug
+}
+
+model AppointmentLog {
+  id             String      @id @default(cuid())
+  appointment_id Int
+  level          LogLevel
+  message        String
+  meta           Json?
+  created_at     DateTime    @default(now())
+  Appointment    Appointment @relation(fields: [appointment_id], references: [id])
+
+  @@map("appointment_logs")
 }

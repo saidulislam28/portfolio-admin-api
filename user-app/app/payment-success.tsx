@@ -12,7 +12,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,166 +28,315 @@ const PaymentSuccessPage = () => {
 
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { service_type } = params;
+  const { service_type, order_id } = params;
 
-  // Generate random IDs/dates for demo purposes
-  const [transactionId] = useState(`#TX${Math.floor(Math.random() * 10000)}`);
-  const [date] = useState(new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  }));
+  const [orderData, setOrderData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Data for different payment types
-  const paymentData: any = {
-    speaking_mock_test: {
-      title: "Appointment Booked! speaking_mock_test",
-      subtitle: "🎉 Congratulations! Your English speaking test appointment has been successfully scheduled",
-      cardTitle: "Test Appointment Details",
-      icon: "calendar",
-      details: [
-        { label: "Appointment ID", value: `#APT${Math.floor(Math.random() * 10000)}` },
-        { label: "Date", value: 'June 28, 2025' },
-        { label: "Time", value: '2:30 PM - 3:00 PM' },
-        { label: "Test Center", value: 'Downtown Language Center' },
-        { label: "Status", value: 'Confirmed', isStatus: true }
-      ],
-      tip: "💡 Arrive 15 minutes early with a valid ID"
-    },
-    conversation: {
-      title: "Conversation appointment Booked!",
-      subtitle: "🎉 Congratulations! Your English Conversation test appointment has been successfully scheduled",
-      cardTitle: "Conversation Appointment Details",
-      icon: "calendar",
-      details: [
-        { label: "Appointment ID", value: `#APT${Math.floor(Math.random() * 10000)}` },
-        { label: "Date", value: 'June 28, 2025' },
-        { label: "Time", value: '2:30 PM - 3:00 PM' },
-        { label: "Test Center", value: 'Downtown Language Center' },
-        { label: "Status", value: 'Confirmed', isStatus: true }
-      ],
-      tip: "💡 Arrive 15 minutes early with a valid ID"
-    },
-    book_purchase: {
-      title: "Book Purchased!",
-      subtitle: "📚 Your book purchase is complete! Happy reading!",
-      cardTitle: "Purchase Details",
-      icon: "book",
-      details: [
-        { label: "Order ID", value: transactionId },
-        { label: "Purchase Date", value: date },
-        { label: "Delivery", value: '2-3 business days' },
-        { label: "Status", value: 'Processing', isStatus: true }
-      ],
-      tip: "💡 You'll receive a tracking number via email once shipped"
-    },
-    exam_registration: {
-      title: "IELTS Exam Registration Complete!",
-      subtitle: "🎓 Your IELTS exam registration was successful. Good luck with your preparation!",
-      cardTitle: "Exam Details",
-      icon: "edit",
-      details: [
-        { label: "Registration ID", value: `#IELTS${Math.floor(Math.random() * 10000)}` },
-        { label: "Exam Date", value: 'July 15, 2025' },
-        { label: "Test Center", value: 'International Testing Center' },
-        { label: "Reporting Time", value: '8:30 AM' },
-        { label: "Status", value: 'Registered', isStatus: true }
-      ],
-      tip: "💡 Remember to bring your ID and registration confirmation"
-    },
-    ielts_academic: {
-      title: "IELts Academic Class Booked!",
-      subtitle: "👩‍🏫 Your online class has been scheduled. We'll see you there!",
-      cardTitle: "Class Details",
-      icon: "video",
-      details: [
-        { label: "Class ID", value: `#CLS${Math.floor(Math.random() * 10000)}` },
-        { label: "Date", value: 'June 30, 2025' },
-        { label: "Time", value: '10:00 AM - 11:30 AM' },
-        { label: "Instructor", value: 'Dr. Sarah Johnson' },
-        { label: "Join Link", value: 'Will be emailed to you', isHighlighted: true },
-        { label: "Status", value: 'Confirmed', isStatus: true }
-      ],
-      tip: "💡Check your email for the Zoom link 1 hour before class"
-    },
-    default: {
+  // Retrieve data from AsyncStorage
+  const retrieveOrderData = async () => {
+    try {
+      const storageKey = `order_${service_type}_${order_id}`;
+      const storedData = await AsyncStorage.getItem(storageKey);
+      
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        setOrderData(parsedData);
+      } else {
+        // Fallback to default data if not found
+        setOrderData(getDefaultData());
+      }
+    } catch (error) {
+      console.error('Error retrieving order data:', error);
+      setOrderData(getDefaultData());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Default data structure for fallback
+  const getDefaultData = () => {
+    const transactionId = `#TX${Math.floor(Math.random() * 10000)}`;
+    const date = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    const defaultData = {
+      speaking_mock_test: {
+        title: "Appointment Booked!",
+        subtitle: "🎉 Congratulations! Your English speaking test appointments have been successfully scheduled",
+        cardTitle: "Test Appointment Details",
+        icon: "calendar",
+        appointments: [
+          {
+            appointmentId: `#APT${Math.floor(Math.random() * 10000)}`,
+            date: 'June 28, 2025',
+            time: '2:30 PM - 3:00 PM'
+          }
+        ],
+        tip: "💡 Arrive 15 minutes early with a valid ID"
+      },
+      conversation: {
+        title: "Conversation Appointment Booked!",
+        subtitle: "🎉 Congratulations! Your English Conversation appointments have been successfully scheduled",
+        cardTitle: "Conversation Appointment Details",
+        icon: "calendar",
+        appointments: [
+          {
+            appointmentId: `#APT${Math.floor(Math.random() * 10000)}`,
+            date: 'June 28, 2025',
+            time: '2:30 PM - 3:00 PM'
+          }
+        ],
+        tip: "💡 Arrive 15 minutes early with a valid ID"
+      },
+      book_purchase: {
+        title: "Book Purchased!",
+        subtitle: "📚 Your book purchase is complete! Happy reading!",
+        cardTitle: "Purchase Details",
+        icon: "book",
+        orderId: transactionId,
+        purchaseDate: date,
+        items: [
+          { name: "IELTS Academic Guide", quantity: 1, price: 25.99 },
+          { name: "Speaking Practice Book", quantity: 2, price: 19.99 }
+        ],
+        totalPrice: 65.97,
+        tip: "💡 You'll receive a tracking number via email once shipped"
+      },
+      exam_registration: {
+        title: "IELTS Exam Registration Complete!",
+        subtitle: "🎓 Your IELTS exam registration was successful. Good luck with your preparation!",
+        cardTitle: "Exam Details",
+        icon: "edit",
+        registrationId: `#IELTS${Math.floor(Math.random() * 10000)}`,
+        examDate: 'July 15, 2025',
+        items: [
+          { name: "IELTS Academic Test", quantity: 1, price: 215.00 },
+          { name: "Additional Test Report", quantity: 1, price: 20.00 }
+        ],
+        totalPrice: 235.00,
+        tip: "💡 Remember to bring your ID and registration confirmation"
+      },
+      ielts_academic: {
+        title: "IELTS Academic Class Booked!",
+        subtitle: "👩‍🏫 Your online class has been scheduled. We'll see you there!",
+        cardTitle: "Class Details",
+        icon: "video",
+        orderId: `#CLS${Math.floor(Math.random() * 10000)}`,
+        tip: "💡 Check your email for the Zoom link 1 hour before class"
+      }
+    };
+
+    return defaultData[service_type] || {
       title: "Payment Successful!",
       subtitle: "✅ Your transaction was completed successfully",
       cardTitle: "Transaction Details",
       icon: "check-circle",
-      details: [
-        { label: "Transaction ID", value: transactionId },
-        { label: "Date", value: date },
-        { label: "Status", value: 'Completed', isStatus: true }
-      ]
-    }
+      orderId: transactionId,
+      date: date
+    };
   };
 
-  // Get the relevant data based on action or use default
-  const currentData = paymentData[service_type] || paymentData.default;
+  useEffect(() => {
+    retrieveOrderData();
+  }, [service_type, order_id]);
 
   useEffect(() => {
-    // Start all animations
-    if (confettiRef.current) {
-      confettiRef.current.play();
-    }
-
-    if (celebrationRef.current) {
-      celebrationRef.current.play();
-    }
-
-    if (checkmarkRef.current) {
-      setTimeout(() => {
-        checkmarkRef.current.play();
-      }, 200);
-    }
-
-    // Animate page elements
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 800,
-        delay: 400,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    // Restart confetti animation every 8 seconds
-    const confettiInterval = setInterval(() => {
+    if (!loading && orderData) {
+      // Start all animations
       if (confettiRef.current) {
-        confettiRef.current.play(0, 120); // Play from frame 0 to 120
+        confettiRef.current.play();
       }
-    }, 2000);
 
-    // Restart celebration animation every 10 seconds
-    const celebrationInterval = setInterval(() => {
       if (celebrationRef.current) {
         celebrationRef.current.play();
       }
-    }, 10000);
 
-    // Cleanup intervals when component unmounts
-    return () => {
-      clearInterval(confettiInterval);
-      clearInterval(celebrationInterval);
-    };
-  }, []);
+      if (checkmarkRef.current) {
+        setTimeout(() => {
+          checkmarkRef.current.play();
+        }, 200);
+      }
+
+      // Animate page elements
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 50,
+          friction: 7,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 800,
+          delay: 400,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      // Restart confetti animation every 8 seconds
+      const confettiInterval = setInterval(() => {
+        if (confettiRef.current) {
+          confettiRef.current.play(0, 120);
+        }
+      }, 2000);
+
+      // Restart celebration animation every 10 seconds
+      const celebrationInterval = setInterval(() => {
+        if (celebrationRef.current) {
+          celebrationRef.current.play();
+        }
+      }, 10000);
+
+      // Cleanup intervals when component unmounts
+      return () => {
+        clearInterval(confettiInterval);
+        clearInterval(celebrationInterval);
+      };
+    }
+  }, [loading, orderData]);
+
+  const renderAppointmentDetails = () => {
+    if (!orderData.appointments) return null;
+
+    return orderData.appointments.map((appointment, index) => (
+      <View key={index} style={index > 0 ? styles.appointmentSeparator : null}>
+        {orderData.appointments.length > 1 && (
+          <Text style={styles.appointmentHeader}>Appointment {index + 1}</Text>
+        )}
+        <View style={styles.appointmentRow}>
+          <Text style={styles.appointmentLabel}>Appointment ID</Text>
+          <Text style={styles.appointmentValue}>{appointment.appointmentId}</Text>
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.appointmentRow}>
+          <Text style={styles.appointmentLabel}>Date</Text>
+          <Text style={styles.appointmentValue}>{appointment.date}</Text>
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.appointmentRow}>
+          <Text style={styles.appointmentLabel}>Time</Text>
+          <Text style={styles.appointmentValue}>{appointment.time}</Text>
+        </View>
+        {index < orderData.appointments.length - 1 && <View style={styles.divider} />}
+      </View>
+    ));
+  };
+
+  const renderBookItems = () => {
+    if (!orderData.items) return null;
+
+    return (
+      <>
+        {orderData.items.map((item, index) => (
+          <React.Fragment key={index}>
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>{item.name}</Text>
+              <Text style={styles.appointmentValue}>
+                {item.quantity}x ${item.price}
+              </Text>
+            </View>
+            {index < orderData.items.length - 1 && <View style={styles.divider} />}
+          </React.Fragment>
+        ))}
+        <View style={styles.divider} />
+        <View style={styles.appointmentRow}>
+          <Text style={[styles.appointmentLabel, styles.totalLabel]}>Total Price</Text>
+          <Text style={[styles.appointmentValue, styles.totalValue]}>
+            ${orderData.totalPrice?.toFixed(2)}
+          </Text>
+        </View>
+      </>
+    );
+  };
+
+  const renderOrderDetails = () => {
+    if (!orderData) return null;
+
+    switch (service_type) {
+      case 'speaking_mock_test':
+      case 'conversation':
+        return renderAppointmentDetails();
+
+      case 'book_purchase':
+        return (
+          <>
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>Order ID</Text>
+              <Text style={styles.appointmentValue}>{orderData.orderId}</Text>
+            </View>
+            <View style={styles.divider} />
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>Purchase Date</Text>
+              <Text style={styles.appointmentValue}>{orderData.purchaseDate}</Text>
+            </View>
+            <View style={styles.divider} />
+            {renderBookItems()}
+          </>
+        );
+
+      case 'exam_registration':
+        return (
+          <>
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>Registration ID</Text>
+              <Text style={styles.appointmentValue}>{orderData.registrationId}</Text>
+            </View>
+            <View style={styles.divider} />
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>Exam Date</Text>
+              <Text style={styles.appointmentValue}>{orderData.examDate}</Text>
+            </View>
+            <View style={styles.divider} />
+            {renderBookItems()}
+          </>
+        );
+
+      case 'ielts_academic':
+        return (
+          <View style={styles.appointmentRow}>
+            <Text style={styles.appointmentLabel}>Order ID</Text>
+            <Text style={styles.appointmentValue}>{orderData.orderId}</Text>
+          </View>
+        );
+
+      default:
+        return (
+          <>
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>Order ID</Text>
+              <Text style={styles.appointmentValue}>{orderData.orderId}</Text>
+            </View>
+            <View style={styles.divider} />
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>Date</Text>
+              <Text style={styles.appointmentValue}>{orderData.date}</Text>
+            </View>
+          </>
+        );
+    }
+  };
 
   const handleBackToHome = () => {
     router.dismissAll();
     router.replace(ROUTES.HOME as any);
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -210,58 +361,43 @@ const PaymentSuccessPage = () => {
           }
         ]}
       >
-        {/* Success Message */}
-        <Text style={styles.title}>{currentData.title}</Text>
-        <Text style={styles.subtitle}>{currentData.subtitle}</Text>
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* Success Message */}
+          <Text style={styles.title}>{orderData?.title}</Text>
+          <Text style={styles.subtitle}>{orderData?.subtitle}</Text>
 
-        {/* Details Card */}
-        <View style={styles.appointmentCard}>
-          <View style={styles.cardHeader}>
-            <Feather name={currentData.icon} size={24} color="#4A90E2" />
-            <Text style={styles.cardTitle}>{currentData.cardTitle}</Text>
+          {/* Details Card */}
+          <View style={styles.appointmentCard}>
+            <View style={styles.cardHeader}>
+              <Feather name={orderData?.icon} size={24} color="#4A90E2" />
+              <Text style={styles.cardTitle}>{orderData?.cardTitle}</Text>
+            </View>
+
+            {renderOrderDetails()}
+
+            {orderData?.tip && (
+              <View style={styles.tipContainer}>
+                <Feather name="lightbulb" size={16} color="#FF9500" />
+                <Text style={styles.tipText}>{orderData.tip}</Text>
+              </View>
+            )}
           </View>
 
-          {currentData.details.map((detail, index) => (
-            <React.Fragment key={index}>
-              <View style={styles.appointmentRow}>
-                <Text style={styles.appointmentLabel}>{detail.label}</Text>
-                <Text style={[
-                  styles.appointmentValue,
-                  detail.isHighlighted && { color: '#4A90E2', fontWeight: 'bold' }
-                ]}>
-                  {detail.value}
-                  {detail.isStatus && (
-                    <View style={styles.statusContainer}>
-                      <View style={styles.statusDot} />
-                      <Text style={styles.statusText}>{detail.value}</Text>
-                    </View>
-                  )}
-                </Text>
-              </View>
-
-              {index < currentData.details.length - 1 && <View style={styles.divider} />}
-            </React.Fragment>
-          ))}
-
-          {currentData.tip && (
-            <View style={styles.tipContainer}>
-              <Feather name="lightbulb" size={16} color="#FF9500" />
-              <Text style={styles.tipText}>{currentData.tip}</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Action Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.tertiaryButton}
-            onPress={handleBackToHome}
-            activeOpacity={0.7}
-          >
-            <Feather name="home" size={18} color="rgba(255, 255, 255, 0.8)" />
-            <Text style={styles.tertiaryButtonText}>Back to Home</Text>
-          </TouchableOpacity>
-        </View>
+          {/* Action Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.tertiaryButton}
+              onPress={handleBackToHome}
+              activeOpacity={0.7}
+            >
+              <Feather name="home" size={18} color="rgba(255, 255, 255, 0.8)" />
+              <Text style={styles.tertiaryButtonText}>Back to Home</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
 
         {/* Decorative Elements */}
         <View style={styles.decorativeContainer}>
@@ -298,45 +434,35 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
   },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   confetti: {
     position: 'absolute',
     top: 0,
     left: 0,
-    // right: 0,
-    // bottom: 0,
     width: width,
     height: height / 2,
-    zIndex: 20, // Lowered z-index to be behind content
-    pointerEvents: 'none',
-  },
-  celebration: {
-    position: 'absolute',
-    top: 50,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: width,
-    height: height * 0.6,
-    zIndex: 1, // Lowered z-index to be behind content
+    zIndex: 20,
     pointerEvents: 'none',
   },
   contentContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 25,
     paddingTop: 50,
     paddingBottom: 30,
-    zIndex: 10, // Higher z-index to be above confetti
+    zIndex: 10,
   },
-  checkmarkContainer: {
-    width: 100,
-    height: 100,
-    marginBottom: 15,
-  },
-  checkmark: {
-    width: '100%',
-    height: '100%',
+  scrollContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexGrow: 1,
   },
   title: {
     fontSize: 28,
@@ -401,26 +527,32 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'right',
   },
+  appointmentHeader: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  appointmentSeparator: {
+    marginTop: 20,
+    paddingTop: 20,
+    borderTopWidth: 2,
+    borderTopColor: '#F0F0F0',
+  },
   divider: {
     height: 1,
     backgroundColor: '#E8E8E8',
     marginVertical: 12,
   },
-  statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    backgroundColor: '#34C759',
-    borderRadius: 4,
-    marginRight: 8,
-  },
-  statusText: {
-    fontSize: 15,
-    color: '#34C759',
+  totalLabel: {
     fontWeight: 'bold',
+    color: '#2C2C54',
+  },
+  totalValue: {
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    fontSize: 16,
   },
   tipContainer: {
     flexDirection: 'row',
@@ -440,55 +572,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     gap: 12,
-    zIndex: 15, // Even higher z-index for buttons
-  },
-  primaryButton: {
-    borderRadius: 25,
-    overflow: 'hidden',
-    shadowColor: '#34C759',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-    elevation: 8,
-  },
-  buttonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 30,
-    gap: 10,
-  },
-  primaryButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  secondaryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 25,
-    paddingVertical: 16,
-    paddingHorizontal: 30,
-    gap: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  secondaryButtonText: {
-    color: '#4A90E2',
-    fontSize: 15,
-    fontWeight: '600',
+    zIndex: 15,
   },
   tertiaryButton: {
     flexDirection: 'row',
