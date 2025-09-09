@@ -485,20 +485,22 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           },
         ],
       },
-      // {
-      //   title: "Update Status",
-      //   items: [
-      //     {
-      //       label: "Mark appointment as complete.",
-      //       field: "mark_assignment_complete",
-      //     },
-      //   ],
-      // },
+
     ],
     []
   );
 
   const sectionsToRender = customSections || defaultSections;
+
+  const updateSection = [{
+    title: "Mark Appointment",
+    items: [
+      {
+        label: "Mark appointment as complete.",
+        field: "mark_assignment_complete",
+      },
+    ],
+  },]
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -516,7 +518,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         </View>
 
         {/* Sections */}
-        {sectionsToRender.map((section, index) =>
+        {sectionsToRender.map((section: any, index) =>
           renderTwoColumnSection(
             section.title,
             section.items,

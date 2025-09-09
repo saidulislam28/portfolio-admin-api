@@ -2,7 +2,7 @@ import { ROUTES } from '@/constants/app.routes';
 import { callService } from '@/services/AgoraCallService';
 import { stopRingtone } from '@/services/ringtoneService';
 import { useCallStore } from '@/zustand/callStore';
-import { replacePlaceholders, sendCallStartNotificationToConsultant } from '@sm/common';
+import { replacePlaceholders } from '@sm/common';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -12,7 +12,9 @@ const IncomingCallScreen = () => {
 
     const ignoreCall = async () => {
         hideCallScreen();
-        stopRingtone();        
+        stopRingtone();
+        // await notificationService.endCall(incomingCallInfo?.additionalInfo?.consultant_id, USER_ROLE.consultant);
+        // TODO send end call push to consultant
         router.back();
     }
 
@@ -22,7 +24,6 @@ const IncomingCallScreen = () => {
             incomingCallInfo?.additionalInfo?.token,
             incomingCallInfo?.additionalInfo?.user_id
         );
-        // sendCallStartNotificationToConsultant('')
         // stopRingtone();
         hideCallScreen();
         router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: incomingCallInfo?.additionalInfo?.Consultant?.id }) as any);
