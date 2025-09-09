@@ -11,6 +11,8 @@ import { Platform } from "react-native";
 // import { Provider } from 'react-redux';
 // import { PersistGate } from 'redux-persist/integration/react';
 // import { store, persistor } from '@/store';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import { initApiClients, SmPackageConfig } from "@sm/common";
 import { getAuthTokenMobile } from "@/lib/authToken";
@@ -32,28 +34,31 @@ export default function HomeLayout() {
     Constants.expoConfig?.extra?.apiBaseUrl
   );
 
-
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar
-          style={Platform.OS === "ios" ? "auto" : "dark"}
-          backgroundColor={
-            Platform.OS === "android" ? PRIMARY_COLOR : undefined
-          }
-          translucent={true}
-        />
-        <CallOverlay />
-        <QueryProvider>
-          {/* <Provider store={store}> */}
-          {/* <PersistGate loading={null} persistor={persistor}> */}
-          <AuthProvider>
-            <Slot />
-            <IncomingCallScreen />
-          </AuthProvider>
-          {/* </PersistGate> */}
-          {/* </Provider> */}
-        </QueryProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <BottomSheetModalProvider>
+            <StatusBar
+              style={Platform.OS === "ios" ? "auto" : "dark"}
+              backgroundColor={
+                Platform.OS === "android" ? PRIMARY_COLOR : undefined
+              }
+              translucent={true}
+            />
+            <CallOverlay />
+            <QueryProvider>
+              {/* <Provider store={store}> */}
+              {/* <PersistGate loading={null} persistor={persistor}> */}
+              <AuthProvider>
+                <Slot />
+                <IncomingCallScreen />
+              </AuthProvider>
+              {/* </PersistGate> */}
+              {/* </Provider> */}
+            </QueryProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
