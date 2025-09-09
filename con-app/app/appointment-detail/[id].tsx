@@ -252,6 +252,8 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     });
   };
 
+  console.log("appointment details from details page>>>>>>>", appointment?.Order?.service_type)
+
   const startVideoCall = async () => {
     console.log("=== button pressed ===", appointment);
 
@@ -272,7 +274,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
       await sendCallStartNotificationToUser(appointment.id);
       startAudioService();
-      router.push(replacePlaceholders(ROUTES.CALL_USER, { id: appointment?.User?.id as any, appointment_id: appointment?.id as any }) as any);
+      router.push(replacePlaceholders(ROUTES.CALL_USER, { id: appointment?.User?.id as any, appointment_id: appointment?.id as any, service_type: appointment?.Order?.service_type as any }) as any);
     } catch (error: any) {
       console.error("Failed to start call:", error);
       console.error("Failed call:", error);
