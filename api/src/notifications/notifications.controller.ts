@@ -75,19 +75,83 @@ export class NotificationController {
     return res.success(response);
   }
 
-  @Post('start-call')
-  @ApiOperation({ summary: 'Send a push notification to user when a consultant starts a call. This data push will be used to show the call \
-    dialog on user app' })
-  @ApiBody({ type: SendCallingNotificationDto })
-  @ApiResponse({ status: 200, description: 'Calling notification sent successfully.' })
+ @Post('consultant-start-call')
+  @ApiOperation({ summary: 'Send push notification when consultant starts a call. Triggers call dialog on user app' })
+  @ApiBody({ 
+    type: SendCallingNotificationDto,
+    description: 'Appointment ID for the call' 
+  })
+  @ApiResponse({ status: 200, description: 'Call start notification sent successfully.' })
+  @ApiResponse({ status: 404, description: 'Appointment or user not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error during sending.' })
-  async sendCallNotification(@Body() payload: SendCallingNotificationDto) {
+  async consultantStartCall(@Body() payload: SendCallingNotificationDto) {
     try {
-      await this.notificationService.sendCallNotification(payload);
+      await this.notificationService.sendConsultantStartCallNotification(payload);
       return res.success(true);
     } catch (error) {
-      console.log('Notification send', error);
-      return res.error('Error');
+      console.log('Notification send error', error);
+      return res.error('Error sending call notification');
     }
   }
+
+  @Post('consultant-end-call')
+  @ApiOperation({ summary: 'Send push notification when consultant ends a call' })
+  @ApiBody({ 
+    type: SendCallingNotificationDto,
+    description: 'Appointment ID for the call' 
+  })
+  @ApiResponse({ status: 200, description: 'Call end notification sent successfully.' })
+  @ApiResponse({ status: 404, description: 'Appointment or user not found.' })
+  @ApiResponse({ status: 500, description: 'Internal server error during sending.' })
+  async consultantEndCall(@Body() payload: SendCallingNotificationDto) {
+    try {
+      await this.notificationService.sendConsultantEndCallNotification(payload);
+      return res.success(true);
+    } catch (error) {
+      console.log('Notification send error', error);
+      return res.error('Error sending call end notification');
+    }
+  }
+
+  @Post('user-start-call')
+  @ApiOperation({ summary: 'Send push notification when user starts a call. Triggers call dialog on consultant app' })
+  @ApiBody({ 
+    type: SendCallingNotificationDto,
+    description: 'Appointment ID for the call' 
+  })
+  @ApiResponse({ status: 200, description: 'Call start notification sent successfully.' })
+  @ApiResponse({ status: 404, description: 'Appointment or consultant not found.' })
+  @ApiResponse({ status: 500, description: 'Internal server error during sending.' })
+  async userStartCall(@Body() payload: SendCallingNotificationDto) {
+    try {
+      await this.notificationService.sendUserStartCallNotification(payload);
+      return res.success(true);
+    } catch (error) {
+      console.log('Notification send error', error);
+      return res.error('Error sending call notification');
+    }
+  }
+
+  @Post('user-end-call')
+  @ApiOperation({ summary: 'Send push notification when user ends a call' })
+  @ApiBody({ 
+    type: SendCallingNotificationDto,
+    description: 'Appointment ID for the call' 
+  })
+  @ApiResponse({ status: 200, description: 'Call end notification sent successfully.' })
+  @ApiResponse({ status: 404, description: 'Appointment or consultant not found.' })
+  @ApiResponse({ status: 500, description: 'Internal server error during sending.' })
+  async userEndCall(@Body() payload: SendCallingNotificationDto) {
+    try {
+      await this.notificationService.sendUserEndCallNotification(payload);
+      return res.success(true);
+    } catch (error) {
+      console.log('Notification send error', error);
+      return res.error('Error sending call end notification');
+    }
+  }
+
+
+
+
 }
