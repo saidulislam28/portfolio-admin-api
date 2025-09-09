@@ -271,7 +271,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
       await sendCallStartNotificationToUser(appointment.id);
       startAudioService();
-      router.push(replacePlaceholders(ROUTES.CALL_USER, {id: appointment?.User?.id}));
+      router.push(replacePlaceholders(ROUTES.CALL_USER, {id: appointment?.User?.id}) as any);
     } catch (error: any) {
       console.error("Failed to start call:", error);
       console.error("Failed call:", error);

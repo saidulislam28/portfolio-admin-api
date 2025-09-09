@@ -23,7 +23,7 @@ import {
   View,
 } from 'react-native';
 import { RtcSurfaceView, VideoViewSetupMode, } from 'react-native-agora';
-
+import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 const { width, height } = Dimensions.get('window');
 
 const appointmentTitle = 'appointmentTitle'
@@ -33,9 +33,13 @@ export default function CallScreen() {
   useKeepAwake();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
   const userId = useSearchParams().get("user_id");
   const { setLoading } = useLoading()
+
+  // Bottom sheet ref
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
   const {
     isInCall,
@@ -84,7 +88,7 @@ export default function CallScreen() {
 
   useEffect(() => {
     // Set call screen as active
-    // setCallScreenActive(true);
+    setCallScreenActive(true);
 
     // Join channel if we have the necessary data
     if (token && channelName && uid && !isInCall) {
@@ -105,13 +109,53 @@ export default function CallScreen() {
   }, [token, channelName, uid, isInCall]);
 
   useEffect(() => {
-    setCallScreenActive(true);
+    if (showEndCallConfirmation) {
+      bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
+    }
+  }, [showEndCallConfirmation]);
 
-    return () => {
-      setCallScreenActive(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
+  const handleEndCallPress = () => {
+    setShowEndCallConfirmation(true);
+  };
+
+  const handleCancelEndCall = () => {
+    setShowEndCallConfirmation(false);
+  };
+
+  const handleConfirmEndCall = async () => {
+    setShowEndCallConfirmation(false);
+    await performEndCall();
+  };
+
+  const performEndCall = async () => {
+    setLoading(true)
+    try {
+      await leaveChannel();
+      await endCall();
+      stopAudioService();
+
+      // Navigate to feedback screen after ending call
+      router.push({
+        pathname: "/appointment-detail/mock-feedback-form",
+        params: {
+          callDuration: callDuration.toString(),
+          participantId: otherParticipant?.id,
+          participantName: otherParticipant?.name
+        }
+      });
+    } catch (error) {
+      console.error('Error ending call:', error);
+      router.back();
+    } finally {
+      if (userId) {
+        await sendCallEndNotificationToUser(3); // TODO fix hardcoded
+      }
+      setLoading(false);
+    }
+  };
+
 
   // Auto-hide controls
   //   useEffect(() => {
@@ -500,7 +544,7 @@ export default function CallScreen() {
 
               <TouchableOpacity
                 style={styles.endCallButton}
-                onPress={handleEndCall}
+                onPress={handleEndCallPress} // Changed to show confirmation
               >
                 <Ionicons name="call" size={28} color="#FFFFFF" />
               </TouchableOpacity>
@@ -551,6 +595,48 @@ export default function CallScreen() {
           </View>
         )}
       </TouchableOpacity>
+
+      {/* End Call Confirmation Bottom Sheet */}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={['40%']}
+        enablePanDownToClose
+        onClose={() => setShowEndCallConfirmation(false)}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            disappearsOnIndex={-1}
+            appearsOnIndex={0}
+          />
+        )}
+      >
+        <BottomSheetView style={styles.bottomSheetContent}>
+          <View style={styles.bottomSheetHeader}>
+            <Ionicons name="call" size={32} color="#EF4444" />
+            <Text style={styles.bottomSheetTitle}>End Call?</Text>
+            <Text style={styles.bottomSheetDescription}>
+              Are you sure you want to end this call? You'll be able to provide feedback about your experience.
+            </Text>
+          </View>
+
+          <View style={styles.bottomSheetButtons}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={handleCancelEndCall}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={handleConfirmEndCall}
+            >
+              <Text style={styles.confirmButtonText}>End Call & Provide Feedback</Text>
+            </TouchableOpacity>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
     </SafeAreaView>
   );
 }
@@ -704,5 +790,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#EF4444',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  bottomSheetContent: {
+    flex: 1,
+    padding: 24,
+  },
+  bottomSheetHeader: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  bottomSheetTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  bottomSheetDescription: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  bottomSheetButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  cancelButton: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#F3F4F6',
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: '#374151',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  confirmButton: {
+    flex: 2,
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#EF4444',
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });

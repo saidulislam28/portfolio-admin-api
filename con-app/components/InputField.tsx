@@ -8,11 +8,12 @@ import {
     TextInputProps,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { PRIMARY_COLOR } from '@/lib/constants';
 
 const COLORS = {
     danger: "#DC3545",
     label: "#212529",
-    primary: "#0D6EFD",
+    primary: PRIMARY_COLOR,
     border: "#CED4DA",
     white: "#FFFFFF",
     placeholder: "#6C757D",
