@@ -8,7 +8,7 @@ import { AppointmentDto, GetAppointmentsQueryDto } from '../dto/calendar-respons
 export class AppointmentCalendarService {
   private readonly logger = new Logger(AppointmentCalendarService.name);
 
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async getConsultantAppointments(
     consultantId: number,
@@ -21,23 +21,23 @@ export class AppointmentCalendarService {
       const whereClause: any = {
         consultant_id: consultantId,
         status: {
-          in: [AppointmentStatus.CONFIRMED]
-        }
+          in: [AppointmentStatus.CONFIRMED],
+        },
       };
 
-      // If date is provided, filter by that specific date
+      // If date is provided, filter by that specific date using start_at
       if (date) {
         const targetDate = new Date(date);
         const nextDate = new Date(targetDate);
         nextDate.setDate(nextDate.getDate() + 1);
 
-        whereClause.slot_date = {
+        whereClause.start_at = {
           gte: targetDate,
           lt: nextDate,
         };
       }
 
-      // Fetch appointments from database
+      // Fetch appointments from database — ordered by actual start time
       const appointments = await this.prisma.appointment.findMany({
         where: whereClause,
         include: {
@@ -54,39 +54,40 @@ export class AppointmentCalendarService {
             },
           },
         },
-        orderBy: [
-          { slot_date: 'asc' },
-          { slot_time: 'asc' },
-        ],
+        orderBy: {
+          start_at: 'asc', // Only order by start_at — it includes full time precision
+        },
       });
 
-      // console.log("appointment consultant", appointments)
+      // Group appointments by the DATE PART of start_at (e.g., "2025-04-05")
+      const groupedAppointments = appointments.reduce(
+        (acc, appointment) => {
+          // Extract YYYY-MM-DD from start_at (UTC)
+          const dateKey = appointment.start_at.toISOString().split('T')[0];
 
-      // Group appointments by date and transform data
-      const groupedAppointments = appointments.reduce((acc, appointment) => {
-        const dateKey = appointment.slot_date.toISOString().split('T')[0];
+          if (!acc[dateKey]) {
+            acc[dateKey] = [];
+          }
 
-        if (!acc[dateKey]) {
-          acc[dateKey] = [];
-        }
+          const transformedAppointment: AppointmentDto = {
+            id: appointment.id,
+            time: appointment.slot_time, // Still useful for display
+            duration: appointment.duration_in_min,
+            client: appointment.User?.full_name || 'Unknown Client',
+            type: this.getServiceTypeDisplayName(
+              appointment.Order?.service_type,
+            ),
+            status: this.getStatusDisplayName(appointment.status),
+            notes: appointment.notes || undefined,
+            start_at: appointment.start_at.toISOString(),
+            end_at: appointment.end_at.toISOString(),
+          };
 
-        const transformedAppointment: AppointmentDto = {
-          id: appointment.id,
-          time: appointment.slot_time,
-          duration: appointment.duration_in_min,
-          client: appointment.User?.full_name || 'Unknown Client',
-          type: this.getServiceTypeDisplayName(appointment.Order?.service_type),
-          status: this.getStatusDisplayName(appointment.status),
-          notes: appointment.notes || undefined,
-          start_at: appointment.start_at.toISOString(),
-          end_at: appointment.end_at.toISOString(),
-        };
-
-        acc[dateKey].push(transformedAppointment);
-        return acc;
-      }, {} as Record<string, AppointmentDto[]>);
-
-      // console.log("group appointment consultant", groupedAppointments)
+          acc[dateKey].push(transformedAppointment);
+          return acc;
+        },
+        {} as Record<string, AppointmentDto[]>,
+      );
 
       return groupedAppointments;
     } catch (error) {
@@ -94,7 +95,6 @@ export class AppointmentCalendarService {
       throw error;
     }
   }
-
 
   private getServiceTypeDisplayName(serviceType?: string): string {
     const serviceTypeMap: Record<string, string> = {
