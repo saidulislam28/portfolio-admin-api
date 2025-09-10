@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AppointmentStatus } from '@prisma/client';
 import { Queue } from 'bull';
 import { QUEUE_JOBS, QUEUE_NAME } from 'src/common/constants';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -88,7 +89,10 @@ export class AppointmentsService {
 
     const updatedAppointment = await this.prisma.appointment.update({
       where: { id },
-      data: { consultant_id: consultant_id },
+      data: { 
+        consultant_id: consultant_id,
+        status: AppointmentStatus.CONFIRMED
+      },
       include: {
         Consultant: {
           select: {
