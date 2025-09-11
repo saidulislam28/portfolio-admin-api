@@ -1,12 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDateString, IsOptional } from 'class-validator';
 
-export class AppointmentDto {
+export class CalendarAppointmentDto {
   @ApiProperty({ example: 1 })
   id: number;
-
-  @ApiProperty({ example: '09:00' })
-  time: string;
 
   @ApiProperty({ example: 60 })
   duration: number;
@@ -32,10 +29,10 @@ export class AppointmentDto {
 
 export class AppointmentsByDateDto {
   @ApiProperty({ 
-    type: [AppointmentDto],
+    type: [CalendarAppointmentDto],
     description: 'List of appointments for the date'
   })
-  appointments: AppointmentDto[];
+  appointments: CalendarAppointmentDto[];
 }
 
 export class GetAppointmentsResponseDto {
@@ -43,7 +40,7 @@ export class GetAppointmentsResponseDto {
     type: 'object',
     additionalProperties: {
       type: 'array',
-      items: { $ref: '#/components/schemas/AppointmentDto' }
+      items: { $ref: '#/components/schemas/CalendarAppointmentDto' }
     },
     description: 'Appointments grouped by date (YYYY-MM-DD)',
     example: {
@@ -62,7 +59,7 @@ export class GetAppointmentsResponseDto {
       ]
     }
   })
-  data: Record<string, AppointmentDto[]>;
+  data: Record<string, CalendarAppointmentDto[]>;
 
   @ApiProperty({ example: 200 })
   statusCode: number;

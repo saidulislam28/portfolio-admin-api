@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { AppointmentStatus } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-import { AppointmentDto, GetAppointmentsQueryDto } from '../dto/calendar-response.dto';
+import { CalendarAppointmentDto, GetAppointmentsQueryDto } from '../dto/calendar-response.dto';
 
 @Injectable()
 export class AppointmentCalendarService {
@@ -13,7 +13,7 @@ export class AppointmentCalendarService {
   async getConsultantAppointments(
     consultantId: number,
     query: GetAppointmentsQueryDto,
-  ): Promise<Record<string, AppointmentDto[]>> {
+  ): Promise<Record<string, CalendarAppointmentDto[]>> {
     try {
       const { date } = query;
 
@@ -69,15 +69,12 @@ export class AppointmentCalendarService {
             acc[dateKey] = [];
           }
 
-          const transformedAppointment: AppointmentDto = {
+          const transformedAppointment: CalendarAppointmentDto = {
             id: appointment.id,
-            time: appointment.slot_time, // Still useful for display
             duration: appointment.duration_in_min,
             client: appointment.User?.full_name || 'Unknown Client',
-            type: this.getServiceTypeDisplayName(
-              appointment.Order?.service_type,
-            ),
-            status: this.getStatusDisplayName(appointment.status),
+            type: appointment.Order?.service_type,
+            status: appointment.status,
             notes: appointment.notes || undefined,
             start_at: appointment.start_at.toISOString(),
             end_at: appointment.end_at.toISOString(),
@@ -86,7 +83,7 @@ export class AppointmentCalendarService {
           acc[dateKey].push(transformedAppointment);
           return acc;
         },
-        {} as Record<string, AppointmentDto[]>,
+        {} as Record<string, CalendarAppointmentDto[]>,
       );
 
       return groupedAppointments;
