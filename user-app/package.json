@@ -30,6 +30,7 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@sm/common": "file:../packages/common",
+    "@sm/react-native": "file:../packages/react-native",
     "@supabase/supabase-js": "^2.49.1",
     "@tanstack/react-query": "^5.84.1",
     "axios": "^1.9.0",

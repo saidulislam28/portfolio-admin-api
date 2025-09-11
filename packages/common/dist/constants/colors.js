@@ -1,0 +1,14 @@
+export const COLORS = {
+    PRIMARY_COLOR: '#FE5D26',
+    SECONDARY_COLOR: '#F5F5F5',
+    TEXT_COLOR: '#1C1C1E',
+    SUBTITLE_COLOR: '#8E8E93',
+    BACKGROUND_COLOR: '#FFFFFF',
+    SUCCESS_COLOR: '#28a745',
+    ERROR_COLOR: '#555555',
+    WARNING_COLOR: '#ffc107',
+    LIGHT_GRAY: '#f8f9fa',
+    DARK_GRAY: '#6c757d',
+    WHITE: '#ffffff',
+    BLACK: '#000000'
+};

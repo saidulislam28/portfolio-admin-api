@@ -8,7 +8,8 @@
   "scripts": {
     "start": "concurrently \"cd api && npm run start:dev\" \"cd admin && npm run dev\" \"cd website && npm run dev\"",
     "setup": "bash ./setup.sh",
-    "install": "bash ./install.sh"
+    "install": "bash ./install.sh",
+    "build-package": "concurrently \"cd packages/common && npm run build\" \"cd packages/react-native && npm run build\""
   },
   "eslintConfig": {
     "extends": [

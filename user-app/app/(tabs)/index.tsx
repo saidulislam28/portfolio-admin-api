@@ -12,6 +12,7 @@ import { HomeSection } from "@/types/home";
 import { useRouter } from "expo-router";
 import React from "react";
 import { FlatList, StyleSheet, Text, View, Button } from "react-native";
+import {Button} from '@sm/react-native'
 
 const homeSections: HomeSection[] = [
   { id: "1", sortOrder: 1, type: "header" },
@@ -104,6 +105,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       {/* <AppStatusBar /> */}
+
+      <Button />
       <FlatList
         extraData={{
           isBookFetchSuccess,

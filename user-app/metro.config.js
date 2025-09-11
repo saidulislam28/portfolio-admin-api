@@ -10,8 +10,16 @@ const config = getDefaultConfig(__dirname);
 const localPackagePath = path.resolve(__dirname, '../packages/common');
 config.watchFolders = [localPackagePath];
 config.resolver.alias = {
-  '@trackify/common': localPackagePath,
+  '@sm/common': localPackagePath,
 };
+
+//start react-native package config
+const RNpackagePath = path.resolve(__dirname, '../packages/react-native');
+config.watchFolders = [RNpackagePath];
+config.resolver.alias = {
+  '@sm/react-native': RNpackagePath,
+};
+
 config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, 'node_modules'),
   path.resolve(localPackagePath, 'node_modules'),
