@@ -35,6 +35,7 @@ import { UserDashBoardService } from './user/app-user-management.service';
 import { UserCacheModule } from './user-cache/user-cache.module';
 import { TimezoneModule } from './timezone/timezone.module';
 import { CommonModule } from './common/common.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 
 @Module({
@@ -55,6 +56,11 @@ import { CommonModule } from './common/common.module';
         name: QUEUE_NAME,
       }
     ),
+    CacheModule.register({
+      ttl: 5 * 1000, // Cache expiration time in milliseconds (5 seconds)
+      max: 100, // Maximum number of items in cache
+      isGlobal: true, // Make the cache module available globally
+    }),
     PrismaModule,
     CrudModule,
     AttachmentsModule,

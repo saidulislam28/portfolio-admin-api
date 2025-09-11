@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Post,
   Query,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe
@@ -87,6 +88,36 @@ export class AppointmentsController {
         error.status || HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
+  }
+
+  // get list of user's active appointments (PENDING or CONFIRMED) this will be used on app
+  // to hide these slots to prevent same user booking same slot twice
+  @Get('active')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getActiveAppointmentsByUser(@Req() req) {
+    const { id: user_id } = req?.user;
+    // try {
+    //   const slots = await this.appointmentsService.getActiveAppointmentsByUser(+user_id);
+
+    //   return {
+    //     success: true,
+    //     data: slots,
+    //     meta: {
+    //       timezone: query.timezone,
+    //       generated_at: new Date().toISOString(),
+    //       total_days: slots.length
+    //     }
+    //   };
+    // } catch (error) {
+    //   throw new HttpException(
+    //     {
+    //       success: false,
+    //       message: error.message || 'Failed to fetch available slots',
+    //       error: 'FETCH_SLOTS_ERROR'
+    //     },
+    //     error.status || HttpStatus.INTERNAL_SERVER_ERROR
+    //   );
+    // }
   }
 
   /**
