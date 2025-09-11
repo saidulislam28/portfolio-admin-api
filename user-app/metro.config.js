@@ -23,6 +23,7 @@ config.resolver.alias = {
 config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, 'node_modules'),
   path.resolve(localPackagePath, 'node_modules'),
+  path.resolve(RNpackagePath, 'node_modules'),
 ];
 config.resolver.blockList = [
   // Block react-native in the local package
@@ -32,6 +33,14 @@ config.resolver.blockList = [
   // Block expo modules in local package
   new RegExp(`${localPackagePath}/node_modules/expo/.*`),
   new RegExp(`${localPackagePath}/node_modules/@expo/.*`),
+
+  //RN
+  new RegExp(`${RNpackagePath}/node_modules/react-native/.*`),
+  // Block react to avoid duplicate React instances
+  new RegExp(`${RNpackagePath}/node_modules/react/.*`),
+  // Block expo modules in local package
+  new RegExp(`${RNpackagePath}/node_modules/expo/.*`),
+  new RegExp(`${RNpackagePath}/node_modules/@expo/.*`),
 ];
 // end local package config
 

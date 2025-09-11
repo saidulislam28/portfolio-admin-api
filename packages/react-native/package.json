@@ -2,30 +2,34 @@
   "name": "@sm/react-native",
   "version": "1.0.0",
   "description": "Shared React Native components and types",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist *.d.ts *.js"
+    "build": "npm run clean && tsc",
+    "dev": "npm run clean && tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "expo-localization": "^17.0.6",
+    "react": "18.3.1",
+    "react-native": "0.76.9"
   },
   "peerDependencies": {
-    "react": "*",
-    "react-native": "*",
-    "@expo/vector-icons": "*"
+    "@expo/vector-icons": "^15.0.2"
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-native": "^0.72.0",
+    "@types/react": "18.3.1",
     "typescript": "^5.0.0"
   },
-  "keywords": ["react-native", "components", "typescript"],
+  "keywords": [
+    "react-native",
+    "components",
+    "typescript"
+  ],
   "author": "Rashidul",
   "license": "ISC",
   "files": [
-    "src",
-    "index.js",
-    "index.d.ts",
-    "**/*.d.ts"
+    "dist/**/*"
   ]
 }

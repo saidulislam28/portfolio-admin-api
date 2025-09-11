@@ -10,16 +10,17 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "outDir": "./",
-    "rootDir": "./",
-    "jsx": "react-jsx"
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "jsx": "react-jsx",
+    "sourceMap": true
   },
   "include": [
-    "src/**/*",
-    "index.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
+    "dist",
     "**/*.test.ts",
     "**/*.test.tsx"
   ]

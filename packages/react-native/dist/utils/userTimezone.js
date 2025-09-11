@@ -40,3 +40,4 @@ const getUserDeviceTimezone = () => {
     return Localization.getCalendars()[0]?.timeZone;
 };
 exports.getUserDeviceTimezone = getUserDeviceTimezone;
+//# sourceMappingURL=userTimezone.js.map
