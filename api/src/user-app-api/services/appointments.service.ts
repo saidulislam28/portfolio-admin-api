@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { DateTime } from 'luxon';
 import { DaySlots, TimeSlot } from '../dtos/types';
 import { CreateAppointmentDto } from '../dtos/appointment.dto';
-import { NotificationChannel, NotificationType } from '@prisma/client';
+import { AppointmentStatus, NotificationChannel, NotificationType } from '@prisma/client';
 import { ScheduleNotificationService } from 'src/schedule-notification/schedule-notification.service';
 import { TimeZoneHelper } from 'src/common/timezone.helper';
 
@@ -392,10 +392,8 @@ export class AppointmentsService {
   /**
    * Get appointments for a specific user with timezone conversion
    */
-  async getUserAppointments(
-    userId: number,
-    userTimezone: string = 'UTC',
-    limit: number = 10
+  async getActiveAppointmentsByUser(
+    userId: number
   ) {
     const appointments = await this.prisma.appointment.findMany({
       where: {
@@ -404,51 +402,15 @@ export class AppointmentsService {
           gte: new Date() // Only future appointments
         },
         status: {
-          not: 'CANCELLED'
-        }
-      },
-      include: {
-        Consultant: {
-          select: {
-            id: true,
-            full_name: true,
-            bio: true,
-            experience: true,
-            timezone: true,
-            profile_image: true,
-            is_test_user: true
-          }
-        },
-        Order: {
-          select: {
-            id: true
-          }
+          in: [AppointmentStatus.CONFIRMED, AppointmentStatus.PENDING]
         }
       },
       orderBy: {
         start_at: 'asc'
       },
-      take: limit
     });
 
-    // Convert times to user timezone
-    return appointments.map(appointment => {
-      const startDateTime = DateTime.fromJSDate(appointment.start_at).setZone(userTimezone);
-      const endDateTime = DateTime.fromJSDate(appointment.end_at).setZone(userTimezone);
-
-      return {
-        ...appointment,
-        display_info: {
-          date: startDateTime.toISODate(),
-          start_time_24h: startDateTime.toFormat('HH:mm'),
-          start_time_12h: startDateTime.toFormat('h:mm a'),
-          end_time_24h: endDateTime.toFormat('HH:mm'),
-          end_time_12h: endDateTime.toFormat('h:mm a'),
-          day_name: startDateTime.toFormat('EEEE'),
-          duration_display: `${appointment.duration_in_min} minutes`
-        }
-      };
-    });
+    return appointments;
   }
 
   /**

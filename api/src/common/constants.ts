@@ -5,6 +5,12 @@ export function trimText(text: string) {
     return text;
 }
 
+export const CACHE_TTL = {
+    thirtyseconds: 30 * 1000, 
+    oneminute: 60 * 1000, 
+    threeminute: 3 * 60 * 1000, 
+};
+
 export const QUEUE_NAME = 'sm_main_queue';
 
 export const QUEUE_JOBS = {

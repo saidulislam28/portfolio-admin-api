@@ -12,8 +12,8 @@ export async function seedUsers() {
     profile_image: `https://randomuser.me/api/portraits/men/${i + 10}.jpg`,
     password: hash,
     timezone: 'UTC',
-    is_active: i % 2 === 0,
-    is_verified: i % 2 === 0,
+    is_active: true,
+    is_verified: true,
   }));
 
   await prisma.user.createMany({

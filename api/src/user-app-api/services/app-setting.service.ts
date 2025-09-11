@@ -9,6 +9,7 @@ export class AppSettingService {
   constructor(private readonly prismaService: PrismaService) { }
 
   async getHomeData() {
+    console.log('app set sevice called')
     const settings = await this.prismaService.setting.findMany();
     const settingData: any = settings.reduce((acc, item) => {
       acc[item.key] = item.value;
