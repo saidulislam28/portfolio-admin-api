@@ -109,7 +109,7 @@ const VerifyOtpScreen = () => {
 
     try {
       const result = await Post(API_USER.RESEND_OTP, { email });
-      if (!result.success) {
+      if (!result?.data?.success) {
         Alert.alert("Error", result.error);
         setIsVerifying(false);
         return;

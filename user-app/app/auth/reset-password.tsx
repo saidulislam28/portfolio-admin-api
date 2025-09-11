@@ -58,7 +58,7 @@ export default function ResetPasswordScreen() {
       }
       await AsyncStorage.removeItem("email");
 
-      login(result?.data?.data);
+      login(result?.data?.data, result?.data?.data?.token);
       router.push(ROUTES.HOME);
 
     } catch (error) {

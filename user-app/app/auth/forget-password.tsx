@@ -28,13 +28,13 @@ export default function LoginScreen() {
       const result = await Post(API_USER.forget_password, {
         email_or_phone: email,
       });
-      if (!result.success) {
-        Alert.alert("Error", result.error);
+      if (!result?.data?.success) {
+        Alert.alert("Error", result?.data?.error);
         setLoading(false);
         return;
       }
 
-      await AsyncStorage.setItem("email", result?.data?.email);
+      await AsyncStorage.setItem("email", result?.data?.data?.email);
       router.push(ROUTES.RESET_PASSWORD as any);
     } catch (error: any) {
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
