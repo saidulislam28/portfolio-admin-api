@@ -12,3 +12,22 @@ export declare const NotificationChannel: {
     call: string;
 };
 export declare const ADMIN_CALL_USER_ID = 999999;
+export declare const PACKAGE_SERVICE_TYPE: {
+    book_purchase: string;
+    ielts_gt: string;
+    ielts_academic: string;
+    spoken: string;
+    speaking_mock_test: string;
+    conversation: string;
+    exam_registration: string;
+    study_abroad: string;
+};
+export declare const APPOINTMENT_STATUS_COLOR: {
+    readonly CANCELLED: "#FF6B6B";
+    readonly COMPLETED: "#4ECDC4";
+    readonly CONFIRMED: "#45B7D1";
+    readonly PENDING: "#FFA726";
+};
+export declare const SERVICE_TYPE_LABELS: {
+    [x: string]: string;
+};

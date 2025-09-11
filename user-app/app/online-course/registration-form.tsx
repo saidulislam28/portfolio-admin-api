@@ -3,9 +3,9 @@ import CommonHeader from "@/components/CommonHeader";
 import { InputField } from "@/components/InputField";
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
+import { PRIMARY_COLOR } from "@/lib/constants";
 import { validateEmail, validatePhone } from "@/utility/validator";
-import { API_USER, Post, replacePlaceholders } from "@sm/common";
+import { API_USER, PACKAGE_SERVICE_TYPE, Post, replacePlaceholders } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {

@@ -1,7 +1,7 @@
 import { ROUTES } from '@/constants/app.routes';
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
+import { PRIMARY_COLOR } from '@/lib/constants';
 import { AntDesign, Feather } from '@expo/vector-icons';
-import { API_USER, Get } from '@sm/common';
+import { API_USER, Get, PACKAGE_SERVICE_TYPE } from '@sm/common';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';

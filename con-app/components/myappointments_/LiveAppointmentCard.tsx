@@ -1,7 +1,7 @@
-import { Appointment } from "@/utility/appointment";
 import React, { useCallback } from "react";
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import AppointmentCard from "./AppointmentCard";
+import { Appointment } from "@sm/common";
 const LiveAppointments: React.FC<{
   liveAppointments: Appointment[];
   onAppointmentPress: (appointment: Appointment) => void;

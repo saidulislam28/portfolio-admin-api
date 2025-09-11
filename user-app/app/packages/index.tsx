@@ -7,12 +7,11 @@ import {
   DARK_GRAY,
   FOREIGN_CURRENCY_MULTIPLIER,
   LIGHT_GRAY,
-  PACKAGE_SERVICE_TYPE,
   PRIMARY_COLOR,
   WHITE,
 } from "@/lib/constants";
 import { mockUser } from "@/services/mockDataService";
-import { API_USER, Get } from "@sm/common";
+import { API_USER, Get, PACKAGE_SERVICE_TYPE } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {

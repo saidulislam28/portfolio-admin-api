@@ -15,17 +15,6 @@ export const BLACK = '#000000';
 // Currency multiplier for foreigners
 export const FOREIGN_CURRENCY_MULTIPLIER = 1.5;
 
-export const PACKAGE_SERVICE_TYPE = {
-  book_purchase: 'book_purchase',
-  ielts_gt: 'ielts_gt',
-  ielts_academic: 'ielts_academic',
-  spoken: 'spoken',
-  speaking_mock_test: 'speaking_mock_test',
-  conversation: 'conversation',
-  exam_registration: 'exam_registration',
-  study_abroad: 'study_abroad'
-}
-
 export const RECIPIENT_TYPE = {
   User: "User",
   Consultant: "Consultant"

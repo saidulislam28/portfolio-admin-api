@@ -1,5 +1,4 @@
 import { useAuth } from "@/context/useAuth";
-import { PACKAGE_SERVICE_TYPE } from "@/lib/constants";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -18,6 +17,7 @@ import online from "@/assets/images/online.png";
 import study from "@/assets/images/study.png";
 import SectionTitle from "@/components/SectionTitle";
 import { ROUTES } from "@/constants/app.routes";
+import { PACKAGE_SERVICE_TYPE } from "@sm/common";
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = (width - 86) / 3; // 3 cards per row with proper spacing

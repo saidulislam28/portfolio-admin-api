@@ -9,12 +9,7 @@ import {
 
 import { ROUTES } from '@/constants/app.routes';
 import { PRIMARY_COLOR } from '@/lib/constants';
-import {
-  categorizeAppointments,
-  type Appointment,
-  type CategorizedAppointments
-} from '@/utility/appointment';
-import { API_USER, Get } from '@sm/common';
+import { API_USER, Appointment, categorizeAppointments, CategorizedAppointments, Get } from '@sm/common';
 import { useRouter } from 'expo-router';
 import LiveAppointments from '@/components/myappointments/LiveAppointmentCard';
 import AnimatedTabView from '@/components/myappointments/AnimatedTabView';

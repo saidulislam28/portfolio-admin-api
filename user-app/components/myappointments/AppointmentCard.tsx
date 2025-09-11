@@ -1,10 +1,5 @@
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
-import { SERVICE_TYPE } from "@/store/slices/app/constants";
-import {
-  AppointmentStatus,
-  formatAppointmentTime,
-  type Appointment
-} from '@/utility/appointment';
+import { PRIMARY_COLOR } from "@/lib/constants";
+import { Appointment, APPOINTMENT_STATUS_COLOR, formatAppointmentTime, IAppointmentStatus, SERVICE_TYPE_LABELS, } from "@sm/common";
 import React, { useCallback, useMemo } from "react";
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -19,40 +14,29 @@ const AppointmentCard: React.FC<AppointmentCardProps> = React.memo(({ appointmen
     onPress(appointment);
   }, [appointment, onPress]);
 
-  const isCancelled = appointment.status === AppointmentStatus.CANCELLED;
-  const isCompleted = appointment.status === AppointmentStatus.COMPLETED;
+  const isCancelled = appointment.status === IAppointmentStatus.CANCELLED;
+  const isCompleted = appointment.status === IAppointmentStatus.COMPLETED;
 
   const statusColor = useMemo(() => {
     switch (appointment.status) {
-      case AppointmentStatus.CANCELLED:
+      case IAppointmentStatus.CANCELLED:
         return '#FF6B6B';
-      case AppointmentStatus.COMPLETED:
+      case IAppointmentStatus.COMPLETED:
         return '#4ECDC4';
-      case AppointmentStatus.CONFIRMED:
+      case IAppointmentStatus.CONFIRMED:
         return '#45B7D1';
-      case AppointmentStatus.PENDING:
+      case IAppointmentStatus.PENDING:
         return '#FFA726';
       default:
         return '#6C757D';
     }
   }, [appointment.status]);
 
-  const renderServiceType = () => {
-    switch (appointment?.Order?.service_type) {
-      case PACKAGE_SERVICE_TYPE.conversation:
-        return "Conversation";
-      case PACKAGE_SERVICE_TYPE.speaking_mock_test  :
-        return "Mock Test";
-      default:
-        return appointment?.Order?.service_type || "N/A";
-    }
-  };
-
   return (
     <TouchableOpacity style={styles.appointmentCard} onPress={handlePress}>
       <View style={styles.cardHeader}>
-        <Text style={styles.serviceType}>{renderServiceType()}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
+        <Text style={styles.serviceType}>{SERVICE_TYPE_LABELS[appointment?.Order?.service_type]}</Text>
+        <View style={[styles.statusBadge, { backgroundColor: APPOINTMENT_STATUS_COLOR[appointment.status] }]}>
           <Text style={styles.statusText}>{appointment.status}</Text>
         </View>
       </View>

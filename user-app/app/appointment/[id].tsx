@@ -4,14 +4,13 @@ import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
 import {
   AppointmentStatus,
-  PACKAGE_SERVICE_TYPE,
   PRIMARY_COLOR,
   SECONDARY_COLOR,
 } from "@/lib/constants";
 import { callService } from "@/services/AgoraCallService";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { API_USER, GetOne, replacePlaceholders } from "@sm/common";
+import { API_USER, GetOne, PACKAGE_SERVICE_TYPE, replacePlaceholders } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
