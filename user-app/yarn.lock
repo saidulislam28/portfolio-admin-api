@@ -3064,10 +3064,6 @@
     axios "^1.10.0"
     mime "^4.0.7"
 
-"@sm/react-native@file:../packages/react-native":
-  version "1.0.0"
-  resolved "file:../packages/react-native"
-
 "@supabase/auth-js@2.70.0":
   version "2.70.0"
   resolved "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.70.0.tgz"

@@ -14,16 +14,16 @@ config.resolver.alias = {
 };
 
 //start react-native package config
-const RNpackagePath = path.resolve(__dirname, '../packages/react-native');
-config.watchFolders = [RNpackagePath];
-config.resolver.alias = {
-  '@sm/react-native': RNpackagePath,
-};
+// const RNpackagePath = path.resolve(__dirname, '../packages/react-native');
+// config.watchFolders = [RNpackagePath];
+// config.resolver.alias = {
+//   '@sm/react-native': RNpackagePath,
+// };
 
 config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, 'node_modules'),
   path.resolve(localPackagePath, 'node_modules'),
-  path.resolve(RNpackagePath, 'node_modules'),
+  // path.resolve(RNpackagePath, 'node_modules'),
 ];
 config.resolver.blockList = [
   // Block react-native in the local package
@@ -35,12 +35,10 @@ config.resolver.blockList = [
   new RegExp(`${localPackagePath}/node_modules/@expo/.*`),
 
   //RN
-  new RegExp(`${RNpackagePath}/node_modules/react-native/.*`),
-  // Block react to avoid duplicate React instances
-  new RegExp(`${RNpackagePath}/node_modules/react/.*`),
-  // Block expo modules in local package
-  new RegExp(`${RNpackagePath}/node_modules/expo/.*`),
-  new RegExp(`${RNpackagePath}/node_modules/@expo/.*`),
+  // new RegExp(`${RNpackagePath}/node_modules/react-native/.*`),
+  // new RegExp(`${RNpackagePath}/node_modules/react/.*`),
+  // new RegExp(`${RNpackagePath}/node_modules/expo/.*`),
+  // new RegExp(`${RNpackagePath}/node_modules/@expo/.*`),
 ];
 // end local package config
 
