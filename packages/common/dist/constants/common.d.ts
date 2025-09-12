@@ -31,3 +31,5 @@ export declare const APPOINTMENT_STATUS_COLOR: {
 export declare const SERVICE_TYPE_LABELS: {
     [x: string]: string;
 };
+export declare const DEFAULT_QUERY_STALE_TIME: number;
+export declare const DEFAULT_QUERY_GC_TIME: number;

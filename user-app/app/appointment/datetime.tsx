@@ -4,6 +4,7 @@ import BookingSummary from "@/components/packages/BookingSummary";
 import DateSelector from "@/components/packages/DateSelector";
 import TimeSlotGrid from "@/components/packages/TimeSlotGrid";
 import { ROUTES } from "@/constants/app.routes";
+import { useAppointmentTimeslots } from "@/hooks/queries/useAppointmentTimeslots";
 import {
   DARK_GRAY,
   ERROR_COLOR,
@@ -12,7 +13,7 @@ import {
   SUCCESS_COLOR,
   WHITE,
 } from "@/lib/constants";
-import { apiService } from "@/services/mockDataService";
+import { getUserDeviceTimezone } from "@/utils/userTimezone";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -29,11 +30,14 @@ export default function DateTimeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  const [availableDates, setAvailableDates] = useState([]);
+  const timezone = getUserDeviceTimezone();
+  
+  // const [availableDates, setAvailableDates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [lockingSlots, setLockingSlots] = useState(new Set());
   const [currentSelectedDate, setCurrentSelectedDate] = useState(null);
+  const {data: availableDates, isLoading} = useAppointmentTimeslots(timezone)
 
   const packageData = {
     id: params.packageId,
@@ -46,24 +50,26 @@ export default function DateTimeScreen() {
   };
 
   useEffect(() => {
-    loadAvailableDates();
-  }, []);
-
-  const loadAvailableDates = async () => {
-    try {
-      const response = await apiService.getAvailableDates();
-      // console.log('resp', response)
-      if (response.length) {
-        // console.log(response)
-        setAvailableDates(response);
-        setCurrentSelectedDate(response[0].date);
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to load available dates");
-    } finally {
-      setLoading(false);
+    if(availableDates && Array.isArray(availableDates) && availableDates.length) {
+      setCurrentSelectedDate(availableDates[0].date);
     }
-  };
+  }, [isLoading, availableDates]);
+
+  // const loadAvailableDates = async () => {
+  //   try {
+  //     const response = await apiService.getAvailableDates();
+  //     // console.log('resp', response)
+  //     if (response.length) {
+  //       // console.log(response)
+  //       // setAvailableDates(response);
+  //       setCurrentSelectedDate(response[0].date);
+  //     }
+  //   } catch (error) {
+  //     Alert.alert("Error", "Failed to load available dates");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleDateSelect = (date) => {
     setCurrentSelectedDate(date);
@@ -79,18 +85,18 @@ export default function DateTimeScreen() {
       setSelectedSlots((prev) => prev.filter((s) => s.key !== slotKey));
 
       // Update the slot status in available dates to make it available again 🚀
-      setAvailableDates((prev) =>
-        prev.map((dateObj) =>
-          dateObj.date === date
-            ? {
-              ...dateObj,
-              slots: dateObj.slots.map((s) =>
-                s.id === slot.id ? { ...s, is_booked: false } : s
-              ),
-            }
-            : dateObj
-        )
-      );
+      // setAvailableDates((prev) =>
+      //   prev.map((dateObj) =>
+      //     dateObj.date === date
+      //       ? {
+      //         ...dateObj,
+      //         slots: dateObj.slots.map((s) =>
+      //           s.id === slot.id ? { ...s, is_booked: false } : s
+      //         ),
+      //       }
+      //       : dateObj
+      //   )
+      // );
       return;
     }
 
@@ -113,53 +119,63 @@ export default function DateTimeScreen() {
       return;
     }
 
+    setSelectedSlots((prev) => [
+      ...prev,
+      {
+        key: slotKey,
+        date,
+        slot,
+        dateString:
+          availableDates.find((d) => d.date === date)?.dateString || date,
+      },
+    ]);
     // Lock the slot
-    setLockingSlots((prev) => new Set([...prev, slotKey]));
+    // setLockingSlots((prev) => new Set([...prev, slotKey]));
 
-    try {
-      const response = await apiService.lockTimeSlot(slot.id);
-      // console.log(response)
-      if (response.success) {
-        // Add to selected slots
-        setSelectedSlots((prev) => [
-          ...prev,
-          {
-            key: slotKey,
-            date,
-            slot,
-            dateString:
-              availableDates.find((d) => d.date === date)?.dateString || date,
-          },
-        ]);
+    // try {
+    //   const response = await apiService.lockTimeSlot(slot.id);
+    //   // console.log(response)
+    //   if (response.success) {
+    //     // Add to selected slots
+    //     setSelectedSlots((prev) => [
+    //       ...prev,
+    //       {
+    //         key: slotKey,
+    //         date,
+    //         slot,
+    //         dateString:
+    //           availableDates.find((d) => d.date === date)?.dateString || date,
+    //       },
+    //     ]);
 
-        // Update the slot status in available dates
-        setAvailableDates((prev) =>
-          prev.map((dateObj) =>
-            dateObj.date === date
-              ? {
-                ...dateObj,
-                slots: dateObj.slots.map((s) =>
-                  s.id === slot.id ? { ...s, is_booked: true } : s
-                ),
-              }
-              : dateObj
-          )
-        );
-      } else {
-        Alert.alert(
-          "Slot Unavailable",
-          response.message || "This time slot is no longer available."
-        );
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to lock time slot. Please try again.");
-    } finally {
-      setLockingSlots((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(slotKey);
-        return newSet;
-      });
-    }
+    //     // Update the slot status in available dates
+    //     setAvailableDates((prev) =>
+    //       prev.map((dateObj) =>
+    //         dateObj.date === date
+    //           ? {
+    //             ...dateObj,
+    //             slots: dateObj.slots.map((s) =>
+    //               s.id === slot.id ? { ...s, is_booked: true } : s
+    //             ),
+    //           }
+    //           : dateObj
+    //       )
+    //     );
+    //   } else {
+    //     Alert.alert(
+    //       "Slot Unavailable",
+    //       response.message || "This time slot is no longer available."
+    //     );
+    //   }
+    // } catch (error) {
+    //   Alert.alert("Error", "Failed to lock time slot. Please try again.");
+    // } finally {
+    //   setLockingSlots((prev) => {
+    //     const newSet = new Set(prev);
+    //     newSet.delete(slotKey);
+    //     return newSet;
+    //   });
+    // }
   };
 
   const handleContinue = () => {
@@ -183,13 +199,11 @@ export default function DateTimeScreen() {
   };
 
   const getCurrentDateSlots = () => {
-    const currentDate = availableDates.find(
+    const currentDate = availableDates?.find(
       (d) => d.date === currentSelectedDate
     );
     return currentDate ? currentDate.slots : [];
   };
-
-  // console.log(availableDates[0]?.slots)
 
   const getSlotStatus = (date, slot) => {
     const slotKey = `${date}-${slot.id}`;
@@ -199,7 +213,7 @@ export default function DateTimeScreen() {
     return "available";
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={PRIMARY_COLOR} />

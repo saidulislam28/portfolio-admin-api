@@ -33,3 +33,5 @@ export const SERVICE_TYPE_LABELS = {
     [PACKAGE_SERVICE_TYPE.speaking_mock_test]: 'Mock Test',
     [PACKAGE_SERVICE_TYPE.conversation]: 'Conversation',
 };
+export const DEFAULT_QUERY_STALE_TIME = 1000 * 60 * 3; // 3 minutes
+export const DEFAULT_QUERY_GC_TIME = 1000 * 60 * 30; // 30 min https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#rename-cachetime-to-gctime

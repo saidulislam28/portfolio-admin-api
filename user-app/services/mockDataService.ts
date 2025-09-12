@@ -1,4 +1,6 @@
-import { Get } from '@sm/common';
+import { AppointmentSlotsApiResponse } from '@/hooks/queries/useAppointmentTimeslots';
+import { getUserDeviceTimezone } from '@/utils/userTimezone';
+import { API_USER, Get, replacePlaceholders } from '@sm/common';
 
 // Mock user data
 export const mockUser = {
@@ -9,7 +11,49 @@ export const mockUser = {
   currency: 'BDT'
 };
 
-const transformApiDataToTimeSlots = (apiResponse) => {
+/**
+ * Interface for a single transformed time slot.
+ * @interface TransformedSlot
+ * @property {string} id - A unique identifier for the slot, combining date and index.
+ * @property {string} time - The time of the slot in 12-hour format (e.g., "9:00 AM").
+ * @property {boolean} is_booked - Indicates if the slot is booked or if it's a past slot.
+ * @property {boolean} is_past - Indicates if the slot is in the past.
+ */
+export interface TransformedSlot {
+  id: string;
+  time: string;
+  is_booked: boolean;
+  is_past: boolean;
+}
+
+/**
+ * Interface for a single transformed day.
+ * @interface TransformedDay
+ * @property {string} date - The date of the day in "YYYY-MM-DD" format.
+ * @property {string} dateString - The full formatted date string (e.g., "Tuesday, May 27, 2025").
+ * @property {TransformedSlot[]} slots - An array of transformed time slots for the day.
+ */
+export interface TransformedDay {
+  date: string;
+  dateString: string;
+  slots: TransformedSlot[];
+}
+
+/**
+ * Interface for the entire transformed data structure.
+ * @interface TransformedApiResponse
+ * @property {TransformedDay[]} transformedData - An array of transformed days.
+ */
+export type TransformedApiResponse = TransformedDay[];
+
+/**
+ * Transforms raw API appointment data into a more usable format for a frontend application.
+ * It filters out past slots and days with no available slots, and provides a formatted date string.
+ *
+ * @param {AppointmentSlotsApiResponse} apiResponse - The raw API response containing appointment slots.
+ * @returns {TransformedApiResponse} An array of transformed day objects, each containing an array of available time slots.
+ */
+export const transformApiDataToTimeSlots = (apiResponse: AppointmentSlotsApiResponse): TransformedApiResponse => {
   const today = new Date();
 
   return apiResponse.data.map(day => {
@@ -38,7 +82,7 @@ const transformApiDataToTimeSlots = (apiResponse) => {
         is_booked: slot.is_booked || isPastSlot,
         is_past: isPastSlot
       };
-    }).filter(slot => !slot.is_past); // Filter out past slots
+    }).filter(slot => !slot.is_past);
 
     return {
       date: day.date,
@@ -50,25 +94,9 @@ const transformApiDataToTimeSlots = (apiResponse) => {
       }),
       slots
     };
-  }).filter(day => day.slots.length > 0); // Only include days with available slots
+  }).filter(day => day.slots.length > 0);
 };
 
 export const apiService = {
 
-  // Get available dates and slots
-  getAvailableDates: async () => {
-    const data = await Get('app/appointments/slots?timezone=Asia/Dhaka');
-    return transformApiDataToTimeSlots(data);
-  },
-
-  // Lock time slot
-  lockTimeSlot: async (slotId) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Simulate 90% success rate
-        const success = true;
-        resolve({ success, message: success ? 'Slot locked successfully' : 'Slot already taken' });
-      }, 10);
-    });
-  },
 };

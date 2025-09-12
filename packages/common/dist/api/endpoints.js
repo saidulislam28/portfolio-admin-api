@@ -34,6 +34,7 @@ export const API_USER = {
     create_order: "orders",
     check_payment: "payment/check-payment",
     get_appointments: "user/appointments",
+    get_appointment_slots: "app/appointments/slots?timezone=Asia/Dhaka",
     app_settings: "app-setting/app-data",
     book_order: 'app/book-order',
     RESEND_OTP: 'auth/resend-otp',
