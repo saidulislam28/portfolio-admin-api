@@ -25,11 +25,13 @@ const VerifyOtpScreen = () => {
   const [resendCount, setResendCount] = useState(0);
   const [countdown, setCountdown] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [blockTimeRemaining, setBlockTimeRemaining] = useState(0);
   const router = useRouter();
 
   const inputs = useRef<TextInput[]>([]);
   const countdownInterval = useRef<NodeJS.Timeout | null>(null);
-  const { email } = useLocalSearchParams()
+  const blockTimerInterval = useRef<NodeJS.Timeout | null>(null);
+  const { email } = useLocalSearchParams();
 
   // Check if OTP is complete
   const isOtpComplete = otp.every((digit) => digit !== "");
@@ -37,6 +39,9 @@ const VerifyOtpScreen = () => {
   // Start countdown timer
   const startCountdown = () => {
     setCountdown(30);
+    if (countdownInterval.current) {
+      clearInterval(countdownInterval.current);
+    }
     countdownInterval.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -50,12 +55,36 @@ const VerifyOtpScreen = () => {
     }, 1000);
   };
 
+  // Start block timer
+  const startBlockTimer = () => {
+    setBlockTimeRemaining(1800); // 30 minutes in seconds
+    if (blockTimerInterval.current) {
+      clearInterval(blockTimerInterval.current);
+    }
+    blockTimerInterval.current = setInterval(() => {
+      setBlockTimeRemaining((prev) => {
+        if (prev <= 1) {
+          if (blockTimerInterval.current) {
+            clearInterval(blockTimerInterval.current);
+          }
+          setIsBlocked(false);
+          setResendCount(0);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   // Initialize countdown on component mount
   useEffect(() => {
     startCountdown();
     return () => {
       if (countdownInterval.current) {
         clearInterval(countdownInterval.current);
+      }
+      if (blockTimerInterval.current) {
+        clearInterval(blockTimerInterval.current);
       }
     };
   }, []);
@@ -103,7 +132,7 @@ const VerifyOtpScreen = () => {
   };
 
   const handleResend = async () => {
-    // if (isBlocked || countdown > 0 || resendCount >= 5) return;
+    if (isBlocked || countdown > 0 || resendCount >= 5) return;
 
     setIsResending(true);
 
@@ -111,39 +140,47 @@ const VerifyOtpScreen = () => {
       const result = await Post(API_USER.RESEND_OTP, { email });
       if (!result?.data?.success) {
         Alert.alert("Error", result.error);
-        setIsVerifying(false);
+        setIsResending(false);
         return;
       }
 
-      // const newResendCount = resendCount + 1;
-      // setResendCount(newResendCount);
+      const newResendCount = resendCount + 1;
+      setResendCount(newResendCount);
 
-      // if (newResendCount >= 5) {
-      //   setIsBlocked(true);
-      //   Alert.alert(
-      //     'Account Blocked',
-      //     'You have exceeded the maximum number of OTP resend attempts. Please contact support for assistance.',
-      //     [{ text: 'OK' }]
-      //   );
-      // } else {
-      //   Alert.alert('Success', 'OTP has been resent to your email');
-      //   startCountdown();
-      // }
+      if (newResendCount >= 5) {
+        setIsBlocked(true);
+        startBlockTimer();
+        Alert.alert(
+          'Account Blocked',
+          'You have exceeded the maximum number of OTP resend attempts. Your account is blocked for 30 minutes.',
+          [{ text: 'OK' }]
+        );
+      } else {
+        Alert.alert('Success', 'OTP has been resent to your email');
+        startCountdown();
+      }
     } catch (error: any) {
       console.log(error?.message);
+      Alert.alert("Error", "Failed to resend OTP. Please try again.");
     } finally {
       setIsResending(false);
     }
   };
 
   const getResendButtonText = () => {
-    if (isBlocked) return "Contact Support";
+    if (isBlocked) return "Account Blocked";
     if (isResending) return "Sending...";
+    if (countdown > 0) return `Resend OTP (${countdown}s)`;
     return "Resend OTP";
   };
 
-  const isResendDisabled =
-    isBlocked || isResending || countdown > 0 || resendCount >= 5;
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
+  const isResendDisabled = isBlocked || isResending || countdown > 0;
 
   return (
     <KeyboardAvoidingView
@@ -178,14 +215,7 @@ const VerifyOtpScreen = () => {
                 Maximum resend attempts reached
               </Text>
               <Text style={styles.errorSubMessage}>
-                Please contact support for assistance
-              </Text>
-            </View>
-          ) : countdown > 0 ? (
-            <View style={styles.messageContainer}>
-              <Text style={styles.infoMessage}>Didn't receive the code?</Text>
-              <Text style={styles.countdownMessage}>
-                You can resend in {countdown} seconds
+                Your account is blocked for {formatTime(blockTimeRemaining)}
               </Text>
             </View>
           ) : (
@@ -198,7 +228,26 @@ const VerifyOtpScreen = () => {
               )}
             </View>
           )}
-          <BaseButton title="Resend Otp" onPress={handleResend} isLoading={isResending} />
+          
+          <TouchableOpacity
+            onPress={handleResend}
+            disabled={isResendDisabled}
+            style={[
+              styles.resendButton,
+              isResendDisabled && styles.resendButtonDisabled
+            ]}
+          >
+            {isResending ? (
+              <ActivityIndicator color={PRIMARY_COLOR} />
+            ) : (
+              <Text style={[
+                styles.resendButtonText,
+                isResendDisabled && styles.resendButtonTextDisabled
+              ]}>
+                {getResendButtonText()}
+              </Text>
+            )}
+          </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>

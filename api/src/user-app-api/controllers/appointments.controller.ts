@@ -8,6 +8,7 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe
 } from '@nestjs/common';
@@ -20,6 +21,8 @@ import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@ne
 import { GetSlotsQueryDto } from '../dtos/appointment.dto';
 import { GetSlotsResponseDto } from '../dtos/appointment-slots.dto';
 import { MyActiveAppointmentsResponseDto } from '../dtos/my-active-appointments.dto';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { CACHE_TTL } from 'src/common/constants';
 
 @ApiTags('User: Appointments Slots')
 @ApiBearerAuth()
@@ -29,42 +32,6 @@ import { MyActiveAppointmentsResponseDto } from '../dtos/my-active-appointments.
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) { }
 
-  /**
-   * GET /appointments/slots
-   * Returns available slots for the next 3 weeks
-   * * Query params:
-   * - timezone: User's timezone (optional, defaults to UTC)
-   * * Response format:
-   * {
-   * "success": true,
-   * "data": [
-   * {
-   * "date": "2025-05-27",
-   * "day_name": "Tuesday",
-   * "slots": [
-   * {
-   * "time": "09:00",
-   * "time_12h": "9:00 AM",
-   * "is_booked": false,
-   * "available_slots": 8,
-   * "total_slots": 10
-   * },
-   * {
-   * "time": "09:20",
-   * "time_12h": "9:20 AM",
-   * "is_booked": true,
-   * "available_slots": 0,
-   * "total_slots": 10
-   * }
-   * ]
-   * }
-   * ],
-   * "meta": {
-   * "timezone": "America/New_York",
-   * "generated_at": "2025-05-27T10:30:00Z"
-   * }
-   * }
-   */
   @Get('slots')
   @ApiOperation({ summary: 'Get available appointment slots for the next 3 weeks' })
   @ApiResponse({ 
@@ -75,6 +42,8 @@ export class AppointmentsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiQuery({ name: 'timezone', required: false, description: 'The user\'s timezone (e.g., America/New_York)' })
   @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(CACHE_TTL.thirtyseconds)
   async getAvailableSlots(@Query() query: GetSlotsQueryDto) {
     try {
       const slots = await this.appointmentsService.getAvailableSlots(query.timezone);
