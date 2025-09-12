@@ -19,6 +19,8 @@ import {
   Feather 
 } from '@expo/vector-icons';
 import CommonHeader from '@/components/CommonHeader';
+import { CONTACTS } from '@sm/common';
+import { BaseButton } from '@/components/BaseButton';
 
 const { width } = Dimensions.get('window');
 
@@ -66,7 +68,7 @@ const HelpSupportScreen = () => {
       subtitle: 'Speak directly with a support agent',
       icon: 'Phone',
       color: '#3B82F6',
-      action: () => Linking.openURL('tel:+1-800-123-4567'),
+      action: () => Linking.openURL(`tel:${CONTACTS.call_support}`),
     },
     {
       id: 3,
@@ -74,7 +76,7 @@ const HelpSupportScreen = () => {
       subtitle: 'Send us your questions via email',
       icon: 'Mail',
       color: '#8B5CF6',
-      action: () => Linking.openURL('mailto:support@yourapp.com'),
+      action: () => Linking.openURL(`mailto:${CONTACTS.support_mail}`),
     },
   ];
 
@@ -131,7 +133,7 @@ const HelpSupportScreen = () => {
       subtitle: 'Read our privacy policy',
       icon: 'Shield',
       color: '#6366F1',
-      action: () => Linking.openURL('https://yourapp.com/privacy'),
+      action: () => Linking.openURL(`${CONTACTS.privacy_policy_url}`),
     },
   ];
 
@@ -169,10 +171,10 @@ const HelpSupportScreen = () => {
       <CommonHeader />
       
       {/* Header */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.headerTitle}>Help & Support</Text>
         <Text style={styles.headerSubtitle}>We're here to help you get the most out of our app</Text>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {/* Contact Options */}
@@ -287,16 +289,7 @@ const HelpSupportScreen = () => {
             </View>
 
             {/* Submit Button */}
-            <TouchableOpacity
-              onPress={submitFeedback}
-              style={styles.submitButton}
-              activeOpacity={0.7}
-            >
-              <View style={styles.rowCenter}>
-                {icons.Send()}
-                <Text style={styles.submitText}>Submit Feedback</Text>
-              </View>
-            </TouchableOpacity>
+            <BaseButton title='Submit Feedback' onPress={submitFeedback} customIcon={icons.Send()} />
           </View>
         </View>
 
@@ -308,13 +301,7 @@ const HelpSupportScreen = () => {
             <Text style={styles.footerText}>
               Can't find what you're looking for? Our support team is available 24/7 to assist you with any questions or concerns.
             </Text>
-            <TouchableOpacity
-              onPress={() => Alert.alert('Contact Support', 'Redirecting to support...')}
-              style={styles.footerButton}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.footerButtonText}>Contact Support</Text>
-            </TouchableOpacity>
+            <BaseButton title='Contact Support' onPress={() => Linking.openURL(`tel:${CONTACTS.call_support}`)} />
           </View>
         </View>
       </ScrollView>

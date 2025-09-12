@@ -33,3 +33,8 @@ export declare const SERVICE_TYPE_LABELS: {
 };
 export declare const DEFAULT_QUERY_STALE_TIME: number;
 export declare const DEFAULT_QUERY_GC_TIME: number;
+export declare const CONTACTS: {
+    support_mail: string;
+    call_support: string;
+    privacy_policy_url: string;
+};

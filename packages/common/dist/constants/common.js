@@ -35,3 +35,8 @@ export const SERVICE_TYPE_LABELS = {
 };
 export const DEFAULT_QUERY_STALE_TIME = 1000 * 60 * 3; // 3 minutes
 export const DEFAULT_QUERY_GC_TIME = 1000 * 60 * 30; // 30 min https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5#rename-cachetime-to-gctime
+export const CONTACTS = {
+    support_mail: 'info.speakingmate@gmail.com',
+    call_support: '+1-800-123-4567',
+    privacy_policy_url: ''
+};
