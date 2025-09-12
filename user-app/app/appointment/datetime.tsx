@@ -5,6 +5,7 @@ import DateSelector from "@/components/packages/DateSelector";
 import TimeSlotGrid from "@/components/packages/TimeSlotGrid";
 import { ROUTES } from "@/constants/app.routes";
 import { useAppointmentTimeslots } from "@/hooks/queries/useAppointmentTimeslots";
+import { useMyActiveAppointments } from "@/hooks/queries/useMyActiveAppointments";
 import {
   DARK_GRAY,
   ERROR_COLOR,
@@ -38,6 +39,7 @@ export default function DateTimeScreen() {
   const [lockingSlots, setLockingSlots] = useState(new Set());
   const [currentSelectedDate, setCurrentSelectedDate] = useState(null);
   const {data: availableDates, isLoading} = useAppointmentTimeslots(timezone)
+  const {data: activeAppointments, isLoading: isLoadingActiveAppointment} = useMyActiveAppointments()
 
   const packageData = {
     id: params.packageId,
@@ -55,21 +57,6 @@ export default function DateTimeScreen() {
     }
   }, [isLoading, availableDates]);
 
-  // const loadAvailableDates = async () => {
-  //   try {
-  //     const response = await apiService.getAvailableDates();
-  //     // console.log('resp', response)
-  //     if (response.length) {
-  //       // console.log(response)
-  //       // setAvailableDates(response);
-  //       setCurrentSelectedDate(response[0].date);
-  //     }
-  //   } catch (error) {
-  //     Alert.alert("Error", "Failed to load available dates");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleDateSelect = (date) => {
     setCurrentSelectedDate(date);
@@ -84,19 +71,6 @@ export default function DateTimeScreen() {
       // Remove from selected slots
       setSelectedSlots((prev) => prev.filter((s) => s.key !== slotKey));
 
-      // Update the slot status in available dates to make it available again 🚀
-      // setAvailableDates((prev) =>
-      //   prev.map((dateObj) =>
-      //     dateObj.date === date
-      //       ? {
-      //         ...dateObj,
-      //         slots: dateObj.slots.map((s) =>
-      //           s.id === slot.id ? { ...s, is_booked: false } : s
-      //         ),
-      //       }
-      //       : dateObj
-      //   )
-      // );
       return;
     }
 
@@ -129,53 +103,6 @@ export default function DateTimeScreen() {
           availableDates.find((d) => d.date === date)?.dateString || date,
       },
     ]);
-    // Lock the slot
-    // setLockingSlots((prev) => new Set([...prev, slotKey]));
-
-    // try {
-    //   const response = await apiService.lockTimeSlot(slot.id);
-    //   // console.log(response)
-    //   if (response.success) {
-    //     // Add to selected slots
-    //     setSelectedSlots((prev) => [
-    //       ...prev,
-    //       {
-    //         key: slotKey,
-    //         date,
-    //         slot,
-    //         dateString:
-    //           availableDates.find((d) => d.date === date)?.dateString || date,
-    //       },
-    //     ]);
-
-    //     // Update the slot status in available dates
-    //     setAvailableDates((prev) =>
-    //       prev.map((dateObj) =>
-    //         dateObj.date === date
-    //           ? {
-    //             ...dateObj,
-    //             slots: dateObj.slots.map((s) =>
-    //               s.id === slot.id ? { ...s, is_booked: true } : s
-    //             ),
-    //           }
-    //           : dateObj
-    //       )
-    //     );
-    //   } else {
-    //     Alert.alert(
-    //       "Slot Unavailable",
-    //       response.message || "This time slot is no longer available."
-    //     );
-    //   }
-    // } catch (error) {
-    //   Alert.alert("Error", "Failed to lock time slot. Please try again.");
-    // } finally {
-    //   setLockingSlots((prev) => {
-    //     const newSet = new Set(prev);
-    //     newSet.delete(slotKey);
-    //     return newSet;
-    //   });
-    // }
   };
 
   const handleContinue = () => {
@@ -213,7 +140,7 @@ export default function DateTimeScreen() {
     return "available";
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingActiveAppointment) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={PRIMARY_COLOR} />
@@ -221,6 +148,8 @@ export default function DateTimeScreen() {
       </View>
     );
   }
+
+  console.log('aaaa', activeAppointments)
 
   return (
     <View style={styles.container}>

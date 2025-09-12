@@ -19,6 +19,7 @@ import { Role } from 'src/user-auth/dto/role.enum';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetSlotsQueryDto } from '../dtos/appointment.dto';
 import { GetSlotsResponseDto } from '../dtos/appointment-slots.dto';
+import { MyActiveAppointmentsResponseDto } from '../dtos/my-active-appointments.dto';
 
 @ApiTags('User: Appointments Slots')
 @ApiBearerAuth()
@@ -103,7 +104,11 @@ export class AppointmentsController {
   // to hide these slots to prevent same user booking same slot twice
   @Get('active')
   @ApiOperation({ summary: 'Get a list of the user\'s active appointments' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved user\'s active appointments.' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Successfully retrieved user\'s active appointments.',
+    type: MyActiveAppointmentsResponseDto
+   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @UsePipes(new ValidationPipe({ transform: true }))
   async getActiveAppointmentsByUser(@Req() req) {

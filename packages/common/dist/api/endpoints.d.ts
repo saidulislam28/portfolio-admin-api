@@ -35,6 +35,7 @@ export declare const API_USER: {
     check_payment: string;
     get_appointments: string;
     get_appointment_slots: string;
+    active_appointments: string;
     app_settings: string;
     book_order: string;
     RESEND_OTP: string;
