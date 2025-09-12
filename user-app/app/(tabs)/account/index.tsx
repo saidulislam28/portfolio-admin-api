@@ -57,7 +57,7 @@ const SettingsScreen = () => {
     {
       icon: "help-circle",
       title: "Help & Support",
-      // action: () => router.push('/support'),
+      action: () => router.push(ROUTES.HELP_AND_SUPPORT),
       iconComponent: Feather,
     },
     {

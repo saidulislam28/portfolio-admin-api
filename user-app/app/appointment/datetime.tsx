@@ -16,7 +16,7 @@ import {
 } from "@/lib/constants";
 import { getUserDeviceTimezone } from "@/utils/userTimezone";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -33,13 +33,13 @@ export default function DateTimeScreen() {
 
   const timezone = getUserDeviceTimezone();
   
-  // const [availableDates, setAvailableDates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [lockingSlots, setLockingSlots] = useState(new Set());
   const [currentSelectedDate, setCurrentSelectedDate] = useState(null);
-  const {data: availableDates, isLoading} = useAppointmentTimeslots(timezone)
-  const {data: activeAppointments, isLoading: isLoadingActiveAppointment} = useMyActiveAppointments()
+  
+  const {data: availableDates, isLoading: isLoadingTimeslots} = useAppointmentTimeslots(timezone);
+  const {data: activeAppointments, isLoading: isLoadingActiveAppointment} = useMyActiveAppointments();
 
   const packageData = {
     id: params.packageId,
@@ -51,12 +51,29 @@ export default function DateTimeScreen() {
     customData: params?.customData ? JSON.parse(params.customData) : null,
   };
 
+  // Create a set of already booked slot keys for quick lookup
+  const bookedSlotKeys = useMemo(() => {
+    console.log('calul', activeAppointments?.data)
+    if (!activeAppointments?.data) return new Set();
+    
+    const bookedKeys = new Set();
+    activeAppointments.data.forEach(appointment => {
+      // Extract time from start_at (assuming format like "2023-12-01T14:30:00Z" or similar)
+      const dateStr = appointment.start_at;
+      const result = dateStr.split('.')[0];
+      bookedKeys.add(result);
+      });
+    return bookedKeys;
+  }, [activeAppointments, isLoadingActiveAppointment]);
+
+  // Wait for both APIs to complete before showing content
+  const isLoading = isLoadingTimeslots || isLoadingActiveAppointment;
+
   useEffect(() => {
-    if(availableDates && Array.isArray(availableDates) && availableDates.length) {
+    if(availableDates && Array.isArray(availableDates) && availableDates.length && !isLoading) {
       setCurrentSelectedDate(availableDates[0].date);
     }
   }, [isLoading, availableDates]);
-
 
   const handleDateSelect = (date) => {
     setCurrentSelectedDate(date);
@@ -64,21 +81,31 @@ export default function DateTimeScreen() {
 
   const handleSlotSelect = async (date, slot) => {
     const slotKey = `${date}-${slot.id}`;
+    // const bookedSlotKeys = getBookedSlotKeys(activeAppointments?.data);
 
     // Check if slot is already selected - if yes, deselect it 🚀
     const existingSlotIndex = selectedSlots.findIndex((s) => s.key === slotKey);
     if (existingSlotIndex >= 0) {
       // Remove from selected slots
       setSelectedSlots((prev) => prev.filter((s) => s.key !== slotKey));
-
       return;
     }
 
-    // Check if slot is already booked
+    // Check if slot is already booked by the system
     if (slot.is_booked) {
       Alert.alert(
         "Slot Unavailable",
         "This time slot is already booked. Please select another."
+      );
+      return;
+    }
+
+    // Check if user already has an active appointment for this slot
+    const userSlotKey = `${date}-${slot.time}`;
+    if (bookedSlotKeys && bookedSlotKeys.has(userSlotKey)) {
+      Alert.alert(
+        "Already Booked",
+        "You already have an active appointment for this time slot. Please select a different slot."
       );
       return;
     }
@@ -129,18 +156,49 @@ export default function DateTimeScreen() {
     const currentDate = availableDates?.find(
       (d) => d.date === currentSelectedDate
     );
-    return currentDate ? currentDate.slots : [];
+    
+    if (!currentDate) return [];
+    
+    // const bookedSlotKeys = getBookedSlotKeys(activeAppointments?.data);
+
+    // Filter out slots that user has already booked
+    return currentDate.slots.filter(slot => {
+      console.log('slots', slot)
+      // const startTime = new Date(`1970-01-01T${slot.time}:00`);
+      // const timeString = startTime.toLocaleTimeString('en-US', { 
+      //   hour12: false, 
+      //   hour: '2-digit', 
+      //   minute: '2-digit' 
+      // });
+      const userSlotKey = `${slot.date_time_raw}`;
+
+      console.log('userslotkey', userSlotKey)
+      
+      if(!bookedSlotKeys) {
+        return true;
+      }
+      // Return false (hide) if user already has this slot booked
+      return !bookedSlotKeys.has(userSlotKey);
+    });
   };
 
   const getSlotStatus = (date, slot) => {
     const slotKey = `${date}-${slot.id}`;
+    const userSlotKey = `${date}-${slot.time}`;
+    // const bookedSlotKeys = getBookedSlotKeys(activeAppointments?.data);
+
+    
     if (lockingSlots.has(slotKey)) return "locking";
     if (selectedSlots.find((s) => s.key === slotKey)) return "selected";
     if (slot.is_booked) return "booked";
+    
+    // Check if user already has this slot booked
+    if (bookedSlotKeys && bookedSlotKeys.has(userSlotKey)) return "user_booked";
+    
     return "available";
   };
 
-  if (isLoading || isLoadingActiveAppointment) {
+  if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={PRIMARY_COLOR} />
@@ -148,8 +206,6 @@ export default function DateTimeScreen() {
       </View>
     );
   }
-
-  console.log('aaaa', activeAppointments)
 
   return (
     <View style={styles.container}>
@@ -206,8 +262,11 @@ export default function DateTimeScreen() {
             <Text style={styles.legendText}>Booked</Text>
           </View>
         </View>
-        <BaseButton title={` Continue to Payment (${selectedSlots.length}/${packageData.sessions}${" "}
-            selected)`} onPress={handleContinue} disabled={selectedSlots.length !== packageData.sessions} />
+        <BaseButton 
+          title={`Continue to Payment (${selectedSlots.length}/${packageData.sessions} selected)`} 
+          onPress={handleContinue} 
+          disabled={selectedSlots.length !== packageData.sessions} 
+        />
       </View>
     </View>
   );
@@ -218,7 +277,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     position: "relative",
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   loadingContainer: {
     flex: 1,
@@ -291,6 +349,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginLeft: 20,
     marginTop: 45,
-    // marginBottom: 10,
   },
 });

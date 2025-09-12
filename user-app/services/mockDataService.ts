@@ -22,6 +22,7 @@ export const mockUser = {
 export interface TransformedSlot {
   id: string;
   time: string;
+  date_time_raw: string;
   is_booked: boolean;
   is_past: boolean;
 }
@@ -79,6 +80,7 @@ export const transformApiDataToTimeSlots = (apiResponse: AppointmentSlotsApiResp
       return {
         id: `${day.date}-${index}`,
         time: slot.time_12h,
+        date_time_raw: `${day.date}T${slot.time}:00`,
         is_booked: slot.is_booked || isPastSlot,
         is_past: isPastSlot
       };
