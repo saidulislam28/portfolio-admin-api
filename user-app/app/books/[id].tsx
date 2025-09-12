@@ -3,6 +3,7 @@ import CommonHeader from "@/components/CommonHeader";
 import { ROUTES } from "@/constants/app.routes";
 import { useCart } from "@/hooks/useCart";
 import { PRIMARY_COLOR } from "@/lib/constants";
+import { showSuccessToast } from "@/utils/toast";
 import { API_USER, GetOne } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -53,9 +54,7 @@ export default function BookDetailsScreen() {
 
   const handleAddToCart = async () => {
     if (!bookDetails?.id) return;
-    console.log('add', bookDetails)
 
-    // Use the cart hook to add item to cart
     addItemToCart(
       bookDetails.id.toString(),
       {
@@ -65,10 +64,10 @@ export default function BookDetailsScreen() {
         image: bookDetails.image,
         writer: bookDetails.writer,
         description: bookDetails.description,
-        // Add any other relevant book details
       },
       1 // Default quantity
     );
+    showSuccessToast('Book added to cart!')
   };
 
   // Show loading spinner
@@ -108,29 +107,9 @@ export default function BookDetailsScreen() {
           </View>
 
           {/* Add to Cart Button - Show different UI if already in cart */}
-          {isBookInCart ? (
-            <View style={{ paddingBottom: 150 }}>
-
-              <View style={styles.inCartContainer}>
-                <Text style={styles.inCartText}>
-                  {cartItemQuantity} {cartItemQuantity === 1 ? "item" : "items"} in cart
-                </Text>
-                <TouchableOpacity
-                  style={styles.viewCartButtonSmall}
-                  onPress={() => router.push(ROUTES.CART as any)}
-                >
-                  <Text style={styles.viewCartText}>View Cart</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-
-            <View style={{paddingBottom: 100}}>
-              <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
-
-            </View>
-
-          )}
+          <View style={{paddingBottom: 100}}>
+            <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
+          </View>
         </View>
         {/* Cart Summary - Show only if items in cart */}
 

@@ -11,6 +11,7 @@ import { Platform } from "react-native";
 // import { Provider } from 'react-redux';
 // import { PersistGate } from 'redux-persist/integration/react';
 // import { store, persistor } from '@/store';
+import Toast from 'react-native-toast-message';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
@@ -57,6 +58,7 @@ export default function HomeLayout() {
               {/* </PersistGate> */}
               {/* </Provider> */}
             </QueryProvider>
+            <Toast />
           </BottomSheetModalProvider>
         </GestureHandlerRootView>
       </SafeAreaView>

@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { useCart, useCartActions } from "@/hooks/useCart"; // Updated import
 import { BaseButton } from "@/components/BaseButton";
+import { showSuccessToast } from "@/utils/toast";
 
 export default function CartScreen() {
   const router = useRouter();
@@ -46,6 +47,7 @@ export default function CartScreen() {
         style: "destructive",
         onPress: async () => {
           await clearAllItems();
+          showSuccessToast('Cart cleared!')
         },
       },
     ]);
@@ -58,7 +60,10 @@ export default function CartScreen() {
       {
         text: "Remove",
         style: "destructive",
-        onPress: () => removeItem(bookId),
+        onPress: async () => {
+          await removeItem(bookId);
+          showSuccessToast('Item removed from cart')
+        },
       },
     ]);
   };

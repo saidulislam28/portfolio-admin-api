@@ -140,7 +140,7 @@ export default function PaymentSummary({ packageData, selectedSlots, totals }) {
       </View>
 
       {/* Additional Information */}
-      <View style={styles.infoSection}>
+      {/* <View style={styles.infoSection}>
         <View style={styles.infoItem}>
           <Text style={styles.infoIcon}>💳</Text>
           <Text style={styles.infoText}>Secure payment processing</Text>
@@ -153,7 +153,7 @@ export default function PaymentSummary({ packageData, selectedSlots, totals }) {
           <Text style={styles.infoIcon}>✅</Text>
           <Text style={styles.infoText}>Instant booking confirmation</Text>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }
