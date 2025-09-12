@@ -44,7 +44,7 @@ const App = () => {
 
         {/* Email Deletion Link */}
         <a 
-          href="mailto:support@speakingmate.com?subject=SpeakingMate%20Account%20and%20Data%20Deletion%20Request&body=Hello%2C%0A%0AI%20would%20like%20to%20request%20the%20deletion%20of%20my%20SpeakingMate%20account%20and%20all%20associated%20data.%0A%0AUser%20Email%3A%20%5BYour%20Email%20Address%5D%0AUser%20Name%3A%20%5BYour%20Username%5D%0A%0AThank%20you." 
+          href="mailto:info.speakingmate@gmail.com?subject=SpeakingMate%20Account%20and%20Data%20Deletion%20Request&body=Hello%2C%0A%0AI%20would%20like%20to%20request%20the%20deletion%20of%20my%20SpeakingMate%20account%20and%20all%20associated%20data.%0A%0AUser%20Email%3A%20%5BYour%20Email%20Address%5D%0AUser%20Name%3A%20%5BYour%20Username%5D%0A%0AThank%20you." 
           className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-gray-900 bg-gray-200 hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-colors duration-200"
         >
           Request Deletion via Email
