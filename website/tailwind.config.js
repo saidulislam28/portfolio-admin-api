@@ -11,16 +11,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#036280",
-        // primary: "#95d7de",
+        primary: "#FE5D26", // Changed from #036280 to orange
         "input-border": "#e5e7eb",
-        "hero-banner": "#E1F2F4",
+        "hero-banner": "#FFF5F0", // Updated to complement orange primary
         "black-text": "#222222",
         "text-secondary": "#797979",
-        "body-background": "#f8f8f8",
+        "body-background": "#fdf9f7", // Updated to complement orange primary
         "color-yellow": "#ffbb38",
-        "text-secondary": "#797979",
         "border-light": "#e5e7eb",
+        // Added complementary orange shades for design flexibility
+        "primary-light": "#FF8A50",
+        "primary-dark": "#C74A1E",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

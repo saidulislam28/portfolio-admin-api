@@ -15,7 +15,7 @@ export const metadata = {
   title: {
     template: "%s",
   },
-  description: "Online Shopping Center",
+  description: "",
   icons: {
     icon: "/img/Vector.png",
     shortcut: "/img/Vector.png",
@@ -38,9 +38,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <Header></Header>
+          {/* <Header></Header> */}
           <main>{children}</main>
-          <Footer></Footer>
+          {/* <Footer></Footer> */}
         </Providers>
       </body>
     </html>

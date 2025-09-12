@@ -12,9 +12,9 @@ const NextBreadcrumb = dynamic(
 export const metadata = {
   metadataBase: new URL("https://acme.com"),
   title: {
-    template: "EK FASHION | %s",
+    template: "SpeakingMate | %s",
   },
-  description: "Online Shopping Center",
+  description: "",
   icons: {
     icon: "/img/Vector.png",
     shortcut: "/img/Vector.png",
