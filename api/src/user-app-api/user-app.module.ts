@@ -11,6 +11,7 @@ import { UserService } from 'src/user-dashboard/services/user.service';
 import { AppSettingsController } from './controllers/app-setting.controller';
 import { BookApiController } from './controllers/appBooks.controller';
 import { AppointmentsController } from './controllers/appointments.controller';
+import { OrdersController } from './controllers/orders.controller';
 import { PackagesController } from './controllers/package.controller';
 import { PaymentController } from './controllers/payment.controller';
 import { AppSettingService } from './services/app-setting.service';
@@ -23,7 +24,9 @@ import { PaymentService } from './services/payment.service';
     imports: [ScheduleNotificationsModule, ConfigModule,
         BullModule.registerQueueAsync({ name: QUEUE_NAME, }),
     ],
-    controllers: [AppointmentsController, BookApiController,  PaymentController, PackagesController, AppSettingsController],
+    controllers: [AppointmentsController, BookApiController,  PaymentController, PackagesController, AppSettingsController,
+        OrdersController
+    ],
     providers: [AppointmentsService, PrismaService, AppSettingService, BookApiService, PaymentService, PackagesService, OrdersService, UserService],
     exports: [AppointmentsService],
 })
