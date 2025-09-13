@@ -170,7 +170,8 @@ export default function PaymentScreen() {
         router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { 
           payment_url: responseData?.payment_url, 
           service_type: params?.service_type, 
-          amount: responseData?.total_amount 
+          amount: responseData?.total_amount,
+          order_id: responseData.order_id
         }) as any);
       }
     } catch (error: any) {

@@ -1,7 +1,6 @@
 import { ROUTES } from '@/constants/app.routes';
 import { Order, SectionData } from '@/types/group-order';
-import { displayPrice } from '@/utility/price';
-import { API_USER, Get, PACKAGE_SERVICE_TYPE } from '@sm/common';
+import { API_USER, displayPrice, Get, PACKAGE_SERVICE_TYPE } from '@sm/common';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {

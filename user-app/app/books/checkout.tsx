@@ -168,6 +168,7 @@ export default function CheckoutScreen() {
             payment_url: responseData?.payment_url,
             service_type: PACKAGE_SERVICE_TYPE.book_purchase,
             amount: responseData?.total_amount,
+            order_id: responseData.order_id
           }) as any
         );
         // `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.book_purchase}&amount=${responseData?.total_amount}`

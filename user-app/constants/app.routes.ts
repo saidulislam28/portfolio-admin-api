@@ -38,8 +38,8 @@ export const ROUTES = {
   STUDY_ABROAD_REGISTRATION: '/study-abroad/registration-form',
   CALL_CONSULTANT: `/call?consultant_id={id}`,
   GROUP_ORDER: '/group-order/[id]',
-  SSL_PAYMENT: `/sslpay-screen?payment_url={payment_url}&service_type={service_type}&amount={amount}`,
-  PAYMENT_SUCCESS: `/payment-success?service_type={service_type}`,
+  SSL_PAYMENT: `/sslpay-screen?payment_url={payment_url}&service_type={service_type}&amount={amount}&order_id={order_id}`,
+  PAYMENT_SUCCESS: `/payment-success?order_id={order_id}&service_type={service_type}`,
   INCOMING_SCREEN: "/incoming-call",
   HELP_AND_SUPPORT: "/account/help-and-support"
 };

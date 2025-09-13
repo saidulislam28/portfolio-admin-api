@@ -45,4 +45,5 @@ export declare const API_USER: {
     validate_coupon: string;
     send_start_call_notification: string;
     send_end_call_notification: string;
+    order_details: string;
 };

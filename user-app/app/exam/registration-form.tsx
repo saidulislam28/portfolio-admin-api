@@ -237,7 +237,12 @@ const ExamRegistrationFrom = () => {
       const responseData = response?.data?.data;
 
       if (response?.data?.success) {
-        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { payment_url: responseData?.payment_url, service_type: PACKAGE_SERVICE_TYPE?.exam_registration, amount: responseData?.total_amount }) as any);
+        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { 
+          payment_url: responseData?.payment_url, 
+          service_type: PACKAGE_SERVICE_TYPE?.exam_registration,
+          amount: responseData?.total_amount,
+          order_id: responseData.order_id
+        }) as any);
       } else {
         Alert.alert("Error", "Registration failed. Please try again.");
       }

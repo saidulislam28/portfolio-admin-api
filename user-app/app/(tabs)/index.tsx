@@ -5,10 +5,12 @@ import ServiceList from "@/components/home/ServiceList";
 import PreHeader from "@/components/PreHeader";
 import SectionTitle from "@/components/SectionTitle";
 import VideoCarousel from "@/components/VideoCarousel";
+import { ROUTES } from "@/constants/app.routes";
 import { useAppSettings } from "@/hooks/queries/useAppSettings";
 import { useBooksAll } from "@/hooks/queries/useBooks";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { HomeSection } from "@/types/home";
+import { replacePlaceholders } from "@sm/common";
 import { useRouter } from "expo-router";
 import React from "react";
 import { FlatList, StyleSheet, Text, View, Button } from "react-native";
@@ -113,7 +115,10 @@ export default function HomeScreen() {
         contentContainerStyle={styles.contentContainer}
       />
 
-      {__DEV__ && <Button title='Payment success test screen' onPress={() => router.push('/test-screens/payment-success-test')}/>}
+      {__DEV__ && <Button title='Payment success test screen' onPress={() => router.replace(replacePlaceholders(ROUTES.PAYMENT_SUCCESS, {
+                order_id: 12,
+                service_type: 'test'
+              }))}/>}
     </View>
   );
 }

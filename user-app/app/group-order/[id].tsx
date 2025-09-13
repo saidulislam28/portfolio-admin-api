@@ -10,7 +10,7 @@ import { RouteProp } from '@react-navigation/native';
 import { Order } from '@/types/group-order';
 import { useLocalSearchParams } from 'expo-router';
 import CommonHeader from '@/components/CommonHeader';
-import { displayPrice } from '@/utility/price';
+import { displayPrice } from '@sm/common';
 
 type RootStackParamList = {
     Orders: undefined;

@@ -1,5 +1,6 @@
 import { ROUTES } from '@/constants/app.routes';
 import { Feather } from '@expo/vector-icons';
+import { API_USER, displayPrice, Get, replacePlaceholders } from '@sm/common';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
@@ -13,10 +14,77 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Alert,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
+
+interface AppointmentDto {
+  appointmentId: string;
+  date: string;
+  time: string;
+}
+
+interface BookItemDto {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+interface ExamItemDto {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+interface BaseOrderResponse {
+  title: string;
+  subtitle: string;
+  cardTitle: string;
+  icon: string;
+  tip?: string;
+  createdAt: string;
+}
+
+interface SpeakingMockTestResponse extends BaseOrderResponse {
+  appointments: AppointmentDto[];
+}
+
+interface ConversationResponse extends BaseOrderResponse {
+  appointments: AppointmentDto[];
+}
+
+interface BookPurchaseResponse extends BaseOrderResponse {
+  orderId: string;
+  purchaseDate: string;
+  items: BookItemDto[];
+  totalPrice: number;
+}
+
+interface ExamRegistrationResponse extends BaseOrderResponse {
+  registrationId: string;
+  examDate: string;
+  items: ExamItemDto[];
+  totalPrice: number;
+}
+
+interface IeltsAcademicResponse extends BaseOrderResponse {
+  orderId: string;
+}
+
+interface GenericOrderResponse extends BaseOrderResponse {
+  orderId: string;
+  date: string;
+  [key: string]: any;
+}
+
+type OrderDetailsResponse = 
+  | SpeakingMockTestResponse 
+  | ConversationResponse 
+  | BookPurchaseResponse 
+  | ExamRegistrationResponse 
+  | IeltsAcademicResponse 
+  | GenericOrderResponse;
 
 const PaymentSuccessPage = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -30,119 +98,51 @@ const PaymentSuccessPage = () => {
   const params = useLocalSearchParams();
   const { service_type, order_id } = params;
 
-  const [orderData, setOrderData] = useState(null);
+  const [orderData, setOrderData] = useState<OrderDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Retrieve data from AsyncStorage
-  const retrieveOrderData = async () => {
+  const fetchOrderDetails = async () => {
     try {
-      const storageKey = `order_${service_type}_${order_id}`;
-      const storedData = await AsyncStorage.getItem(storageKey);
-      
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        setOrderData(parsedData);
-      } else {
-        // Fallback to default data if not found
-        setOrderData(getDefaultData());
-      }
-    } catch (error) {
-      console.error('Error retrieving order data:', error);
+      setLoading(true);
+      setError(null);
+      const data: OrderDetailsResponse = await Get(replacePlaceholders(API_USER.order_details, {id: order_id}));
+      setOrderData(data);
+    } catch (err) {
+      console.error('Error fetching order details:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch order details');
       setOrderData(getDefaultData());
     } finally {
       setLoading(false);
     }
   };
 
-  // Default data structure for fallback
-  const getDefaultData = () => {
-    const transactionId = `#TX${Math.floor(Math.random() * 10000)}`;
+  const retryFetch = () => {
+    fetchOrderDetails();
+  };
+
+  const getDefaultData = (): OrderDetailsResponse => {
     const date = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
 
-    const defaultData = {
-      speaking_mock_test: {
-        title: "Appointment Booked!",
-        subtitle: "🎉 Congratulations! Your English speaking test appointments have been successfully scheduled",
-        cardTitle: "Test Appointment Details",
-        icon: "calendar",
-        appointments: [
-          {
-            appointmentId: `#APT${Math.floor(Math.random() * 10000)}`,
-            date: 'June 28, 2025',
-            time: '2:30 PM - 3:00 PM'
-          }
-        ],
-        tip: "💡 Arrive 15 minutes early with a valid ID"
-      },
-      conversation: {
-        title: "Conversation Appointment Booked!",
-        subtitle: "🎉 Congratulations! Your English Conversation appointments have been successfully scheduled",
-        cardTitle: "Conversation Appointment Details",
-        icon: "calendar",
-        appointments: [
-          {
-            appointmentId: `#APT${Math.floor(Math.random() * 10000)}`,
-            date: 'June 28, 2025',
-            time: '2:30 PM - 3:00 PM'
-          }
-        ],
-        tip: "💡 Arrive 15 minutes early with a valid ID"
-      },
-      book_purchase: {
-        title: "Book Purchased!",
-        subtitle: "📚 Your book purchase is complete! Happy reading!",
-        cardTitle: "Purchase Details",
-        icon: "book",
-        orderId: transactionId,
-        purchaseDate: date,
-        items: [
-          { name: "IELTS Academic Guide", quantity: 1, price: 25.99 },
-          { name: "Speaking Practice Book", quantity: 2, price: 19.99 }
-        ],
-        totalPrice: 65.97,
-        tip: "💡 You'll receive a tracking number via email once shipped"
-      },
-      exam_registration: {
-        title: "IELTS Exam Registration Complete!",
-        subtitle: "🎓 Your IELTS exam registration was successful. Good luck with your preparation!",
-        cardTitle: "Exam Details",
-        icon: "edit",
-        registrationId: `#IELTS${Math.floor(Math.random() * 10000)}`,
-        examDate: 'July 15, 2025',
-        items: [
-          { name: "IELTS Academic Test", quantity: 1, price: 215.00 },
-          { name: "Additional Test Report", quantity: 1, price: 20.00 }
-        ],
-        totalPrice: 235.00,
-        tip: "💡 Remember to bring your ID and registration confirmation"
-      },
-      ielts_academic: {
-        title: "IELTS Academic Class Booked!",
-        subtitle: "👩‍🏫 Your online class has been scheduled. We'll see you there!",
-        cardTitle: "Class Details",
-        icon: "video",
-        orderId: `#CLS${Math.floor(Math.random() * 10000)}`,
-        tip: "💡 Check your email for the Zoom link 1 hour before class"
-      }
-    };
-
-    return defaultData[service_type] || {
+    return {
       title: "Payment Successful!",
       subtitle: "✅ Your transaction was completed successfully",
       cardTitle: "Transaction Details",
       icon: "check-circle",
-      orderId: transactionId,
-      date: date
-    };
+      date: date,
+      createdAt: new Date().toISOString()
+    } as GenericOrderResponse;
   };
 
   useEffect(() => {
-    retrieveOrderData();
-  }, [service_type, order_id]);
+    if (order_id) {
+      fetchOrderDetails();
+    }
+  }, [order_id]);
 
   useEffect(() => {
     if (!loading && orderData) {
@@ -205,16 +205,17 @@ const PaymentSuccessPage = () => {
   }, [loading, orderData]);
 
   const renderAppointmentDetails = () => {
-    if (!orderData.appointments) return null;
+    const data = orderData as SpeakingMockTestResponse | ConversationResponse;
+    if (!data.appointments) return null;
 
-    return orderData.appointments.map((appointment, index) => (
+    return data.appointments.map((appointment, index) => (
       <View key={index} style={index > 0 ? styles.appointmentSeparator : null}>
-        {orderData.appointments.length > 1 && (
+        {data.appointments.length > 1 && (
           <Text style={styles.appointmentHeader}>Appointment {index + 1}</Text>
         )}
         <View style={styles.appointmentRow}>
           <Text style={styles.appointmentLabel}>Appointment ID</Text>
-          <Text style={styles.appointmentValue}>{appointment.appointmentId}</Text>
+          <Text style={styles.appointmentValue}>#{appointment.appointmentId}</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.appointmentRow}>
@@ -226,32 +227,33 @@ const PaymentSuccessPage = () => {
           <Text style={styles.appointmentLabel}>Time</Text>
           <Text style={styles.appointmentValue}>{appointment.time}</Text>
         </View>
-        {index < orderData.appointments.length - 1 && <View style={styles.divider} />}
+        {index < data.appointments.length - 1 && <View style={styles.divider} />}
       </View>
     ));
   };
 
   const renderBookItems = () => {
-    if (!orderData.items) return null;
+    const data = orderData as BookPurchaseResponse | ExamRegistrationResponse;
+    if (!data.items) return null;
 
     return (
       <>
-        {orderData.items.map((item, index) => (
+        {data.items.map((item, index) => (
           <React.Fragment key={index}>
             <View style={styles.appointmentRow}>
               <Text style={styles.appointmentLabel}>{item.name}</Text>
               <Text style={styles.appointmentValue}>
-                {item.quantity}x ${item.price}
+                {item.quantity}x {displayPrice(item.price)}
               </Text>
             </View>
-            {index < orderData.items.length - 1 && <View style={styles.divider} />}
+            {index < data.items.length - 1 && <View style={styles.divider} />}
           </React.Fragment>
         ))}
         <View style={styles.divider} />
         <View style={styles.appointmentRow}>
           <Text style={[styles.appointmentLabel, styles.totalLabel]}>Total Price</Text>
           <Text style={[styles.appointmentValue, styles.totalValue]}>
-            ${orderData.totalPrice?.toFixed(2)}
+            {displayPrice(data.totalPrice?.toFixed(2))}
           </Text>
         </View>
       </>
@@ -267,16 +269,17 @@ const PaymentSuccessPage = () => {
         return renderAppointmentDetails();
 
       case 'book_purchase':
+        const bookData = orderData as BookPurchaseResponse;
         return (
           <>
             <View style={styles.appointmentRow}>
               <Text style={styles.appointmentLabel}>Order ID</Text>
-              <Text style={styles.appointmentValue}>{orderData.orderId}</Text>
+              <Text style={styles.appointmentValue}>#{bookData.orderId}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.appointmentRow}>
               <Text style={styles.appointmentLabel}>Purchase Date</Text>
-              <Text style={styles.appointmentValue}>{orderData.purchaseDate}</Text>
+              <Text style={styles.appointmentValue}>{bookData.purchaseDate}</Text>
             </View>
             <View style={styles.divider} />
             {renderBookItems()}
@@ -284,16 +287,17 @@ const PaymentSuccessPage = () => {
         );
 
       case 'exam_registration':
+        const examData = orderData as ExamRegistrationResponse;
         return (
           <>
             <View style={styles.appointmentRow}>
               <Text style={styles.appointmentLabel}>Registration ID</Text>
-              <Text style={styles.appointmentValue}>{orderData.registrationId}</Text>
+              <Text style={styles.appointmentValue}>#{examData.registrationId}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.appointmentRow}>
               <Text style={styles.appointmentLabel}>Exam Date</Text>
-              <Text style={styles.appointmentValue}>{orderData.examDate}</Text>
+              <Text style={styles.appointmentValue}>{examData.examDate}</Text>
             </View>
             <View style={styles.divider} />
             {renderBookItems()}
@@ -301,24 +305,26 @@ const PaymentSuccessPage = () => {
         );
 
       case 'ielts_academic':
+        const ieltsData = orderData as IeltsAcademicResponse;
         return (
           <View style={styles.appointmentRow}>
             <Text style={styles.appointmentLabel}>Order ID</Text>
-            <Text style={styles.appointmentValue}>{orderData.orderId}</Text>
+            <Text style={styles.appointmentValue}>#{ieltsData.orderId}</Text>
           </View>
         );
 
       default:
+        const genericData = orderData as GenericOrderResponse;
         return (
           <>
             <View style={styles.appointmentRow}>
               <Text style={styles.appointmentLabel}>Order ID</Text>
-              <Text style={styles.appointmentValue}>{orderData.orderId}</Text>
+              <Text style={styles.appointmentValue}>#{genericData.orderId}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.appointmentRow}>
               <Text style={styles.appointmentLabel}>Date</Text>
-              <Text style={styles.appointmentValue}>{orderData.date}</Text>
+              <Text style={styles.appointmentValue}>{genericData.date}</Text>
             </View>
           </>
         );
@@ -330,10 +336,71 @@ const PaymentSuccessPage = () => {
     router.replace(ROUTES.HOME as any);
   };
 
+  const showRetryAlert = () => {
+    Alert.alert(
+      'Connection Error',
+      'Unable to fetch order details. Would you like to try again?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Retry',
+          onPress: retryFetch,
+        },
+      ]
+    );
+  };
+
   if (loading) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
-        <Text style={styles.loadingText}>Loading...</Text>
+        <LinearGradient
+          colors={['#4A90E2', '#357ABD', '#1E3A8A']}
+          style={styles.gradient}
+        />
+        <LottieView
+          source={{
+            uri: 'https://assets5.lottiefiles.com/packages/lf20_szlepvdh.json'
+          }}
+          style={styles.loadingAnimation}
+          autoPlay
+          loop
+        />
+        <Text style={styles.loadingText}>Loading your order details...</Text>
+      </View>
+    );
+  }
+
+  if (error && !orderData) {
+    return (
+      <View style={[styles.container, styles.errorContainer]}>
+        <LinearGradient
+          colors={['#4A90E2', '#357ABD', '#1E3A8A']}
+          style={styles.gradient}
+        />
+        <Feather name="wifi-off" size={48} color="rgba(255, 255, 255, 0.7)" />
+        <Text style={styles.errorTitle}>Connection Error</Text>
+        <Text style={styles.errorText}>
+          Unable to load order details. Please check your internet connection.
+        </Text>
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={retryFetch}
+          activeOpacity={0.7}
+        >
+          <Feather name="refresh-cw" size={18} color="white" />
+          <Text style={styles.retryButtonText}>Try Again</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.tertiaryButton}
+          onPress={handleBackToHome}
+          activeOpacity={0.7}
+        >
+          <Feather name="home" size={18} color="rgba(255, 255, 255, 0.8)" />
+          <Text style={styles.tertiaryButtonText}>Back to Home</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -365,6 +432,19 @@ const PaymentSuccessPage = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
+          {/* Error indicator if there was an API error but we have fallback data */}
+          {error && orderData && (
+            <View style={styles.errorBanner}>
+              <Feather name="alert-triangle" size={16} color="#FF9500" />
+              <Text style={styles.errorBannerText}>
+                Showing offline data. Tap to retry.
+              </Text>
+              <TouchableOpacity onPress={retryFetch}>
+                <Feather name="refresh-cw" size={16} color="#FF9500" />
+              </TouchableOpacity>
+            </View>
+          )}
+
           {/* Success Message */}
           <Text style={styles.title}>{orderData?.title}</Text>
           <Text style={styles.subtitle}>{orderData?.subtitle}</Text>
@@ -438,7 +518,65 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loadingAnimation: {
+    width: 80,
+    height: 80,
+    marginBottom: 20,
+  },
   loadingText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  errorContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+  errorTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  errorText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 30,
+  },
+  errorBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 149, 0, 0.2)',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+    width: '100%',
+  },
+  errorBannerText: {
+    color: '#FF9500',
+    fontSize: 14,
+    fontWeight: '500',
+    flex: 1,
+    marginLeft: 8,
+    marginRight: 8,
+  },
+  retryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 25,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    gap: 10,
+    marginBottom: 15,
+    minWidth: 200,
+  },
+  retryButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',

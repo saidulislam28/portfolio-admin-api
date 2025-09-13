@@ -173,7 +173,12 @@ const ExamRegistrationFrom = () => {
       const response = await Post(API_USER.create_order, payload);
       const responseData = response?.data?.data;
       if (response?.data?.success) {
-        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { payment_url: responseData?.payment_url, service_type: PACKAGE_SERVICE_TYPE?.ielts_academic, amount: responseData?.total_amount }) as any);
+        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { 
+          payment_url: responseData?.payment_url, 
+          service_type: PACKAGE_SERVICE_TYPE?.ielts_academic, 
+          amount: responseData?.total_amount,
+          order_id: responseData.order_id
+        }) as any);
         setIsSubmitting(false);
       }
     } catch (error) {

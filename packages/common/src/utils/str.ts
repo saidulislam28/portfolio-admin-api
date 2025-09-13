@@ -12,3 +12,4 @@ export function replacePlaceholders(
     return params.hasOwnProperty(key) ? String(params[key]) : match;
   });
 }
+

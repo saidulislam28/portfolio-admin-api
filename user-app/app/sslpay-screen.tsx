@@ -1,6 +1,7 @@
 import { ROUTES } from "@/constants/app.routes";
 import { PAYMENT_REDIRECT_URI } from "@/lib/constants";
 import { Ionicons } from "@expo/vector-icons";
+import { replacePlaceholders } from "@sm/common";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
@@ -12,6 +13,7 @@ const SslcommerzPaymentScreen = () => {
   const payment_url = params?.payment_url;
   const service_type = params?.service_type;
   const amount = params?.amount;
+  const order_id = params?.order_id;
 
   // const webviewRef = useRef(null);
   const [webViewLoading, setWebViewLoading] = useState(true);
@@ -29,9 +31,10 @@ const SslcommerzPaymentScreen = () => {
     // REMAIN ROUTES
 
     if (url.includes(`${PAYMENT_REDIRECT_URI}?paystate=success`)) {
-      router.replace(
-        `/payment-success?orderId=order_id&paymentId=payment_id&service_type=${service_type}`
-      );
+      router.replace(replacePlaceholders(ROUTES.PAYMENT_SUCCESS, {
+          order_id,
+          service_type
+        }));
     } else if (url.includes(`${PAYMENT_REDIRECT_URI}?paystate=fail`)) {
       Alert.alert(
         "Payment Failed",
