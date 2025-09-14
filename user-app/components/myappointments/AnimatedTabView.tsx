@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import {
     Dimensions,
+    ScrollView,
     StyleSheet,
     View
 } from 'react-native';
@@ -44,7 +45,7 @@ const AnimatedTabView: React.FC<{
     }));
 
     return (
-        <View style={styles.tabContainer}>
+        <ScrollView style={styles.tabContainer}>
             {/* Tab Headers */}
             <View style={styles.tabHeader}>
                 <TabButton
@@ -83,7 +84,7 @@ const AnimatedTabView: React.FC<{
                     />
                 </View>
             </Animated.View>
-        </View>
+        </ScrollView>
     );
 });
 

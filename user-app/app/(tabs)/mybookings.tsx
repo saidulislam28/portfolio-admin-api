@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Dimensions,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -67,7 +68,7 @@ const AppointmentsScreen: React.FC = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <LiveAppointments
         liveAppointments={categorizedAppointments.live}
         onAppointmentPress={handleAppointmentPress}
@@ -80,7 +81,7 @@ const AppointmentsScreen: React.FC = () => {
         onRefresh={handleRefresh}
         refreshing={refresh}
       />
-    </View>
+    </ScrollView>
   );
 };
 
