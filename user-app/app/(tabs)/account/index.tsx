@@ -27,19 +27,19 @@ const SettingsScreen = () => {
     {
       icon: "account-circle",
       title: "Edit Profile",
-      action: () => router.push(ROUTES.ACCOUNT_EDIT),
+      action: () => router.push(ROUTES.ACCOUNT_EDIT  as any),
       iconComponent: MaterialIcons,
     },
     {
       icon: "lock",
       title: "Change Password",
-      action: () => router.push(ROUTES.ACCOUNT_PASSWORD),
+      action: () => router.push(ROUTES.ACCOUNT_PASSWORD  as any),
       iconComponent: MaterialIcons,
     },
     {
       icon: "menu-book",
       title: "Book Orders",
-      action: () => router.push(ROUTES.ORDERS),
+      action: () => router.push(ROUTES.ORDERS  as any),
       iconComponent: MaterialIcons,
     },
     {
@@ -57,19 +57,19 @@ const SettingsScreen = () => {
     {
       icon: "help-circle",
       title: "Help & Support",
-      action: () => router.push(ROUTES.HELP_AND_SUPPORT),
+      action: () => router.push(ROUTES.HELP_AND_SUPPORT as any),
       iconComponent: Feather,
     },
     {
       icon: "medical-outline",
       title: "Device Diagnosis",
-      action: () => router.push(ROUTES.DEVICE_DIAGNOSIS),
+      action: () => router.push(ROUTES.DEVICE_DIAGNOSIS as any),
       iconComponent: Ionicons,
     },
     {
       icon: "information-outline",
       title: "About App",
-      // action: () => router.push('/about'),
+      action: () => router.push(ROUTES.ABOUT_APP as any),
       iconComponent: MaterialCommunityIcons,
     },
   ];

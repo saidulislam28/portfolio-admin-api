@@ -41,5 +41,6 @@ export const ROUTES = {
   SSL_PAYMENT: `/sslpay-screen?payment_url={payment_url}&service_type={service_type}&amount={amount}&order_id={order_id}`,
   PAYMENT_SUCCESS: `/payment-success?order_id={order_id}&service_type={service_type}`,
   INCOMING_SCREEN: "/incoming-call",
-  HELP_AND_SUPPORT: "/account/help-and-support"
+  HELP_AND_SUPPORT: "/account/help-and-support",
+  ABOUT_APP: "/account/about-us",
 };
