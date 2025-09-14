@@ -10,7 +10,11 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "prebuild:clean": "expo prebuild --clean && node scripts/copy-sound.js"
+    "prebuild:clean": "expo prebuild --clean && node scripts/copy-sound.js",
+    "build:apk": "node scripts/build-upload-apk.js",
+    "build:apk:debug": "BUILD_TYPE=debug node scripts/build-upload-apk.js",
+    "build:apk:release": "BUILD_TYPE=release node scripts/build-upload-apk.js",
+    "upload:only": "node scripts/build-upload-apk.js --upload-only"
   },
   "jest": {
     "preset": "jest-expo"
@@ -92,7 +96,12 @@
     "jest": "^29.2.1",
     "jest-expo": "~52.0.6",
     "react-test-renderer": "18.3.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "chalk": "^4.1.2",
+    "dotenv": "^16.3.1",
+    "form-data": "^4.0.0",
+    "ora": "^5.4.1",
+    "progress": "^2.0.3"
   },
   "private": true
 }
