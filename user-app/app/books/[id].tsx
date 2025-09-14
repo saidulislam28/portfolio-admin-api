@@ -105,28 +105,9 @@ export default function BookDetailsScreen() {
               contentWidth={width}
               source={{ html: bookDetails?.description as string }}
             />
-          </View>
-
-          {/* Add to Cart Button - Show different UI if already in cart */}
-          {isBookInCart ? (
-            <View style={{ paddingBottom: 150 }}>
-
-              <View style={styles.inCartContainer}>
-                <Text style={styles.inCartText}>
-                  {cartItemQuantity} {cartItemQuantity === 1 ? "item" : "items"} in cart
-                </Text>
-                <TouchableOpacity
-                  style={styles.viewCartButtonSmall}
-                  onPress={() => router.push(ROUTES.CART as any)}
-                >
-                  <Text style={styles.viewCartText}>View Cart</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
+          </View>   
 
             <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
-          )}
         </View>
         {/* Cart Summary - Show only if items in cart */}
 
