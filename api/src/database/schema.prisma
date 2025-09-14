@@ -98,7 +98,7 @@ model User {
   id                   Int                    @id @default(autoincrement())
   full_name            String?
   email                String?                @unique
-  phone                String?                @unique
+  phone                String?
   password             String?
   token                String?
   device_type          String?
@@ -113,6 +113,8 @@ model User {
   profile_image        String?
   role                 USER_ROLE              @default(USER)
   ratings_given        Rating[]               @relation("user_ratings")
+  google_id            String?                @unique
+  facebook_id          String?                @unique
   payments             Payment[]
   Notification         Notification[]
   Appointment          Appointment[]

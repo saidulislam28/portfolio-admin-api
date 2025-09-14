@@ -46,38 +46,6 @@ export class LoginUserDto {
   password: string;
 }
 
-export class SocialLoginDto {
-  @ApiProperty({ example: 'user@example.com' })
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @ApiProperty({ example: 'John Doe' })
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @ApiProperty({ example: 'https://example.com/profile.jpg', required: false })
-  @IsOptional()
-  @IsUrl()
-  profilePicture?: string;
-
-  @ApiProperty({ enum: ['google', 'facebook'] })
-  @IsIn(['google', 'facebook'])
-  @IsNotEmpty()
-  provider: string;
-
-  @ApiProperty({ example: '1234567890' })
-  @IsString()
-  @IsNotEmpty()
-  providerId: string;
-
-  @ApiProperty({ example: 'social_platform_token' })
-  @IsString()
-  @IsNotEmpty()
-  accessToken: string;
-}
-
 export class VerifyOtpDto {
   @ApiProperty({ description: 'User email address' })
   @IsEmail()

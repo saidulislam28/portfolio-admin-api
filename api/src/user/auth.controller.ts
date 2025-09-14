@@ -14,7 +14,6 @@ import {
   RegisterUserDto,
   ResendOtpDto,
   ResetPasswordDto,
-  SocialLoginDto,
   VerifyOtpDto
 } from './dto/auth.dto';
 import { ForgetPasswordDTO } from './dto/query.dto';
@@ -113,24 +112,6 @@ export class AuthController {
   @ApiResponse({ status: 406, description: 'Not acceptable - User not verified' })
   async loginUser(@Body() data: LoginUserDto) {
     const user = await this.authService.loginUser(data);
-    return res.success(user);
-  }
-
-  @Post('social-login')
-  @ApiOperation({
-    summary: 'Social media login',
-    description: 'Authenticate user via social media providers and return JWT token'
-  })
-  @ApiBody({ type: SocialLoginDto })
-  @ApiResponse({
-    status: 200,
-    description: 'Social login successful',
-    // type: SocialLoginResponseDto
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized - Invalid social credentials' })
-  @ApiResponse({ status: 406, description: 'Not acceptable - User not verified' })
-  async socialLogin(@Body() data: SocialLoginDto) {
-    const user = await this.authService.socialLogin(data);
     return res.success(user);
   }
 

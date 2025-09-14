@@ -20,6 +20,8 @@ import { LocalAdminStrategy } from "./local-admin.auth";
 // import { LoginService } from './login.service';
 import { OtpController } from './otp.controller';
 import { OtpService } from './otp.service';
+import { SocialAuthController } from './controller/social-auth.controller';
+import { SocialAuthService } from './service/social-auth.service';
 // import { AuthController } from './auth.controller';
 
 @Module({
@@ -48,14 +50,16 @@ import { OtpService } from './otp.service';
     JwtStrategy,
     LocalAdminStrategy,
     // VerifyEmailService,
-    JwtSignService
+    JwtSignService,
+    SocialAuthService
   ],
   controllers: [
     //  AuthController,
     // VerifyEmailController,
     // RegisterController,
     // LoginController,
-    OtpController
+    OtpController,
+    SocialAuthController
   ],
 })
 export class UserAuthModule { }

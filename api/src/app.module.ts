@@ -36,6 +36,7 @@ import { UserCacheModule } from './user-cache/user-cache.module';
 import { TimezoneModule } from './timezone/timezone.module';
 import { CommonModule } from './common/common.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { UserAuthModule } from './user-auth/user-auth.module';
 
 
 @Module({
@@ -81,7 +82,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     FcmModule,
     UserCacheModule,
     TimezoneModule,
-    CommonModule
+    CommonModule,
+    UserAuthModule
   ],
   controllers: [AppController, UsersController, UserDashBoardController],
   providers: [AppService, UserDashBoardService],

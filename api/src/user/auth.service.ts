@@ -8,7 +8,7 @@ import * as nodemailer from 'nodemailer';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtSignService } from 'src/user-auth/jwt.sign.service';
 import { ForgetPasswordDTO, OtpVerificationDto } from './dto/query.dto';
-import { RegisterUserDto, LoginUserDto, ResetPasswordDto, SocialLoginDto } from './dto/auth.dto';
+import { RegisterUserDto, LoginUserDto, ResetPasswordDto } from './dto/auth.dto';
 import { use } from 'passport';
 import { Role } from 'src/user-auth/dto/role.enum';
 
@@ -157,74 +157,6 @@ export class AuthService {
       ...user,
       token: access_token,
     };
-  }
-
-  async socialLogin(data: SocialLoginDto) {
-    const normalizedEmail = data.email.trim().toLowerCase();
-
-    // First, try to find user by email
-    let user = await this.prismaService.user.findFirst({
-      where: {
-        email: {
-          equals: normalizedEmail,
-          mode: 'insensitive',
-        },
-      },
-    });
-
-    // If user doesn't exist, create a new one
-    if (!user) {
-      user = await this.prismaService.user.create({
-        data: {
-          email: normalizedEmail,
-          full_name: data.name,
-          profile_image: data.profilePicture,
-          login_type: data.provider as any, // Assuming your Prisma schema has this enum
-          // provider_id: data.providerId,
-          is_verified: true, // Social logins are typically verified
-          password: await bcrypt.hash(Math.random().toString(36) + Date.now().toString(), 10), // Random password
-        },
-      });
-    } else {
-      // Update existing user with social login info if needed
-      user = await this.prismaService.user.update({
-        where: { id: user.id },
-        data: {
-          profile_image: data.profilePicture || user.profile_image,
-          login_type: data.provider as any,
-          // provider_id: data.providerId,
-          is_verified: true, // Ensure social logins are verified
-        },
-      });
-    }
-
-    if (!user.is_verified) {
-      throw new HttpException(
-        'This user is not verified',
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
-
-    // Verify social token (you might want to implement proper validation)
-    // await this.validateSocialToken(data.provider, data.accessToken, data.providerId);
-
-    const access_token = await this.jwtSignService.signJwt({
-      id: user.id,
-      email: user.email,
-      phone: user.phone,
-      role: Role.User,
-    });
-
-    // Remove sensitive data
-    const userResponse = {
-      id: user.id,
-      email: user.email,
-      name: user.full_name,
-      profilePicture: user.profile_image,
-      token: access_token,
-    };
-
-    return userResponse;
   }
 
   async forgetPassword(data: ForgetPasswordDTO) {
