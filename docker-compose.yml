@@ -84,6 +84,13 @@ services:
       - server
     networks:
       - starter_api
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080    
 
 networks:
   trackify_internal:

@@ -75,7 +75,7 @@ export class NotificationController {
     return res.success(response);
   }
 
- @Post('consultant-start-call')
+  @Post('consultant-start-call')
   @ApiOperation({ summary: 'Send push notification when consultant starts a call. Triggers call dialog on user app' })
   @ApiBody({ 
     type: SendCallingNotificationDto,

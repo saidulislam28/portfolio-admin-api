@@ -263,7 +263,7 @@ export class NotificationService {
 
     const msg = await this.firebaseAdmin.messaging().send({
       token: appointment.User.token,
-      // data,
+      data,
       android: { priority: "high" }
     });
 
@@ -331,7 +331,7 @@ export class NotificationService {
 
     const msg = await this.firebaseAdmin.messaging().send({
       token: appointment.Consultant.token,
-      // data,
+      data,
       android: { priority: "high" }
     });
 
