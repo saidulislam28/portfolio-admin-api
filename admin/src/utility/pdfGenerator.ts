@@ -1,98 +1,99 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { formatMoney } from './format_money';
 
 
 const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+  if (!dateString) return 'N/A';
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 };
 
 const formatServiceType = (type) => {
-    if (!type) return 'N/A';
-    return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  if (!type) return 'N/A';
+  return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
 const getStatusColor = (status) => {
-    const colors = {
-        'Pending': '#faad14',
-        'Confirmed': '#52c41a',
-        'Completed': '#1890ff',
-        'Cancelled': '#ff4d4f',
-        'Processing': '#722ed1'
-    };
-    return colors[status] || '#666';
+  const colors = {
+    'Pending': '#faad14',
+    'Confirmed': '#52c41a',
+    'Completed': '#1890ff',
+    'Cancelled': '#ff4d4f',
+    'Processing': '#722ed1'
+  };
+  return colors[status] || '#666';
 };
 
 const getPaymentStatusColor = (status) => {
-    const colors = {
-        'paid': '#52c41a',
-        'unpaid': '#ff4d4f',
-        'pending': '#faad14',
-        'failed': '#ff4d4f'
-    };
-    return colors[status] || '#666';
+  const colors = {
+    'paid': '#52c41a',
+    'unpaid': '#ff4d4f',
+    'pending': '#faad14',
+    'failed': '#ff4d4f'
+  };
+  return colors[status] || '#666';
 };
 
 export const generatePDF = async (data, fileName = 'order-details') => {
-    try {
-        // Create PDF content element
-        const pdfContent = createPDFContent(data);
+  try {
+    // Create PDF content element
+    const pdfContent = createPDFContent(data);
 
-        // Append to body temporarily
-        document.body.appendChild(pdfContent);
+    // Append to body temporarily
+    document.body.appendChild(pdfContent);
 
-        // Generate canvas from HTML
-        const canvas = await html2canvas(pdfContent, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#ffffff'
-        });
+    // Generate canvas from HTML
+    const canvas = await html2canvas(pdfContent, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff'
+    });
 
-        // Remove temporary element
-        document.body.removeChild(pdfContent);
+    // Remove temporary element
+    document.body.removeChild(pdfContent);
 
-        // Create PDF
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
+    // Create PDF
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
 
-        const imgWidth = 210; // A4 width in mm
-        const pageHeight = 295; // A4 height in mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
+    const imgWidth = 210; // A4 width in mm
+    const pageHeight = 295; // A4 height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
 
-        // Add first page
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+    // Add first page
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
 
-        // Add additional pages if needed
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-        }
-
-        // Download PDF
-        pdf.save(`${fileName}-${data.id}.pdf`);
-
-        return { success: true };
-    } catch (error) {
-        console.error('PDF generation failed:', error);
-        return { success: false, error: error.message };
+    // Add additional pages if needed
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
     }
+
+    // Download PDF
+    pdf.save(`${fileName}-${data.id}.pdf`);
+
+    return { success: true };
+  } catch (error) {
+    console.error('PDF generation failed:', error);
+    return { success: false, error: error.message };
+  }
 };
 
 const createPDFContent = (data) => {
-    const container = document.createElement('div');
-    container.style.cssText = `
+  const container = document.createElement('div');
+  container.style.cssText = `
     width: 794px;
     padding: 40px;
     font-family: Arial, sans-serif;
@@ -104,20 +105,20 @@ const createPDFContent = (data) => {
     top: 0;
   `;
 
-    const examCenter = data.order_info?.exam_canter ?
-        JSON.parse(data.order_info.exam_canter) : null;
+  const examCenter = data.order_info?.exam_canter ?
+    JSON.parse(data.order_info.exam_canter) : null;
 
-    container.innerHTML = `
+  container.innerHTML = `
     <div style="border-bottom: 3px solid #1890ff; padding-bottom: 20px; margin-bottom: 30px;">
       <h1 style="color: #1890ff; margin: 0; font-size: 28px; font-weight: bold;">
         IELTS Exam Registration
       </h1>
       <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">
         Generated on ${new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    })}
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })}
       </p>
     </div>
 
@@ -156,6 +157,7 @@ const createPDFContent = (data) => {
           <p><strong>Phone:</strong> ${data.phone}</p>
           <p><strong>Address:</strong> ${data.address || 'N/A'}</p>
           <p><strong>Expected Level:</strong> ${data.User?.expected_level || 'N/A'}</p>
+           ${data.service_type === 'study_abroad' ? ` <p><strong>Budget:</strong> ${data?.order_info?.budget ? `${formatMoney(Number(data?.order_info?.budget))}` : ''}</p>` : ""}
         </div>
       </div>
     </div>
@@ -173,16 +175,19 @@ const createPDFContent = (data) => {
               <p><strong>Education Level:</strong> ${data.order_info.education_level || 'N/A'}</p>
             </div>
             <div>
-              <p><strong>Exam Center:</strong> ${examCenter?.name || 'N/A'}</p>
+              <p><strong>Exam Center:</strong> ${data?.ExamCenter?.name || 'N/A'}</p>
               <p><strong>Shipping Address:</strong> ${data.order_info.shipping_address || 'N/A'}</p>
-              <p><strong>Passport File:</strong> ${data.order_info.passport_file ? 'Uploaded' : 'Not uploaded'}</p>
+              <p><strong>Passport File:</strong> ${data.order_info.passport_file ? 'Uploaded' : 'Not uploaded'}</p>            
+             
             </div>
           </div>
         </div>
       </div>
     ` : ''}
 
-    <div style="margin-bottom: 30px;">
+
+    ${data.service_type === 'study_abroad' ? "" : `
+      <div style="margin-bottom: 30px;">
       <h2 style="color: #1890ff; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 5px;">
         Package Information
       </h2>
@@ -195,9 +200,10 @@ const createPDFContent = (data) => {
           </div>          
         </div>
       </div>
-    </div>
+    </div>`}
 
-    <div style="margin-bottom: 30px;">
+    ${data.service_type === 'study_abroad' ? "" : ` 
+      <div style="margin-bottom: 30px;">
       <h2 style="color: #1890ff; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 5px;">
         Payment Summary
       </h2>
@@ -205,10 +211,6 @@ const createPDFContent = (data) => {
         <table style="width: 100%; border-collapse: collapse;">
           <tr style="border-bottom: 1px solid #ddd;">
             <td style="padding: 10px 0; font-weight: bold;">Original Price (BDT):</td>
-            <td style="text-align: right; padding: 10px 0;">৳${data.Package?.price_bdt_original?.toLocaleString()}</td>
-          </tr>
-          <tr style="border-bottom: 1px solid #ddd;">
-            <td style="padding: 10px 0; font-weight: bold;">Discounted Price (BDT):</td>
             <td style="text-align: right; padding: 10px 0;">৳${data.Package?.price_bdt_original?.toLocaleString()}</td>
           </tr>
           <tr style="border-bottom: 1px solid #ddd;">
@@ -229,7 +231,9 @@ const createPDFContent = (data) => {
           </tr>
         </table>
       </div>
-    </div>
+    </div>`}
+
+   
 
     ${data.cancel_reason ? `
       <div style="margin-bottom: 30px;">
@@ -249,7 +253,7 @@ const createPDFContent = (data) => {
       </h2>
       <div style="background: #fafafa; padding: 15px; border-radius: 6px;">
         <p><strong>User ID:</strong> ${data.user_id}</p>
-        <p><strong>Package ID:</strong> ${data.package_id}</p>
+        ${data.service_type === 'study_abroad' ? "" : `<p><strong>Package ID:</strong> ${data.package_id}</p>`}        
         <p><strong>Last Updated:</strong> ${formatDate(data.updated_at)}</p>
         <p><strong>Delivery Address:</strong> ${data.address || 'N/A'}</p>
       </div>
@@ -261,5 +265,5 @@ const createPDFContent = (data) => {
     </div>
   `;
 
-    return container;
+  return container;
 };

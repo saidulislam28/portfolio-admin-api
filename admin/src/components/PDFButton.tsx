@@ -21,6 +21,8 @@ const PDFDownloadButton = ({
             return;
         }
 
+        console.log("data for pdf generate", data)
+
         setLoading(true);
 
         try {
