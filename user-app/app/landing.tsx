@@ -80,6 +80,7 @@ const LandingPage = () => {
           <View style={styles.secondaryButtonsRow}>
             <View style={{ flex: 1 }}>
               <BaseButton
+                testID={'btn-login'}
                 title="Login"
                 onPress={handleLogin}
                 disabled={false}

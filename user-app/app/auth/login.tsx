@@ -153,7 +153,7 @@ export default function LoginScreen() {
             <Image source={smLogo} style={styles.logo} resizeMode="contain" />
           </View>
 
-          <Text style={styles.title}>Welcome Back</Text>
+          <Text style={styles.title} testID="txt-login-title">Welcome Back</Text>
           <Text style={styles.subtitle}>
             You can search course, apply course and find{"\n"}
             scholarship for abroad studies
@@ -173,7 +173,7 @@ export default function LoginScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               placeholder="info@gmail.com"
-              testID="email-input"
+              testID="input-email"
             />
 
             {/* Password Input */}
@@ -189,7 +189,7 @@ export default function LoginScreen() {
               onBlur={handleFieldBlur}
               autoCapitalize="none"
               placeholder="Enter Your Password"
-              testID="password-input"
+              testID="input-password"
             />
           </View>
 
@@ -200,7 +200,7 @@ export default function LoginScreen() {
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <BaseButton title="Login" onPress={handleLogin} isLoading={loading} />
+          <BaseButton title="Login" onPress={handleLogin} isLoading={loading} testID="btn-submit-login" />
 
           {/* Divider */}
           <View style={styles.dividerContainer}>

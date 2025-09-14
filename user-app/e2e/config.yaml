@@ -1,0 +1,10 @@
+appId: com.bitpixelbd.speakingmate
+
+# Optional: Set default device
+# device: iPhone 13
+
+# Optional: Set test timeout
+timeout: 60000
+
+# Optional: Set retry configuration
+retries: 2

@@ -8,6 +8,7 @@ import { AuthProvider } from "@/context/useAuth";
 import IncomingCallScreen from "@/components/IncomingCallScreen";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Platform } from "react-native";
+import { LogBox } from 'react-native';
 // import { Provider } from 'react-redux';
 // import { PersistGate } from 'redux-persist/integration/react';
 // import { store, persistor } from '@/store';
@@ -26,6 +27,11 @@ const config: SmPackageConfig = {
   tokenProvider: getAuthTokenMobile,
 };
 initApiClients(config);
+
+LogBox.ignoreLogs([
+  'Warning: Some specific warning message',
+  'Open debugger to view',
+]);
 
 export default function HomeLayout() {
   useNotifications();

@@ -1,0 +1,22 @@
+# Maestro workspace configuration
+flows:
+  - flows/**/*.yaml
+
+env:
+  APP_ID: com.yallasystems.ios
+  
+# Default device settings
+device:
+  ios: "iPhone 15"
+  android: "Pixel 7"
+
+# Global timeout settings  
+timeout: 30000
+
+# Retry settings
+retries: 1
+
+# Output settings
+output:
+  format: junit
+  file: test-results/maestro-results.xml
