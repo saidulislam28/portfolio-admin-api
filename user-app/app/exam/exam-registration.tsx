@@ -18,7 +18,6 @@ export default function RegistrationLanding() {
     const { width } = useWindowDimensions();
     const { data: appSettingsData, isLoading, error } = useAppSettings();
     const router = useRouter();
-    // console.log("appsetting exam", appSettingsData)
 
     if (isLoading) {
         return (
