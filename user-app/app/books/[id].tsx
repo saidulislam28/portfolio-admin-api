@@ -106,9 +106,8 @@ export default function BookDetailsScreen() {
             />
           </View>
 
-          {/* Add to Cart Button - Show different UI if already in cart */}
-          <View style={{paddingBottom: 100}}>
-            <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} />
+          <View style={{paddingBottom: 150}}>
+            <BaseButton title="Add to Cart" onPress={handleAddToCart} isLoading={cartLoading} variant="outline" />
           </View>
         </View>
         {/* Cart Summary - Show only if items in cart */}

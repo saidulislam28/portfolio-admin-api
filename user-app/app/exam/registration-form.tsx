@@ -3,6 +3,7 @@ import CommonHeader from "@/components/CommonHeader";
 import { InputField } from "@/components/InputField";
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
+import { useImageUpload } from "@/hooks/useUploadImage";
 import { validateEmail, validatePhone } from "@/utility/validator";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
@@ -36,7 +37,13 @@ const ExamRegistrationFrom = () => {
 
   // Image picker states
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  // const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const {
+    uploadImage,
+    isLoading: isUploadingImage,
+    error: uploadError,
+  } = useImageUpload();
 
   useEffect(() => {
     requestPermissions();
@@ -197,6 +204,10 @@ const ExamRegistrationFrom = () => {
   };
 
   const handleSubmit = async () => {
+
+    let imageUrl = selectedImage
+    // return console.log("Passport image>>", selectedImage);
+
     if (!validateForm()) {
       return;
     }
@@ -209,12 +220,18 @@ const ExamRegistrationFrom = () => {
       return;
     }
 
+
+    if (selectedImage) {
+      imageUrl = await uploadImage(selectedImage as string)
+    }
+
+
     try {
       const userInfo = {
         education_level: formData?.educationLevel,
         occupation: formData?.occupation,
         shipping_address: formData?.shippingAddress,
-        passport_file: null,
+        passport_file: imageUrl ? imageUrl : null,
         exam_date: selectedDate?.toISOString(),
         exam_canter: +center,
         whatsapp: formData?.whatsapp,
@@ -232,6 +249,8 @@ const ExamRegistrationFrom = () => {
         service_type: PACKAGE_SERVICE_TYPE.exam_registration,
         order_info: userInfo,
       };
+
+
 
       const response = await Post(API_USER.create_order, payload);
       const responseData = response?.data?.data;
@@ -251,7 +270,6 @@ const ExamRegistrationFrom = () => {
       Alert.alert("Error", "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
-      setIsUploadingImage(false);
     }
   };
 

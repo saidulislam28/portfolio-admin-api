@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/useAuth";
-import smLogo from "@/assets/images/smlogo.png";
+import Logo from "@/assets/images/Logo512.png";
 import { useCartSummary } from "@/hooks/useCart";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { Feather, Ionicons } from "@expo/vector-icons";
@@ -27,7 +27,7 @@ export default function PreHeader() {
       <View style={styles.profileContainer}>
         <View style={styles.profileImageContainer}>
           {/* <Feather name="user" size={18} color={'black'} /> */}
-          <Image source={smLogo} style={styles.logo} />
+          <Image source={Logo} style={styles.logo} />
         </View>
         <>
           {user ? (
