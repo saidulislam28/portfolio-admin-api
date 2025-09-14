@@ -1,16 +1,17 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  Linking, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Linking,
   TouchableOpacity,
-  Image 
+  Image
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import Logo from "@/assets/images/Logo512.png";
 import { PRIMARY_COLOR } from '@/lib/constants';
+import CommonHeader from '@/components/CommonHeader';
 
 const AboutAppScreen = () => {
   const handleContactSupport = () => {
@@ -28,10 +29,11 @@ const AboutAppScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <CommonHeader />
       {/* Header Section */}
       <View style={styles.header}>
-        <Image 
-        source={Logo} // Replace with your app icon
+        <Image
+          source={Logo} // Replace with your app icon
           style={styles.appIcon}
         />
         <Text style={styles.appName}>SpeakingMate</Text>
@@ -42,10 +44,10 @@ const AboutAppScreen = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>About The App</Text>
         <Text style={styles.description}>
-          SpeakingMate IELTS is a comprehensive English learning platform designed to help you 
-          improve your speaking skills and prepare for the IELTS exam. Our app connects you 
-          with expert instructors through video calls for personalized practice sessions and 
-          mock tests. Whether you're preparing for immigration, academic purposes, or just 
+          SpeakingMate IELTS is a comprehensive English learning platform designed to help you
+          improve your speaking skills and prepare for the IELTS exam. Our app connects you
+          with expert instructors through video calls for personalized practice sessions and
+          mock tests. Whether you're preparing for immigration, academic purposes, or just
           want to improve your English, we provide the tools and guidance you need to succeed.
         </Text>
       </View>
@@ -53,7 +55,7 @@ const AboutAppScreen = () => {
       {/* Features Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Key Features</Text>
-        
+
         <View style={styles.featureItem}>
           <Ionicons name="videocam" size={24} color={PRIMARY_COLOR} style={styles.featureIcon} />
           <View style={styles.featureTextContainer}>
@@ -63,7 +65,7 @@ const AboutAppScreen = () => {
             </Text>
           </View>
         </View>
-        
+
         <View style={styles.featureItem}>
           <MaterialIcons name="record-voice-over" size={24} color={PRIMARY_COLOR} style={styles.featureIcon} />
           <View style={styles.featureTextContainer}>
@@ -73,7 +75,7 @@ const AboutAppScreen = () => {
             </Text>
           </View>
         </View>
-        
+
         <View style={styles.featureItem}>
           <FontAwesome5 name="chalkboard-teacher" size={24} color={PRIMARY_COLOR} style={styles.featureIcon} />
           <View style={styles.featureTextContainer}>
@@ -83,7 +85,7 @@ const AboutAppScreen = () => {
             </Text>
           </View>
         </View>
-        
+
         <View style={styles.featureItem}>
           <Ionicons name="analytics" size={24} color={PRIMARY_COLOR} style={styles.featureIcon} />
           <View style={styles.featureTextContainer}>
@@ -98,13 +100,13 @@ const AboutAppScreen = () => {
       {/* Contact & Support Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Contact & Support</Text>
-        
+
         <TouchableOpacity style={styles.contactItem} onPress={handleContactSupport}>
           <Ionicons name="mail" size={24} color={PRIMARY_COLOR} />
           <Text style={styles.contactText}>support@speakingmate.com</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} style={styles.chevron} />
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.contactItem} onPress={handleVisitWebsite}>
           <Ionicons name="globe" size={24} color={PRIMARY_COLOR} />
           <Text style={styles.contactText}>www.speakingmate.com</Text>
@@ -115,12 +117,12 @@ const AboutAppScreen = () => {
       {/* Legal Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Legal</Text>
-        
+
         <TouchableOpacity style={styles.legalItem}>
           <Text style={styles.legalText}>Privacy Policy</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} />
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.legalItem}>
           <Text style={styles.legalText}>Terms of Service</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} />
