@@ -157,7 +157,7 @@ export class OrdersService {
 
   private async createSSlPayment(orderData, transactionId: string, baseUrl: string) {
 
-    console.log("create ssl payment order Data>>", orderData)
+    // console.log("create ssl payment order Data>>", orderData)
 
     const sslcz = new SSLCommerzPayment(
       this.sslCommerzStoreId,
@@ -185,7 +185,7 @@ export class OrdersService {
     };
 
 
-    console.log('sslc init payload', paymentData)
+    // console.log('sslc init payload', paymentData)
 
     try {
       const sslResponse = await sslcz.init(paymentData);
@@ -253,23 +253,26 @@ export class OrdersService {
       orderData.total = findPackage?.price_bdt
     }
 
-    const {package_id, payment_status, center_id, ...rest} = orderData;
+    console.log("order service payload", orderData)
+
+    const { package_id, payment_status, center_id, ...rest } = orderData;
 
     const dataToInsert: Prisma.OrderCreateInput = {
       ...rest,
       User: {
-          connect: { id: userId }
+        connect: { id: userId }
       },
       status: 'Pending',
       payment_status: 'unpaid',
       sslc_transaction_id: transactionId,
     }
 
-    if(package_id && payload.service_type !== ServiceType.book_purchase) {
-      dataToInsert.Package = {connect: {id: package_id}};
+    if (package_id && payload.service_type !== ServiceType.book_purchase) {
+      dataToInsert.Package = { connect: { id: package_id } };
     }
-    if(center_id && payload.service_type === ServiceType.ielts_academic) {
-      dataToInsert.ExamCenter = {connect: {id: center_id}};
+    if (center_id && (payload.service_type === ServiceType.ielts_academic || payload.service_type === ServiceType.exam_registration)) {
+      console.log("center id", center_id, "package_type", payload.service_type)
+      dataToInsert.ExamCenter = { connect: { id: center_id } };
     }
 
     const order: any = await this.prisma.order.create({
