@@ -292,6 +292,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
           ...defaultInitialFeedback,
           ...initialFeedback,
         });
+        Alert.alert("Feedback Form Submitted Successfully");
         handleBackToHome()
         if (onSubmitSuccess) {
           onSubmitSuccess(response);

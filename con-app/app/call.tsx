@@ -569,7 +569,6 @@ export default function CallScreen() {
       {/* Moved to separate component */}
       <EndCallConfirmationBottomSheet
         isBottomSheetOpen={isBottomSheetOpen}
-        index={isBottomSheetOpen ? 0 : -1}
         onEndCallWithFeedback={handleConfirmEndCall}
         onEndCallWithoutFeedback={handleEndCallWithoutFeedback}
         onCancel={handleCancelEndCall}

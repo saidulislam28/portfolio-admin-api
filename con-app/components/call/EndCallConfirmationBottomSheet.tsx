@@ -7,17 +7,16 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 
 interface EndCallConfirmationBottomSheetProps {
-  index: number; // 👈 Controlled by parent via state
   onEndCallWithFeedback: () => void;
   onEndCallWithoutFeedback: () => void;
   onCancel: () => void;
-  isBottomSheetOpen: any
+  isBottomSheetOpen: boolean
   onChange: any;
 }
 
 const EndCallConfirmationBottomSheet: React.FC<
   EndCallConfirmationBottomSheetProps
-> = ({ index, onEndCallWithFeedback, onEndCallWithoutFeedback, onCancel, isBottomSheetOpen, onChange }) => {
+> = ({ onEndCallWithFeedback, onEndCallWithoutFeedback, onCancel, isBottomSheetOpen, onChange }) => {
   return (
     <BottomSheet
       index={isBottomSheetOpen ? 0 : -1}

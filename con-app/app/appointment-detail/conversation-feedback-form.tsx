@@ -246,6 +246,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         onSubmitSuccess
           ? onSubmitSuccess()
           : handleBackToHome();
+        Alert.alert("Feedback Form Submitted Successfully");
       }
     } catch (error) {
       console.error('Error:', error);
