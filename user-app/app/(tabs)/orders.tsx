@@ -23,8 +23,6 @@ const OrdersScreen = () => {
 
   const { data: ordersData = [], isLoading, error, refetch } = useOrders();
 
-  console.log("order data>>", ordersData);
-
   const orders = ordersData
     .filter((section: any) => section?.title !== "Book Purchase")
     .map((section: any) => ({

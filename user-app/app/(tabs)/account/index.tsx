@@ -27,19 +27,19 @@ const SettingsScreen = () => {
     {
       icon: "account-circle",
       title: "Edit Profile",
-      action: () => router.push(ROUTES.ACCOUNT_EDIT  as any),
+      action: () => router.push(ROUTES.ACCOUNT_EDIT as any),
       iconComponent: MaterialIcons,
     },
     {
       icon: "lock",
       title: "Change Password",
-      action: () => router.push(ROUTES.ACCOUNT_PASSWORD  as any),
+      action: () => router.push(ROUTES.ACCOUNT_PASSWORD as any),
       iconComponent: MaterialIcons,
     },
     {
       icon: "menu-book",
       title: "Book Orders",
-      action: () => router.push(ROUTES.ORDERS  as any),
+      action: () => router.push(ROUTES.BOOK_ORDERS as any),
       iconComponent: MaterialIcons,
     },
     {
