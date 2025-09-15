@@ -5,7 +5,7 @@ import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
 import { useAppSettings } from "@/hooks/queries/useAppSettings";
 import { useCart, useCartActions, useCartSummary } from "@/hooks/useCart";
-import {  PRIMARY_COLOR } from "@/lib/constants";
+import { PRIMARY_COLOR } from "@/lib/constants";
 import { validateEmail, validatePhone } from "@/utility/validator";
 import { API_USER, PACKAGE_SERVICE_TYPE, Post, replacePlaceholders } from "@sm/common";
 import { Stack, useRouter } from "expo-router";
@@ -159,6 +159,7 @@ export default function CheckoutScreen() {
           return router.push(
             replacePlaceholders(ROUTES.PAYMENT_SUCCESS, {
               service_type: PACKAGE_SERVICE_TYPE.book_purchase,
+              order_id: responseData?.order_id
             }) as any
           );
         }
