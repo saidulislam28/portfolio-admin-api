@@ -10,17 +10,14 @@ import { useCalenderAppointment } from '@/hooks/queries/useCalenderAppointment';
 import BottomSheet, {
   BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
-import { API_CONSULTANT, Get } from '@sm/common';
 import { useRouter } from 'expo-router';
 import React, {
   useCallback,
-  useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react';
-import { Text } from 'react-native';
-import { FlatList, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { FlatList, SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native';
 
 
 
@@ -40,9 +37,7 @@ interface Appointment {
   start_at: string;
 }
 
-interface AppointmentsData {
-  [date: string]: Appointment[];
-}
+
 
 const AppointmentManager = () => {
   const [viewMode, setViewMode] = useState<'calendar' | 'timeline'>('calendar');
@@ -50,11 +45,6 @@ const AppointmentManager = () => {
   const [modalDate, setModalDate] = useState('');
 
   const { data: appointmentsData, isLoading } = useCalenderAppointment();
-
-
-
-  console.log("appointment calender hook data", appointmentsData);
-
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
