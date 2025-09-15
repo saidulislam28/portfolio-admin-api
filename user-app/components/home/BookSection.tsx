@@ -37,7 +37,7 @@ const BookSection = ({ books }: any) => {
 
   const navigateToDetails = (book: any) => {
     router.push({
-      pathname: ROUTES.BOOK_DETAILS,
+      pathname: ROUTES.BOOK_DETAILS as any,
       params: { id: book.id },
     });
   };
@@ -56,25 +56,7 @@ const BookSection = ({ books }: any) => {
           flex: 1, // Ensures proper flex behavior
         }}
       >
-        <View
-          style={{
-            alignSelf: "flex-end",
-            padding: 8,
-            backgroundColor: SECONDARY_COLOR,
-            borderRadius: 30,
-            position: "absolute",
-            top: 8,
-            right: 8,
-            zIndex: 20,
-          }}
-        >
-          <AntDesign
-            style={{ marginRight: 4 }}
-            name="hearto"
-            size={22}
-            color="black"
-          />
-        </View>
+
         <View style={styles.cardHeader}>
           <Image
             source={{
@@ -104,15 +86,6 @@ const BookSection = ({ books }: any) => {
           By: {item?.writer ?? "N/A"}
         </Text>
         <Text style={styles.cardPrice}>BDT {item?.price}</Text>
-      </View>
-      <View style={styles.cardFooter}>
-        <AntDesign
-          style={{ marginRight: 4 }}
-          name="shoppingcart"
-          size={28}
-          color="white"
-        />
-        <Text style={styles.cardStats}>Add To Cart</Text>
       </View>
     </TouchableOpacity>
   );

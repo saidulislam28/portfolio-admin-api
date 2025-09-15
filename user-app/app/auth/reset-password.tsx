@@ -1,5 +1,4 @@
 import { PRIMARY_COLOR } from "@/lib/constants";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_USER, Post } from "@sm/common";
 import { useRouter } from "expo-router";
@@ -10,36 +9,66 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useAuth } from "@/context/useAuth";
 import { ROUTES } from "@/constants/app.routes";
+import { InputField } from "@/components/InputField"; // Update this import path as needed
 
 export default function ResetPasswordScreen() {
   const router = useRouter();
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [errors, setErrors] = useState({
+    otp: "",
+    password: "",
+    confirmPassword: "",
+  });
   const { login }: any = useAuth();
+
+  const validateForm = () => {
+    const newErrors = {
+      otp: "",
+      password: "",
+      confirmPassword: "",
+    };
+
+    if (!otp) {
+      newErrors.otp = "Please enter the OTP";
+    }
+
+    if (!password) {
+      newErrors.password = "Please enter a new password";
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Password and Confirm Password do not match";
+    }
+
+    setErrors(newErrors);
+    return !newErrors.otp && !newErrors.password && !newErrors.confirmPassword;
+  };
 
   const handleResetPassword = async () => {
     setLoading(true);
 
     const email_or_phone = await AsyncStorage.getItem("email");
-    // Validation
-    if (!otp || !password || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all fields");
-      setLoading(false);
-      return;
-    }
 
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Password and Confirm Password do not match");
+    // Clear previous errors
+    setErrors({
+      otp: "",
+      password: "",
+      confirmPassword: "",
+    });
+
+    // Validation
+    if (!validateForm()) {
       setLoading(false);
       return;
     }
@@ -59,12 +88,27 @@ export default function ResetPasswordScreen() {
       await AsyncStorage.removeItem("email");
 
       login(result?.data?.data, result?.data?.data?.token);
-      router.push(ROUTES.HOME);
+      router.push(ROUTES.HOME as any);
 
-    } catch (error) {
+    } catch (error:any) {
       Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
       setLoading(false);
     }
+  };
+
+  const handleFocus = (fieldKey: string) => {
+    setFocusedField(fieldKey);
+    // Clear error when user starts typing
+    if (errors[fieldKey as keyof typeof errors]) {
+      setErrors(prev => ({
+        ...prev,
+        [fieldKey]: "",
+      }));
+    }
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
   };
 
   return (
@@ -74,70 +118,58 @@ export default function ResetPasswordScreen() {
         <Text style={styles.subtitle}>Enter your OTP and new password</Text>
 
         {/* OTP Input */}
-        <View style={styles.inputContainer}>
-          <MaterialCommunityIcons
-            name="key-outline"
-            size={20}
-            style={styles.icon}
-          />
-          <TextInput
-            placeholder="Enter OTP"
-            style={styles.input}
-            keyboardType="numeric"
-            value={otp}
-            onChangeText={setOtp}
-            maxLength={6}
-          />
-        </View>
+        <InputField
+          label="OTP"
+          value={otp}
+          onChangeText={setOtp}
+          error={errors.otp}
+          placeholder="Enter OTP"
+          keyboardType="numeric"
+          maxLength={6}
+          fieldKey="otp"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("otp")}
+          onBlur={handleBlur}
+          testID="otp-input"
+        />
 
         {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Feather name="lock" size={20} style={styles.icon} />
-          <TextInput
-            placeholder="Enter New Password"
-            secureTextEntry={!passwordVisible}
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity
-            onPress={() => setPasswordVisible(!passwordVisible)}
-          >
-            <Feather
-              name={passwordVisible ? "eye" : "eye-off"}
-              size={20}
-              style={styles.iconRight}
-            />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="New Password"
+          value={password}
+          onChangeText={setPassword}
+          error={errors.password}
+          placeholder="Enter New Password"
+          isPassword={true}
+          fieldKey="password"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("password")}
+          onBlur={handleBlur}
+          testID="password-input"
+        />
 
         {/* Confirm Password Input */}
-        <View style={styles.inputContainer}>
-          <Feather name="lock" size={20} style={styles.icon} />
-          <TextInput
-            placeholder="Confirm New Password"
-            secureTextEntry={!confirmPasswordVisible}
-            style={styles.input}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-          />
-          <TouchableOpacity
-            onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-          >
-            <Feather
-              name={confirmPasswordVisible ? "eye" : "eye-off"}
-              size={20}
-              style={styles.iconRight}
-            />
-          </TouchableOpacity>
-        </View>
+        <InputField
+          label="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          error={errors.confirmPassword}
+          placeholder="Confirm New Password"
+          isPassword={true}
+          fieldKey="confirmPassword"
+          focusedField={focusedField}
+          onFocus={() => handleFocus("confirmPassword")}
+          onBlur={handleBlur}
+          testID="confirm-password-input"
+        />
 
         {/* Reset Password Button */}
         <TouchableOpacity
           style={styles.resetButton}
           onPress={handleResetPassword}
+          disabled={loading}
         >
-          <Text disabled={loading} style={styles.resetButtonText}>
+          <Text style={styles.resetButtonText}>
             {loading ? "Resetting..." : "Reset Password"}
           </Text>
         </TouchableOpacity>
@@ -179,30 +211,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#666",
     marginBottom: 32,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    width: "100%",
-    backgroundColor: "#f9f9f9",
-  },
-  icon: {
-    marginRight: 8,
-    color: "#888",
-  },
-  iconRight: {
-    marginLeft: 8,
-    color: "#888",
-  },
-  input: {
-    flex: 1,
-    fontSize: 14,
   },
   resetButton: {
     backgroundColor: PRIMARY_COLOR,
