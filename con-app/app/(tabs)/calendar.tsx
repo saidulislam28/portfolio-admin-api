@@ -1,28 +1,24 @@
-import React, {
-  useState,
-  useMemo,
-  useEffect,
-  useRef,
-  useCallback,
-} from 'react';
-import { View, StyleSheet, FlatList, StatusBar, SafeAreaView } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import AppointmentCard from '@/components/calender/AppointmentCard';
+import BottomSheetContent from '@/components/calender/BottomSheetContent';
+import CalendarView from '@/components/calender/CalendarView';
+import Header from '@/components/calender/Header';
+import Legend from '@/components/calender/Legend';
+import TimelineView from '@/components/calender/TimelineView';
+import TodayPreview from '@/components/calender/TodayPreview';
+import { ROUTES } from '@/constants/app.routes';
 import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetFlatList,
+  BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
 import { API_CONSULTANT, Get } from '@sm/common';
 import { useRouter } from 'expo-router';
-import { ROUTES } from '@/constants/app.routes';
-import { getUserDeviceTimezone } from '@/utils/userTimezone';
-import { PRIMARY_COLOR } from '@/lib/constants';
-import CalendarView from '@/components/calender/CalendarView';
-import Legend from '@/components/calender/Legend';
-import TodayPreview from '@/components/calender/TodayPreview';
-import AppointmentCard from '@/components/calender/AppointmentCard';
-import Header from '@/components/calender/Header';
-import TimelineView from '@/components/calender/TimelineView';
-import BottomSheetContent from '@/components/calender/BottomSheetContent';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { FlatList, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 
 
 
