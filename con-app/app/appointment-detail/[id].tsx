@@ -238,13 +238,13 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
   const getStatusIcon = (status: string) => {
     switch (status?.toLowerCase()) {
-      case 'confirmed':
+      case 'Confirmed':
         return 'checkmark-circle';
-      case 'pending':
+      case 'Pending':
         return 'time';
-      case 'cancelled':
+      case 'Cancelled':
         return 'close-circle';
-      case 'completed':
+      case 'Completed':
         return 'checkmark-done-circle';
       default:
         return 'help-circle';

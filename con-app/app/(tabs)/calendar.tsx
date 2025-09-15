@@ -6,6 +6,7 @@ import Legend from '@/components/calender/Legend';
 import TimelineView from '@/components/calender/TimelineView';
 import TodayPreview from '@/components/calender/TodayPreview';
 import { ROUTES } from '@/constants/app.routes';
+import { useCalenderAppointment } from '@/hooks/queries/useCalenderAppointment';
 import BottomSheet, {
   BottomSheetBackdrop
 } from '@gorhom/bottom-sheet';
@@ -18,7 +19,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { FlatList, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { Text } from 'react-native';
+import { FlatList, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 
 
 
@@ -46,24 +48,29 @@ const AppointmentManager = () => {
   const [viewMode, setViewMode] = useState<'calendar' | 'timeline'>('calendar');
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [modalDate, setModalDate] = useState('');
-  const [appointmentsData, setAppointmentsData] = useState<AppointmentsData>({});
+
+  const { data: appointmentsData, isLoading } = useCalenderAppointment();
+
+
+
+  console.log("appointment calender hook data", appointmentsData);
 
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
 
-  const fetchAppointment = async () => {
-    try {
-      const response = await Get(API_CONSULTANT.appointment_calendar);
-      setAppointmentsData(response?.data ?? {});
-    } catch (error: any) {
-      console.log('Appointment Fetch Error:', error?.message);
-    }
-  };
+  // const fetchAppointment = async () => {
+  //   try {
+  //     const response = await Get(API_CONSULTANT.appointment_calendar);
+  //     setAppointmentsData(response?.data ?? {});
+  //   } catch (error: any) {
+  //     console.log('Appointment Fetch Error:', error?.message);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchAppointment();
-  }, []);
+  // useEffect(() => {
+  //   fetchAppointment();
+  // }, []);
 
   const getDayAppointments = (date: string): Appointment[] => {
     return appointmentsData[date] || [];
@@ -127,6 +134,14 @@ const AppointmentManager = () => {
     { type: 'legend' },
     { type: 'preview' },
   ];
+
+  if (isLoading) {
+    return (
+      <View style={{}}>
+        <Text style={{ textAlign: 'center', fontSize: 24 }}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
