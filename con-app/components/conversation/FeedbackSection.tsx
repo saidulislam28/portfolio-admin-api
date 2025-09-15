@@ -36,7 +36,7 @@ const FeedbackSection: React.FC<FeedbackSectionProps> = ({
           {items.slice(0, Math.ceil(items.length / 2)).map((item, index) => (
             <EnhancedCheckbox
               key={`${item.field}-${index}`}
-              label={item.label}
+              label={item.label}    
               field={item.field}
               isChecked={feedback[item.field] as boolean}
               onPress={() => onCheckboxChange(item.field)}

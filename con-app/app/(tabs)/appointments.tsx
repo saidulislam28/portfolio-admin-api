@@ -28,7 +28,7 @@ export default function AppointmentsScreen() {
     try {
       setIsLoading(true);
       const response = await Get(API_CONSULTANT.get_appointments);
-
+      console.log("consultant data", response?.data);
       if (response.data) {
         setResponseData(response.data);
         setRefresh(false);
@@ -45,6 +45,8 @@ export default function AppointmentsScreen() {
   const categorizedAppointments = useMemo(() => {
     return categorizeAppointments(responseData, user_timezone as string);
   }, [responseData]);
+
+  console.log("categorzied appointment", categorizedAppointments);
 
   const handleRefresh = async () => {
     setRefresh(true);
