@@ -1,30 +1,15 @@
-export type NotificationEventName = 'end_call' | 'start_call' | 'incoming_call';
+export type CallPushNotificationEventType = 'end_call' | 'start_call' | 'incoming_call';
 
-export interface CallStartPushNotificationDataPayload {
-  [key: string]: string; // Firebase Admin SDK’s messaging().send() expects the data field to be data?: { [key: string]: string };
-  caller_name: string;
-  caller_image: string;
-  title: string;
-  app: string;
-  event_type: 'incoming_call';
-  user_id: string;
-  consultant_id: string;
-  consultant_name?: string;
-  consultant_image?: string;
-  user_name?: string;
-  user_image?: string;
-  appointment_token: string;
-}
-
-export interface CallEndPushNotificationDataPayload {
+export interface CallPushNotificationDataPayload {
   [key: string]: string; // Firebase Admin SDK’s messaging().send() expects the data field to be data?: { [key: string]: string };
   title: string;
-  app: string;
-  event_type: 'call_ended';
+  event_type: CallPushNotificationEventType;
   user_id: string;
+  user_name?: string;
+  user_image?: string; // value will be NOT_AVAILABLE if image is not found, since we cannot pass null or undefined in FCM push data
   consultant_id: string;
   consultant_name?: string;
-  user_name?: string;
-  ended_by: 'user' | 'consultant';
+  consultant_image?: string; // value will be NOT_AVAILABLE if image is not found, since we cannot pass null or undefined in FCM push data
   appointment_token: string;
+  appointment_id?: string;
 }
