@@ -3,6 +3,7 @@ import { LoadingIndicator } from '@/components/order/LoadingIndicator';
 import { OrdersTab } from '@/components/order/OrdersTab';
 import { useOrders } from '@/hooks/queries/useOrder';
 import { PRIMARY_COLOR } from '@/lib/constants';
+import { PACKAGE_SERVICE_TYPE } from '@sm/common';
 import React, { useState, useRef } from 'react';
 import {
   View,
@@ -20,7 +21,19 @@ const OrdersScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const pagerRef = useRef<PagerView>(null);
 
-  const { data: orders = [], isLoading, error, refetch } = useOrders();
+  const { data: ordersData = [], isLoading, error, refetch } = useOrders();
+
+  console.log("order data>>", ordersData);
+
+  const orders = ordersData
+    .filter((section: any) => section?.title !== "Book Purchase")
+    .map((section: any) => ({
+      ...section,
+      title:
+        section.title === "Ielts Academic"
+          ? 'Online Course' // rename
+          : section.title,
+    }));
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -73,7 +86,7 @@ const OrdersScreen = () => {
               numberOfLines={2}
               ellipsizeMode="tail"
             >
-              ({section.data.length}) {"\n"} {section.title}
+              {section.title} ({section.data.length})
             </Text>
           </TouchableOpacity>
         ))}
