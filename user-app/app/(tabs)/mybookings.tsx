@@ -43,7 +43,7 @@ const AppointmentsScreen: React.FC = () => {
   }, [appointments]);
 
 
-  console.log("all appoitment for user>>>", categorizedAppointments)
+  // console.log("all appoitment for user>>>", categorizedAppointments)
 
 
   const handleAppointmentPress = useCallback((appointment: Appointment) => {

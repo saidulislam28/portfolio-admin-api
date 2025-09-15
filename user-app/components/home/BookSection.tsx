@@ -1,17 +1,15 @@
 import { ROUTES } from "@/constants/app.routes";
-import { PRIMARY_COLOR, SECONDARY_COLOR } from "@/lib/constants";
-import { AntDesign } from "@expo/vector-icons";
+import { PRIMARY_COLOR } from "@/lib/constants";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  Dimensions,
   FlatList,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 const BookSection = ({ books }: any) => {
   const router = useRouter();
@@ -29,7 +27,6 @@ const BookSection = ({ books }: any) => {
       : books?.filter((item: any) => item?.category === activeFilter);
 
   const loadMoreCards = () => {
-    // console.log("fikl", filteredData);
     if (visibleCards < filteredData.length) {
       setVisibleCards((prev) => Math.min(prev + 2, filteredData.length));
     }
@@ -53,10 +50,9 @@ const BookSection = ({ books }: any) => {
           padding: 10,
           backgroundColor: "white",
           borderRadius: 8,
-          flex: 1, // Ensures proper flex behavior
+          flex: 1, 
         }}
       >
-
         <View style={styles.cardHeader}>
           <Image
             source={{

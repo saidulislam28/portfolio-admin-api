@@ -78,12 +78,12 @@ interface GenericOrderResponse extends BaseOrderResponse {
   [key: string]: any;
 }
 
-type OrderDetailsResponse = 
-  | SpeakingMockTestResponse 
-  | ConversationResponse 
-  | BookPurchaseResponse 
-  | ExamRegistrationResponse 
-  | IeltsAcademicResponse 
+type OrderDetailsResponse =
+  | SpeakingMockTestResponse
+  | ConversationResponse
+  | BookPurchaseResponse
+  | ExamRegistrationResponse
+  | IeltsAcademicResponse
   | GenericOrderResponse;
 
 const PaymentSuccessPage = () => {
@@ -106,7 +106,9 @@ const PaymentSuccessPage = () => {
     try {
       setLoading(true);
       setError(null);
-      const data: OrderDetailsResponse = await Get(replacePlaceholders(API_USER.order_details, {id: order_id}));
+      const data: OrderDetailsResponse = await Get(replacePlaceholders(API_USER.order_details, { id: order_id }));
+
+      console.log("order data on successpage>", data);
       setOrderData(data);
     } catch (err) {
       console.error('Error fetching order details:', err);
@@ -428,7 +430,7 @@ const PaymentSuccessPage = () => {
           }
         ]}
       >
-        <ScrollView 
+        <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >

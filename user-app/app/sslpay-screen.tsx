@@ -73,19 +73,6 @@ const SslcommerzPaymentScreen = () => {
     }
   };
 
-  // const extractTransactionId = (url: any) => {
-  //   // Extract transaction ID from URL if available
-  //   // This depends on your SSLCommerz configuration
-  //   try {
-  //     const urlParams = new URLSearchParams(url.split("?")[1]);
-  //     return (
-  //       urlParams.get("tran_id") || urlParams.get("transaction_id") || null
-  //     );
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // };
-
   const handleError = (syntheticEvent: any) => {
     const { nativeEvent } = syntheticEvent;
     console.error("WebView error:", nativeEvent);
@@ -107,96 +94,13 @@ const SslcommerzPaymentScreen = () => {
     setWebViewLoading(false);
   };
 
-  // const editedServiceType = service_type?.toString();
 
-  // useEffect(() => {
-  //   if (tranId) {
-  //     handleCheckPayment();
-  //   }
-  // }, [tranId]);
-
-  // const handleCheckPayment = async () => {
-  //   setIsProcessingPayment(true);
-  //   try {
-  //     const result = await Post(API_USER.check_payment, { tran_id: tranId });
-
-  //     console.log("resalt", result);
-  //     if (!result.success) {
-  //       Alert.alert("Error", result.error);
-  //       setIsProcessingPayment(false);
-  //       return;
-  //     }
-
-  //     if (result.success) {
-  //       // console.log("result", result?.data);
-  //       // console.log("service type inside", service_type)
-  //       router.push(
-  //         `/payment-success?orderId=${result?.data?.order_id}&paymentId=${result?.data?.payment_id}&service_type=${service_type}`
-  //       );
-  //     }
-  //   } catch (error: any) {
-  //     Alert.alert("Error", error?.message ?? "Payment Failed");
-  //     setIsProcessingPayment(false);
-  //   }
-  // };
-
-  // const handleNavigationChange = async (navState: paymentSuccessType) => {
-  //   const rawUrl = navState.url;
-  //   const fixedUrl = rawUrl.replace("?tran_id=", "&tran_id=");
-  //   const url = new URL(fixedUrl);
-  //   const tranId = url.searchParams.get("tran_id") as string;
-
-  //   if (tranId) {
-  //     setTranId(tranId);
-  //   }
-  // };
-
-  // const handleError = (syntheticEvent) => {
-  //     const { nativeEvent } = syntheticEvent;
-  //     console.warn('WebView error:', nativeEvent);
-  //     setHasError(true);
-  //     setWebViewLoading(false);
-  //     setIsProcessingPayment(false);
-  //     Alert.alert('Error', 'Failed to load payment page', [
-  //         { text: 'OK', onPress: () => router.back() }
-  //     ]);
-  // };
-
-  // const handleHttpError = (syntheticEvent: any) => {
-  //   const { nativeEvent } = syntheticEvent;
-  //   if (nativeEvent.statusCode >= 400) {
-  //     setHasError(true);
-  //     setIsProcessingPayment(false);
-  //     Alert.alert("Error", "Payment server error occurred", [
-  //       { text: "OK", onPress: () => router.back() },
-  //     ]);
-  //   }
-  // };
-
-  // const handleLoadStart = () => {
-  //     setWebViewLoading(true);
-  // };
-
-  // const handleLoadEnd = () => {
-  //   setWebViewLoading(false);
-  // };
 
   if (!payment_url) {
     Alert.alert("Error", "Payment URL is missing");
     router.back();
     return null;
   }
-
-  // if (hasError) {
-  //   return (
-  //     <View style={[styles.container]}>
-  //       <Text>Failed to load payment page. Please try again.</Text>
-  //     </View>
-  //   );
-  // }
-
-  // const isLoading = webViewLoading || isProcessingPayment;
-
   if (!payment_url) {
     return (
       <View style={styles.errorContainer}>
@@ -261,24 +165,8 @@ const SslcommerzPaymentScreen = () => {
         mixedContentMode="compatibility"
         // Security settings
         allowsBackForwardNavigationGestures={false}
-        allowsLinkPreview={false}
-      // SSL/TLS settings
-      // onShouldStartLoadWithRequest={(request) => {
-      //   // Only allow HTTPS URLs for security
-      //   if (request.url.startsWith('https://') || request.url.startsWith('about:')) {
-      //     return true;
-      //   }
-      //   console.warn('Blocked non-HTTPS request:', request.url);
-      //   return false;
-      // }}
-      />
-
-      {/* {webViewLoading && (
-        <View style={styles.webviewLoadingOverlay}>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <Text style={styles.loadingText}>Loading...</Text>
-        </View>
-      )} */}
+        allowsLinkPreview={false}   
+      />    
 
       {/* Payment Info Footer */}
       <View style={styles.footer}>
