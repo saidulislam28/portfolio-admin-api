@@ -26,6 +26,7 @@ import { ROUTES } from '@/constants/app.routes';
 import { BaseButton } from '@/components/BaseButton';
 import { convertUtcToTimezoneFormat } from '@/utils/dateTime';
 import { getUserDeviceTimezone } from '@/utils/userTimezone';
+import { PRIMARY_COLOR } from '@/lib/constants';
 
 const getTodayDate = () => {
   const today = new Date();
@@ -103,11 +104,11 @@ const AppointmentManager = () => {
 
   const getStatusColor = status => {
     switch (status) {
-      case 'confirmed':
-        return '#4ECDC4';
-      case 'pending':
+      case 'CONFIRMED':
+        return '#4ECD88';
+      case 'PENDING':
         return '#FFD93D';
-      case 'cancelled':
+      case 'CANCELLED':
         return '#FF6B6B';
       default:
         return '#95E1D3';
@@ -140,248 +141,248 @@ const AppointmentManager = () => {
   }, []);
 
   const renderAppointmentCard = ({ item }: any) => (
-    <TouchableOpacity
-      onPress={() => handlePressAppointment(item)}
-      style={styles.appointmentCard}
+  <TouchableOpacity
+    onPress={() => handlePressAppointment(item)}
+    style={styles.appointmentCard}
+  >
+    <View style={styles.appointmentTime}>
+      <Text style={styles.timeText}>
+        {convertUtcToTimezoneFormat(item.start_at, getUserDeviceTimezone())}
+      </Text>
+      <Text style={styles.durationText}>#{item.id}</Text>
+    </View>
+    <View style={styles.appointmentDetails}>
+      <Text style={styles.clientName}>{item.client}</Text>
+      <Text style={[styles.appointmentType, { color: getStatusColor(item?.status) }]}>{item.status}</Text>
+    </View>
+    <View
+      style={[
+        styles.statusBadge,
+        { backgroundColor: PRIMARY_COLOR },
+      ]}
     >
-      <View style={styles.appointmentTime}>
-        <Text style={styles.timeText}>
-          {convertUtcToTimezoneFormat(item.start_at, getUserDeviceTimezone())}
-        </Text>
-        <Text style={styles.durationText}>#{item.id}</Text>
-      </View>
-      <View style={styles.appointmentDetails}>
-        <Text style={styles.clientName}>{item.client}</Text>
-        <Text style={styles.appointmentType}>{item.type}</Text>
-      </View>
-      <View
-        style={[
-          styles.statusBadge,
-          { backgroundColor: getStatusColor(item.status) },
-        ]}
-      >
-        <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
-      </View>
-    </TouchableOpacity>
+      <Text style={styles.statusText}>{item?.type === "conversation" ? "Conversation" : "Mock Test"}</Text>
+    </View>
+  </TouchableOpacity>
   );
 
-  const renderTimelineView = () => {
-    const appointments = getDayAppointments(selectedDate);
-    const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 7 PM
+const renderTimelineView = () => {
+  const appointments = getDayAppointments(selectedDate);
+  const hours = Array.from({ length: 12 }, (_, i) => i + 8); // 8 AM to 7 PM
 
-    const timelineData = [
-      {
-        type: 'header',
-        date: selectedDate,
-      },
-      ...hours.map(hour => ({
-        type: 'timeSlot',
-        hour,
-        appointments: appointments.filter(apt => {
-          const aptHour = parseInt(apt.time.split(':')[0]);
-          return aptHour === hour;
-        }),
-      })),
-    ];
+  const timelineData = [
+    {
+      type: 'header',
+      date: selectedDate,
+    },
+    ...hours.map(hour => ({
+      type: 'timeSlot',
+      hour,
+      appointments: appointments.filter(apt => {
+        const aptHour = parseInt(apt.time.split(':')[0]);
+        return aptHour === hour;
+      }),
+    })),
+  ];
 
-    const renderTimelineItem = ({ item }) => {
-      if (item.type === 'header') {
-        return (
-          <Text style={styles.dateHeader}>
-            {new Date(item.date).toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </Text>
-        );
-      }
-
+  const renderTimelineItem = ({ item }) => {
+    if (item.type === 'header') {
       return (
-        <View style={styles.timeSlot}>
-          <View style={styles.timeLabel}>
-            <Text style={styles.timeLabelText}>
-              {item.hour > 12
-                ? `${item.hour - 12}:00 PM`
-                : `${item.hour}:00 AM`}
-            </Text>
-          </View>
-          <View style={styles.appointmentSlot}>
-            {item.appointments.map(apt => (
-              <TouchableOpacity
-                key={apt.id}
-                style={styles.timelineAppointment}
-                onPress={() => handlePressAppointment(apt)}
-              >
-                <View style={styles.appointmentHeader}>
-                  <Text style={styles.timelineClient}>{apt.client}</Text>
-                  <Text style={styles.timelineTime}>
-                    {convertUtcToTimezoneFormat(
-                      apt.start_at,
-                      getUserDeviceTimezone()
-                    )}
-                  </Text>
-                </View>
-                <Text style={styles.timelineType}>{apt.type}</Text>
-                <View
-                  style={[
-                    styles.timelineStatus,
-                    { backgroundColor: getStatusColor(apt.status) },
-                  ]}
-                >
-                  <Text style={styles.timelineStatusText}>{apt.status}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-            {item.appointments.length === 0 && (
-              <View style={styles.emptySlot}>
-                <Text style={styles.emptySlotText}>Available</Text>
-              </View>
-            )}
-          </View>
-        </View>
+        <Text style={styles.dateHeader}>
+          {new Date(item.date).toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </Text>
       );
-    };
+    }
 
     return (
-      <FlatList
-        data={timelineData}
-        renderItem={renderTimelineItem}
-        keyExtractor={(item, index) =>
-          item.type === 'header' ? 'header' : `slot-${item.hour}`
-        }
-        contentContainerStyle={styles.timelineContainer}
-        showsVerticalScrollIndicator={false}
-      />
+      <View style={styles.timeSlot}>
+        <View style={styles.timeLabel}>
+          <Text style={styles.timeLabelText}>
+            {item.hour > 12
+              ? `${item.hour - 12}:00 PM`
+              : `${item.hour}:00 AM`}
+          </Text>
+        </View>
+        <View style={styles.appointmentSlot}>
+          {item.appointments.map(apt => (
+            <TouchableOpacity
+              key={apt.id}
+              style={styles.timelineAppointment}
+              onPress={() => handlePressAppointment(apt)}
+            >
+              <View style={styles.appointmentHeader}>
+                <Text style={styles.timelineClient}>{apt.client}</Text>
+                <Text style={styles.timelineTime}>
+                  {convertUtcToTimezoneFormat(
+                    apt.start_at,
+                    getUserDeviceTimezone()
+                  )}
+                </Text>
+              </View>
+              <Text style={styles.timelineType}>{apt.type}</Text>
+              <View
+                style={[
+                  styles.timelineStatus,
+                  { backgroundColor: getStatusColor(apt.status) },
+                ]}
+              >
+                <Text style={styles.timelineStatusText}>{apt.status}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+          {item.appointments.length === 0 && (
+            <View style={styles.emptySlot}>
+              <Text style={styles.emptySlotText}>Available</Text>
+            </View>
+          )}
+        </View>
+      </View>
     );
   };
 
-  // Prepare calendar view data for FlatList
-  const calendarData = [
-    { type: 'calendar' },
-    { type: 'legend' },
-    { type: 'preview' },
-  ];
+  return (
+    <FlatList
+      data={timelineData}
+      renderItem={renderTimelineItem}
+      keyExtractor={(item, index) =>
+        item.type === 'header' ? 'header' : `slot-${item.hour}`
+      }
+      contentContainerStyle={styles.timelineContainer}
+      showsVerticalScrollIndicator={false}
+    />
+  );
+};
 
-  const renderCalendarItem = ({ item }) => {
-    switch (item.type) {
-      case 'calendar':
-        return (
-          <Calendar
-            style={styles.calendar}
-            current={selectedDate}
-            onDayPress={onDayPress}
-            markedDates={markedDates}
-            markingType="custom"
-            theme={{
-              backgroundColor: '#ffffff',
-              calendarBackground: '#ffffff',
-              textSectionTitleColor: '#2d4150',
-              dayTextColor: '#2d4150',
-              todayTextColor: '#4A90E2',
-              selectedDayTextColor: '#ffffff',
-              monthTextColor: '#2d4150',
-              arrowColor: '#4A90E2',
-              textDayFontSize: 16,
-              textMonthFontSize: 18,
-              textDayHeaderFontSize: 14,
-            }}
-          />
-        );
+// Prepare calendar view data for FlatList
+const calendarData = [
+  { type: 'calendar' },
+  { type: 'legend' },
+  { type: 'preview' },
+];
 
-      case 'legend':
-        return (
-          <View style={styles.legendContainer}>
-            <Text style={styles.legendTitle}>Appointment Load</Text>
-            <View style={styles.legendItems}>
-              <View style={styles.legendItem}>
-                <View
-                  style={[styles.legendDot, { backgroundColor: '#95E1D3' }]}
-                />
-                <Text style={styles.legendText}>Light (1)</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View
-                  style={[styles.legendDot, { backgroundColor: '#4ECDC4' }]}
-                />
-                <Text style={styles.legendText}>Moderate (2-3)</Text>
-              </View>
-              <View style={styles.legendItem}>
-                <View
-                  style={[styles.legendDot, { backgroundColor: '#FF6B6B' }]}
-                />
-                <Text style={styles.legendText}>Heavy (4+)</Text>
-              </View>
+const renderCalendarItem = ({ item }) => {
+  switch (item.type) {
+    case 'calendar':
+      return (
+        <Calendar
+          style={styles.calendar}
+          current={selectedDate}
+          onDayPress={onDayPress}
+          markedDates={markedDates}
+          markingType="custom"
+          theme={{
+            backgroundColor: '#ffffff',
+            calendarBackground: '#ffffff',
+            textSectionTitleColor: '#2d4150',
+            dayTextColor: '#2d4150',
+            todayTextColor: '#4A90E2',
+            selectedDayTextColor: '#ffffff',
+            monthTextColor: '#2d4150',
+            arrowColor: '#4A90E2',
+            textDayFontSize: 16,
+            textMonthFontSize: 18,
+            textDayHeaderFontSize: 14,
+          }}
+        />
+      );
+
+    case 'legend':
+      return (
+        <View style={styles.legendContainer}>
+          <Text style={styles.legendTitle}>Appointment Load</Text>
+          <View style={styles.legendItems}>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendDot, { backgroundColor: '#95E1D3' }]}
+              />
+              <Text style={styles.legendText}>Light (1)</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendDot, { backgroundColor: '#4ECDC4' }]}
+              />
+              <Text style={styles.legendText}>Moderate (2-3)</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendDot, { backgroundColor: '#FF6B6B' }]}
+              />
+              <Text style={styles.legendText}>Heavy (4+)</Text>
             </View>
           </View>
-        );
+        </View>
+      );
 
-      case 'preview':
-        const appointments = getDayAppointments(selectedDate);
-        return (
-          <View style={styles.todayPreview}>
-            <Text style={styles.previewTitle}>
-              {selectedDate === new Date().toISOString().split('T')[0]
-                ? "Today's"
-                : "Selected Day's"}{' '}
-              Appointments
-            </Text>
-            {appointments.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Ionicons name="calendar-outline" size={48} color="#B0BEC5" />
-                <Text style={styles.emptyStateText}>
-                  No appointments scheduled
-                </Text>
-              </View>
-            ) : (
-              appointments.map(item => (
-                <View key={item.id}>{renderAppointmentCard({ item })}</View>
-              ))
-            )}
-          </View>
-        );
+    case 'preview':
+      const appointments = getDayAppointments(selectedDate);
+      return (
+        <View style={styles.todayPreview}>
+          <Text style={styles.previewTitle}>
+            {selectedDate === new Date().toISOString().split('T')[0]
+              ? "Today's"
+              : "Selected Day's"}{' '}
+            Appointments
+          </Text>
+          {appointments.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Ionicons name="calendar-outline" size={48} color="#B0BEC5" />
+              <Text style={styles.emptyStateText}>
+                No appointments scheduled
+              </Text>
+            </View>
+          ) : (
+            appointments.map(item => (
+              <View key={item.id}>{renderAppointmentCard({ item })}</View>
+            ))
+          )}
+        </View>
+      );
 
-      default:
-        return null;
-    }
-  };
+    default:
+      return null;
+  }
+};
 
-  const renderBottomSheetItem = ({ item }: any) =>
-    renderAppointmentCard({ item });
+const renderBottomSheetItem = ({ item }: any) =>
+  renderAppointmentCard({ item });
 
-  console.log('datata', appointmentsData);
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F8FAFB" />
+console.log('datata', appointmentsData);
+return (
+  <SafeAreaView style={styles.container}>
+    <StatusBar barStyle="dark-content" backgroundColor="#F8FAFB" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Appointments</Text>
-        <View style={styles.viewToggle}>
-          <TouchableOpacity
+    {/* Header */}
+    <View style={styles.header}>
+      <Text style={styles.headerTitle}>My Appointments</Text>
+      <View style={styles.viewToggle}>
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            viewMode === 'calendar' && styles.toggleButtonActive,
+          ]}
+          onPress={() => setViewMode('calendar')}
+        >
+          <Ionicons
+            name="calendar"
+            size={20}
+            color={viewMode === 'calendar' ? '#fff' : '#4A90E2'}
+          />
+          <Text
             style={[
-              styles.toggleButton,
-              viewMode === 'calendar' && styles.toggleButtonActive,
+              styles.toggleText,
+              viewMode === 'calendar' && styles.toggleTextActive,
             ]}
-            onPress={() => setViewMode('calendar')}
           >
-            <Ionicons
-              name="calendar"
-              size={20}
-              color={viewMode === 'calendar' ? '#fff' : '#4A90E2'}
-            />
-            <Text
-              style={[
-                styles.toggleText,
-                viewMode === 'calendar' && styles.toggleTextActive,
-              ]}
-            >
-              Calendar
-            </Text>
-          </TouchableOpacity>
+            Calendar
+          </Text>
+        </TouchableOpacity>
 
-          {/* <TouchableOpacity
+        {/* <TouchableOpacity
             style={[styles.toggleButton, viewMode === 'timeline' && styles.toggleButtonActive]}
             onPress={() => setViewMode('timeline')}
           >
@@ -390,53 +391,53 @@ const AppointmentManager = () => {
               Timeline
             </Text>
           </TouchableOpacity> */}
-        </View>
       </View>
+    </View>
 
-      {/* Main Content */}
-      {viewMode === 'calendar' ? (
-        <FlatList
-          data={calendarData}
-          renderItem={renderCalendarItem}
-          keyExtractor={item => item.type}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}
-        />
-      ) : (
-        renderTimelineView()
-      )}
+    {/* Main Content */}
+    {viewMode === 'calendar' ? (
+      <FlatList
+        data={calendarData}
+        renderItem={renderCalendarItem}
+        keyExtractor={item => item.type}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+      />
+    ) : (
+      renderTimelineView()
+    )}
 
-      {/* Bottom Sheet */}
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-        enablePanDownToClose
-        backgroundStyle={styles.bottomSheetBackground}
-        handleIndicatorStyle={styles.bottomSheetIndicator}
-        backdropComponent={BottomSheetBackdrop}
-      >
-        <View style={styles.bottomSheetHeader}>
-          <Text style={styles.bottomSheetTitle}>
-            {modalDate &&
-              new Date(modalDate).toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-          </Text>
-        </View>
-        <BottomSheetFlatList
-          data={getDayAppointments(modalDate)}
-          renderItem={renderBottomSheetItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.bottomSheetList}
-        />
-      </BottomSheet>
-    </SafeAreaView>
-  );
+    {/* Bottom Sheet */}
+    <BottomSheet
+      ref={bottomSheetRef}
+      index={-1}
+      snapPoints={snapPoints}
+      onChange={handleSheetChanges}
+      enablePanDownToClose
+      backgroundStyle={styles.bottomSheetBackground}
+      handleIndicatorStyle={styles.bottomSheetIndicator}
+      backdropComponent={BottomSheetBackdrop}
+    >
+      <View style={styles.bottomSheetHeader}>
+        <Text style={styles.bottomSheetTitle}>
+          {modalDate &&
+            new Date(modalDate).toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+        </Text>
+      </View>
+      <BottomSheetFlatList
+        data={getDayAppointments(modalDate)}
+        renderItem={renderBottomSheetItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.bottomSheetList}
+      />
+    </BottomSheet>
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
@@ -592,7 +593,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '700',
     color: '#fff',
   },
