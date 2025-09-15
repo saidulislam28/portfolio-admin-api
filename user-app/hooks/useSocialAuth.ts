@@ -25,7 +25,7 @@ export const useSocialAuth = () => {
 
     // Facebook Auth Configuration
     const [facebookRequest, facebookResponse, facebookPromptAsync] = Facebook.useAuthRequest({
-        clientId: "YOUR_FACEBOOK_APP_ID",
+        clientId: "770838519017608",
     });
 
 
@@ -66,7 +66,7 @@ export const useSocialAuth = () => {
     }) => {
         try {
             // Replace this with your actual social login API endpoint
-            const response = await fetch('https://f33595f4d7bf.ngrok-free.app/auth/social-login', {
+            const response = await fetch('https://a3db63358c1f.ngrok-free.app/api/v1/auth/social-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

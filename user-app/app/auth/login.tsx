@@ -3,6 +3,7 @@ import { BaseButton } from "@/components/BaseButton";
 import { InputField } from "@/components/InputField";
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
+import { useAuth as useNewAuth } from "@/hooks/useAuth";
 import { useSocialAuth } from "@/hooks/useSocialAuth";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { loginUser, LoginUserResponse } from "@sm/common";
@@ -22,6 +23,12 @@ import {
   View,
 } from "react-native";
 
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+
 export default function LoginScreen() {
   const router = useRouter();
   const { login }: any = useAuth();
@@ -31,12 +38,17 @@ export default function LoginScreen() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [showEmailOption, setShowEmailOption] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
+
+  const { signInWithApple, signInWithGoogle } = useNewAuth();
+
 
   const {
     socialLoading,
-    isGoogleLoading,
+    // isGoogleLoading,
     isFacebookLoading,
-    signInWithGoogle,
     signInWithFacebook
   } = useSocialAuth();
 
@@ -137,6 +149,16 @@ export default function LoginScreen() {
     setFocusedField(null);
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsGoogleLoading(true);
+      await signInWithGoogle();
+      router.replace(ROUTES.HOME as any);
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -228,9 +250,10 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            <GoogleSigninButton onPress={handleGoogleSignIn} />
+            {/* <TouchableOpacity
               style={[styles.socialButton, isGoogleLoading && styles.disabledButton]}
-              onPress={signInWithGoogle}
+              onPress={handleGoogleSignIn}
               disabled={socialLoading !== null}
             >
               {isGoogleLoading ? (
@@ -243,7 +266,7 @@ export default function LoginScreen() {
               <Text style={styles.socialButtonText}>
                 {isGoogleLoading ? 'Connecting...' : 'Login With Google'}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* Join Us Link */}

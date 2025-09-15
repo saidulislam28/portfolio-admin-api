@@ -161,8 +161,9 @@ const ExamRegistrationFrom = () => {
         router.push(ROUTES.HOME as any);
         setIsSubmitting(false);
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Registration failed:", error);
+      console.error("Error details:", error.response?.data || error.message);
       alert("Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
