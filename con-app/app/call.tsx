@@ -22,31 +22,26 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { RtcSurfaceView, VideoViewSetupMode, } from 'react-native-agora';
-import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { RtcSurfaceView, VideoViewSetupMode } from 'react-native-agora';
+import EndCallConfirmationBottomSheet from '@/components/call/EndCallConfirmationBottomSheet';
 import { PACKAGE_SERVICE_TYPE } from '@/lib/constants';
 import { ROUTES } from '@/constants/app.routes';
+
 const { width, height } = Dimensions.get('window');
 
-const appointmentTitle = 'appointmentTitle'
-
+const appointmentTitle = 'appointmentTitle';
 
 export default function CallScreen() {
   useKeepAwake();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);
-  const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
   const params = useLocalSearchParams();
   const userId = params.user_id;
   const appointmentId = params.appointment_id;
   const service_type = params.service_type;
   const { setLoading } = useLoading();
 
-  // console.log("service type from call page>>", service_type)
-
-  // Bottom sheet ref
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 👈 NEW STATE
 
   const {
     isInCall,
@@ -59,7 +54,7 @@ export default function CallScreen() {
     endCall,
     isScreenSharing,
     startScreenSharing,
-    stopScreenSharing
+    stopScreenSharing,
   } = useCallStore();
 
   const {
@@ -85,13 +80,11 @@ export default function CallScreen() {
     enableSpeakerphone,
     startScreenCapture,
     stopScreenCapture,
-    startScreenShareVirtualUser
+    startScreenShareVirtualUser,
   } = useCallService();
 
   // Timer for call duration
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // console.log({ token, channelName, uid, isInCall }, token && channelName && uid && !isInCall)
 
   useEffect(() => {
     // Set call screen as active
@@ -115,58 +108,59 @@ export default function CallScreen() {
     };
   }, [token, channelName, uid, isInCall]);
 
-  useEffect(() => {
-    if (showEndCallConfirmation) {
-      bottomSheetRef.current?.expand();
-    } else {
-      bottomSheetRef.current?.close();
-    }
-  }, [showEndCallConfirmation]);
-
+  // Update handlers:
   const handleEndCallPress = () => {
-    setShowEndCallConfirmation(true);
+    setIsBottomSheetOpen(true); // 👈 Open sheet
   };
 
   const handleCancelEndCall = () => {
-    setShowEndCallConfirmation(false);
+    setIsBottomSheetOpen(false); // 👈 Close sheet
   };
 
   const handleConfirmEndCall = async () => {
-    setShowEndCallConfirmation(false);
-    await performEndCall();
+    setIsBottomSheetOpen(false); // 👈 Close first
+    await performEndCall(true);
   };
 
-  const performEndCall = async () => {
-    console.log("hitting end call")
-    setLoading(true)
+  const handleEndCallWithoutFeedback = async () => {
+    setIsBottomSheetOpen(false); // 👈 Close first
+    await performEndCall(false);
+  };
+
+  const performEndCall = async (needsFeedback: boolean) => {
+    console.log("hitting end call");
+    setLoading(true);
     try {
       await leaveChannel();
       await endCall();
       stopAudioService();
-      sendCallEndNotificationToUser(Number(appointmentId))
-      console.log("hitting end call 11")
+      sendCallEndNotificationToUser(Number(appointmentId));
+      console.log("hitting end call 11");
 
       if (service_type === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
-        return router.push({
-          pathname: ROUTES.MOCK_FEEDBACK_PAGE as any,
+        if (needsFeedback) {
+          return router.push({
+            pathname: ROUTES.MOCK_FEEDBACK_PAGE as any,
+            params: {
+              consultant_id: JSON.stringify(userId),
+              appointment: JSON.stringify({ id: appointmentId }),
+            },
+          });
+        }
+      } else if (needsFeedback) {
+        router.push({
+          pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE as any,
           params: {
             consultant_id: JSON.stringify(userId),
             appointment: JSON.stringify({ id: appointmentId }),
-          }
+          },
         });
+      } else {
+        // No feedback path
+        router.back();
       }
 
-      router.push({
-        pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE as any,
-        params: {
-          consultant_id: JSON.stringify(userId),
-          appointment: JSON.stringify({ id: appointmentId }),
-        }
-      });
-
-      console.log("hitting end call 2")
-
-
+      console.log("hitting end call 2");
     } catch (error) {
       console.error('Error ending call:', error);
       router.back();
@@ -178,24 +172,8 @@ export default function CallScreen() {
     }
   };
 
-
-  // Auto-hide controls
-  //   useEffect(() => {
-  //     if (showControls) {
-  //       if (hideControlsTimeout.current) {
-  //         clearTimeout(hideControlsTimeout.current);
-  //       }
-  //       hideControlsTimeout.current = setTimeout(() => {
-  //         setShowControls(false);
-  //       }, 5000);
-  //     }
-
-  //     return () => {
-  //       if (hideControlsTimeout.current) {
-  //         clearTimeout(hideControlsTimeout.current);
-  //       }
-  //     };
-  //   }, [showControls]);
+  // Auto-hide controls (commented out as per original)
+  // useEffect(() => { ... }, [showControls]);
 
   const checkAndRequestPermissions = async () => {
     if (Platform.OS === 'android') {
@@ -218,29 +196,10 @@ export default function CallScreen() {
   };
 
   const checkAndRequestScreenSharePermissions = async () => {
-    // if (Platform.OS === 'android') {
-    //   try {
-    //     // For Android API level 29 and above, we need to handle media projection
-    //     const grants = await PermissionsAndroid.requestMultiple([
-    //       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-    //       PermissionsAndroid.PERMISSIONS.FOREGROUND_SERVICE,
-    //     ]);
-
-    //     return (
-    //       grants['android.permission.RECORD_AUDIO'] === 'granted' &&
-    //       grants['android.permission.FOREGROUND_SERVICE'] === 'granted'
-    //     );
-    //   } catch (err) {
-    //     console.warn('Screen share permission error:', err);
-    //     return false;
-    //   }
-    // }
-    // iOS handles screen recording permissions through the system
     return true;
   };
 
   const handleJoinChannel = async () => {
-    // console.log('handleJoinChannel')
     if (!token || !channelName || uid === null) {
       Alert.alert('Error', 'Missing call information');
       return;
@@ -275,7 +234,7 @@ export default function CallScreen() {
   };
 
   const handleEndCall = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       await leaveChannel();
       await endCall();
@@ -327,7 +286,6 @@ export default function CallScreen() {
   const handleToggleScreenShare = async () => {
     try {
       if (!isScreenSharing) {
-        // Start screen sharing
         const hasPermissions = await checkAndRequestScreenSharePermissions();
         if (!hasPermissions) {
           Alert.alert('Permission Required', 'Screen recording permission is required for screen sharing.');
@@ -344,13 +302,6 @@ export default function CallScreen() {
                 text: 'Start now',
                 onPress: async () => {
                   try {
-                    // const userId = 100;
-                    // const response = await callApi.getAgoraToken({
-                    //   channelName: channelName as string,
-                    //   userId,
-                    // });
-                    // const { token } = response;
-                    // await startScreenShareVirtualUser(token, channelName as string, userId)
                     await startScreenCapture();
                     await startScreenSharing();
                   } catch (error) {
@@ -362,7 +313,6 @@ export default function CallScreen() {
             ]
           );
         } else {
-          // iOS
           try {
             await startScreenCapture();
             await startScreenSharing();
@@ -372,7 +322,6 @@ export default function CallScreen() {
           }
         }
       } else {
-        // Stop screen sharing
         await stopScreenCapture();
         await stopScreenSharing();
       }
@@ -393,7 +342,6 @@ export default function CallScreen() {
 
   // Function to get the current user's video uid
   const getLocalVideoUid = () => {
-    //@ts-ignore
     return isScreenSharing ? uid + 1 : 0; // Use different uid for screen share
   };
 
@@ -402,37 +350,28 @@ export default function CallScreen() {
     return !isVideoMuted || isScreenSharing;
   };
 
-
   const pan = useRef(new Animated.ValueXY({ x: width - 140, y: 90 })).current;
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
-        //@ts-ignore
         pan.setOffset({ x: pan.x._value, y: pan.y._value });
         pan.setValue({ x: 0, y: 0 });
       },
       onPanResponderMove: (e, gestureState) => {
-        //@ts-ignore
         let newX = pan.x._offset + gestureState.dx;
-        //@ts-ignore
         let newY = pan.y._offset + gestureState.dy;
 
-        // Define boundaries
         const minX = 0;
         const minY = 0;
-        const maxX = width - 120;  // 120 = video width
-        const maxY = height - 160 - 80; // 160 = video height, 80 = safe space for bottom UI
+        const maxX = width - 120;
+        const maxY = height - 160 - 80;
 
-        // Clamp values
         newX = Math.max(minX, Math.min(newX, maxX));
         newY = Math.max(minY, Math.min(newY, maxY));
 
-        // Update position
-        //@ts-ignore
         pan.x.setValue(newX - pan.x._offset);
-        //@ts-ignore
         pan.y.setValue(newY - pan.y._offset);
       },
       onPanResponderRelease: () => {
@@ -440,8 +379,6 @@ export default function CallScreen() {
       },
     })
   ).current;
-
-
 
   if (isConnecting) {
     return (
@@ -457,7 +394,7 @@ export default function CallScreen() {
     );
   }
 
-  console.log('params:', userId, appointmentId, service_type)
+  console.log('params:', userId, appointmentId, service_type);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
@@ -466,18 +403,17 @@ export default function CallScreen() {
         onPress={handleScreenTap}
         activeOpacity={1}
       >
-        {/* Remote video - Show remote participant's video */}
+        {/* Remote video */}
         {participants.length > 0 && (
           <RtcSurfaceView
             style={styles.remoteVideo}
             canvas={{
-              //@ts-ignore
               uid: participants[0].uid,
             }}
           />
         )}
 
-        {/* Local video - Always show when video is enabled or screen sharing */}
+        {/* Local video */}
         {shouldShowLocalVideo() && (
           <Animated.View
             {...panResponder.panHandlers}
@@ -496,7 +432,6 @@ export default function CallScreen() {
               }}
               zOrderMediaOverlay
             />
-            {/* Screen sharing indicator */}
             {isScreenSharing && (
               <View style={styles.screenShareIndicator}>
                 <Ionicons name="desktop" size={12} color="#FFFFFF" />
@@ -566,7 +501,7 @@ export default function CallScreen() {
 
               <TouchableOpacity
                 style={styles.endCallButton}
-                onPress={handleEndCallPress} // Changed to show confirmation
+                onPress={handleEndCallPress} // Now triggers bottom sheet via ref
               >
                 <Ionicons name="call" size={28} color="#FFFFFF" />
               </TouchableOpacity>
@@ -618,47 +553,14 @@ export default function CallScreen() {
         )}
       </TouchableOpacity>
 
-      {/* End Call Confirmation Bottom Sheet */}
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={['40%']}
-        enablePanDownToClose
-        onClose={() => setShowEndCallConfirmation(false)}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            disappearsOnIndex={-1}
-            appearsOnIndex={0}
-          />
-        )}
-      >
-        <BottomSheetView style={styles.bottomSheetContent}>
-          <View style={styles.bottomSheetHeader}>
-            <Ionicons name="call" size={32} color="#EF4444" />
-            <Text style={styles.bottomSheetTitle}>End Call?</Text>
-            <Text style={styles.bottomSheetDescription}>
-              Are you sure you want to end this call? You'll be able to provide feedback about your experience.
-            </Text>
-          </View>
+      {/* Moved to separate component */}
+      <EndCallConfirmationBottomSheet
+        index={isBottomSheetOpen ? 0 : -1} 
+        onEndCallWithFeedback={handleConfirmEndCall}
+        onEndCallWithoutFeedback={handleEndCallWithoutFeedback}
+        onCancel={handleCancelEndCall}
+      />
 
-          <View style={styles.bottomSheetButtons}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={handleCancelEndCall}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.confirmButton}
-              onPress={handleConfirmEndCall}
-            >
-              <Text style={styles.confirmButtonText}>End Call & Provide Feedback</Text>
-            </TouchableOpacity>
-          </View>
-        </BottomSheetView>
-      </BottomSheet>
     </SafeAreaView>
   );
 }
@@ -705,7 +607,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: '#FFFFFF',
-    zIndex: 100
+    zIndex: 100,
   },
   localVideoFullscreen: {
     top: 0,
@@ -812,55 +714,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#EF4444',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  bottomSheetContent: {
-    flex: 1,
-    padding: 24,
-  },
-  bottomSheetHeader: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  bottomSheetTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  bottomSheetDescription: {
-    fontSize: 16,
-    color: '#6B7280',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  bottomSheetButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  cancelButton: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    color: '#374151',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  confirmButton: {
-    flex: 2,
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: '#EF4444',
-    alignItems: 'center',
-  },
-  confirmButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 16,
   },
 });
