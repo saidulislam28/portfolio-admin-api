@@ -31,10 +31,15 @@ const SslcommerzPaymentScreen = () => {
     // REMAIN ROUTES
 
     if (url.includes(`${PAYMENT_REDIRECT_URI}?paystate=success`)) {
-      router.replace(replacePlaceholders(ROUTES.PAYMENT_SUCCESS, {
-          order_id,
-          service_type
-        }));
+      router.replace(
+        {
+          pathname: ROUTES.PAYMENT_SUCCESS as any,
+          params: {
+            order_id: order_id,
+            service_type: service_type
+          }
+        }
+      );
     } else if (url.includes(`${PAYMENT_REDIRECT_URI}?paystate=fail`)) {
       Alert.alert(
         "Payment Failed",
@@ -165,8 +170,8 @@ const SslcommerzPaymentScreen = () => {
         mixedContentMode="compatibility"
         // Security settings
         allowsBackForwardNavigationGestures={false}
-        allowsLinkPreview={false}   
-      />    
+        allowsLinkPreview={false}
+      />
 
       {/* Payment Info Footer */}
       <View style={styles.footer}>

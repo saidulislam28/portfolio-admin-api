@@ -157,20 +157,26 @@ export default function CheckoutScreen() {
         // REMAIN ROUTES
         if (formData.isCOD) {
           return router.push(
-            replacePlaceholders(ROUTES.PAYMENT_SUCCESS, {
-              service_type: PACKAGE_SERVICE_TYPE.book_purchase,
-              order_id: responseData?.order_id
-            }) as any
+            {
+              pathname: ROUTES.PAYMENT_SUCCESS as any,
+              params: {
+                service_type: PACKAGE_SERVICE_TYPE.book_purchase,
+                order_id: responseData?.order_id
+              }
+            }
           );
         }
-
         router.push(
-          replacePlaceholders(ROUTES.SSL_PAYMENT, {
-            payment_url: responseData?.payment_url,
-            service_type: PACKAGE_SERVICE_TYPE.book_purchase,
-            amount: responseData?.total_amount,
-            order_id: responseData.order_id
-          }) as any
+          {
+            pathname: ROUTES.SSL_PAYMENT as any,
+            params: {
+              payment_url: responseData?.payment_url,
+              service_type: PACKAGE_SERVICE_TYPE.book_purchase,
+              amount: responseData?.total_amount,
+              order_id: responseData.order_id
+            }
+
+          }
         );
         // `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.book_purchase}&amount=${responseData?.total_amount}`
       } else {

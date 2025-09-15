@@ -114,7 +114,14 @@ export const useNotifications = () => {
                 avatar: callInfo?.consultant_image,
             }
         );
-        router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: callInfo?.consultant_id }) as any)
+        router.push(
+            {
+                pathname: ROUTES.CALL_CONSULTANT as any,
+                params: {
+                    consultant_id: callInfo?.consultant_id
+                }
+            }
+        )
     }
 
     useEffect(() => {

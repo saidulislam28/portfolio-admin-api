@@ -17,7 +17,7 @@ export default function PaymentScreen() {
   const router = useRouter();
   const params: any = useLocalSearchParams();
   const { user } = useAuth();
-  
+
   // State
   const [processing, setProcessing] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('stripe');
@@ -37,11 +37,11 @@ export default function PaymentScreen() {
     service_type: params?.service_type,
   }), [params]);
 
-  const selectedSlots = useMemo(() => 
+  const selectedSlots = useMemo(() =>
     params?.selectedSlots ? JSON.parse(params.selectedSlots) : []
-  , [params?.selectedSlots]);
+    , [params?.selectedSlots]);
 
-  const appoinmentData = useMemo(() => 
+  const appoinmentData = useMemo(() =>
     selectedSlots.map((slot: any) => {
       const [hourMin, ampm] = slot.slot.time.split(' ');
       let [hour, minute] = hourMin.split(':').map(Number);
@@ -62,7 +62,7 @@ export default function PaymentScreen() {
         notes: 'IELTS Speaking Test'
       };
     })
-  , [selectedSlots]);
+    , [selectedSlots]);
 
   const totals = useMemo(() => {
     const subtotal = packageData.price;
@@ -167,12 +167,17 @@ export default function PaymentScreen() {
       const responseData = response?.data?.data;
 
       if (response?.data?.success) {
-        router.push(replacePlaceholders(ROUTES.SSL_PAYMENT, { 
-          payment_url: responseData?.payment_url, 
-          service_type: params?.service_type, 
-          amount: responseData?.total_amount,
-          order_id: responseData.order_id
-        }) as any);
+        router.push(
+          {
+            pathname: ROUTES.SSL_PAYMENT as any,
+            params: {
+              payment_url: responseData?.payment_url,
+              service_type: params?.service_type,
+              amount: responseData?.total_amount,
+              order_id: responseData.order_id
+            }
+          }
+        );
       }
     } catch (error: any) {
       console.log('Full error:', error);
