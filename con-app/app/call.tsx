@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { sendCallEndNotificationToUser, USER_ROLE } from '@sm/common';
 import { useKeepAwake } from 'expo-keep-awake';
 import { router } from 'expo-router';
-import { useSearchParams } from 'expo-router/build/hooks';
+import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -37,9 +37,10 @@ export default function CallScreen() {
   const [showControls, setShowControls] = useState(true);
   const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
-  const userId = useSearchParams().get("user_id");
-  const appointmentId = useSearchParams().get("appointment_id");
-  const service_type = useSearchParams().get("service_type");
+  const params = useLocalSearchParams();
+  const userId = params.user_id;
+  const appointmentId = params.appointment_id;
+  const service_type = params.service_type;
   const { setLoading } = useLoading();
 
   // console.log("service type from call page>>", service_type)
@@ -456,7 +457,7 @@ export default function CallScreen() {
     );
   }
 
-  // console.log('states:', participants)
+  console.log('params:', userId, appointmentId, service_type)
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />

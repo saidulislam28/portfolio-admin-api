@@ -14,8 +14,7 @@ import { startAudioService } from "@/services/AudioService";
 import { getStatusColor } from "@/utility/statusColor";
 import { useCallStore } from "@/zustand/callStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { API_CONSULTANT, Get, Patch, replacePlaceholders, USER_ROLE } from "@sm/common";
-import { sendCallStartNotificationToUser } from "@sm/common/src/api/callNotifications";
+import { API_CONSULTANT, Get, Patch, replacePlaceholders, sendCallStartNotificationToUser } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -274,7 +273,11 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
       await sendCallStartNotificationToUser(appointment.id);
       startAudioService();
-      router.push(replacePlaceholders(ROUTES.CALL_USER, { id: appointment?.User?.id as any, appointment_id: appointment?.id as any, service_type: appointment?.Order?.service_type as any }) as any);
+      router.push(replacePlaceholders(ROUTES.CALL_USER, 
+        { id: appointment?.User?.id as any,
+           appointment_id: appointment?.id as any,
+            service_type: appointment?.Order?.service_type as any
+          }) as any);
     } catch (error: any) {
       console.error("Failed to start call:", error);
       console.error("Failed call:", error);
