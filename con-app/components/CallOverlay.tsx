@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { RtcSurfaceView, VideoViewSetupMode } from 'react-native-agora';
 
-
 interface CallOverlayProps {
   backgroundColor?: string;
   textColor?: string;
@@ -27,14 +26,15 @@ export const CallOverlay: React.FC<CallOverlayProps> = ({
   const path = usePathname();
   const showCallOverlay = useCallStore(state => state.showCallOverlay);
   // const showCallOverlay = true;
-  const { callDuration, otherParticipant, } = useCallInfo();
+  const { callDuration, otherParticipant } = useCallInfo();
   const { setCallScreenActive, endCall, participants } = useCallStore();
-  const {
-    leaveChannel,
-  } = useCallService();
+  const { leaveChannel } = useCallService();
 
   const windowDimensions = Dimensions.get('window');
-  const [containerLayout, setContainerLayout] = React.useState({ width: 0, height: 0 });
+  const [containerLayout, setContainerLayout] = React.useState({
+    width: 0,
+    height: 0,
+  });
   const [position, setPosition] = React.useState({ x: 20, y: 40 }); // Initial position state
   const pan = React.useRef(new Animated.ValueXY()).current;
 
@@ -46,26 +46,25 @@ export const CallOverlay: React.FC<CallOverlayProps> = ({
   const panResponder = React.useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [null, { dx: pan.x, dy: pan.y }],
-        { useNativeDriver: false }
-      ),
+      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
+        useNativeDriver: false,
+      }),
       onPanResponderRelease: (e, gesture) => {
         const { width, height } = containerLayout;
         const screenWidth = windowDimensions.width;
         const screenHeight = windowDimensions.height;
 
-        console.log('gesture', gesture.moveX, gesture.moveY)
+        console.log('gesture', gesture.moveX, gesture.moveY);
         let newX = gesture.moveX;
         let newY = gesture.moveY;
 
-        console.log('new', newX, newY)
+        console.log('new', newX, newY);
 
         // Boundary checks with 20px padding
         newX = Math.max(20, Math.min(newX, screenWidth - width - 20));
         newY = Math.max(20, Math.min(newY, screenHeight - height - 20));
 
-        console.log('new final', newX, newY)
+        console.log('new final', newX, newY);
         // Update position state
         setPosition({ x: newX, y: newY });
 
@@ -91,7 +90,7 @@ export const CallOverlay: React.FC<CallOverlayProps> = ({
     endCall();
   };
 
-  if (!showCallOverlay || path === "/call") return null;
+  if (!showCallOverlay || path === '/call') return null;
 
   return (
     <Animated.View
@@ -105,30 +104,29 @@ export const CallOverlay: React.FC<CallOverlayProps> = ({
                 inputRange: [-windowDimensions.width, windowDimensions.width],
                 outputRange: [-windowDimensions.width, windowDimensions.width],
                 extrapolate: 'clamp',
-              })
+              }),
             },
             {
               translateY: pan.y.interpolate({
                 inputRange: [-windowDimensions.height, windowDimensions.height],
-                outputRange: [-windowDimensions.height, windowDimensions.height],
+                outputRange: [
+                  -windowDimensions.height,
+                  windowDimensions.height,
+                ],
                 extrapolate: 'clamp',
-              })
+              }),
             },
           ],
           left: position.x,
           top: position.y,
           borderRadius: 12,
           height: 150,
-          width: 100
+          width: 100,
         },
       ]}
-    
     >
       <View style={styles.content}>
-        <TouchableOpacity
-          style={styles.callInfo}
-          activeOpacity={0.8}
-        >
+        <TouchableOpacity style={styles.callInfo} activeOpacity={0.8}>
           {/* Empty User Video Call */}
           <RtcSurfaceView
             style={styles.remoteVideo}
@@ -141,30 +139,31 @@ export const CallOverlay: React.FC<CallOverlayProps> = ({
           {/* Draggable Overlay */}
           <View
             style={{
-              width: "100%",
-              height: "100%",
-              backgroundColor: "transparent",
-              position: "absolute",
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'transparent',
+              position: 'absolute',
               zIndex: 0,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-            onLayout={(event) => {
+            onLayout={event => {
               const { width, height } = event.nativeEvent.layout;
               setContainerLayout({ width, height });
             }}
             {...panResponder.panHandlers}
           >
-            <TouchableOpacity
-              onPress={handleReturnToCall}
-            >
-              <Text style={{
-                color: "#fff"
-              }}>Back to call</Text>
+            <TouchableOpacity onPress={handleReturnToCall}>
+              <Text
+                style={{
+                  color: '#fff',
+                }}
+              >
+                Back to call
+              </Text>
             </TouchableOpacity>
           </View>
-         
         </TouchableOpacity>
       </View>
     </Animated.View>
@@ -182,16 +181,16 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   content: {
-    position: "relative",
+    position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
-    height: "100%",
+    height: '100%',
   },
   callInfo: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 0
+    padding: 0,
   },
   callDetails: {
     flex: 1,
@@ -237,8 +236,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 8,
     left: '50%',
-    transform: [{ translateX: "-50%" }],
-    zIndex: 1
+    transform: [{ translateX: '-50%' }],
+    zIndex: 1,
   },
   remoteVideo: {
     flex: 1,
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
 });
 
 // Animated version for smoother transitions
-export const AnimatedCallOverlay: React.FC<CallOverlayProps> = (props) => {
+export const AnimatedCallOverlay: React.FC<CallOverlayProps> = props => {
   const { showCallOverlay } = useCallStatus();
   const animatedValue = React.useRef(new Animated.Value(0)).current;
 
@@ -267,13 +266,15 @@ export const AnimatedCallOverlay: React.FC<CallOverlayProps> = (props) => {
       style={[
         {
           opacity: animatedValue,
-          transform: [{
-            translateY: animatedValue.interpolate({
-              inputRange: [0, 1],
-              outputRange: [-100, 0],
-            })
-          }]
-        }
+          transform: [
+            {
+              translateY: animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [-100, 0],
+              }),
+            },
+          ],
+        },
       ]}
     >
       <CallOverlay {...props} />

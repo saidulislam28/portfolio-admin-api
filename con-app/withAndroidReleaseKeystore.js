@@ -36,9 +36,14 @@ function applyReleaseKeystore(buildGradle, params) {
 const withAndroidReleaseKeystore = (config, params) => {
   return withAppBuildGradle(config, config => {
     if (config.modResults.language === 'groovy') {
-      config.modResults.contents = applyReleaseKeystore(config.modResults.contents, params);
+      config.modResults.contents = applyReleaseKeystore(
+        config.modResults.contents,
+        params
+      );
     } else {
-      throw new Error('Cannot configure release keystore because the build.gradle is not groovy');
+      throw new Error(
+        'Cannot configure release keystore because the build.gradle is not groovy'
+      );
     }
     return config;
   });

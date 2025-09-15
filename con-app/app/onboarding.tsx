@@ -1,11 +1,11 @@
 // app/onboarding.tsx
-import React from "react";
-import { View, StyleSheet, StatusBar } from "react-native";
-import { router } from "expo-router";
-import { useOnboardingCheck } from "@/hooks/useOnboardingCheck";
-import { BACKGROUND_COLOR, PRIMARY_COLOR } from "@/lib/constants";
-import { Platform } from "react-native";
-import { ROUTES } from "@/constants/app.routes";
+import React from 'react';
+import { View, StyleSheet, StatusBar } from 'react-native';
+import { router } from 'expo-router';
+import { useOnboardingCheck } from '@/hooks/useOnboardingCheck';
+import { BACKGROUND_COLOR, PRIMARY_COLOR } from '@/lib/constants';
+import { Platform } from 'react-native';
+import { ROUTES } from '@/constants/app.routes';
 export default function OnboardingScreen() {
   const { markOnboardingComplete } = useOnboardingCheck();
 
@@ -16,7 +16,7 @@ export default function OnboardingScreen() {
       // Navigate back to let the layout handle auth flow
       router.replace(ROUTES.HOME);
     } catch (error) {
-      console.error("Error saving onboarding completion:", error);
+      console.error('Error saving onboarding completion:', error);
       router.replace(ROUTES.HOME); // Navigate anyway
     }
   };
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: '#fff',
     backgroundColor: BACKGROUND_COLOR,
-    position: "relative",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    position: 'relative',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingHorizontal: 16,
   },
   onboardingContainer: {

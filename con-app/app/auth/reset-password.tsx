@@ -35,26 +35,30 @@ export default function ResetPasswordScreen() {
     setErrors({}); // Clear previous errors
 
     const email_or_phone = await AsyncStorage.getItem('email');
-    
+
     // Validation
-    const newErrors: { otp?: string; password?: string; confirmPassword?: string } = {};
-    
+    const newErrors: {
+      otp?: string;
+      password?: string;
+      confirmPassword?: string;
+    } = {};
+
     if (!otp) {
-      newErrors.otp = "OTP is required";
+      newErrors.otp = 'OTP is required';
     } else if (otp.length !== 6) {
-      newErrors.otp = "OTP must be 6 digits";
+      newErrors.otp = 'OTP must be 6 digits';
     }
-    
+
     if (!password) {
-      newErrors.password = "Password is required";
+      newErrors.password = 'Password is required';
     } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+      newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     if (!confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -67,7 +71,7 @@ export default function ResetPasswordScreen() {
       const result = await Post(API_CONSULTANT.reset, {
         otp: Number(otp),
         password,
-        email_or_phone
+        email_or_phone,
       });
 
       if (!result.success) {
@@ -75,11 +79,10 @@ export default function ResetPasswordScreen() {
         setLoading(false);
         return;
       }
-      
+
       await AsyncStorage.removeItem('email');
       login(result.data);
       router.push(ROUTES.HOME);
-
     } catch (error) {
       setErrors({ otp: error?.message ?? 'An unexpected error occurred' });
       setLoading(false);
@@ -102,9 +105,7 @@ export default function ResetPasswordScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Reset Password</Text>
-        <Text style={styles.subtitle}>
-          Enter your OTP and new password
-        </Text>
+        <Text style={styles.subtitle}>Enter your OTP and new password</Text>
 
         {/* OTP Input */}
         <InputField
@@ -115,7 +116,7 @@ export default function ResetPasswordScreen() {
           keyboardType="numeric"
           fieldKey="otp"
           focusedField={focusedField}
-          onFocus={() => handleFocus("otp")}
+          onFocus={() => handleFocus('otp')}
           onBlur={handleBlur}
           placeholder="Enter OTP"
           maxLength={6}
@@ -131,7 +132,7 @@ export default function ResetPasswordScreen() {
           isPassword={true}
           fieldKey="password"
           focusedField={focusedField}
-          onFocus={() => handleFocus("password")}
+          onFocus={() => handleFocus('password')}
           onBlur={handleBlur}
           placeholder="Enter New Password"
           testID="password-input"
@@ -146,15 +147,15 @@ export default function ResetPasswordScreen() {
           isPassword={true}
           fieldKey="confirmPassword"
           focusedField={focusedField}
-          onFocus={() => handleFocus("confirmPassword")}
+          onFocus={() => handleFocus('confirmPassword')}
           onBlur={handleBlur}
           placeholder="Confirm New Password"
           testID="confirm-password-input"
         />
 
         {/* Reset Password Button */}
-        <TouchableOpacity 
-          style={styles.resetButton} 
+        <TouchableOpacity
+          style={styles.resetButton}
           onPress={handleResetPassword}
           disabled={loading}
         >
@@ -164,9 +165,13 @@ export default function ResetPasswordScreen() {
         </TouchableOpacity>
 
         {/* Back to Login Link */}
-        <TouchableOpacity onPress={() => router.push(ROUTES.LOGIN)} style={styles.backToLogin}>
+        <TouchableOpacity
+          onPress={() => router.push(ROUTES.LOGIN)}
+          style={styles.backToLogin}
+        >
           <Text style={styles.backToLoginText}>
-            Remember your password? <Text style={styles.loginLink}>Back to Login</Text>
+            Remember your password?{' '}
+            <Text style={styles.loginLink}>Back to Login</Text>
           </Text>
         </TouchableOpacity>
       </ScrollView>

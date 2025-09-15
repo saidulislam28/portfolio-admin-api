@@ -1,22 +1,28 @@
-import ConsultationNotesCard from "@/components/appointment-details/ConsultantNoteModal";
-import StatusModal from "@/components/appointment-details/statusModal";
-import { VideoCallButton } from "@/components/appointment-details/video-call-button";
-import { BaseButton } from "@/components/BaseButton";
-import { ROUTES } from "@/constants/app.routes";
-import { useAuth } from "@/context/useAuth";
+import ConsultationNotesCard from '@/components/appointment-details/ConsultantNoteModal';
+import StatusModal from '@/components/appointment-details/statusModal';
+import { VideoCallButton } from '@/components/appointment-details/video-call-button';
+import { BaseButton } from '@/components/BaseButton';
+import { ROUTES } from '@/constants/app.routes';
+import { useAuth } from '@/context/useAuth';
 import {
   PACKAGE_SERVICE_TYPE,
   PRIMARY_COLOR,
   SECONDARY_COLOR,
-} from "@/lib/constants";
-import { callService } from "@/services/AgoraCallService";
-import { startAudioService } from "@/services/AudioService";
-import { getStatusColor } from "@/utility/statusColor";
-import { useCallStore } from "@/zustand/callStore";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { API_CONSULTANT, Get, Patch, replacePlaceholders, sendCallStartNotificationToUser } from "@sm/common";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+} from '@/lib/constants';
+import { callService } from '@/services/AgoraCallService';
+import { startAudioService } from '@/services/AudioService';
+import { getStatusColor } from '@/utility/statusColor';
+import { useCallStore } from '@/zustand/callStore';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import {
+  API_CONSULTANT,
+  Get,
+  Patch,
+  replacePlaceholders,
+  sendCallStartNotificationToUser,
+} from '@sm/common';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -30,7 +36,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
 // Define types
 export interface User {
@@ -91,16 +97,16 @@ export interface AppointmentDetailPageProps {
 
 const BOOKING_STATUS = {
   // INITIATED: "INITIATED",
-  PENDING: "PENDING",
-  CONFIRMED: "CONFIRMED",
-  CANCELLED: "CANCELLED",
-  COMPLETED: "COMPLETED",
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED',
+  COMPLETED: 'COMPLETED',
   // NO_SHOW: "NO_SHOW",
 } as const;
 
 type BookingStatus = (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS];
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 const isTablet = width >= 600;
 // Constants that depend on tablet status
 const CARD_PADDING = isTablet ? 24 : 16;
@@ -129,7 +135,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   const isTablet = calculatedIsTablet;
 
   const [isLoading, setIsLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState("");
+  const [timeLeft, setTimeLeft] = useState('');
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<BookingStatus>(
@@ -150,7 +156,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         const parsed = JSON.parse(params.appointment as string);
         return parsed.id;
       } catch (err) {
-        console.error("Failed to parse appointment:", err);
+        console.error('Failed to parse appointment:', err);
         return null;
       }
     }
@@ -160,7 +166,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   // console.log("apponintment params>>>>", PAppointment)
 
   const statusOptions = Object.values(BOOKING_STATUS)?.filter(
-    (i) => i !== appointment?.status
+    i => i !== appointment?.status
   ) as BookingStatus[];
 
   const appointmentId = getAppointmentId();
@@ -178,19 +184,18 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     try {
       setRefreshing(true);
       const response = await Get(
-        API_CONSULTANT.appointment_details.replace("{id}", appointmentId)
+        API_CONSULTANT.appointment_details.replace('{id}', appointmentId)
       );
 
       // console.log("fetching appointment details from api:", response?.data)
 
       if (response?.data) {
-
         setAppointment(response.data);
       } else {
-        Alert.alert("Error", "Failed to fetch appointment details");
+        Alert.alert('Error', 'Failed to fetch appointment details');
       }
     } catch (error: any) {
-      Alert.alert("Error", error?.message ?? "An unexpected error occurred");
+      Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
       setRefreshing(false);
@@ -234,8 +239,8 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
         setIsStatusModalVisible(false);
       }
     } catch (error: any) {
-      console.log("error>>", error.message);
-      Alert.alert("Error", error?.message ?? "An unexpected error occurred");
+      console.log('error>>', error.message);
+      Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
     } finally {
       setStatusCLoading(false);
     }
@@ -243,18 +248,21 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   };
 
-  console.log("appointment details from details page>>>>>>>", appointment?.Order?.service_type)
+  console.log(
+    'appointment details from details page>>>>>>>',
+    appointment?.Order?.service_type
+  );
 
   const startVideoCall = async () => {
-    console.log("=== button pressed ===", appointment);
+    console.log('=== button pressed ===', appointment);
 
     try {
       if (onCallStart) {
@@ -265,58 +273,64 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
       // Default implementation
       await callService.initialize();
-      await startCall(appointment?.token as any, Number(appointment?.consultant_id), {
-        id: Number(appointment?.User?.id) || 0,
-        name: appointment?.User?.full_name || "",
-        avatar: appointment?.User?.profile_image,
-      } as any);
+      await startCall(
+        appointment?.token as any,
+        Number(appointment?.consultant_id),
+        {
+          id: Number(appointment?.User?.id) || 0,
+          name: appointment?.User?.full_name || '',
+          avatar: appointment?.User?.profile_image,
+        } as any
+      );
 
       await sendCallStartNotificationToUser(appointment.id);
       startAudioService();
-      router.push(replacePlaceholders(ROUTES.CALL_USER, 
-        { id: appointment?.User?.id as any,
-           appointment_id: appointment?.id as any,
-            service_type: appointment?.Order?.service_type as any
-          }) as any);
+      router.push(
+        replacePlaceholders(ROUTES.CALL_USER, {
+          id: appointment?.User?.id as any,
+          appointment_id: appointment?.id as any,
+          service_type: appointment?.Order?.service_type as any,
+        }) as any
+      );
     } catch (error: any) {
-      console.error("Failed to start call:", error);
-      console.error("Failed call:", error);
-      console.error("Error details:", error.response?.data || error.message);
-      Alert.alert("Error", error.message || "Could not update profile");
+      console.error('Failed to start call:', error);
+      console.error('Failed call:', error);
+      console.error('Error details:', error.response?.data || error.message);
+      Alert.alert('Error', error.message || 'Could not update profile');
       Alert.alert(
-        "Call Failed",
-        "Unable to start the video call. Please try again.",
-        [{ text: "OK" }]
+        'Call Failed',
+        'Unable to start the video call. Please try again.',
+        [{ text: 'OK' }]
       );
     }
   };
 
   const formatTime = (dateString: any) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
       hour12: true,
     });
   };
 
   const getStatusIcon = (status: string) => {
     switch (status?.toLowerCase()) {
-      case "confirmed":
-        return "checkmark-circle";
-      case "pending":
-        return "time";
-      case "cancelled":
-        return "close-circle";
-      case "completed":
-        return "checkmark-done-circle";
+      case 'confirmed':
+        return 'checkmark-circle';
+      case 'pending':
+        return 'time';
+      case 'cancelled':
+        return 'close-circle';
+      case 'completed':
+        return 'checkmark-done-circle';
       default:
-        return "help-circle";
+        return 'help-circle';
     }
   };
 
   const handleSubmitFeedback = () => {
-    console.log("feebdback click")
+    console.log('feebdback click');
     if (!appointment) return;
 
     if (
@@ -341,7 +355,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   };
 
   useEffect(() => {
-    console.log("use effect 1");
+    console.log('use effect 1');
     const updateCountdown = () => {
       if (!appointment?.start_at) return;
 
@@ -350,7 +364,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       const timeDiff = appointmentTime.getTime() - now.getTime();
 
       if (timeDiff <= 0) {
-        setTimeLeft("Starting now!");
+        setTimeLeft('Starting now!');
       } else {
         const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
         const hours = Math.floor(
@@ -406,7 +420,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       //   handleFetchAppointment();
       // }
     } catch (error: any) {
-      Alert.alert("Error", error?.message ?? "An unexpected error occurred");
+      Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
     } finally {
       setStatusCLoading(false);
     }
@@ -501,10 +515,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
             </View>
             <TouchableOpacity
               onPress={handleStatusChange}
-              style={[
-                styles.statusButton,
-                { backgroundColor: PRIMARY_COLOR },
-              ]}
+              style={[styles.statusButton, { backgroundColor: PRIMARY_COLOR }]}
               activeOpacity={0.7}
             >
               <Text style={styles.changeStatusText}>Change Status</Text>
@@ -535,7 +546,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
               source={{
                 uri:
                   appointment?.User?.profile_image ||
-                  "https://avatar.iran.liara.run/public",
+                  'https://avatar.iran.liara.run/public',
               }}
               style={[
                 styles.profileImage,
@@ -561,7 +572,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
                 )}
               </View>
               <Text style={styles.clientLevel}>
-                {appointment?.User?.expected_level || "Above 7"} Level
+                {appointment?.User?.expected_level || 'Above 7'} Level
               </Text>
             </View>
           </View>
@@ -643,7 +654,7 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
                   style={[
                     styles.scheduleValue,
                     {
-                      color: "#EF4444",
+                      color: '#EF4444',
                       fontSize: isTablet ? FONT_SIZE_MEDIUM : 14,
                     },
                   ]}
@@ -704,20 +715,20 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    position: "relative",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: '#fff',
+    position: 'relative',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingHorizontal: isTablet ? 24 : 16,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: isTablet ? 24 : 16,
     paddingVertical: isTablet ? 16 : 12,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     elevation: 2,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -727,50 +738,50 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: isTablet ? FONT_SIZE_LARGE + 4 : FONT_SIZE_LARGE,
-    fontWeight: "600",
-    color: "#1F2937",
+    fontWeight: '600',
+    color: '#1F2937',
   },
   appointmentIdContainer: {
     minWidth: isTablet ? 120 : 80,
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
   },
   appointmentId: {
     fontSize: isTablet ? FONT_SIZE_SMALL : 14,
-    color: "#6B7280",
-    fontWeight: "500",
+    color: '#6B7280',
+    fontWeight: '500',
   },
   content: {
     flex: 1,
     paddingHorizontal: isTablet ? 8 : 0,
   },
   statusCard: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: CARD_PADDING,
     marginTop: isTablet ? 24 : 16,
     elevation: 2,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   statusHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   statusBadge: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: isTablet ? 16 : 12,
     paddingVertical: isTablet ? 10 : 6,
     borderRadius: 20,
     gap: 8,
   },
   statusText: {
-    color: "white",
+    color: 'white',
     fontSize: isTablet ? FONT_SIZE_SMALL : 12,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   statusButton: {
     backgroundColor: PRIMARY_COLOR,
@@ -778,89 +789,89 @@ const styles = StyleSheet.create({
     paddingVertical: isTablet ? 12 : 8,
     borderRadius: 20,
     minWidth: isTablet ? 160 : 120,
-    alignItems: "center",
+    alignItems: 'center',
   },
   changeStatusText: {
     fontSize: isTablet ? FONT_SIZE_SMALL : 12,
-    fontWeight: "600",
-    color: "#fff",
+    fontWeight: '600',
+    color: '#fff',
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: CARD_PADDING,
     marginTop: isTablet ? 20 : 12,
     elevation: 2,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: isTablet ? 20 : 16,
     gap: 12,
   },
   cardTitle: {
     fontSize: isTablet ? FONT_SIZE_LARGE : 16,
-    fontWeight: "600",
-    color: "#1F2937",
+    fontWeight: '600',
+    color: '#1F2937',
   },
   clientInfo: {
-    flexDirection: "row",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     gap: isTablet ? 20 : 12,
   },
   profileImage: {
     width: PROFILE_IMAGE_SIZE,
     height: PROFILE_IMAGE_SIZE,
     borderRadius: PROFILE_IMAGE_SIZE / 2,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: '#E5E7EB',
   },
   clientDetails: {
     flex: 1,
   },
   nameRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     marginBottom: 6,
   },
   clientName: {
     fontSize: isTablet ? FONT_SIZE_LARGE + 4 : 18,
-    fontWeight: "600",
-    color: "#1F2937",
+    fontWeight: '600',
+    color: '#1F2937',
   },
   clientLevel: {
     fontSize: isTablet ? FONT_SIZE_SMALL : 12,
     color: PRIMARY_COLOR,
-    backgroundColor: "#EEF2FF",
+    backgroundColor: '#EEF2FF',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     marginBottom: isTablet ? 12 : 8,
   },
   contactInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     marginBottom: isTablet ? 8 : 4,
   },
   clientEmail: {
     fontSize: isTablet ? FONT_SIZE_SMALL : 14,
-    color: "#6B7280",
+    color: '#6B7280',
   },
   clientPhone: {
     fontSize: isTablet ? FONT_SIZE_SMALL : 14,
-    color: "#6B7280",
+    color: '#6B7280',
   },
   scheduleInfo: {
     gap: isTablet ? 16 : 12,
   },
   scheduleRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: isTablet ? 24 : 16,
   },
   scheduleItem: {
@@ -868,17 +879,17 @@ const styles = StyleSheet.create({
   },
   scheduleLabel: {
     fontSize: isTablet ? FONT_SIZE_SMALL : 12,
-    color: "#6B7280",
+    color: '#6B7280',
     marginBottom: isTablet ? 8 : 4,
   },
   scheduleValue: {
     fontSize: isTablet ? FONT_SIZE_MEDIUM : 14,
-    fontWeight: "500",
-    color: "#1F2937",
+    fontWeight: '500',
+    color: '#1F2937',
   },
   notesText: {
     fontSize: isTablet ? FONT_SIZE_MEDIUM : 14,
-    color: "#374151",
+    color: '#374151',
     lineHeight: isTablet ? 26 : 20,
   },
   actionButtons: {
@@ -888,151 +899,151 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: SECONDARY_COLOR,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: isTablet ? 18 : 14,
     borderRadius: 12,
     gap: 12,
     height: BUTTON_HEIGHT,
   },
   primaryButtonText: {
-    color: "white",
+    color: 'white',
     fontSize: isTablet ? FONT_SIZE_MEDIUM : 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   secondaryButtons: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: isTablet ? 20 : 12,
   },
   secondaryButton: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: isTablet ? 16 : 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#fff",
+    borderColor: '#E5E7EB',
+    backgroundColor: '#fff',
     gap: 8,
     height: BUTTON_HEIGHT,
   },
   secondaryButtonText: {
     color: PRIMARY_COLOR,
     fontSize: isTablet ? FONT_SIZE_SMALL : 14,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   feedbackButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: isTablet ? 16 : 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#fff",
+    borderColor: '#E5E7EB',
+    backgroundColor: '#fff',
     gap: 8,
     height: BUTTON_HEIGHT,
   },
   feedbackButtonDisabled: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: isTablet ? 16 : 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "gray",
+    borderColor: '#E5E7EB',
+    backgroundColor: 'gray',
     gap: 8,
     height: BUTTON_HEIGHT,
   },
   feedbackButtonText: {
     color: PRIMARY_COLOR,
     fontSize: isTablet ? FONT_SIZE_SMALL : 14,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   disableText: {
-    color: "white",
+    color: 'white',
     fontSize: isTablet ? FONT_SIZE_SMALL : 14,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   // Modal Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: isTablet ? 40 : 20,
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 16,
     padding: isTablet ? 32 : 24,
     width: isTablet ? width * 0.7 : width - 40,
     maxWidth: 600,
     elevation: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
   modalTitle: {
     fontSize: isTablet ? FONT_SIZE_LARGE + 4 : 18,
-    fontWeight: "600",
-    color: "#1F2937",
-    textAlign: "center",
+    fontWeight: '600',
+    color: '#1F2937',
+    textAlign: 'center',
     marginBottom: isTablet ? 28 : 20,
   },
   dropdownContainer: {
     marginBottom: isTablet ? 32 : 24,
-    position: "relative",
+    position: 'relative',
     zIndex: 1000,
   },
   dropdownHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: isTablet ? 20 : 16,
     paddingVertical: isTablet ? 16 : 12,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: '#E5E7EB',
     borderRadius: 8,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   dropdownText: {
     fontSize: isTablet ? FONT_SIZE_MEDIUM : 16,
-    color: "#1F2937",
-    fontWeight: "500",
+    color: '#1F2937',
+    fontWeight: '500',
   },
   dropdownList: {
-    position: "absolute",
-    top: "100%",
+    position: 'absolute',
+    top: '100%',
     left: 0,
     right: 0,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: '#E5E7EB',
     borderTopWidth: 0,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     elevation: 5,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     zIndex: 1001,
   },
   dropdownItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: isTablet ? 20 : 16,
     paddingVertical: isTablet ? 16 : 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: '#F3F4F6',
   },
   dropdownItemSelected: {
-    backgroundColor: "#EEF2FF",
+    backgroundColor: '#EEF2FF',
   },
   statusIndicator: {
     width: isTablet ? 12 : 8,
@@ -1042,14 +1053,14 @@ const styles = StyleSheet.create({
   },
   dropdownItemText: {
     fontSize: isTablet ? FONT_SIZE_MEDIUM : 16,
-    color: "#1F2937",
+    color: '#1F2937',
   },
   dropdownItemTextSelected: {
     color: PRIMARY_COLOR,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   modalButtons: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: isTablet ? 20 : 12,
     marginTop: isTablet ? 8 : 0,
   },
@@ -1058,32 +1069,32 @@ const styles = StyleSheet.create({
     paddingVertical: isTablet ? 16 : 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    alignItems: "center",
+    borderColor: '#E5E7EB',
+    alignItems: 'center',
   },
   cancelButtonText: {
     fontSize: isTablet ? FONT_SIZE_MEDIUM : 16,
-    color: "#6B7280",
-    fontWeight: "500",
+    color: '#6B7280',
+    fontWeight: '500',
   },
   confirmButton: {
     flex: 1,
     paddingVertical: isTablet ? 16 : 12,
     borderRadius: 8,
     backgroundColor: PRIMARY_COLOR,
-    alignItems: "center",
+    alignItems: 'center',
   },
   disabledButton: {
-    borderColor: "#ccc",
-    backgroundColor: "#f2f2f2",
+    borderColor: '#ccc',
+    backgroundColor: '#f2f2f2',
   },
   disabledButtonText: {
-    color: "#999",
+    color: '#999',
   },
   confirmButtonText: {
     fontSize: isTablet ? FONT_SIZE_MEDIUM : 16,
-    color: "#fff",
-    fontWeight: "600",
+    color: '#fff',
+    fontWeight: '600',
   },
 });
 

@@ -1,6 +1,10 @@
 import { useCallService } from '@/services/AgoraCallService';
 import { stopAudioService } from '@/services/AudioService';
-import { useCallControls, useCallInfo, useCallStore } from '@/zustand/callStore';
+import {
+  useCallControls,
+  useCallInfo,
+  useCallStore,
+} from '@/zustand/callStore';
 import { useLoading } from '@/zustand/commonStore';
 import { Ionicons } from '@expo/vector-icons';
 import { sendCallEndNotificationToUser, USER_ROLE } from '@sm/common';
@@ -66,10 +70,7 @@ export default function CallScreen() {
     toggleSpeaker,
   } = useCallControls();
 
-  const {
-    otherParticipant,
-    callDuration,
-  } = useCallInfo();
+  const { otherParticipant, callDuration } = useCallInfo();
 
   const {
     joinChannel,
@@ -128,14 +129,14 @@ export default function CallScreen() {
   };
 
   const performEndCall = async (needsFeedback: boolean) => {
-    console.log("hitting end call");
+    console.log('hitting end call');
     setLoading(true);
     try {
       await leaveChannel();
       await endCall();
       stopAudioService();
       sendCallEndNotificationToUser(Number(appointmentId));
-      console.log("hitting end call 11");
+      console.log('hitting end call 11');
 
       if (service_type === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
         if (needsFeedback) {
@@ -160,7 +161,7 @@ export default function CallScreen() {
         router.back();
       }
 
-      console.log("hitting end call 2");
+      console.log('hitting end call 2');
     } catch (error) {
       console.error('Error ending call:', error);
       router.back();
@@ -242,7 +243,7 @@ export default function CallScreen() {
     } catch (error) {
       console.error('Error ending call:', error);
     } finally {
-      userId && await sendCallEndNotificationToUser(3); // TODO fix hardcoded
+      userId && (await sendCallEndNotificationToUser(3)); // TODO fix hardcoded
       setLoading(false);
       router.back();
     }
@@ -288,7 +289,10 @@ export default function CallScreen() {
       if (!isScreenSharing) {
         const hasPermissions = await checkAndRequestScreenSharePermissions();
         if (!hasPermissions) {
-          Alert.alert('Permission Required', 'Screen recording permission is required for screen sharing.');
+          Alert.alert(
+            'Permission Required',
+            'Screen recording permission is required for screen sharing.'
+          );
           return;
         }
 
@@ -306,10 +310,13 @@ export default function CallScreen() {
                     await startScreenSharing();
                   } catch (error) {
                     console.error('Error starting screen share:', error);
-                    Alert.alert('Error', 'Failed to start screen sharing. Please try again.');
+                    Alert.alert(
+                      'Error',
+                      'Failed to start screen sharing. Please try again.'
+                    );
                   }
-                }
-              }
+                },
+              },
             ]
           );
         } else {
@@ -318,7 +325,10 @@ export default function CallScreen() {
             await startScreenSharing();
           } catch (error) {
             console.error('Error starting screen share:', error);
-            Alert.alert('Error', 'Failed to start screen sharing. Please try again.');
+            Alert.alert(
+              'Error',
+              'Failed to start screen sharing. Please try again.'
+            );
           }
         }
       } else {
@@ -327,7 +337,10 @@ export default function CallScreen() {
       }
     } catch (error) {
       console.error('Error toggling screen share:', error);
-      Alert.alert('Error', 'Failed to toggle screen sharing. Please try again.');
+      Alert.alert(
+        'Error',
+        'Failed to toggle screen sharing. Please try again.'
+      );
     }
   };
 
@@ -422,8 +435,9 @@ export default function CallScreen() {
               {
                 transform: pan.getTranslateTransform(),
               },
-              isFullScreen && styles.localVideoFullscreen
-            ]}>
+              isFullScreen && styles.localVideoFullscreen,
+            ]}
+          >
             <RtcSurfaceView
               style={styles.localVideo}
               canvas={{
@@ -451,9 +465,7 @@ export default function CallScreen() {
               {formatDuration(callDuration)}
             </Text>
             {isScreenSharing && (
-              <Text style={styles.screenSharingStatus}>
-                📱 Screen Sharing
-              </Text>
+              <Text style={styles.screenSharingStatus}>📱 Screen Sharing</Text>
             )}
           </View>
         )}
@@ -478,7 +490,7 @@ export default function CallScreen() {
                 <Ionicons
                   name="camera-reverse"
                   size={24}
-                  color={isScreenSharing ? "#9CA3AF" : "#FFFFFF"}
+                  color={isScreenSharing ? '#9CA3AF' : '#FFFFFF'}
                 />
               </TouchableOpacity>
             </View>
@@ -488,12 +500,12 @@ export default function CallScreen() {
               <TouchableOpacity
                 style={[
                   styles.controlButton,
-                  isAudioMuted && styles.controlButtonMuted
+                  isAudioMuted && styles.controlButtonMuted,
                 ]}
                 onPress={handleToggleAudio}
               >
                 <Ionicons
-                  name={isAudioMuted ? "mic-off" : "mic"}
+                  name={isAudioMuted ? 'mic-off' : 'mic'}
                   size={24}
                   color="#FFFFFF"
                 />
@@ -509,27 +521,27 @@ export default function CallScreen() {
               <TouchableOpacity
                 style={[
                   styles.controlButton,
-                  isVideoMuted && styles.controlButtonMuted
+                  isVideoMuted && styles.controlButtonMuted,
                 ]}
                 onPress={handleToggleVideo}
                 disabled={isScreenSharing}
               >
                 <Ionicons
-                  name={isVideoMuted ? "videocam-off" : "videocam"}
+                  name={isVideoMuted ? 'videocam-off' : 'videocam'}
                   size={24}
-                  color={isScreenSharing ? "#9CA3AF" : "#FFFFFF"}
+                  color={isScreenSharing ? '#9CA3AF' : '#FFFFFF'}
                 />
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[
                   styles.controlButton,
-                  isScreenSharing && styles.controlButtonActive
+                  isScreenSharing && styles.controlButtonActive,
                 ]}
                 onPress={handleToggleScreenShare}
               >
                 <Ionicons
-                  name={isScreenSharing ? "desktop" : "desktop-outline"}
+                  name={isScreenSharing ? 'desktop' : 'desktop-outline'}
                   size={24}
                   color="#FFFFFF"
                 />
@@ -538,12 +550,12 @@ export default function CallScreen() {
               <TouchableOpacity
                 style={[
                   styles.controlButton,
-                  isSpeakerOn && styles.controlButtonActive
+                  isSpeakerOn && styles.controlButtonActive,
                 ]}
                 onPress={handleToggleSpeaker}
               >
                 <Ionicons
-                  name={isSpeakerOn ? "volume-high" : "volume-medium"}
+                  name={isSpeakerOn ? 'volume-high' : 'volume-medium'}
                   size={24}
                   color="#FFFFFF"
                 />
@@ -555,12 +567,11 @@ export default function CallScreen() {
 
       {/* Moved to separate component */}
       <EndCallConfirmationBottomSheet
-        index={isBottomSheetOpen ? 0 : -1} 
+        index={isBottomSheetOpen ? 0 : -1}
         onEndCallWithFeedback={handleConfirmEndCall}
         onEndCallWithoutFeedback={handleEndCallWithoutFeedback}
         onCancel={handleCancelEndCall}
       />
-
     </SafeAreaView>
   );
 }

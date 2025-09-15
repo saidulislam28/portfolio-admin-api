@@ -6,7 +6,7 @@ import { API_FILE_UPLOAD } from '~/services/api/endpoints';
 const useFileUpload = () => {
   const [uploading, setUploading] = useState(false);
 
-  const handleUpload = async (options) => {
+  const handleUpload = async options => {
     const { file, onSuccess, onError } = options;
     const formData = new FormData();
     const actualFile = file.originFileObj || file; // 👈 fallback for non-AntD uploads

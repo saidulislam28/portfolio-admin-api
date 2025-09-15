@@ -45,12 +45,8 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <SimpleLineIcons
-              size={24}
-              name="home"
-              color={color}
-            />
-          )
+            <SimpleLineIcons size={24} name="home" color={color} />
+          ),
         }}
       />
 
@@ -59,12 +55,8 @@ export default function TabLayout() {
         options={{
           title: 'Appointments',
           tabBarIcon: ({ color, focused }) => (
-            <SimpleLineIcons
-              size={24}
-              name="drawer"
-              color={color}
-            />
-          )
+            <SimpleLineIcons size={24} name="drawer" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -72,12 +64,8 @@ export default function TabLayout() {
         options={{
           title: 'Calender',
           tabBarIcon: ({ color, focused }) => (
-            <SimpleLineIcons
-              size={24}
-              name="calendar"
-              color={color}
-            />
-          )
+            <SimpleLineIcons size={24} name="calendar" color={color} />
+          ),
         }}
       />
 
@@ -86,14 +74,10 @@ export default function TabLayout() {
         options={{
           title: 'Account',
           tabBarIcon: ({ color, focused }) => (
-            <SimpleLineIcons
-              size={24}
-              name="user"
-              color={color}
-            />
-          )
+            <SimpleLineIcons size={24} name="user" color={color} />
+          ),
         }}
       />
     </Tabs>
-  )
+  );
 }

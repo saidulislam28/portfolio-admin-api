@@ -1,14 +1,14 @@
-import { combineReducers } from '@reduxjs/toolkit'
-import site, { SiteState } from './siteSlice'
+import { combineReducers } from '@reduxjs/toolkit';
+import site, { SiteState } from './siteSlice';
 
 const reducer = combineReducers({
-    site,
-})
+  site,
+});
 
 export type AppState = {
-    site: SiteState
-}
+  site: SiteState;
+};
 
-export * from './siteSlice'
+export * from './siteSlice';
 
-export default reducer
+export default reducer;

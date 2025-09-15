@@ -1,10 +1,10 @@
 // components/navigation/AppNavigator.tsx
-import React, { useEffect } from "react";
-import { Stack, router } from "expo-router";
-import { useAuth } from "@/context/useAuth"; // Adjust import path as needed
-import { useOnboardingCheck } from "@/hooks/useOnboardingCheck";
-import { LoadingScreen } from "@/app/_layout";
-import { ROUTES } from "@/constants/app.routes";
+import React, { useEffect } from 'react';
+import { Stack, router } from 'expo-router';
+import { useAuth } from '@/context/useAuth'; // Adjust import path as needed
+import { useOnboardingCheck } from '@/hooks/useOnboardingCheck';
+import { LoadingScreen } from '@/app/_layout';
+import { ROUTES } from '@/constants/app.routes';
 
 export const AppNavigator = () => {
   const { isCheckingOnboarding, hasCompletedOnboarding } = useOnboardingCheck();

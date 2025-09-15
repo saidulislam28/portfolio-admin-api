@@ -12,7 +12,9 @@ export const useOnboardingCheck = () => {
 
   const checkOnboardingStatus = async () => {
     try {
-      const onboardingCompleted = await AsyncStorage.getItem('onboarding_completed');
+      const onboardingCompleted = await AsyncStorage.getItem(
+        'onboarding_completed'
+      );
       setHasCompletedOnboarding(onboardingCompleted === 'true');
     } catch (error) {
       console.error('Error checking onboarding status:', error);
@@ -32,9 +34,9 @@ export const useOnboardingCheck = () => {
     }
   };
 
-  return { 
-    isCheckingOnboarding, 
-    hasCompletedOnboarding, 
-    markOnboardingComplete 
+  return {
+    isCheckingOnboarding,
+    hasCompletedOnboarding,
+    markOnboardingComplete,
   };
 };

@@ -1,12 +1,12 @@
-import smLogo from "@/assets/images/smlogo.png";
-import { BaseButton } from "@/components/BaseButton";
-import { ROUTES } from "@/constants/app.routes";
-import { useAuth } from "@/context/useAuth";
-import { PRIMARY_COLOR } from "@/lib/constants";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { loginConsultant } from "@sm/common";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import smLogo from '@/assets/images/smlogo.png';
+import { BaseButton } from '@/components/BaseButton';
+import { ROUTES } from '@/constants/app.routes';
+import { useAuth } from '@/context/useAuth';
+import { PRIMARY_COLOR } from '@/lib/constants';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { loginConsultant } from '@sm/common';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import {
   Image,
   Platform,
@@ -17,17 +17,19 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { InputField } from "@/components/InputField";
+} from 'react-native';
+import { InputField } from '@/components/InputField';
 
 export default function LoginScreen() {
   const router = useRouter();
   const { login }: any = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
   const { logout }: any = useAuth();
 
   const handleLogin = async () => {
@@ -38,13 +40,13 @@ export default function LoginScreen() {
     const newErrors: { email?: string; password?: string } = {};
 
     if (!email) {
-      newErrors.email = "Email is required";
+      newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Please enter a valid email";
+      newErrors.email = 'Please enter a valid email';
     }
 
     if (!password) {
-      newErrors.password = "Password is required";
+      newErrors.password = 'Password is required';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -63,7 +65,7 @@ export default function LoginScreen() {
       login(result?.data, result?.data?.token);
       router.push(ROUTES.HOME);
     } catch (error) {
-      setErrors({ password: error?.message ?? "An unexpected error occurred" });
+      setErrors({ password: error?.message ?? 'An unexpected error occurred' });
       setLoading(false);
     }
   };
@@ -89,11 +91,11 @@ export default function LoginScreen() {
 
         <Text style={styles.title}>Welcome back</Text>
         <Text style={styles.subtitle}>
-          You can search course, apply course and find{"\n"}
+          You can search course, apply course and find{'\n'}
           scholarship for abroad studies
         </Text>
 
-        <View style={{width: "100%"}}>
+        <View style={{ width: '100%' }}>
           {/* Email Input */}
           <InputField
             label="Email"
@@ -104,7 +106,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
             fieldKey="email"
             focusedField={focusedField}
-            onFocus={() => handleFocus("email")}
+            onFocus={() => handleFocus('email')}
             onBlur={handleBlur}
             placeholder="Enter your Email"
             testID="email-input"
@@ -119,14 +121,12 @@ export default function LoginScreen() {
             isPassword={true}
             fieldKey="password"
             focusedField={focusedField}
-            onFocus={() => handleFocus("password")}
+            onFocus={() => handleFocus('password')}
             onBlur={handleBlur}
             placeholder="Enter your Password"
             testID="password-input"
           />
-
         </View>
-
 
         <TouchableOpacity
           onPress={() => router.push(ROUTES.FORGET_PASSWORD)}
@@ -143,21 +143,21 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   safearea: {
     flex: 1,
-    backgroundColor: "#fff",
-    position: "relative",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: '#fff',
+    position: 'relative',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingHorizontal: 16,
   },
   container: {
     flex: 1,
     padding: 24,
-    alignItems: "center", // Center-align all child elements horizontally
-    justifyContent: "center", // Center-align content vertically
-    minHeight: "100%", // Ensure full height for vertical centering
+    alignItems: 'center', // Center-align all child elements horizontally
+    justifyContent: 'center', // Center-align content vertically
+    minHeight: '100%', // Ensure full height for vertical centering
   },
   logoContainer: {
     marginBottom: 10,
-    alignItems: "center",
+    alignItems: 'center',
   },
   logo: {
     width: 80,
@@ -165,27 +165,27 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 20,
-    color: "#000",
-    textAlign: "center", // Center-align text content
-    width: "100%", // Full width for proper text centering
+    color: '#000',
+    textAlign: 'center', // Center-align text content
+    width: '100%', // Full width for proper text centering
   },
   subtitle: {
-    textAlign: "center", // Center-align text content
+    textAlign: 'center', // Center-align text content
     fontSize: 13,
-    color: "#666",
+    color: '#666',
     marginVertical: 16,
-    width: "100%", // Full width for proper text centering
+    width: '100%', // Full width for proper text centering
   },
   forgotPassword: {
-    width: "100%",
-    alignItems: "center", // Center the forgot password link
+    width: '100%',
+    alignItems: 'center', // Center the forgot password link
     marginBottom: 20,
   },
   forgotPasswordText: {
     color: PRIMARY_COLOR,
     fontSize: 13,
-    textAlign: "center", // Center-align text
+    textAlign: 'center', // Center-align text
   },
 });

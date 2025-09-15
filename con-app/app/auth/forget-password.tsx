@@ -1,11 +1,11 @@
-import { BaseButton } from "@/components/BaseButton";
-import { ROUTES } from "@/constants/app.routes";
-import { PRIMARY_COLOR } from "@/lib/constants";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_CONSULTANT, Post } from "@sm/common";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { BaseButton } from '@/components/BaseButton';
+import { ROUTES } from '@/constants/app.routes';
+import { PRIMARY_COLOR } from '@/lib/constants';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_CONSULTANT, Post } from '@sm/common';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -13,13 +13,13 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Platform, StatusBar } from "react-native";
-import { InputField } from "@/components/InputField";
+} from 'react-native';
+import { Platform, StatusBar } from 'react-native';
+import { InputField } from '@/components/InputField';
 
 export default function ForgetScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -30,27 +30,29 @@ export default function ForgetScreen() {
 
     // Validate email
     if (!email) {
-      setError("Email is required");
+      setError('Email is required');
       setLoading(false);
       return;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setError("Please enter a valid email");
+      setError('Please enter a valid email');
       setLoading(false);
       return;
     }
 
     try {
-      const result = await Post(API_CONSULTANT.forget, { email_or_phone: email });
+      const result = await Post(API_CONSULTANT.forget, {
+        email_or_phone: email,
+      });
       if (!result.success) {
         setError(result.error);
         setLoading(false);
         return;
       }
 
-      await AsyncStorage.setItem("email", result?.data?.email);
+      await AsyncStorage.setItem('email', result?.data?.email);
       router.push(ROUTES.RESET_PASSWORD);
     } catch (error) {
-      setError(error?.message ?? "An unexpected error occurred");
+      setError(error?.message ?? 'An unexpected error occurred');
       setLoading(false);
     }
   };
@@ -75,7 +77,7 @@ export default function ForgetScreen() {
           Enter your email for forget password
         </Text>
 
-        <View style={{ width: "100%" }}>
+        <View style={{ width: '100%' }}>
           {/* Email Input */}
           <InputField
             label="Email"
@@ -86,14 +88,12 @@ export default function ForgetScreen() {
             autoCapitalize="none"
             fieldKey="email"
             focusedField={focusedField}
-            onFocus={() => handleFocus("email")}
+            onFocus={() => handleFocus('email')}
             onBlur={handleBlur}
             placeholder="Enter your Email"
             testID="email-input"
           />
-
         </View>
-
 
         <BaseButton title="Submit" onPress={handleSubmit} isLoading={loading} />
 
@@ -102,7 +102,7 @@ export default function ForgetScreen() {
           style={styles.backToLogin}
         >
           <Text style={styles.backToLoginText}>
-            Remember your password?{" "}
+            Remember your password?{' '}
             <Text style={styles.loginLink}>Back to Login</Text>
           </Text>
         </TouchableOpacity>
@@ -114,43 +114,43 @@ export default function ForgetScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
-    position: "relative",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: '#fff',
+    position: 'relative',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   container: {
     flexGrow: 1,
     padding: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 20,
-    color: "#000",
-    textAlign: "center",
-    width: "100%",
+    color: '#000',
+    textAlign: 'center',
+    width: '100%',
   },
   subtitle: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 13,
-    color: "#666",
+    color: '#666',
     marginVertical: 16,
-    width: "100%",
+    width: '100%',
   },
   backToLogin: {
     marginTop: 20,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
   backToLoginText: {
     fontSize: 13,
-    color: "#333",
-    textAlign: "center",
+    color: '#333',
+    textAlign: 'center',
   },
   loginLink: {
     color: PRIMARY_COLOR,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });

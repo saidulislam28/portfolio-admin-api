@@ -45,11 +45,15 @@ export interface CallState {
   showCallOverlay: boolean;
   showCallScreen: boolean;
   isScreenSharing: boolean;
-  incomingCallInfo: any
+  incomingCallInfo: any;
 }
 
 export interface CallActions {
-  startCall: (appointmentToken: string, userId: number, otherParticipant: otherParticipant | null) => Promise<void>;
+  startCall: (
+    appointmentToken: string,
+    userId: number,
+    otherParticipant: otherParticipant | null
+  ) => Promise<void>;
   joinChannel: (channelName: string, token: string, uid: number) => void;
   endCall: () => void;
   leaveChannel: () => void;
@@ -72,7 +76,7 @@ export interface CallActions {
   resetCallState: () => void;
   visibleCallScreen: (callInfo: any) => void;
   hideCallScreen: () => void;
-  onRemoteUserLeft: (remoteId: string | number) => void
+  onRemoteUserLeft: (remoteId: string | number) => void;
 }
 
 export type CallStore = CallState & CallActions;
@@ -96,7 +100,7 @@ const initialState: CallState = {
   showCallOverlay: false,
   isScreenSharing: false,
   showCallScreen: false,
-  incomingCallInfo: null
+  incomingCallInfo: null,
 };
 
 // Timer reference outside the store
@@ -158,45 +162,45 @@ export const useCallStore = create<CallStore>()((set, get) => ({
       isInCall: false,
       showCallOverlay: false,
       isScreenSharing: false,
-      incomingCallInfo: null
+      incomingCallInfo: null,
     });
   },
 
   toggleAudio: () => {
-    set((state) => ({ isAudioMuted: !state.isAudioMuted }));
+    set(state => ({ isAudioMuted: !state.isAudioMuted }));
   },
 
   toggleVideo: () => {
-    set((state) => ({ isVideoMuted: !state.isVideoMuted }));
+    set(state => ({ isVideoMuted: !state.isVideoMuted }));
   },
 
   toggleSpeaker: () => {
-    set((state) => ({ isSpeakerOn: !state.isSpeakerOn }));
+    set(state => ({ isSpeakerOn: !state.isSpeakerOn }));
   },
 
-  addParticipant: (participant) => {
-    set((state) => ({
+  addParticipant: participant => {
+    set(state => ({
       participants: [...state.participants, participant],
     }));
   },
 
-  removeParticipant: (uid) => {
-    set((state) => ({
+  removeParticipant: uid => {
+    set(state => ({
       //@ts-ignore
-      participants: state.participants.filter((p) => p.uid !== uid),
+      participants: state.participants.filter(p => p.uid !== uid),
     }));
   },
 
   updateParticipant: (uid, updates) => {
-    set((state) => ({
-      participants: state.participants.map((p) =>
+    set(state => ({
+      participants: state.participants.map(p =>
         //@ts-ignore
         p.uid === uid ? { ...p, ...updates } : p
       ),
     }));
   },
 
-  setCallScreenActive: (active) => {
+  setCallScreenActive: active => {
     const { isInCall } = get();
     set({
       isCallScreenActive: active,
@@ -204,14 +208,14 @@ export const useCallStore = create<CallStore>()((set, get) => ({
     });
   },
 
-  setShowCallOverlay: (show) => {
+  setShowCallOverlay: show => {
     set({ showCallOverlay: show });
   },
 
   startTimer: () => {
     if (timerRef) clearInterval(timerRef);
     timerRef = setInterval(() => {
-      set((state) => ({
+      set(state => ({
         callDuration: state.callDuration + 1,
       }));
     }, 1000);
@@ -235,31 +239,31 @@ export const useCallStore = create<CallStore>()((set, get) => ({
 
   startScreenSharing: () => {
     set({
-      isScreenSharing: true
-    })
+      isScreenSharing: true,
+    });
   },
 
   stopScreenSharing: () => {
     set({
-      isScreenSharing: false
-    })
+      isScreenSharing: false,
+    });
   },
   hideCallScreen: () => {
     set({
       showCallScreen: false,
-      incomingCallInfo: null
-    })
+      incomingCallInfo: null,
+    });
   },
-  visibleCallScreen: (callInfo) => {
+  visibleCallScreen: callInfo => {
     if (callInfo?.additionalInfo) {
       callInfo.additionalInfo = JSON.parse(callInfo?.additionalInfo);
     }
     set({
       showCallScreen: true,
-      incomingCallInfo: callInfo
-    })
+      incomingCallInfo: callInfo,
+    });
   },
-  onRemoteUserLeft: async (remoteId) => {
+  onRemoteUserLeft: async remoteId => {
     if (!remoteId) return;
     if (get().isInCall && remoteId != ADMIN_CALL_USER_ID) {
       try {
@@ -272,13 +276,13 @@ export const useCallStore = create<CallStore>()((set, get) => ({
         router.back();
       }
     }
-  }
+  },
 }));
 
 // Call status selector
 export const useCallStatus = () =>
   useCallStore(
-    useShallow((state) => ({
+    useShallow(state => ({
       isInCall: state.isInCall,
       isConnecting: state.isConnecting,
       showCallOverlay: state.showCallOverlay,
@@ -288,7 +292,7 @@ export const useCallStatus = () =>
 // Call controls selector
 export const useCallControls = () =>
   useCallStore(
-    useShallow((state) => ({
+    useShallow(state => ({
       isAudioMuted: state.isAudioMuted,
       isVideoMuted: state.isVideoMuted,
       isSpeakerOn: state.isSpeakerOn,
@@ -301,7 +305,7 @@ export const useCallControls = () =>
 // Call info selector (your requested refactor)
 export const useCallInfo = () =>
   useCallStore(
-    useShallow((state) => ({
+    useShallow(state => ({
       appointmentTitle: state.appointmentTitle,
       otherParticipant: state.otherParticipant,
       callDuration: state.callDuration,
@@ -312,6 +316,7 @@ export const useCallInfo = () =>
 // Individual selectors (don't need shallow)
 export const useIsInCall = () => useCallStore(state => state.isInCall);
 export const useIsConnecting = () => useCallStore(state => state.isConnecting);
-export const useShowCallOverlay = () => useCallStore(state => state.showCallOverlay);
+export const useShowCallOverlay = () =>
+  useCallStore(state => state.showCallOverlay);
 export const useCallDuration = () => useCallStore(state => state.callDuration);
 export const useParticipants = () => useCallStore(state => state.participants);

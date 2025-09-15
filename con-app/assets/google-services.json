@@ -4,7 +4,8 @@
     "project_id": "speaking-mate-app",
     "storage_bucket": "speaking-mate-app.firebasestorage.app"
   },
-  "client": [{
+  "client": [
+    {
       "client_info": {
         "mobilesdk_app_id": "1:447938351048:android:3a6abe7b6e01a28ea0bafd",
         "android_client_info": {
@@ -12,9 +13,11 @@
         }
       },
       "oauth_client": [],
-      "api_key": [{
-        "current_key": "AIzaSyA5io-mqxpik2XeiNJASlPy_MRU8Rkl1iQ"
-      }],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5io-mqxpik2XeiNJASlPy_MRU8Rkl1iQ"
+        }
+      ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": []
@@ -29,9 +32,11 @@
         }
       },
       "oauth_client": [],
-      "api_key": [{
-        "current_key": "AIzaSyA5io-mqxpik2XeiNJASlPy_MRU8Rkl1iQ"
-      }],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5io-mqxpik2XeiNJASlPy_MRU8Rkl1iQ"
+        }
+      ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": []

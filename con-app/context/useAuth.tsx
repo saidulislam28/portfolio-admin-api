@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
-import { ROUTES } from "@/constants/app.routes";
-import { User } from "@sm/common";
-import { removeAuthTokenMobile, setAuthTokenMobile } from "@/lib/authtokens";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { ROUTES } from '@/constants/app.routes';
+import { User } from '@sm/common';
+import { removeAuthTokenMobile, setAuthTokenMobile } from '@/lib/authtokens';
 
 const AuthContext = createContext<any>(null);
 
@@ -16,14 +16,14 @@ export const AuthProvider = ({ children }: any) => {
 
   const loadUserFromStorage = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem("user");
+      const storedUser = await AsyncStorage.getItem('user');
       if (storedUser) {
         const userData = JSON.parse(storedUser);
         setUser(userData);
         setToken(userData.token); // Set token from user data
       }
     } catch (err) {
-      console.log("Failed to load user from storage", err);
+      console.log('Failed to load user from storage', err);
     } finally {
       setIsLoading(false);
     }
@@ -36,14 +36,14 @@ export const AuthProvider = ({ children }: any) => {
   const login = async (userData: User, authToken: string) => {
     setUser(userData);
     setToken(authToken);
-    await AsyncStorage.setItem("user", JSON.stringify(userData));
+    await AsyncStorage.setItem('user', JSON.stringify(userData));
     await setAuthTokenMobile(authToken);
     return { success: true };
   };
 
   const logout = async () => {
     setIsLoading(false);
-    await AsyncStorage.removeItem("user");
+    await AsyncStorage.removeItem('user');
     setUser(null);
     setToken(null);
     await removeAuthTokenMobile();
@@ -55,22 +55,24 @@ export const AuthProvider = ({ children }: any) => {
     try {
       const mergedUserData = { ...user, ...updatedUserData };
       setUser(mergedUserData);
-      await AsyncStorage.setItem("user", JSON.stringify(mergedUserData));
+      await AsyncStorage.setItem('user', JSON.stringify(mergedUserData));
     } catch (err) {
-      console.log("Failed to update user in storage", err);
+      console.log('Failed to update user in storage', err);
       throw err;
     }
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      isLoading,
-      token, // Include token in context
-      login,
-      logout,
-      updateUser // Export updateUser function
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        token, // Include token in context
+        login,
+        logout,
+        updateUser, // Export updateUser function
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

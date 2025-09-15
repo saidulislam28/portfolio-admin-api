@@ -1,12 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetView,
+  BottomSheetBackdrop,
+} from '@gorhom/bottom-sheet';
 
 interface EndCallConfirmationBottomSheetProps {
   index: number; // 👈 Controlled by parent via state
@@ -15,18 +13,15 @@ interface EndCallConfirmationBottomSheetProps {
   onCancel: () => void;
 }
 
-const EndCallConfirmationBottomSheet: React.FC<EndCallConfirmationBottomSheetProps> = ({
-  index,
-  onEndCallWithFeedback,
-  onEndCallWithoutFeedback,
-  onCancel,
-}) => {
+const EndCallConfirmationBottomSheet: React.FC<
+  EndCallConfirmationBottomSheetProps
+> = ({ index, onEndCallWithFeedback, onEndCallWithoutFeedback, onCancel }) => {
   return (
     <BottomSheet
       index={index}
       snapPoints={['40%']}
       enablePanDownToClose
-      backdropComponent={(props) => (
+      backdropComponent={props => (
         <BottomSheetBackdrop
           {...props}
           disappearsOnIndex={-1}
@@ -39,15 +34,13 @@ const EndCallConfirmationBottomSheet: React.FC<EndCallConfirmationBottomSheetPro
           <Ionicons name="call" size={32} color="#EF4444" />
           <Text style={styles.bottomSheetTitle}>End Call?</Text>
           <Text style={styles.bottomSheetDescription}>
-            Are you sure you want to end this call? You'll be able to provide feedback about your experience.
+            Are you sure you want to end this call? You'll be able to provide
+            feedback about your experience.
           </Text>
         </View>
 
         <View style={styles.bottomSheetButtons}>
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={onCancel}
-          >
+          <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
 
@@ -55,14 +48,18 @@ const EndCallConfirmationBottomSheet: React.FC<EndCallConfirmationBottomSheetPro
             style={styles.confirmButton}
             onPress={onEndCallWithFeedback}
           >
-            <Text style={styles.confirmButtonText}>End Call & Provide Feedback</Text>
+            <Text style={styles.confirmButtonText}>
+              End Call & Provide Feedback
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.endCallButton}
             onPress={onEndCallWithoutFeedback}
           >
-            <Text style={styles.endCallButtonText}>End Call Without Feedback</Text>
+            <Text style={styles.endCallButtonText}>
+              End Call Without Feedback
+            </Text>
           </TouchableOpacity>
         </View>
       </BottomSheetView>

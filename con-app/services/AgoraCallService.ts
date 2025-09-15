@@ -16,10 +16,9 @@ import {
   ScreenScenarioType,
   UserOfflineReasonType,
   VideoContentHint,
-  VideoSourceType
+  VideoSourceType,
 } from 'react-native-agora';
 const { width, height } = Dimensions.get('window');
-
 
 class CallService {
   private engine: IRtcEngine | null = null;
@@ -36,7 +35,7 @@ class CallService {
   async initialize() {
     // Prevent re-initialization
     if (this.isInitialized) {
-      console.log("CallService already initialized.");
+      console.log('CallService already initialized.');
       return;
     }
 
@@ -63,38 +62,57 @@ class CallService {
    */
   private setupEventHandlers() {
     if (!this.engine) {
-      console.error("Engine not available for setting up handlers.");
+      console.error('Engine not available for setting up handlers.');
       return;
     }
 
-    console.log('Setting up Agora event listeners using registerEventHandler...');
+    console.log(
+      'Setting up Agora event listeners using registerEventHandler...'
+    );
 
     // Use registerEventHandler to set up all event listeners in one object
     this.engine.registerEventHandler({
       // --- Core Connection Events ---
       onJoinChannelSuccess: (connection, elapsed) => {
-        console.log(`✅ [Agora] onJoinChannelSuccess: Successfully joined channel "${connection.channelId}" as user ${connection.localUid}. Elapsed: ${elapsed}ms`);
+        console.log(
+          `✅ [Agora] onJoinChannelSuccess: Successfully joined channel "${connection.channelId}" as user ${connection.localUid}. Elapsed: ${elapsed}ms`
+        );
         const { channelId, localUid } = connection;
         const state = useCallStore.getState();
-        state.joinChannel(channelId as string, state.token as string, Number(localUid));
+        state.joinChannel(
+          channelId as string,
+          state.token as string,
+          Number(localUid)
+        );
       },
       onLeaveChannel: (connection, stats) => {
-        console.log(`🚪 [Agora] onLeaveChannel: Successfully left channel. Stats:`, stats);
+        console.log(
+          `🚪 [Agora] onLeaveChannel: Successfully left channel. Stats:`,
+          stats
+        );
         useCallStore.getState().leaveChannel();
       },
       onConnectionStateChanged: (connection, state, reason) => {
-        console.log(`🔄 [Agora] onConnectionStateChanged: State -> ${ConnectionStateType[state]}, Reason -> ${ConnectionChangedReasonType[reason]}`);
+        console.log(
+          `🔄 [Agora] onConnectionStateChanged: State -> ${ConnectionStateType[state]}, Reason -> ${ConnectionChangedReasonType[reason]}`
+        );
         if (state === ConnectionStateType.ConnectionStateFailed) {
-          console.error(`[Agora] Connection failed. Please check network and token/appId.`);
+          console.error(
+            `[Agora] Connection failed. Please check network and token/appId.`
+          );
         }
       },
-      onConnectionLost: (connection) => {
-        console.warn(`[Agora] onConnectionLost: Connection to channel ${connection.channelId} has been lost.`);
+      onConnectionLost: connection => {
+        console.warn(
+          `[Agora] onConnectionLost: Connection to channel ${connection.channelId} has been lost.`
+        );
       },
 
       // --- Remote User Events ---
       onUserJoined: (connection, remoteUid, elapsed) => {
-        console.log(`➕ [Agora] onUserJoined: Remote user ${remoteUid} has joined. Elapsed: ${elapsed}ms`);
+        console.log(
+          `➕ [Agora] onUserJoined: Remote user ${remoteUid} has joined. Elapsed: ${elapsed}ms`
+        );
         useCallStore.getState().addParticipant({
           //@ts-ignore
           uid: remoteUid,
@@ -103,8 +121,11 @@ class CallService {
         });
       },
       onUserOffline: (connection, remoteUid, reason) => {
-        console.log(`➖ [Agora] onUserOffline: Remote user ${remoteUid} has left. Reason: ${UserOfflineReasonType[reason]}`);
-        if (reason == 0) {// remote user end call
+        console.log(
+          `➖ [Agora] onUserOffline: Remote user ${remoteUid} has left. Reason: ${UserOfflineReasonType[reason]}`
+        );
+        if (reason == 0) {
+          // remote user end call
           useCallStore.getState().onRemoteUserLeft(remoteUid);
         } else {
           useCallStore.getState().removeParticipant(remoteUid);
@@ -113,26 +134,36 @@ class CallService {
 
       // --- Token and Security Events ---
       onTokenPrivilegeWillExpire: (connection, token) => {
-        console.warn(`[Agora] onTokenPrivilegeWillExpire: Token for connection ${connection.channelId} is about to expire. Token: ${token}`);
+        console.warn(
+          `[Agora] onTokenPrivilegeWillExpire: Token for connection ${connection.channelId} is about to expire. Token: ${token}`
+        );
         // Here you would typically fetch a new token from your server and call renewToken.
       },
-      onRequestToken: (connection) => {
-        console.log(`[Agora] onRequestToken: SDK requires a new token for connection ${connection.channelId}.`);
+      onRequestToken: connection => {
+        console.log(
+          `[Agora] onRequestToken: SDK requires a new token for connection ${connection.channelId}.`
+        );
         // This is triggered when the token expires and you haven't renewed it.
       },
 
       // --- Error Handling ---
       onError: (err, msg) => {
-        console.error(`❌ [Agora] onError: Code -> ${err} (${ErrorCodeType[err]}), Message -> ${msg}`);
+        console.error(
+          `❌ [Agora] onError: Code -> ${err} (${ErrorCodeType[err]}), Message -> ${msg}`
+        );
       },
 
       // --- Media State Events ---
       onUserMuteAudio: (connection, uid, muted) => {
-        console.log(`🔇 [Agora] onUserMuteAudio: User ${uid} has ${muted ? 'muted' : 'unmuted'} their audio.`);
+        console.log(
+          `🔇 [Agora] onUserMuteAudio: User ${uid} has ${muted ? 'muted' : 'unmuted'} their audio.`
+        );
         useCallStore.getState().updateParticipant(uid, { isAudioMuted: muted });
       },
       onUserMuteVideo: (connection, uid, muted) => {
-        console.log(`🎥 [Agora] onUserMuteVideo: User ${uid} has ${muted ? 'disabled' : 'enabled'} their video.`);
+        console.log(
+          `🎥 [Agora] onUserMuteVideo: User ${uid} has ${muted ? 'disabled' : 'enabled'} their video.`
+        );
         useCallStore.getState().updateParticipant(uid, { isVideoMuted: muted });
       },
 
@@ -146,7 +177,7 @@ class CallService {
       },
       onRemoteVideoStats: (connection, stats: RemoteVideoStats) => {
         // console.log(`[Agora] onRemoteVideoStats (from ${stats.uid}): Received bitrate: ${stats.receivedBitrate}kbps, Frame rate: ${stats.decoderOutputFrameRate}fps`);
-      }
+      },
     });
   }
 
@@ -154,10 +185,14 @@ class CallService {
    * Joins a channel with the provided details.
    */
   async joinChannel(token: string, channelName: string, uid: number) {
-    console.log(`[CallService] Attempting to join channel: "${channelName}" with UID: ${uid}`);
+    console.log(
+      `[CallService] Attempting to join channel: "${channelName}" with UID: ${uid}`
+    );
 
     if (!this.engine || !this.isInitialized) {
-      console.error('[CallService] Agora engine is not initialized. Please call initialize() first.');
+      console.error(
+        '[CallService] Agora engine is not initialized. Please call initialize() first.'
+      );
       throw new Error('Agora engine not initialized');
     }
 
@@ -166,15 +201,22 @@ class CallService {
         await this.engine.leaveChannel();
         console.log('[CallService] Left previous channel safely.');
       } catch (e) {
-        console.warn('[CallService] No previous channel to leave or error during leave (safe to ignore):', e);
+        console.warn(
+          '[CallService] No previous channel to leave or error during leave (safe to ignore):',
+          e
+        );
       }
 
       // Channel and client configuration
-      await this.engine.setChannelProfile(ChannelProfileType.ChannelProfileLiveBroadcasting);
+      await this.engine.setChannelProfile(
+        ChannelProfileType.ChannelProfileLiveBroadcasting
+      );
       await this.engine.setClientRole(ClientRoleType.ClientRoleBroadcaster);
 
       // Optional: for screen share
-      await this.engine.setScreenCaptureScenario(ScreenScenarioType.ScreenScenarioDocument);
+      await this.engine.setScreenCaptureScenario(
+        ScreenScenarioType.ScreenScenarioDocument
+      );
 
       // Permissions must be granted before this point
       await this.engine.enableAudio();
@@ -189,16 +231,24 @@ class CallService {
       console.log('[CallService] Local video preview started.');
 
       // Actually join the channel
-      const joinResult = await this.engine.joinChannel(token, channelName, uid, {
-        clientRoleType: ClientRoleType.ClientRoleBroadcaster,
-      });
+      const joinResult = await this.engine.joinChannel(
+        token,
+        channelName,
+        uid,
+        {
+          clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+        }
+      );
 
       if (joinResult === 0) {
-        console.log('[CallService] joinChannel request sent. Waiting for onJoinChannelSuccess...');
+        console.log(
+          '[CallService] joinChannel request sent. Waiting for onJoinChannelSuccess...'
+        );
       } else {
-        console.error(`[CallService] joinChannel failed. Error code: ${joinResult}`);
+        console.error(
+          `[CallService] joinChannel failed. Error code: ${joinResult}`
+        );
       }
-
     } catch (err) {
       console.error('[CallService] Failed to join channel:', err);
       throw err;
@@ -212,7 +262,7 @@ class CallService {
     if (!this.engine) return;
 
     try {
-      console.log("[CallService] Attempting to leave channel.");
+      console.log('[CallService] Attempting to leave channel.');
       await this.engine.stopScreenCapture();
       await this.engine.stopPreview();
       await this.engine.leaveChannel();
@@ -299,7 +349,7 @@ class CallService {
         publishMicrophoneTrack: true,
         publishScreenCaptureVideo: true,
         publishScreenCaptureAudio: true,
-      })
+      });
       // Update video source to screen share
       await this.engine.startPreview(VideoSourceType.VideoSourceScreen);
 
@@ -308,7 +358,7 @@ class CallService {
       console.error('Error starting screen capture:', error);
       throw error;
     }
-  };
+  }
 
   /**
    * Stop screen capture
@@ -336,7 +386,7 @@ class CallService {
       console.error('Error stopping screen capture:', error);
       throw error;
     }
-  };
+  }
 
   /**
    * Update screen capture parameters
@@ -367,7 +417,7 @@ class CallService {
       console.error('Error updating screen capture parameters:', error);
       throw error;
     }
-  };
+  }
 
   // --- Media Control Methods ---
 
@@ -399,8 +449,12 @@ class CallService {
     return this.engine?.getCallId();
   }
 
-  async startScreenShareVirtualUser(token: string, channelName: string, userId: number) {
-    console.log("I am from virtual user")
+  async startScreenShareVirtualUser(
+    token: string,
+    channelName: string,
+    userId: number
+  ) {
+    console.log('I am from virtual user');
     if (this.isScreenSharing) return;
     if (this.screenShareEngine) await this.stopScreenShareVirtualUser();
 
@@ -411,16 +465,25 @@ class CallService {
 
     await this.screenShareEngine.initialize({ appId: APP_ID });
     await this.screenShareEngine.enableVideo();
-    await this.screenShareEngine.setChannelProfile(ChannelProfileType.ChannelProfileLiveBroadcasting);
-    await this.screenShareEngine.setClientRole(ClientRoleType.ClientRoleBroadcaster);
+    await this.screenShareEngine.setChannelProfile(
+      ChannelProfileType.ChannelProfileLiveBroadcasting
+    );
+    await this.screenShareEngine.setClientRole(
+      ClientRoleType.ClientRoleBroadcaster
+    );
 
     // Join as virtual user
-    const result = await this.screenShareEngine.joinChannel(token, channelName, screenShareUid, {
-      clientRoleType: ClientRoleType.ClientRoleBroadcaster,
-      publishCameraTrack: false,
-      publishScreenCaptureVideo: true,
-      publishScreenCaptureAudio: true,
-    });
+    const result = await this.screenShareEngine.joinChannel(
+      token,
+      channelName,
+      screenShareUid,
+      {
+        clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+        publishCameraTrack: false,
+        publishScreenCaptureVideo: true,
+        publishScreenCaptureAudio: true,
+      }
+    );
 
     // Start screen capture
     const captureParams: ScreenCaptureParameters = {
@@ -458,13 +521,15 @@ class CallService {
       //   }
       // );
     }
-    console.log({ result })
+    console.log({ result });
     await this.screenShareEngine.updateChannelMediaOptions({
       publishCameraTrack: false,
       publishScreenCaptureVideo: true,
       publishScreenCaptureAudio: true,
     });
-    await this.screenShareEngine.startPreview(VideoSourceType.VideoSourceScreen);
+    await this.screenShareEngine.startPreview(
+      VideoSourceType.VideoSourceScreen
+    );
 
     this.isScreenSharing = true;
   }
@@ -506,7 +571,9 @@ export const useCallService = () => {
     startScreenCapture: callService.startScreenCapture.bind(callService),
     stopScreenCapture: callService.stopScreenCapture.bind(callService),
     getCallId: callService.getCallId.bind(callService),
-    stopScreenShareVirtualUser: callService.stopScreenShareVirtualUser.bind(callService),
-    startScreenShareVirtualUser: callService.startScreenShareVirtualUser.bind(callService),
+    stopScreenShareVirtualUser:
+      callService.stopScreenShareVirtualUser.bind(callService),
+    startScreenShareVirtualUser:
+      callService.startScreenShareVirtualUser.bind(callService),
   };
 };

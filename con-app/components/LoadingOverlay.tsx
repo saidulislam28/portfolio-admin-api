@@ -7,28 +7,28 @@ import { ActivityIndicator, Modal, StyleSheet, View } from 'react-native';
 // };
 
 const LoadingOverlay: React.FC = () => {
-    const { isLoading } = useLoading();
-    return (
-        <Modal
-            visible={isLoading}
-            transparent
-            animationType="fade"
-            statusBarTranslucent
-        >
-            <View style={styles.overlay}>
-                <ActivityIndicator size="large" color="#ffffff" />
-            </View>
-        </Modal>
-    );
+  const { isLoading } = useLoading();
+  return (
+    <Modal
+      visible={isLoading}
+      transparent
+      animationType="fade"
+      statusBarTranslucent
+    >
+      <View style={styles.overlay}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    </Modal>
+  );
 };
 
 export default LoadingOverlay;
 
 const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

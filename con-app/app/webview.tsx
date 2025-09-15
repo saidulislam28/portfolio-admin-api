@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { View } from "react-native";
-import { WebView } from "react-native-webview";
-import Axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { View } from 'react-native';
+import { WebView } from 'react-native-webview';
+import Axios from 'axios';
 
-const payment_url = "YOUR_PAYMENT_URL_HERE"; // Replace with actual URL
+const payment_url = 'YOUR_PAYMENT_URL_HERE'; // Replace with actual URL
 
 const SSL = () => {
   const [loading, setLoading] = useState(true);
-  const [html, setHtml] = useState("");
+  const [html, setHtml] = useState('');
 
   useEffect(() => {
     const getPaymentPage = async () => {
       try {
         const payload = {
-          mb_id: ""
+          mb_id: '',
         };
         const { data } = await Axios.post(payment_url, payload);
 
@@ -44,13 +44,13 @@ const SSL = () => {
     <View style={{ flex: 1 }}>
       {!loading && (
         <WebView
-          source={{ html, baseUrl: "web/" }}
+          source={{ html, baseUrl: 'web/' }}
           mixedContentMode="always"
           style={{ flex: 1 }}
-          onMessage={(event) => {
+          onMessage={event => {
             const message = event.nativeEvent.data;
             console.log(message);
-            if (message === "payment completed") {
+            if (message === 'payment completed') {
               // handle success
             }
           }}

@@ -26,46 +26,41 @@ export default function PreHeader() {
           {/* <Feather name="user" size={18} color={'black'} /> */}
           <Image source={smLogo} style={styles.logo} />
         </View>
-        < >
-          {
-            user ?
+        <>
+          {user ? (
+            <View style={styles.loginButton}>
+              <Text style={styles.loginButtonText}>{user?.full_name}</Text>
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={() => router.replace(ROUTES.LOGIN as any)}
+            >
               <View style={styles.loginButton}>
-                <Text style={styles.loginButtonText}>
-                  {user?.full_name}
-                </Text>
+                <Text style={styles.loginButtonText}>Login</Text>
               </View>
-              :
-              <TouchableOpacity onPress={() => router.replace(ROUTES.LOGIN as any)}>
-                <View style={styles.loginButton}>
-                  <Text style={styles.loginButtonText}>
-                    Login
-                  </Text>
-                </View>
-              </TouchableOpacity>
-          }
+            </TouchableOpacity>
+          )}
         </>
       </View>
 
       <View style={styles.rightContainer}>
-        {
-          user ? <>
-            {
-              user?.profile_image ?
-                (<Image source={{ uri: user?.profile_image }} style={styles.logo} />) : (
-                  <View style={styles.profileImageContainer}>
-                    <Feather name="user" size={18} color={'black'} />
-                  </View>
-                )
-            }
-          </> : (null)
-        }
-
-
-
-
+        {user ? (
+          <>
+            {user?.profile_image ? (
+              <Image
+                source={{ uri: user?.profile_image }}
+                style={styles.logo}
+              />
+            ) : (
+              <View style={styles.profileImageContainer}>
+                <Feather name="user" size={18} color={'black'} />
+              </View>
+            )}
+          </>
+        ) : null}
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -73,21 +68,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
   },
   rightContainer: {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    flexDirection: "row",
-
+    flexDirection: 'row',
   },
   profileContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8
-
+    gap: 8,
   },
   profileImageContainer: {
     width: 48,
@@ -106,8 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: PRIMARY_COLOR,
     paddingVertical: 8,
-    paddingHorizontal: 16
-
+    paddingHorizontal: 16,
   },
   loginButtonText: {
     fontSize: 14,
@@ -128,9 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cartIcon: {
-
-  },
+  cartIcon: {},
   CartCount: {
     position: 'absolute',
     top: -5,
@@ -144,6 +134,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     overflow: 'hidden',
   },
-
-
-})
+});

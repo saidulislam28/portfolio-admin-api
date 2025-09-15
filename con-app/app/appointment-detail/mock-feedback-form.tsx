@@ -1,10 +1,10 @@
-import { BaseButton } from "@/components/BaseButton";
-import Logo from "@/components/Logo";
-import { ROUTES } from "@/constants/app.routes";
-import { PRIMARY_COLOR } from "@/lib/constants";
-import { API_CONSULTANT, Get, Post } from "@sm/common";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import { BaseButton } from '@/components/BaseButton';
+import Logo from '@/components/Logo';
+import { ROUTES } from '@/constants/app.routes';
+import { PRIMARY_COLOR } from '@/lib/constants';
+import { API_CONSULTANT, Get, Post } from '@sm/common';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -14,9 +14,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 
 // Type definitions
 export type FeedbackFormData = {
@@ -28,7 +28,6 @@ export type FeedbackFormData = {
 
   // Fluency & Coherence feedback
   mark_assignment_complete: boolean;
-
 
   fluencyFluent: boolean;
   fluencyNaturalFlow: boolean;
@@ -122,7 +121,6 @@ const defaultInitialFeedback: FeedbackFormData = {
 
   mark_assignment_complete: false,
 
-
   // Fluency & Coherence feedback
   fluencyFluent: false,
   fluencyNaturalFlow: false,
@@ -173,14 +171,14 @@ const defaultInitialFeedback: FeedbackFormData = {
   recImprovePronunciation: false,
 
   // Additional notes
-  additionalNotes: "",
+  additionalNotes: '',
 };
 
 const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   apiEndpoint = API_CONSULTANT.mocktest_feedback,
   commentsEndpoint = API_CONSULTANT.mocktest_comments,
   successRoute = ROUTES.MY_APPOINTMENTS,
-  title = "Mock Test Feedback Form",
+  title = 'Mock Test Feedback Form',
   showLogo = true,
   customStyles = {},
   initialFeedback = {},
@@ -193,7 +191,6 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   const [comments, setComments] = useState<any[]>([]);
   const router = useRouter();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null); // UI only
-
 
   // Form state with merged initial feedback
   const [feedback, setFeedback] = useState<FeedbackFormData>({
@@ -219,7 +216,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
         setComments(response?.data || []);
       }
     } catch (error) {
-      const errorMessage = "Could not fetch comments";
+      const errorMessage = 'Could not fetch comments';
       Alert.alert(errorMessage);
       // onFetchCommentsError?.(error);
     }
@@ -231,7 +228,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
   // Handle star rating selection
   const handleRating = (criteria: keyof FeedbackFormData, value: number) => {
-    setFeedback((prev) => ({
+    setFeedback(prev => ({
       ...prev,
       [criteria]: value,
     }));
@@ -239,7 +236,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
   // Handle checkbox toggle
   const toggleCheckbox = (field: keyof FeedbackFormData) => {
-    setFeedback((prev) => ({
+    setFeedback(prev => ({
       ...prev,
       [field]: !prev[field],
     }));
@@ -247,14 +244,14 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
   // Handle text input changes
   const handleTextChange = (field: keyof FeedbackFormData, value: string) => {
-    setFeedback((prev) => ({
+    setFeedback(prev => ({
       ...prev,
       [field]: value,
     }));
   };
   const handleLevelChange = useCallback((level: any) => {
     setSelectedLevel(level.title); // Only for UI (radio active)
-    setFeedback((prev) => ({
+    setFeedback(prev => ({
       ...prev,
       additionalNotes: level.desc, // Only store desc
     }));
@@ -263,7 +260,9 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   const parseAppointment = params.appointment
     ? JSON.parse(params.appointment as string)
     : null;
-  const consultant_id = params.consultant_id ? JSON.parse(params?.consultant_id as string) : null
+  const consultant_id = params.consultant_id
+    ? JSON.parse(params?.consultant_id as string)
+    : null;
 
   // Submit handler
   const handleSubmit = async () => {
@@ -286,7 +285,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
       setLoading(true);
       const response = await Post(apiEndpoint, finalFeedback);
 
-      console.log("feedback response", response?.data);
+      console.log('feedback response', response?.data);
 
       if (response?.data?.success) {
         // Reset form
@@ -305,7 +304,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
       setLoading(false);
       // Show alert if no custom error handler
       if (!onSubmitError) {
-        Alert.alert("Error found", error.message || "An error occurred");
+        Alert.alert('Error found', error.message || 'An error occurred');
       }
 
       // Call error callback if provided
@@ -324,7 +323,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   ) => {
     return (
       <View style={styles.starContainer}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((star) => (
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(star => (
           <TouchableOpacity
             key={star}
             onPress={() => handleRating(criteria, star)}
@@ -336,7 +335,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
                 star <= currentValue ? styles.starSelected : null,
               ]}
             >
-              {star <= currentValue ? "★" : "☆"}
+              {star <= currentValue ? '★' : '☆'}
             </Text>
           </TouchableOpacity>
         ))}
@@ -351,7 +350,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
         style={styles.checkboxContainer}
         onPress={() => toggleCheckbox(field)}
       >
-        <Text style={styles.checkboxIcon}>{feedback[field] ? "☑" : "□"}</Text>
+        <Text style={styles.checkboxIcon}>{feedback[field] ? '☑' : '□'}</Text>
         <Text style={styles.checkboxLabel}>{label}</Text>
       </TouchableOpacity>
     );
@@ -391,24 +390,24 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
           {/* Fluency & Coherence */}
           <View style={styles.criteriaContainer}>
             <Text style={styles.criteriaTitle}>Fluency & Coherence</Text>
-            {renderStars("fluencyCoherence", feedback.fluencyCoherence)}
+            {renderStars('fluencyCoherence', feedback.fluencyCoherence)}
             {renderCheckboxGroup([
-              { label: "Fluent", field: "fluencyFluent" },
-              { label: "Natural flow", field: "fluencyNaturalFlow" },
-              { label: "Needs coherence", field: "fluencyNeedsCoherence" },
-              { label: "Repeats ideas", field: "fluencyRepeatsIdeas" },
+              { label: 'Fluent', field: 'fluencyFluent' },
+              { label: 'Natural flow', field: 'fluencyNaturalFlow' },
+              { label: 'Needs coherence', field: 'fluencyNeedsCoherence' },
+              { label: 'Repeats ideas', field: 'fluencyRepeatsIdeas' },
             ])}
           </View>
 
           {/* Lexical Resource */}
           <View style={styles.criteriaContainer}>
             <Text style={styles.criteriaTitle}>Lexical Resource</Text>
-            {renderStars("lexicalResource", feedback.lexicalResource)}
+            {renderStars('lexicalResource', feedback.lexicalResource)}
             {renderCheckboxGroup([
-              { label: "Good variety", field: "lexicalGoodVariety" },
-              { label: "Repetitive", field: "lexicalRepetitive" },
-              { label: "Topic mismatch", field: "lexicalTopicMismatch" },
-              { label: "Limited range", field: "lexicalLimitedRange" },
+              { label: 'Good variety', field: 'lexicalGoodVariety' },
+              { label: 'Repetitive', field: 'lexicalRepetitive' },
+              { label: 'Topic mismatch', field: 'lexicalTopicMismatch' },
+              { label: 'Limited range', field: 'lexicalLimitedRange' },
             ])}
           </View>
 
@@ -417,27 +416,27 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
             <Text style={styles.criteriaTitle}>
               Grammatical Range & Accuracy
             </Text>
-            {renderStars("grammaticalRange", feedback.grammaticalRange)}
+            {renderStars('grammaticalRange', feedback.grammaticalRange)}
             {renderCheckboxGroup([
-              { label: "Frequent errors", field: "grammarFrequentErrors" },
-              { label: "Tense issues", field: "grammarTenseIssues" },
-              { label: "Limited range", field: "grammarLimitedRange" },
-              { label: "Mostly accurate", field: "grammarMostlyAccurate" },
+              { label: 'Frequent errors', field: 'grammarFrequentErrors' },
+              { label: 'Tense issues', field: 'grammarTenseIssues' },
+              { label: 'Limited range', field: 'grammarLimitedRange' },
+              { label: 'Mostly accurate', field: 'grammarMostlyAccurate' },
             ])}
           </View>
 
           {/* Pronunciation */}
           <View style={styles.criteriaContainer}>
             <Text style={styles.criteriaTitle}>Pronunciation</Text>
-            {renderStars("pronunciation", feedback.pronunciation)}
+            {renderStars('pronunciation', feedback.pronunciation)}
             {renderCheckboxGroup([
-              { label: "Clear sounds", field: "pronunciationClearSounds" },
-              { label: "Good stress", field: "pronunciationGoodStress" },
+              { label: 'Clear sounds', field: 'pronunciationClearSounds' },
+              { label: 'Good stress', field: 'pronunciationGoodStress' },
               {
-                label: "Mispronunciations",
-                field: "pronunciationMispronunciations",
+                label: 'Mispronunciations',
+                field: 'pronunciationMispronunciations',
               },
-              { label: "Accent issues", field: "pronunciationAccentIssues" },
+              { label: 'Accent issues', field: 'pronunciationAccentIssues' },
             ])}
           </View>
         </View>
@@ -467,28 +466,28 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
               Part 1: Introduction & Interview
             </Text>
             {renderCheckboxGroup([
-              { label: "Confident", field: "part1Confident" },
-              { label: "Short answers", field: "part1ShortAnswer" },
-              { label: "Needs more details", field: "part1NeedsMoreDetails" },
+              { label: 'Confident', field: 'part1Confident' },
+              { label: 'Short answers', field: 'part1ShortAnswer' },
+              { label: 'Needs more details', field: 'part1NeedsMoreDetails' },
             ])}
           </View>
 
           <View style={styles.criteriaContainer}>
             <Text style={styles.criteriaTitle}>Part 2: Cue Card</Text>
             {renderCheckboxGroup([
-              { label: "Well organized", field: "part2WellOrganized" },
-              { label: "Missed points", field: "part2MissedPoints" },
-              { label: "Too short", field: "part2TooShort" },
+              { label: 'Well organized', field: 'part2WellOrganized' },
+              { label: 'Missed points', field: 'part2MissedPoints' },
+              { label: 'Too short', field: 'part2TooShort' },
             ])}
           </View>
 
           <View style={styles.criteriaContainer}>
             <Text style={styles.criteriaTitle}>Part 3: Discussion</Text>
             {renderCheckboxGroup([
-              { label: "Insightful", field: "part3Insightful" },
-              { label: "Repetitive", field: "part3Repetitive" },
-              { label: "Well developed", field: "part3WellDeveloped" },
-              { label: "Too short", field: "part3TooShort" },
+              { label: 'Insightful', field: 'part3Insightful' },
+              { label: 'Repetitive', field: 'part3Repetitive' },
+              { label: 'Well developed', field: 'part3WellDeveloped' },
+              { label: 'Too short', field: 'part3TooShort' },
             ])}
           </View>
         </View>
@@ -498,35 +497,33 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
           <Text style={styles.sectionHeader}>Recommendations</Text>
           {renderCheckboxGroup([
             {
-              label: "Practice cue card strategy",
-              field: "recPracticeCueCard",
+              label: 'Practice cue card strategy',
+              field: 'recPracticeCueCard',
             },
-            { label: "Expand topic vocabulary", field: "recExpandTopicVocab" },
+            { label: 'Expand topic vocabulary', field: 'recExpandTopicVocab' },
             {
-              label: "Reduce grammatical mistakes",
-              field: "recReduceGrammarMistakes",
+              label: 'Reduce grammatical mistakes',
+              field: 'recReduceGrammarMistakes',
             },
             {
-              label: "Watch native conversations",
-              field: "recWatchNativeConversations",
+              label: 'Watch native conversations',
+              field: 'recWatchNativeConversations',
             },
-            { label: "Use linking phrases", field: "recUseLinkingPhrases" },
-            { label: "Improve fluency", field: "recImproveFluency" },
+            { label: 'Use linking phrases', field: 'recUseLinkingPhrases' },
+            { label: 'Improve fluency', field: 'recImproveFluency' },
             {
-              label: "Improve pronunciation",
-              field: "recImprovePronunciation",
+              label: 'Improve pronunciation',
+              field: 'recImprovePronunciation',
             },
           ])}
         </View>
-
-
 
         {/* Comments Section */}
         {comments.length > 0 && (
           <View style={[styles.section, customStyles.section]}>
             <Text style={styles.sectionHeader}>Overall Conversation Level</Text>
             <View style={styles.radioGroup}>
-              {comments.map((level) => (
+              {comments.map(level => (
                 <TouchableOpacity
                   key={level.id}
                   style={styles.radioOption}
@@ -565,7 +562,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
             multiline
             numberOfLines={6}
             value={feedback.additionalNotes}
-            onChangeText={(text) => handleTextChange("additionalNotes", text)}
+            onChangeText={text => handleTextChange('additionalNotes', text)}
             placeholder="Enter any additional feedback notes..."
             placeholderTextColor="#999"
           />
@@ -574,7 +571,11 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
       {/* Submit Button */}
       <View style={styles.buttonContainer}>
-        <BaseButton title="Submit Feedback" onPress={handleSubmit} isLoading={loading} />
+        <BaseButton
+          title="Submit Feedback"
+          onPress={handleSubmit}
+          isLoading={loading}
+        />
       </View>
     </View>
   );
@@ -583,22 +584,22 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: '#f5f5f5',
   },
   scrollContainer: {
     padding: 30,
     paddingBottom: 100,
   },
   headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 40,
     gap: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 12,
     marginVertical: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -606,52 +607,52 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 25,
-    textAlign: "center",
+    textAlign: 'center',
     color: PRIMARY_COLOR,
     marginLeft: 30,
   },
   section: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 12,
     padding: 20,
     marginBottom: 25,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
   },
   overallSection: {
-    backgroundColor: "#e8f4f8",
+    backgroundColor: '#e8f4f8',
   },
   sectionHeader: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#2c3e50",
+    fontWeight: 'bold',
+    color: '#2c3e50',
     marginBottom: 8,
   },
   note: {
     fontSize: 14,
-    color: "#7f8c8d",
+    color: '#7f8c8d',
     marginBottom: 15,
-    fontStyle: "italic",
+    fontStyle: 'italic',
   },
   criteriaContainer: {
     marginBottom: 25,
   },
   criteriaTitle: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#34495e",
+    fontWeight: '600',
+    color: '#34495e',
     marginBottom: 15,
   },
   starContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 15,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   starButton: {
     marginRight: 8,
@@ -659,72 +660,72 @@ const styles = StyleSheet.create({
   },
   star: {
     fontSize: 28,
-    color: "#bdc3c7",
+    color: '#bdc3c7',
   },
   starSelected: {
-    color: "#f39c12",
+    color: '#f39c12',
   },
   ratingText: {
     marginLeft: 15,
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#2c3e50",
+    fontWeight: 'bold',
+    color: '#2c3e50',
   },
   checkboxGroup: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     marginTop: 10,
   },
   checkboxColumn: {
-    width: width > 600 ? "48%" : "100%",
+    width: width > 600 ? '48%' : '100%',
     marginBottom: 10,
   },
   checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 8,
     borderRadius: 6,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: '#f9f9f9',
     marginBottom: 8,
   },
   checkboxIcon: {
     fontSize: 24,
-    color: "#3498db",
+    color: '#3498db',
     marginRight: 12,
     minWidth: 24,
   },
   checkboxLabel: {
     fontSize: 16,
-    color: "#34495e",
+    color: '#34495e',
     flex: 1,
   },
   overallScoreContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     marginVertical: 20,
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#e74c3c",
+    borderColor: '#e74c3c',
   },
   overallScore: {
     fontSize: 48,
-    fontWeight: "bold",
-    color: "#e74c3c",
+    fontWeight: 'bold',
+    color: '#e74c3c',
   },
   overallLabel: {
     fontSize: 18,
-    color: "#7f8c8d",
+    color: '#7f8c8d',
     marginTop: 5,
   },
   radioGroup: {
     marginTop: 10,
   },
   radioOption: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 8,
     borderRadius: 8,
@@ -736,48 +737,48 @@ const styles = StyleSheet.create({
     width: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#3a86ff",
-    alignItems: "center",
-    justifyContent: "center",
+    borderColor: '#3a86ff',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 12,
   },
   radioChecked: {
     height: 14,
     width: 14,
     borderRadius: 7,
-    backgroundColor: "#3a86ff",
+    backgroundColor: '#3a86ff',
   },
   radioLabel: {
     fontSize: 16,
-    color: "#34495e",
+    color: '#34495e',
   },
   notesInput: {
     borderWidth: 1,
-    borderColor: "#bdc3c7",
+    borderColor: '#bdc3c7',
     borderRadius: 8,
     padding: 15,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     minHeight: 150,
-    textAlignVertical: "top",
+    textAlignVertical: 'top',
     fontSize: 16,
     lineHeight: 24,
   },
   selectedCommentNote: {
     marginTop: 10,
     fontSize: 14,
-    color: "#3498db",
-    fontStyle: "italic",
+    color: '#3498db',
+    fontStyle: 'italic',
   },
   buttonContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderTopWidth: 1,
-    borderTopColor: "#ecf0f1",
-    shadowColor: "#000",
+    borderTopColor: '#ecf0f1',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,

@@ -1,14 +1,17 @@
-import React, { useCallback } from "react";
-import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
-import AppointmentCard from "./AppointmentCard";
-import { Appointment } from "@sm/common";
+import React, { useCallback } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import AppointmentCard from './AppointmentCard';
+import { Appointment } from '@sm/common';
 const LiveAppointments: React.FC<{
   liveAppointments: Appointment[];
   onAppointmentPress: (appointment: Appointment) => void;
 }> = React.memo(({ liveAppointments, onAppointmentPress }) => {
-  const renderLiveAppointment = useCallback(({ item }: { item: Appointment }) => (
-    <AppointmentCard appointment={item} onPress={onAppointmentPress} />
-  ), [onAppointmentPress]);
+  const renderLiveAppointment = useCallback(
+    ({ item }: { item: Appointment }) => (
+      <AppointmentCard appointment={item} onPress={onAppointmentPress} />
+    ),
+    [onAppointmentPress]
+  );
 
   if (liveAppointments?.length === 0) {
     return null;
@@ -16,13 +19,12 @@ const LiveAppointments: React.FC<{
 
   return (
     <ScrollView style={styles.container}>
-
       <View style={styles.liveSection}>
         <Text style={styles.liveSectionTitle}>🔴 Live Appointments</Text>
         <FlatList
           data={liveAppointments}
           renderItem={renderLiveAppointment}
-          keyExtractor={(item) => `live-${item.id}`}
+          keyExtractor={item => `live-${item.id}`}
           showsVerticalScrollIndicator={false}
           scrollEnabled={false}
         />
@@ -49,7 +51,6 @@ const styles = StyleSheet.create({
     color: '#DC3545',
     marginBottom: 12,
   },
-
 });
 
 export default LiveAppointments;

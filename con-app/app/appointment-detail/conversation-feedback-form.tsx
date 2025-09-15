@@ -1,10 +1,10 @@
-import { BaseButton } from "@/components/BaseButton";
-import Logo from "@/components/Logo";
-import { ROUTES } from "@/constants/app.routes";
-import { PRIMARY_COLOR } from "@/lib/constants";
-import { API_CONSULTANT, Get, Post } from "@sm/common";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { BaseButton } from '@/components/BaseButton';
+import Logo from '@/components/Logo';
+import { ROUTES } from '@/constants/app.routes';
+import { PRIMARY_COLOR } from '@/lib/constants';
+import { API_CONSULTANT, Get, Post } from '@sm/common';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -14,10 +14,10 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Checkbox } from "react-native-paper";
+} from 'react-native';
+import { Checkbox } from 'react-native-paper';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 const isTablet = width >= 768;
 
 // Type definitions
@@ -110,7 +110,7 @@ export interface FeedbackFormProps {
 const getInitialFeedbackState = (): FeedbackData => ({
   appointment_id: null,
   consultant_id: null,
-  testTakerName: "",
+  testTakerName: '',
   // Fluency & Coherence
   speaksFluently: false,
   mark_assignment_complete: false,
@@ -149,16 +149,16 @@ const getInitialFeedbackState = (): FeedbackData => ({
   pronRecordAndCheck: false,
   pronPracticePhonemes: false,
   // Overall
-  overallLevel: "",
-  generalComments: "",
+  overallLevel: '',
+  generalComments: '',
 });
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
   appointment: propAppointment,
   consultantId: propConsultantId,
-  headerTitle = "Conversation Feedback Form",
-  submitButtonText = "Submit Feedback",
-  loadingText = "Submitting....",
+  headerTitle = 'Conversation Feedback Form',
+  submitButtonText = 'Submit Feedback',
+  loadingText = 'Submitting....',
   sections: customSections,
   commentsEndpoint = API_CONSULTANT.feedback_comments,
   submitEndpoint = API_CONSULTANT.conversation_feedback,
@@ -175,7 +175,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const parseAppointment =
     propAppointment ||
     (params.appointment ? JSON.parse(params.appointment as string) : null);
-  const consultant_id = propConsultantId || (params.consultant_id ? JSON.parse(params?.consultant_id as string) : null);
+  const consultant_id =
+    propConsultantId ||
+    (params.consultant_id ? JSON.parse(params?.consultant_id as string) : null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackData>(
@@ -185,7 +187,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
   // Optimized checkbox change handler using useCallback
   const handleCheckboxChange = useCallback((field: keyof FeedbackData) => {
-    setFeedback((prevFeedback) => ({
+    setFeedback(prevFeedback => ({
       ...prevFeedback,
       [field]: !prevFeedback[field],
     }));
@@ -194,11 +196,11 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   // Memoized text input handler
 
   const handleGeneralCommentsChange = useCallback((text: string) => {
-    setFeedback((prev) => ({ ...prev, generalComments: text }));
+    setFeedback(prev => ({ ...prev, generalComments: text }));
   }, []);
 
   const handleLevelChange = useCallback((level: FeedbackComment) => {
-    setFeedback((prev) => ({
+    setFeedback(prev => ({
       ...prev,
       overallLevel: level.title,
       generalComments: level.desc,
@@ -212,7 +214,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         setComments(response?.data || []);
       }
     } catch (error) {
-      const errorMessage = "Could not fetch comments";
+      const errorMessage = 'Could not fetch comments';
       Alert.alert(errorMessage);
       onFetchCommentsError?.(error);
     }
@@ -221,7 +223,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   useEffect(() => {
     fetchComments();
   }, [params]);
-
 
   // console.log("paramasss from conversation feedback", parseAppointment)
   // console.log("paramasss from conversation id>>>", consultant_id)
@@ -248,9 +249,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           : router.push(ROUTES.MY_APPOINTMENTS as any);
       }
     } catch (error) {
-      console.error("Error:", error);
-      const errorMessage = "Failed to submit feedback";
-      Alert.alert("Error", errorMessage);
+      console.error('Error:', error);
+      const errorMessage = 'Failed to submit feedback';
+      Alert.alert('Error', errorMessage);
       onSubmitError?.(error);
       setLoading(false);
     } finally {
@@ -287,7 +288,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         >
           <View style={styles.checkboxWrapper}>
             <Checkbox.Android
-              status={isChecked ? "checked" : "unchecked"}
+              status={isChecked ? 'checked' : 'unchecked'}
               onPress={onPress}
               color="#3a86ff"
               uncheckedColor="#888"
@@ -359,154 +360,155 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const defaultSections = useMemo(
     () => [
       {
-        title: "Fluency & Coherence",
+        title: 'Fluency & Coherence',
         items: [
-          { label: "Speaks fluently and confidently", field: "speaksFluently" },
+          { label: 'Speaks fluently and confidently', field: 'speaksFluently' },
           {
-            label: "Occasional pauses and self-correction",
-            field: "occasionalPauses",
+            label: 'Occasional pauses and self-correction',
+            field: 'occasionalPauses',
           },
           {
-            label: "Often pauses, hesitates, or repeats ideas",
-            field: "oftenPauses",
+            label: 'Often pauses, hesitates, or repeats ideas',
+            field: 'oftenPauses',
           },
           {
-            label: "Ideas are not clearly organized",
-            field: "disorganizedIdeas",
+            label: 'Ideas are not clearly organized',
+            field: 'disorganizedIdeas',
           },
           {
-            label: "Needs to improve answer length",
-            field: "needsLongerAnswers",
+            label: 'Needs to improve answer length',
+            field: 'needsLongerAnswers',
           },
         ],
-        suggestionsTitle: "Suggestions",
+        suggestionsTitle: 'Suggestions',
         suggestionItems: [
-          { label: "Use more linking words", field: "fluencyUseLinkingWords" },
+          { label: 'Use more linking words', field: 'fluencyUseLinkingWords' },
           {
-            label: "Practice thinking quickly under time pressure",
-            field: "fluencyPracticeThinking",
+            label: 'Practice thinking quickly under time pressure',
+            field: 'fluencyPracticeThinking',
           },
           {
-            label: "Try speaking in full answers with details",
-            field: "fluencySpeakWithDetails",
+            label: 'Try speaking in full answers with details',
+            field: 'fluencySpeakWithDetails',
           },
         ],
       },
       {
-        title: "Vocabulary (Lexical Resource)",
+        title: 'Vocabulary (Lexical Resource)',
         items: [
           {
-            label: "Uses a wide range of vocabulary appropriately",
-            field: "wideVocabularyRange",
+            label: 'Uses a wide range of vocabulary appropriately',
+            field: 'wideVocabularyRange',
           },
-          { label: "Repeats basic words", field: "repeatsBasicWords" },
-          { label: "Uses some topic-related terms", field: "usesTopicTerms" },
-          { label: "Makes word choice errors", field: "wordChoiceErrors" },
-          { label: "Lacks paraphrasing skills", field: "lacksParaphrasing" },
+          { label: 'Repeats basic words', field: 'repeatsBasicWords' },
+          { label: 'Uses some topic-related terms', field: 'usesTopicTerms' },
+          { label: 'Makes word choice errors', field: 'wordChoiceErrors' },
+          { label: 'Lacks paraphrasing skills', field: 'lacksParaphrasing' },
         ],
-        suggestionsTitle: "Suggestions",
+        suggestionsTitle: 'Suggestions',
         suggestionItems: [
           {
-            label: "Build a personal vocabulary list by topic",
-            field: "vocabBuildList",
+            label: 'Build a personal vocabulary list by topic',
+            field: 'vocabBuildList',
           },
           {
-            label: "Practice using synonyms and collocations",
-            field: "vocabPracticeSynonyms",
+            label: 'Practice using synonyms and collocations',
+            field: 'vocabPracticeSynonyms',
           },
           {
-            label: "Play vocabulary games or apps for variety",
-            field: "vocabUseGames",
+            label: 'Play vocabulary games or apps for variety',
+            field: 'vocabUseGames',
           },
         ],
       },
       {
-        title: "Grammar",
+        title: 'Grammar',
         items: [
-          { label: "Mostly correct grammar", field: "mostlyCorrectGrammar" },
-          { label: "Errors do not affect meaning", field: "errorsDontAffect" },
+          { label: 'Mostly correct grammar', field: 'mostlyCorrectGrammar' },
+          { label: 'Errors do not affect meaning', field: 'errorsDontAffect' },
           {
-            label: "Limited range of sentence types",
-            field: "limitedSentenceTypes",
+            label: 'Limited range of sentence types',
+            field: 'limitedSentenceTypes',
           },
           {
-            label: "Frequent grammar mistakes",
-            field: "frequentGrammarMistakes",
+            label: 'Frequent grammar mistakes',
+            field: 'frequentGrammarMistakes',
           },
           {
-            label: "Needs more complex structures",
-            field: "needsComplexStructures",
+            label: 'Needs more complex structures',
+            field: 'needsComplexStructures',
           },
         ],
-        suggestionsTitle: "Suggestions",
+        suggestionsTitle: 'Suggestions',
         suggestionItems: [
           {
-            label: "Focus on verb tenses and subject-verb agreement",
-            field: "grammarFocusTenses",
+            label: 'Focus on verb tenses and subject-verb agreement',
+            field: 'grammarFocusTenses',
           },
           {
-            label: "Use conditionals and complex sentences",
-            field: "grammarUseConditionals",
+            label: 'Use conditionals and complex sentences',
+            field: 'grammarUseConditionals',
           },
           {
-            label: "Write and then speak your ideas aloud",
-            field: "grammarWriteThenSpeak",
+            label: 'Write and then speak your ideas aloud',
+            field: 'grammarWriteThenSpeak',
           },
         ],
       },
       {
-        title: "Pronunciation",
+        title: 'Pronunciation',
         items: [
           {
-            label: "Clear and easy to understand",
-            field: "pronunciationClear",
+            label: 'Clear and easy to understand',
+            field: 'pronunciationClear',
           },
           {
-            label: "Minor issues with word stress or sounds",
-            field: "minorPronunciationIssues",
+            label: 'Minor issues with word stress or sounds',
+            field: 'minorPronunciationIssues',
           },
-          { label: "Mispronounces key words", field: "mispronouncesKeyWords" },
+          { label: 'Mispronounces key words', field: 'mispronouncesKeyWords' },
           {
-            label: "Lacks natural intonation and rhythm",
-            field: "lacksIntonation",
+            label: 'Lacks natural intonation and rhythm',
+            field: 'lacksIntonation',
           },
           {
-            label: "Strong first-language influence",
-            field: "strongL1Influence",
+            label: 'Strong first-language influence',
+            field: 'strongL1Influence',
           },
         ],
-        suggestionsTitle: "Suggestions",
+        suggestionsTitle: 'Suggestions',
         suggestionItems: [
           {
-            label: "Shadow native speakers (repeat after audio)",
-            field: "pronShadowSpeakers",
+            label: 'Shadow native speakers (repeat after audio)',
+            field: 'pronShadowSpeakers',
           },
           {
-            label: "Record yourself and check stress/intonation",
-            field: "pronRecordAndCheck",
+            label: 'Record yourself and check stress/intonation',
+            field: 'pronRecordAndCheck',
           },
           {
-            label: "Practice key sounds using phonemic chart",
-            field: "pronPracticePhonemes",
+            label: 'Practice key sounds using phonemic chart',
+            field: 'pronPracticePhonemes',
           },
         ],
       },
-
     ],
     []
   );
 
   const sectionsToRender = customSections || defaultSections;
 
-  const updateSection = [{
-    title: "Mark Appointment",
-    items: [
-      {
-        label: "Mark appointment as complete.",
-        field: "mark_assignment_complete",
-      },
-    ],
-  },]
+  const updateSection = [
+    {
+      title: 'Mark Appointment',
+      items: [
+        {
+          label: 'Mark appointment as complete.',
+          field: 'mark_assignment_complete',
+        },
+      ],
+    },
+  ];
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -537,7 +539,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         <View style={[styles.section, sectionStyle]}>
           <Text style={styles.sectionTitle}>Overall Speaking Level</Text>
           <View style={styles.radioGroup}>
-            {comments?.map((level) => (
+            {comments?.map(level => (
               <TouchableOpacity
                 key={level.id}
                 style={styles.radioOption}
@@ -568,7 +570,12 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
             onChangeText={handleGeneralCommentsChange}
           />
         </View>
-        <BaseButton title="Submit Feedback" onPress={handleSubmit} variant="primary" isLoading={loading} />
+        <BaseButton
+          title="Submit Feedback"
+          onPress={handleSubmit}
+          variant="primary"
+          isLoading={loading}
+        />
       </ScrollView>
     </View>
   );
@@ -578,10 +585,10 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: '#f8f9fa',
   },
   disabledButton: {
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
   },
   scrollContainer: {
     padding: isTablet ? 30 : 20,
@@ -589,33 +596,33 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: isTablet ? 28 : 22,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 25,
-    textAlign: "center",
+    textAlign: 'center',
     color: PRIMARY_COLOR,
     marginLeft: 30,
   },
   headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 40,
     gap: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 12,
     marginVertical: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
   section: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: isTablet ? 20 : 15,
     marginBottom: isTablet ? 25 : 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -623,36 +630,36 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: isTablet ? 22 : 18,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 15,
-    color: "#2c3e50",
+    color: '#2c3e50',
   },
   subsectionTitle: {
     fontSize: isTablet ? 18 : 16,
-    fontWeight: "500",
+    fontWeight: '500',
     marginTop: 15,
     marginBottom: 10,
-    color: "#3a86ff",
+    color: '#3a86ff',
   },
   twoColumnContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   column: {
-    width: isTablet ? "48%" : "100%",
+    width: isTablet ? '48%' : '100%',
   },
   suggestionsContainer: {
-    width: "100%",
+    width: '100%',
   },
   checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 8,
     borderRadius: 8,
     marginBottom: 8,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: '#f8f9fa',
   },
   checkboxWrapper: {
     marginRight: 12,
@@ -660,75 +667,75 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: isTablet ? 16 : 14,
     flex: 1,
-    color: "#34495e",
+    color: '#34495e',
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
     borderRadius: 8,
     padding: isTablet ? 14 : 12,
     marginBottom: 15,
     fontSize: isTablet ? 18 : 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   commentsInput: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
     borderRadius: 8,
     padding: isTablet ? 16 : 12,
     height: isTablet ? 150 : 120,
-    textAlignVertical: "top",
+    textAlignVertical: 'top',
     fontSize: isTablet ? 18 : 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   radioGroup: {
     marginTop: 10,
   },
   radioOption: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 8,
     borderRadius: 8,
     marginBottom: 8,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: '#f8f9fa',
   },
   radioCircle: {
     height: 24,
     width: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#3a86ff",
-    alignItems: "center",
-    justifyContent: "center",
+    borderColor: '#3a86ff',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 12,
   },
   radioChecked: {
     height: 14,
     width: 14,
     borderRadius: 7,
-    backgroundColor: "#3a86ff",
+    backgroundColor: '#3a86ff',
   },
   radioLabel: {
     fontSize: isTablet ? 18 : 16,
-    color: "#34495e",
+    color: '#34495e',
   },
   submitButton: {
-    backgroundColor: "#3a86ff",
+    backgroundColor: '#3a86ff',
     padding: isTablet ? 18 : 16,
     borderRadius: 10,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
   },
   submitButtonText: {
-    color: "white",
+    color: 'white',
     fontSize: isTablet ? 20 : 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 

@@ -1,27 +1,27 @@
-import AnimatedTabView from "@/components/myappointments_/AnimatedTabView";
-import LiveAppointments from "@/components/myappointments_/LiveAppointmentCard";
-import { ROUTES } from "@/constants/app.routes";
+import AnimatedTabView from '@/components/myappointments_/AnimatedTabView';
+import LiveAppointments from '@/components/myappointments_/LiveAppointmentCard';
+import { ROUTES } from '@/constants/app.routes';
 import { PRIMARY_COLOR } from '@/lib/constants';
-import { API_CONSULTANT, categorizeAppointments, Get, Appointment } from "@sm/common";
-import * as Localization from 'expo-localization';
-import { useRouter } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
 import {
-  Alert,
-  Dimensions,
-  StyleSheet,
-  View
-} from "react-native";
+  API_CONSULTANT,
+  categorizeAppointments,
+  Get,
+  Appointment,
+} from '@sm/common';
+import * as Localization from 'expo-localization';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Alert, Dimensions, StyleSheet, View } from 'react-native';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Type definitions
 
 export default function AppointmentsScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
   const [responseData, setResponseData] = useState<any>([]);
   const [refresh, setRefresh] = useState(false);
-  const user_timezone = Localization.getCalendars()[0].timeZone
+  const user_timezone = Localization.getCalendars()[0].timeZone;
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGetConsultantAppointments = async () => {
@@ -36,10 +36,9 @@ export default function AppointmentsScreen() {
         return;
       }
     } catch (error: any) {
-      Alert.alert("Error", error?.message);
+      Alert.alert('Error', error?.message);
     } finally {
       setIsLoading(false);
-
     }
   };
 

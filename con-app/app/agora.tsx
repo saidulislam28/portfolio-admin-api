@@ -5,7 +5,7 @@ import AgoraVideoCall from '@/components/AgoraVideoCall';
 
 export default function Agora({}) {
   const [inCall, setInCall] = useState(false);
-  const {channelName} = useLocalSearchParams();
+  const { channelName } = useLocalSearchParams();
   // const channelName = params.channelName || params.channel;
 
   // Debug log to see what params are being received
@@ -39,13 +39,13 @@ export default function Agora({}) {
   //   );
   // }
 
-  console.log('chanel name', channelName)
+  console.log('chanel name', channelName);
   return (
     <View style={styles.container}>
       {inCall ? (
         <AgoraVideoCall
           onCallEnd={() => setInCall(false)}
-          userId={"2"}
+          userId={'2'}
           channelName={channelName}
         />
       ) : (

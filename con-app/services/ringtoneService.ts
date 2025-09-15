@@ -8,7 +8,7 @@ export async function playRingtone() {
       playsInSilentModeIOS: true,
       staysActiveInBackground: false,
       //   interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-      shouldDuckAndroid: true
+      shouldDuckAndroid: true,
     });
 
     const result = await Audio.Sound.createAsync(

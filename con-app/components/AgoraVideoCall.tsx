@@ -14,14 +14,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import {
   ChannelProfileType,
   ClientRoleType,
   createAgoraRtcEngine,
   IRtcEngine,
-  RtcSurfaceView
+  RtcSurfaceView,
 } from 'react-native-agora';
 
 // Configure notifications
@@ -32,7 +32,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
-
 
 const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -52,7 +51,7 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
 
-  console.log('consultantApp Channel name:', channelName)
+  console.log('consultantApp Channel name:', channelName);
 
   useEffect(() => {
     initializeAgora();
@@ -73,19 +72,19 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
 
   const initializeAgora = async () => {
     try {
-      console.log('initializeAgora')
+      console.log('initializeAgora');
       // Create Agora engine instance
       agoraEngineRef.current = createAgoraRtcEngine();
       const agoraEngine = agoraEngineRef.current;
-      
+
       // Initialize engine
       await agoraEngine.initialize({
         appId: APP_ID,
       });
-      
+
       // Enable video
       await agoraEngine.enableVideo();
-      
+
       // Set up event listeners
       agoraEngine.registerEventHandler({
         onJoinChannelSuccess: (connection, elapsed) => {
@@ -102,10 +101,10 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
           onCallEnd();
         },
         onError: (err, msg) => {
-            console.log('Consultant agora error', err, msg)
+          console.log('Consultant agora error', err, msg);
         },
         onRtcStats: (connection, stats) => {
-            // console.log('Consultant agora stats', stats)
+          // console.log('Consultant agora stats', stats)
         },
       });
 
@@ -116,12 +115,10 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
     }
   };
 
-   
-
   // Initialize notifications and PiP settings
   useEffect(() => {
     registerForPushNotifications();
-    
+
     // Configure PiP parameters
     ExpoPip.setPictureInPictureParams({
       width: Math.round(screenWidth * 0.4),
@@ -132,14 +129,16 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
       autoEnterEnabled: autoEnterPipEnabled,
     });
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-    });
-    
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification response:', response);
-      navigation.navigate('VideoCall');
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notification => {
+        console.log('Notification received:', notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(response => {
+        console.log('Notification response:', response);
+        navigation.navigate('VideoCall');
+      });
 
     return () => {
       notificationListener.current?.remove();
@@ -149,7 +148,10 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
 
   // Handle app state changes
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    );
     return () => subscription.remove();
   }, [isJoined]);
 
@@ -160,7 +162,7 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
     }
   };
 
-  const handleAppStateChange = async (nextAppState) => {
+  const handleAppStateChange = async nextAppState => {
     if (appState.match(/inactive|background/) && nextAppState === 'active') {
       // App came to foreground
       setShowCallRibbon(false);
@@ -210,16 +212,18 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
   // Initialize notifications
   useEffect(() => {
     registerForPushNotifications();
-    
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-    });
-    
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification response:', response);
-      // Bring app to foreground when notification is tapped
-      navigation.navigate('VideoCall');
-    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notification => {
+        console.log('Notification received:', notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(response => {
+        console.log('Notification response:', response);
+        // Bring app to foreground when notification is tapped
+        navigation.navigate('VideoCall');
+      });
 
     return () => {
       notificationListener.current?.remove();
@@ -229,24 +233,28 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
 
   // Handle app state changes for PiP
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    );
     return () => subscription.remove();
   }, [isJoined]);
-
 
   // Initialize notifications and PiP
   useEffect(() => {
     registerForPushNotifications();
-    
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-    });
-    
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification response:', response);
-      navigation.navigate('VideoCall');
-      exitPipMode();
-    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notification => {
+        console.log('Notification received:', notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(response => {
+        console.log('Notification response:', response);
+        navigation.navigate('VideoCall');
+        exitPipMode();
+      });
 
     // Check PiP availability
     checkPipSupport();
@@ -259,7 +267,10 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
 
   // Handle app state changes
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    );
     return () => subscription.remove();
   }, [isJoined]);
 
@@ -271,8 +282,6 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
       console.log('PiP check error:', error);
     }
   };
-
-  
 
   const exitPipMode = async () => {
     try {
@@ -294,7 +303,6 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
     }
   };
 
-
   const toggleScreenShare = async () => {
     try {
       if (!isScreenSharing) {
@@ -306,17 +314,17 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
           videoParams: {
             dimensions: {
               width: screenWidth,
-              height: screenHeight
+              height: screenHeight,
             },
             frameRate: 15,
             bitrate: 2000,
-            contentHint: 1 // VideoContentHint.CONTENT_HINT_DETAILS
-          }
+            contentHint: 1, // VideoContentHint.CONTENT_HINT_DETAILS
+          },
         });
-        
+
         // Use enableLocalVideo instead of setVideoSource
         await agoraEngineRef.current?.enableLocalVideo(false);
-        
+
         // If available, use the appropriate method to update screen capture parameters
         if (agoraEngineRef.current?.updateScreenCaptureParameters) {
           await agoraEngineRef.current.updateScreenCaptureParameters({
@@ -324,21 +332,21 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
             videoParams: {
               dimensions: {
                 width: screenWidth,
-                height: screenHeight
+                height: screenHeight,
               },
               frameRate: 15,
-              bitrate: 2000
-            }
+              bitrate: 2000,
+            },
           });
         }
       } else {
         // Stop screen sharing
         await agoraEngineRef.current?.stopScreenCapture();
-        
+
         // Enable the camera again
         await agoraEngineRef.current?.enableLocalVideo(true);
       }
-      
+
       setIsScreenSharing(!isScreenSharing);
     } catch (error) {
       console.error('Screen share failed:', error);
@@ -366,7 +374,7 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
   };
 
   const joinChannel = async () => {
-    console.log('joinChannel', agoraEngineRef.current)
+    console.log('joinChannel', agoraEngineRef.current);
     try {
       const hasPermissions = await checkAndRequestPermissions();
       if (!hasPermissions) {
@@ -376,25 +384,21 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
       await agoraEngineRef.current?.setChannelProfile(
         ChannelProfileType.ChannelProfileLiveBroadcasting
       );
-      
+
       await agoraEngineRef.current?.setClientRole(
         ClientRoleType.ClientRoleBroadcaster
       );
 
       await agoraEngineRef.current?.startPreview();
-      
-      const tempChannel = 'test-channel'
-      const tempToken = '007eJxTYPj4d9n+BdbaTmYbi90a5qutzHxnxbPPNvDxK0aWf39W7z2nwGCWlGZkkJZqnJaalmRilmJkaZBilmyUaGBhkZqcYmJmMXm2X0ZDICODcskUVkYGCATxeRhKUotLdJMzEvPyUnMYGAD0hiQ7'
-      
-      await agoraEngineRef.current?.joinChannel(
-        tempToken,
-        tempChannel,
-        50,
-        {
-          clientRoleType: ClientRoleType.ClientRoleBroadcaster,
-          channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
-        }
-      );
+
+      const tempChannel = 'test-channel';
+      const tempToken =
+        '007eJxTYPj4d9n+BdbaTmYbi90a5qutzHxnxbPPNvDxK0aWf39W7z2nwGCWlGZkkJZqnJaalmRilmJkaZBilmyUaGBhkZqcYmJmMXm2X0ZDICODcskUVkYGCATxeRhKUotLdJMzEvPyUnMYGAD0hiQ7';
+
+      await agoraEngineRef.current?.joinChannel(tempToken, tempChannel, 50, {
+        clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+        channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
+      });
     } catch (error) {
       console.error('Failed to join channel:', error);
     }
@@ -442,7 +446,7 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
     <>
       {/* Call Ribbon (shown when in background or other screens) */}
       {showCallRibbon && (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.callRibbon}
           onPress={() => navigation.navigate('VideoCall')}
         >
@@ -460,7 +464,7 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
       {!isInPipMode && (
         <SafeAreaView style={styles.container}>
           <StatusBar style="light" />
-          
+
           {/* Remote Video */}
           {remoteUid !== null ? (
             <RtcSurfaceView
@@ -469,18 +473,17 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
             />
           ) : (
             <View style={styles.remoteVideoPlaceholder}>
-              <Text style={styles.placeholderText}>Waiting for remote user to join...</Text>
+              <Text style={styles.placeholderText}>
+                Waiting for remote user to join...
+              </Text>
             </View>
           )}
-          
+
           {/* Local Video */}
           {isVideoOn && !isScreenSharing && (
-            <RtcSurfaceView
-              style={styles.localVideo}
-              canvas={{ uid: 0 }}
-            />
+            <RtcSurfaceView style={styles.localVideo} canvas={{ uid: 0 }} />
           )}
-          
+
           {/* Controls */}
           <View style={styles.controls}>
             <TouchableOpacity style={styles.controlButton} onPress={toggleMute}>
@@ -489,38 +492,46 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
                 size={24}
                 color="white"
               />
-              <Text style={styles.controlText}>{isMuted ? 'Unmute' : 'Mute'}</Text>
+              <Text style={styles.controlText}>
+                {isMuted ? 'Unmute' : 'Mute'}
+              </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.controlButton} onPress={toggleVideo}>
+
+            <TouchableOpacity
+              style={styles.controlButton}
+              onPress={toggleVideo}
+            >
               <Ionicons
                 name={isVideoOn ? 'videocam' : 'videocam-off'}
                 size={24}
                 color="white"
               />
-              <Text style={styles.controlText}>{isVideoOn ? 'Video Off' : 'Video On'}</Text>
+              <Text style={styles.controlText}>
+                {isVideoOn ? 'Video Off' : 'Video On'}
+              </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.controlButton} onPress={switchCamera}>
-              <Ionicons
-                name={'camera-reverse'}
-                size={24}
-                color="white"
-              />
+
+            <TouchableOpacity
+              style={styles.controlButton}
+              onPress={switchCamera}
+            >
+              <Ionicons name={'camera-reverse'} size={24} color="white" />
               <Text style={styles.controlText}>Switch</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={[styles.controlButton, styles.endCallButton]} onPress={leaveChannel}>
-              <Ionicons
-                name={'call'}
-                size={24}
-                color="white"
-              />
+
+            <TouchableOpacity
+              style={[styles.controlButton, styles.endCallButton]}
+              onPress={leaveChannel}
+            >
+              <Ionicons name={'call'} size={24} color="white" />
               <Text style={styles.controlText}>End</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.controlButton, isScreenSharing ? styles.activeShareButton : {}]} 
+            <TouchableOpacity
+              style={[
+                styles.controlButton,
+                isScreenSharing ? styles.activeShareButton : {},
+              ]}
               onPress={toggleScreenShare}
             >
               <Ionicons
@@ -534,29 +545,25 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
             </TouchableOpacity>
 
             {/* PiP Toggle Button */}
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.controlButton}
               onPress={enterPipMode}
             >
-              <Ionicons
-                name="contract"
-                size={24}
-                color="white"
-              />
+              <Ionicons name="contract" size={24} color="white" />
               <Text style={styles.controlText}>Minimize</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.controlButton}
               onPress={toggleAutoEnterPip}
             >
               <Ionicons
-                name={autoEnterPipEnabled ? "checkbox" : "square-outline"}
+                name={autoEnterPipEnabled ? 'checkbox' : 'square-outline'}
                 size={24}
                 color="white"
               />
               <Text style={styles.controlText}>
-                Auto PiP: {autoEnterPipEnabled ? "ON" : "OFF"}
+                Auto PiP: {autoEnterPipEnabled ? 'ON' : 'OFF'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -570,7 +577,7 @@ const AgoraVideoCall = ({ onCallEnd, userId, channelName }) => {
             style={styles.pipVideo}
             canvas={{ uid: remoteUid || 0 }}
           />
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.pipCloseButton}
             onPress={togglePipMode}
           >

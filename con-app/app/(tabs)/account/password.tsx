@@ -48,7 +48,7 @@ const ChangePasswordScreen = () => {
     }
   };
 
-  const getPasswordStrength = (password) => {
+  const getPasswordStrength = password => {
     if (!password) return 0;
     if (password.length < 6) return 1;
     if (password.length < 8) return 2;
@@ -56,7 +56,7 @@ const ChangePasswordScreen = () => {
     return 3;
   };
 
-  const renderPasswordStrength = (password) => {
+  const renderPasswordStrength = password => {
     const strength = getPasswordStrength(password);
     const colors = ['#ff0000', '#ff4500', '#ffa500', '#9acd32', '#008000'];
     const labels = ['Very Weak', 'Weak', 'Moderate', 'Strong', 'Very Strong'];
@@ -64,12 +64,14 @@ const ChangePasswordScreen = () => {
     return (
       <View style={styles.strengthContainer}>
         <View style={styles.strengthBar}>
-          {[1, 2, 3, 4].map((i) => (
+          {[1, 2, 3, 4].map(i => (
             <View
               key={i}
               style={[
                 styles.strengthSegment,
-                { backgroundColor: i <= strength ? colors[strength] : '#e0e0e0' },
+                {
+                  backgroundColor: i <= strength ? colors[strength] : '#e0e0e0',
+                },
               ]}
             />
           ))}
@@ -92,7 +94,7 @@ const ChangePasswordScreen = () => {
           <TextInput
             label="Current Password"
             value={passwordData.currentPassword}
-            onChangeText={(text) => handlePasswordChange('currentPassword', text)}
+            onChangeText={text => handlePasswordChange('currentPassword', text)}
             error={!!errors.currentPassword}
             style={styles.input}
             mode="outlined"
@@ -106,7 +108,7 @@ const ChangePasswordScreen = () => {
           <TextInput
             label="New Password"
             value={passwordData.newPassword}
-            onChangeText={(text) => handlePasswordChange('newPassword', text)}
+            onChangeText={text => handlePasswordChange('newPassword', text)}
             error={!!errors.newPassword}
             style={styles.input}
             mode="outlined"
@@ -121,7 +123,7 @@ const ChangePasswordScreen = () => {
           <TextInput
             label="Confirm New Password"
             value={passwordData.confirmPassword}
-            onChangeText={(text) => handlePasswordChange('confirmPassword', text)}
+            onChangeText={text => handlePasswordChange('confirmPassword', text)}
             error={!!errors.confirmPassword}
             style={styles.input}
             mode="outlined"
@@ -131,13 +133,16 @@ const ChangePasswordScreen = () => {
           {errors.confirmPassword && (
             <Text style={styles.errorText}>{errors.confirmPassword}</Text>
           )}
-          <BaseButton title="Save Changes" onPress={savePassword} isLoading={false} />
+          <BaseButton
+            title="Save Changes"
+            onPress={savePassword}
+            isLoading={false}
+          />
         </Card.Content>
       </Card>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

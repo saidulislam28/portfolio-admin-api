@@ -1,8 +1,18 @@
-import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from "@/lib/constants";
-import { SERVICE_TYPE } from "@/store/slices/app/constants";
-import { Appointment, formatAppointmentTime, IAppointmentStatus } from "@sm/common";
-import React, { useCallback, useMemo } from "react";
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { PACKAGE_SERVICE_TYPE, PRIMARY_COLOR } from '@/lib/constants';
+import { SERVICE_TYPE } from '@/store/slices/app/constants';
+import {
+  Appointment,
+  formatAppointmentTime,
+  IAppointmentStatus,
+} from '@sm/common';
+import React, { useCallback, useMemo } from 'react';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface AppointmentCardProps {
@@ -10,83 +20,88 @@ interface AppointmentCardProps {
   onPress: (appointment: Appointment) => void;
 }
 
-const AppointmentCard: React.FC<AppointmentCardProps> = React.memo(({ appointment, onPress }) => {
-  const handlePress = useCallback(() => {
-    onPress(appointment);
-  }, [appointment, onPress]);
+const AppointmentCard: React.FC<AppointmentCardProps> = React.memo(
+  ({ appointment, onPress }) => {
+    const handlePress = useCallback(() => {
+      onPress(appointment);
+    }, [appointment, onPress]);
 
-  const isCancelled = appointment.status === IAppointmentStatus.CANCELLED;
-  const isCompleted = appointment.status === IAppointmentStatus.COMPLETED;
+    const isCancelled = appointment.status === IAppointmentStatus.CANCELLED;
+    const isCompleted = appointment.status === IAppointmentStatus.COMPLETED;
 
-  const statusColor = useMemo(() => {
-    switch (appointment.status) {
-      case IAppointmentStatus.CANCELLED:
-        return '#FF6B6B';
-      case IAppointmentStatus.COMPLETED:
-        return '#4ECDC4';
-      case IAppointmentStatus.CONFIRMED:
-        return '#45B7D1';
-      case IAppointmentStatus.PENDING:
-        return '#FFA726';
-      default:
-        return '#6C757D';
-    }
-  }, [appointment.status]);
+    const statusColor = useMemo(() => {
+      switch (appointment.status) {
+        case IAppointmentStatus.CANCELLED:
+          return '#FF6B6B';
+        case IAppointmentStatus.COMPLETED:
+          return '#4ECDC4';
+        case IAppointmentStatus.CONFIRMED:
+          return '#45B7D1';
+        case IAppointmentStatus.PENDING:
+          return '#FFA726';
+        default:
+          return '#6C757D';
+      }
+    }, [appointment.status]);
 
-  const renderServiceType = () => {
-    switch (appointment?.Order?.service_type) {
-      case PACKAGE_SERVICE_TYPE.conversation:
-        return "Conversation";
-      case PACKAGE_SERVICE_TYPE.speaking_mock_test  :
-        return "Mock Test";
-      default:
-        return appointment?.Order?.service_type || "N/A";
-    }
-  };
+    const renderServiceType = () => {
+      switch (appointment?.Order?.service_type) {
+        case PACKAGE_SERVICE_TYPE.conversation:
+          return 'Conversation';
+        case PACKAGE_SERVICE_TYPE.speaking_mock_test:
+          return 'Mock Test';
+        default:
+          return appointment?.Order?.service_type || 'N/A';
+      }
+    };
 
-  return (
-    <TouchableOpacity style={styles.appointmentCard} onPress={handlePress}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.serviceType}>{renderServiceType()}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
-          <Text style={styles.statusText}>{appointment.status}</Text>
+    return (
+      <TouchableOpacity style={styles.appointmentCard} onPress={handlePress}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.serviceType}>{renderServiceType()}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
+            <Text style={styles.statusText}>{appointment.status}</Text>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.cardContent}>
-        <Text style={styles.appointmentId}>ID: #{appointment.id}</Text>
+        <View style={styles.cardContent}>
+          <Text style={styles.appointmentId}>ID: #{appointment.id}</Text>
 
-        {appointment.User && (
-          <Text style={styles.consultantName}>
-            with <Text style={{fontWeight: 'bold'}}>{appointment.User.full_name || ''}</Text>
+          {appointment.User && (
+            <Text style={styles.consultantName}>
+              with{' '}
+              <Text style={{ fontWeight: 'bold' }}>
+                {appointment.User.full_name || ''}
+              </Text>
+            </Text>
+          )}
+
+          <Text style={styles.appointmentTime}>
+            {formatAppointmentTime(appointment.start_at)}
           </Text>
-        )}
 
-        <Text style={styles.appointmentTime}>
-          {formatAppointmentTime(appointment.start_at)}
-        </Text>
-
-        <Text style={styles.duration}>
-          Duration: {appointment.duration_in_min} minutes
-        </Text>
-
-        {appointment.notes && (
-          <Text style={styles.notes} numberOfLines={2}>
-            Notes: {appointment.notes}
+          <Text style={styles.duration}>
+            Duration: {appointment.duration_in_min} minutes
           </Text>
-        )}
-      </View>
 
-      {isCancelled && appointment.cancel_reason && (
-        <View style={styles.cancelledSection}>
-          <Text style={styles.cancelReason}>Cancelled: {appointment.cancel_reason}</Text>
+          {appointment.notes && (
+            <Text style={styles.notes} numberOfLines={2}>
+              Notes: {appointment.notes}
+            </Text>
+          )}
         </View>
-      )}
-    </TouchableOpacity>
-  );
-});
 
-
+        {isCancelled && appointment.cancel_reason && (
+          <View style={styles.cancelledSection}>
+            <Text style={styles.cancelReason}>
+              Cancelled: {appointment.cancel_reason}
+            </Text>
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -242,6 +257,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
-
 
 export default AppointmentCard;

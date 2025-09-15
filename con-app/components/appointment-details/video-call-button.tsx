@@ -1,8 +1,8 @@
-import React from "react";
-import { Dimensions } from "react-native";
-import { BaseButton } from "../BaseButton";
+import React from 'react';
+import { Dimensions } from 'react-native';
+import { BaseButton } from '../BaseButton';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 const isTablet = width >= 600;
 
 interface VideoCallButtonProps {
@@ -18,14 +18,12 @@ export const VideoCallButton = ({
     <BaseButton
       title="Start Video Call"
       onPress={() => {
-        console.log("hitting");
-        if (status === "CANCELLED" || status === "COMPLETED") {
-          return console.log("clicked now from unde");
+        console.log('hitting');
+        if (status === 'CANCELLED' || status === 'COMPLETED') {
+          return console.log('clicked now from unde');
         }
         startVideoCall();
       }}
-
     />
   );
 };
-

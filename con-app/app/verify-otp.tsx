@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import React, { useRef, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -10,15 +10,15 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import { useAuth } from "@/context/useAuth";
-import { PRIMARY_COLOR, SECONDARY_COLOR } from "@/lib/constants";
-import { ROUTES } from "@/constants/app.routes";
-import { API_CONSULTANT, Post } from "@sm/common";
+} from 'react-native';
+import { useAuth } from '@/context/useAuth';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from '@/lib/constants';
+import { ROUTES } from '@/constants/app.routes';
+import { API_CONSULTANT, Post } from '@sm/common';
 
 const VerifyOtpScreen = () => {
   const { verifyOtp, tempEmail, login }: any = useAuth();
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isResending, setIsResending] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const router = useRouter();
@@ -40,11 +40,11 @@ const VerifyOtpScreen = () => {
   const handleVerify = async () => {
     setIsVerifying(true);
 
-    const email = await AsyncStorage.getItem("email");
+    const email = await AsyncStorage.getItem('email');
 
-    const otpValue = otp.join("");
+    const otpValue = otp.join('');
     if (!otpValue || otpValue.length < 6) {
-      Alert.alert("Error", "Please enter a valid 6-digit OTP");
+      Alert.alert('Error', 'Please enter a valid 6-digit OTP');
       setIsVerifying(false);
       return;
     }
@@ -55,21 +55,21 @@ const VerifyOtpScreen = () => {
         top: Number(otpValue),
       });
       if (!result?.data?.success) {
-        Alert.alert("Error", result.error);
+        Alert.alert('Error', result.error);
         setIsVerifying(false);
         return;
       }
       login(result.data.user);
       router.push(ROUTES.HOME);
     } catch (error) {
-      Alert.alert("Error", error?.message ?? "An unexpected error occurred");
+      Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
       setIsVerifying(false);
     }
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <View style={styles.innerContainer}>
@@ -80,12 +80,12 @@ const VerifyOtpScreen = () => {
           {otp.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(ref) => (inputs.current[index] = ref!)}
+              ref={ref => (inputs.current[index] = ref!)}
               style={styles.otpBox}
               keyboardType="numeric"
               maxLength={1}
               value={digit}
-              onChangeText={(text) => handleChange(text, index)}
+              onChangeText={text => handleChange(text, index)}
               returnKeyType="next"
               autoFocus={index === 0}
             />
@@ -95,10 +95,10 @@ const VerifyOtpScreen = () => {
         <TouchableOpacity
           style={[styles.button, isVerifying && styles.buttonDisabled]}
           onPress={handleVerify}
-        // disabled={isVerifying}
+          // disabled={isVerifying}
         >
           <Text style={styles.buttonText}>
-            {isVerifying ? "Verifying..." : "Verify"}
+            {isVerifying ? 'Verifying...' : 'Verify'}
           </Text>
         </TouchableOpacity>
 
@@ -107,7 +107,7 @@ const VerifyOtpScreen = () => {
           disabled={isResending}
         >
           <Text style={styles.resendButtonText}>
-            {isResending ? "Sending..." : "Resend OTP"}
+            {isResending ? 'Sending...' : 'Resend OTP'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -118,67 +118,67 @@ const VerifyOtpScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   innerContainer: {
     flex: 1,
     padding: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: "center",
-    color: "#333",
+    textAlign: 'center',
+    color: '#333',
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 30,
-    textAlign: "center",
-    color: "#666",
+    textAlign: 'center',
+    color: '#666',
   },
   otpContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   otpBox: {
     width: 50,
     height: 50,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
     borderRadius: 8,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 18,
-    color: "#333",
+    color: '#333',
   },
   button: {
     backgroundColor: PRIMARY_COLOR,
     padding: 15,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 15,
   },
   buttonDisabled: {
     backgroundColor: SECONDARY_COLOR,
   },
   buttonText: {
-    color: "white",
+    color: 'white',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   resendButton: {
     padding: 15,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: PRIMARY_COLOR,
   },
   resendButtonText: {
     color: PRIMARY_COLOR,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 
