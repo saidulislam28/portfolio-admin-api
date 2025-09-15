@@ -42,7 +42,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
 
 const styles = StyleSheet.create({
   listContent: {
-    padding: 16,
+    padding: 20,
   },
   separator: {
     height: 8,

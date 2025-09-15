@@ -2,6 +2,7 @@
 import { LoadingIndicator } from '@/components/order/LoadingIndicator';
 import { OrdersTab } from '@/components/order/OrdersTab';
 import { useOrders } from '@/hooks/queries/useOrder';
+import { PRIMARY_COLOR } from '@/lib/constants';
 import React, { useState, useRef } from 'react';
 import {
   View,
@@ -18,7 +19,7 @@ const OrdersScreen = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const pagerRef = useRef<PagerView>(null);
-  
+
   const { data: orders = [], isLoading, error, refetch } = useOrders();
 
   const handleRefresh = async () => {
@@ -69,10 +70,10 @@ const OrdersScreen = () => {
                 styles.tabText,
                 currentTab === index && styles.activeTabText,
               ]}
-              numberOfLines={1}
+              numberOfLines={2}
               ellipsizeMode="tail"
             >
-              {section.title} ({section.data.length})
+              ({section.data.length}) {"\n"} {section.title}
             </Text>
           </TouchableOpacity>
         ))}
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     minWidth: 0, // Important for flexbox with text truncation
   },
   activeTab: {
-    borderBottomColor: '#007AFF',
+    borderBottomColor: PRIMARY_COLOR,
   },
   tabText: {
     fontSize: 12,
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   activeTabText: {
-    color: '#007AFF',
+    color: PRIMARY_COLOR,
     fontWeight: '600',
   },
   pagerView: {
