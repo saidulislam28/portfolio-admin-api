@@ -84,32 +84,6 @@ export type FeedbackFormData = {
   overallLevel?: string;
 };
 
-export type MockTestFeedbackPageProps = {
-  // API configuration
-  apiEndpoint?: string;
-  apiMethod?: (endpoint: string, data: any) => Promise<any>;
-  commentsEndpoint: string;
-  // Navigation
-  successRoute?: string;
-
-  // Customization
-  title?: string;
-  showLogo?: boolean;
-  customStyles?: {
-    container?: object;
-    header?: object;
-    section?: object;
-    button?: object;
-  };
-
-  // Initial data
-  initialFeedback?: Partial<FeedbackFormData>;
-
-  // Callbacks
-  onSubmitSuccess?: (response: any) => void;
-  onSubmitError?: (error: any) => void;
-  onBeforeSubmit?: (data: any) => any;
-};
 
 // Default initial feedback state
 const defaultInitialFeedback: FeedbackFormData = {
@@ -174,18 +148,7 @@ const defaultInitialFeedback: FeedbackFormData = {
   additionalNotes: '',
 };
 
-const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
-  apiEndpoint = API_CONSULTANT.mocktest_feedback,
-  commentsEndpoint = API_CONSULTANT.mocktest_comments,
-  successRoute = ROUTES.MY_APPOINTMENTS,
-  title = 'Mock Test Feedback Form',
-  showLogo = true,
-  customStyles = {},
-  initialFeedback = {},
-  onSubmitSuccess,
-  onSubmitError,
-  onBeforeSubmit,
-}) => {
+const MockTestFeedbackPage = () => {
   const params = useLocalSearchParams();
   const appointment_id = params.appointment_id
     ? JSON.parse(params.appointment_id as string)
@@ -201,7 +164,6 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   // Form state with merged initial feedback
   const [feedback, setFeedback] = useState<FeedbackFormData>({
     ...defaultInitialFeedback,
-    ...initialFeedback,
   });
 
   // Calculate overall band score
@@ -217,7 +179,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
   const fetchComments = useCallback(async () => {
     try {
-      const response = await Get(commentsEndpoint);
+      const response = await Get(API_CONSULTANT.mocktest_comments);
       if (response.success) {
         setComments(response?.data || []);
       }
@@ -226,7 +188,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
       Alert.alert(errorMessage);
       // onFetchCommentsError?.(error);
     }
-  }, [commentsEndpoint]);
+  }, [params]);
 
   useEffect(() => {
     fetchComments();
@@ -276,13 +238,10 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
       consultant_id: Number(consultant_id),
       appointment_id: Number(appointment_id),
     };
-    if (onBeforeSubmit) {
-      finalFeedback = onBeforeSubmit(finalFeedback);
-    }
 
     try {
       setLoading(true);
-      const response = await Post(apiEndpoint, finalFeedback);
+      const response = await Post(API_CONSULTANT.mocktest_feedback, finalFeedback);
 
       console.log('feedback response', response?.data);
 
@@ -290,22 +249,15 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
         // Reset form
         setFeedback({
           ...defaultInitialFeedback,
-          ...initialFeedback,
         });
         Alert.alert("Feedback Form Submitted Successfully");
         handleBackToHome()
-        if (onSubmitSuccess) {
-          onSubmitSuccess(response);
-        }
+
       }
     } catch (error: any) {
       setLoading(false);
-      if (!onSubmitError) {
-        Alert.alert('Error found', error.message || 'An error occurred');
-      }
-      if (onSubmitError) {
-        onSubmitError(error);
-      }
+      Alert.alert('Error found', error.message || 'An error occurred');
+
     } finally {
       setLoading(false);
     }
@@ -367,16 +319,16 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   };
 
   return (
-    <View style={[styles.container, customStyles.container]}>
+    <View style={[styles.container]}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header */}
-        <View style={[styles.headerContainer, customStyles.header]}>
-          {showLogo && <Logo />}
-          <Text style={styles.headerText}>{title}</Text>
+        <View style={[styles.headerContainer]}>
+          {<Logo />}
+          <Text style={styles.headerText}>{'Mock Test Feedback Form'}</Text>
         </View>
 
         {/* Band Descriptors */}
-        <View style={[styles.section, customStyles.section]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionHeader}>
             Band Descriptors – Star Rating (1.0 to 9.0)
           </Text>
@@ -438,7 +390,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
         {/* Overall Band Score */}
         <View
-          style={[styles.section, styles.overallSection, customStyles.section]}
+          style={[styles.section, styles.overallSection]}
         >
           <Text style={styles.sectionHeader}>Overall Band Score</Text>
           <Text style={styles.note}>
@@ -453,7 +405,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
         </View>
 
         {/* Section Wise Feedback */}
-        <View style={[styles.section, customStyles.section]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionHeader}>Section Wise Feedback</Text>
 
           <View style={styles.criteriaContainer}>
@@ -488,7 +440,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
         </View>
 
         {/* Recommendations */}
-        <View style={[styles.section, customStyles.section]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionHeader}>Recommendations</Text>
           {renderCheckboxGroup([
             {
@@ -515,7 +467,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
 
         {/* Comments Section */}
         {comments.length > 0 && (
-          <View style={[styles.section, customStyles.section]}>
+          <View style={[styles.section]}>
             <Text style={styles.sectionHeader}>Overall Conversation Level</Text>
             <View style={styles.radioGroup}>
               {comments.map(level => (
@@ -538,7 +490,7 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
         )}
 
         {/* Additional Notes */}
-        <View style={[styles.section, customStyles.section]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionHeader}>Additional Notes</Text>
           <TextInput
             style={styles.notesInput}

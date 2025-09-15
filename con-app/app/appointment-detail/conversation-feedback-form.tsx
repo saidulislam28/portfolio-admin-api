@@ -78,34 +78,6 @@ export interface CheckboxItem {
   field: keyof FeedbackData;
 }
 
-export interface FeedbackFormProps {
-  appointment?: any;
-  consultantId?: string;
-  headerTitle?: string;
-  submitButtonText?: string;
-  loadingText?: string;
-  // Custom sections
-  sections?: Array<{
-    title: string;
-    items: CheckboxItem[];
-    suggestionsTitle?: string;
-    suggestionItems?: CheckboxItem[];
-  }>;
-  // API endpoints
-  commentsEndpoint?: string;
-  submitEndpoint?: string;
-  // Callbacks
-  onSubmitSuccess?: () => void;
-  onSubmitError?: (error: any) => void;
-  onFetchCommentsError?: (error: any) => void;
-  // Custom styles
-  containerStyle?: object;
-  headerStyle?: object;
-  sectionStyle?: object;
-  checkboxStyle?: object;
-  submitButtonStyle?: object;
-}
-
 // Initial feedback state as a constant to avoid recreation
 const getInitialFeedbackState = (): FeedbackData => ({
   appointment_id: null,
@@ -153,19 +125,7 @@ const getInitialFeedbackState = (): FeedbackData => ({
   generalComments: '',
 });
 
-const FeedbackForm: React.FC<FeedbackFormProps> = ({
-  headerTitle = 'Conversation Feedback Form',
-  sections: customSections,
-  commentsEndpoint = API_CONSULTANT.feedback_comments,
-  submitEndpoint = API_CONSULTANT.conversation_feedback,
-  onSubmitSuccess,
-  onSubmitError,
-  onFetchCommentsError,
-  containerStyle,
-  headerStyle,
-  sectionStyle,
-  checkboxStyle,
-}) => {
+const FeedbackForm = () => {
   const params = useLocalSearchParams();
   const appointment_id = params.appointment_id ? JSON.parse(params.appointment_id as string) : null;
   const consultant_id =
@@ -205,16 +165,15 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
   const fetchComments = useCallback(async () => {
     try {
-      const response = await Get(commentsEndpoint);
+      const response = await Get(API_CONSULTANT.feedback_comments);
       if (response.success) {
         setComments(response?.data || []);
       }
     } catch (error) {
       const errorMessage = 'Could not fetch comments';
       Alert.alert(errorMessage);
-      onFetchCommentsError?.(error);
     }
-  }, [commentsEndpoint, onFetchCommentsError]);
+  }, [params]);
 
   useEffect(() => {
     fetchComments();
@@ -237,35 +196,24 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
     try {
       setLoading(true);
-      const response = await Post(submitEndpoint, finalFeedback);
+      const response = await Post(API_CONSULTANT.conversation_feedback, finalFeedback);
 
       // console.log("conversation response >", response.data)
       // console.log("conversation response", response)
 
-      if (response?.data?.success) {
-        onSubmitSuccess
-          ? onSubmitSuccess()
-          : handleBackToHome();
+      if (response?.data?.success) {        
+           handleBackToHome();
         Alert.alert("Feedback Form Submitted Successfully");
       }
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = 'Failed to submit feedback';
       Alert.alert('Error', errorMessage);
-      onSubmitError?.(error);
       setLoading(false);
     } finally {
       setLoading(false);
     }
-  }, [
-    feedback,
-    consultant_id,
-    appointment_id,
-    router,
-    submitEndpoint,
-    onSubmitSuccess,
-    onSubmitError,
-  ]);
+  }, [params]);
 
   // Memoized EnhancedCheckbox component to prevent unnecessary re-renders
   const EnhancedCheckbox = React.memo(
@@ -282,7 +230,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     }) => {
       return (
         <TouchableOpacity
-          style={[styles.checkboxContainer, checkboxStyle]}
+          style={[styles.checkboxContainer]}
           onPress={onPress}
           activeOpacity={0.7}
         >
@@ -308,7 +256,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       suggestionsTitle?: string,
       suggestionItems?: CheckboxItem[]
     ) => (
-      <View style={[styles.section, sectionStyle]}>
+      <View style={[styles.section]}>
         <Text style={styles.sectionTitle}>{title}</Text>
         <View style={styles.twoColumnContainer}>
           <View style={styles.column}>
@@ -353,7 +301,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         )}
       </View>
     ),
-    [feedback, handleCheckboxChange, sectionStyle, checkboxStyle]
+    [feedback, handleCheckboxChange]
   );
 
   // Default sections if not provided via props
@@ -496,10 +444,10 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     []
   );
 
-  const sectionsToRender = customSections || defaultSections;
+  const sectionsToRender = defaultSections;
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container]}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
@@ -508,9 +456,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         windowSize={10}
       >
         {/* Test Information */}
-        <View style={[styles.headerContainer, headerStyle]}>
+        <View style={[styles.headerContainer]}>
           <Logo />
-          <Text style={styles.header}>{headerTitle}</Text>
+          <Text style={styles.header}>{"Conversation Feedback Form"}</Text>
         </View>
 
         {/* Sections */}
@@ -524,7 +472,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         )}
 
         {/* Give built in comments */}
-        <View style={[styles.section, sectionStyle]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionTitle}>Overall Speaking Level</Text>
           <View style={styles.radioGroup}>
             {comments?.map(level => (
@@ -546,7 +494,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         </View>
 
         {/* General Comments */}
-        <View style={[styles.section, sectionStyle]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionTitle}>General Comments</Text>
           <TextInput
             style={styles.commentsInput}
