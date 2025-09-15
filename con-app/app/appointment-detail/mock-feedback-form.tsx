@@ -187,11 +187,17 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
   onBeforeSubmit,
 }) => {
   const params = useLocalSearchParams();
+  const appointment_id = params.appointment_id
+    ? JSON.parse(params.appointment_id as string)
+    : null;
+  const consultant_id = params.consultant_id
+    ? JSON.parse(params?.consultant_id as string)
+    : null;
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
   const router = useRouter();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null); // UI only
-
+  // console.log("new params >>", appointment_id, consultant_id);
   // Form state with merged initial feedback
   const [feedback, setFeedback] = useState<FeedbackFormData>({
     ...defaultInitialFeedback,
@@ -257,12 +263,10 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
     }));
   }, []);
 
-  const parseAppointment = params.appointment
-    ? JSON.parse(params.appointment as string)
-    : null;
-  const consultant_id = params.consultant_id
-    ? JSON.parse(params?.consultant_id as string)
-    : null;
+  const handleBackToHome = () => {
+    router.dismissAll();
+    router.replace(ROUTES.MY_APPOINTMENTS as any);
+  };
 
   // Submit handler
   const handleSubmit = async () => {
@@ -270,13 +274,8 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
       ...feedback,
       overallBandScore: calculateOverallBand(),
       consultant_id: Number(consultant_id),
-      appointment_id: parseAppointment?.id,
+      appointment_id: Number(appointment_id),
     };
-
-    // return
-    // return console.log("handle mock test submit", finalFeedback?.mark_assignment_complete)
-
-    // Allow custom transformation before submission
     if (onBeforeSubmit) {
       finalFeedback = onBeforeSubmit(finalFeedback);
     }
@@ -293,21 +292,16 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
           ...defaultInitialFeedback,
           ...initialFeedback,
         });
-        // Navigate to success route
-        router.push(ROUTES.MY_APPOINTMENTS as any);
-        // Call success callback if provided
+        handleBackToHome()
         if (onSubmitSuccess) {
           onSubmitSuccess(response);
         }
       }
     } catch (error: any) {
       setLoading(false);
-      // Show alert if no custom error handler
       if (!onSubmitError) {
         Alert.alert('Error found', error.message || 'An error occurred');
       }
-
-      // Call error callback if provided
       if (onSubmitError) {
         onSubmitError(error);
       }
@@ -541,18 +535,6 @@ const MockTestFeedbackPage: React.FC<MockTestFeedbackPageProps> = ({
             </View>
           </View>
         )}
-
-        {/* update status  */}
-        {/* <View style={[styles.section, customStyles.section]}>
-          <Text style={{ color: PRIMARY_COLOR, fontSize: 24, fontWeight: 600 }}>Mark assignment *</Text>
-          {renderCheckboxGroup([
-            {
-              label: "Mark assignment as complete",
-              field: "mark_assignment_complete",
-            },
-
-          ])}
-        </View> */}
 
         {/* Additional Notes */}
         <View style={[styles.section, customStyles.section]}>

@@ -3,9 +3,8 @@ import CommonHeader from "@/components/CommonHeader";
 import { InputField } from "@/components/InputField"; // Add this import
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
-import { PACKAGE_SERVICE_TYPE } from "@/lib/constants";
 import { validateEmail, validatePhone } from "@/utility/validator";
-import { API_USER, Post } from "@sm/common";
+import { API_USER, PACKAGE_SERVICE_TYPE, Post } from "@sm/common";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {

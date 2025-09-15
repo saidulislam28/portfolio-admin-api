@@ -154,11 +154,7 @@ const getInitialFeedbackState = (): FeedbackData => ({
 });
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({
-  appointment: propAppointment,
-  consultantId: propConsultantId,
   headerTitle = 'Conversation Feedback Form',
-  submitButtonText = 'Submit Feedback',
-  loadingText = 'Submitting....',
   sections: customSections,
   commentsEndpoint = API_CONSULTANT.feedback_comments,
   submitEndpoint = API_CONSULTANT.conversation_feedback,
@@ -169,14 +165,11 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   headerStyle,
   sectionStyle,
   checkboxStyle,
-  submitButtonStyle,
 }) => {
   const params = useLocalSearchParams();
-  const parseAppointment =
-    propAppointment ||
-    (params.appointment ? JSON.parse(params.appointment as string) : null);
+  const appointment_id = params.appointment_id ? JSON.parse(params.appointment_id as string) : null;
   const consultant_id =
-    propConsultantId ||
+    params.consultant_id ||
     (params.consultant_id ? JSON.parse(params?.consultant_id as string) : null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -184,6 +177,9 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     getInitialFeedbackState
   );
   const [comments, setComments] = useState<FeedbackComment[]>([]);
+
+
+
 
   // Optimized checkbox change handler using useCallback
   const handleCheckboxChange = useCallback((field: keyof FeedbackData) => {
@@ -224,14 +220,17 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     fetchComments();
   }, [params]);
 
-  // console.log("paramasss from conversation feedback", parseAppointment)
-  // console.log("paramasss from conversation id>>>", consultant_id)
+
+  const handleBackToHome = () => {
+    router.dismissAll();
+    router.replace(ROUTES.MY_APPOINTMENTS as any);
+  };
 
   const handleSubmit = useCallback(async () => {
     const finalFeedback = {
       ...feedback,
       consultant_id: Number(consultant_id),
-      appointment_id: Number(parseAppointment?.id),
+      appointment_id: Number(appointment_id),
     };
 
     // return console.log("idssss>>", finalFeedback?.consultant_id)
@@ -246,7 +245,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       if (response?.data?.success) {
         onSubmitSuccess
           ? onSubmitSuccess()
-          : router.push(ROUTES.MY_APPOINTMENTS as any);
+          : handleBackToHome();
       }
     } catch (error) {
       console.error('Error:', error);
@@ -260,7 +259,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   }, [
     feedback,
     consultant_id,
-    parseAppointment?.id,
+    appointment_id,
     router,
     submitEndpoint,
     onSubmitSuccess,
@@ -497,18 +496,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   );
 
   const sectionsToRender = customSections || defaultSections;
-
-  const updateSection = [
-    {
-      title: 'Mark Appointment',
-      items: [
-        {
-          label: 'Mark appointment as complete.',
-          field: 'mark_assignment_complete',
-        },
-      ],
-    },
-  ];
 
   return (
     <View style={[styles.container, containerStyle]}>

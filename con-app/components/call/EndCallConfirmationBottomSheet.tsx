@@ -11,16 +11,19 @@ interface EndCallConfirmationBottomSheetProps {
   onEndCallWithFeedback: () => void;
   onEndCallWithoutFeedback: () => void;
   onCancel: () => void;
+  isBottomSheetOpen: any
+  onChange: any;
 }
 
 const EndCallConfirmationBottomSheet: React.FC<
   EndCallConfirmationBottomSheetProps
-> = ({ index, onEndCallWithFeedback, onEndCallWithoutFeedback, onCancel }) => {
+> = ({ index, onEndCallWithFeedback, onEndCallWithoutFeedback, onCancel, isBottomSheetOpen, onChange }) => {
   return (
     <BottomSheet
-      index={index}
+      index={isBottomSheetOpen ? 0 : -1}
       snapPoints={['40%']}
       enablePanDownToClose
+      onChange={(i) => onChange(i >= 0)}
       backdropComponent={props => (
         <BottomSheetBackdrop
           {...props}

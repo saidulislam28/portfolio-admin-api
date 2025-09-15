@@ -118,9 +118,6 @@ const FONT_SIZE_SMALL = isTablet ? 16 : 14;
 
 const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   appointment: propAppointment,
-  onRefresh,
-  onStatusChange,
-  onNoteUpdate,
   onCallStart,
   showHeader = true,
   showActions = true,
@@ -256,10 +253,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     });
   };
 
-  console.log(
-    'appointment details from details page>>>>>>>',
-    appointment?.Order?.service_type
-  );
 
   const startVideoCall = async () => {
     console.log('=== button pressed ===', appointment);
@@ -338,18 +331,18 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
       PACKAGE_SERVICE_TYPE.speaking_mock_test
     ) {
       return router.push({
-        pathname: ROUTES.MOCK_FEEDBACK_PAGE,
+        pathname: ROUTES.MOCK_FEEDBACK_PAGE as any,
         params: {
-          consultant_id: JSON.stringify(user?.id),
-          appointment: JSON.stringify(appointment),
+          consultant_id: `${user?.id}`,
+          appointment_id: `${appointment?.id}`,
         },
       });
     }
     router.push({
-      pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE,
+      pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE as any,
       params: {
-        consultant_id: JSON.stringify(user?.id),
-        appointment: JSON.stringify(appointment),
+        consultant_id: `${user?.id}`,
+        appointment_id: `${appointment?.id}`,
       },
     });
   };

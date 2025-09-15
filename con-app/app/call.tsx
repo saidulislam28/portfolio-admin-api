@@ -45,6 +45,8 @@ export default function CallScreen() {
   const service_type = params.service_type;
   const { setLoading } = useLoading();
 
+  // console.log("appointment id>", userId, appointmentId);
+
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 👈 NEW STATE
 
   const {
@@ -115,6 +117,7 @@ export default function CallScreen() {
   };
 
   const handleCancelEndCall = () => {
+    console.log("hittin cancel");
     setIsBottomSheetOpen(false); // 👈 Close sheet
   };
 
@@ -125,26 +128,25 @@ export default function CallScreen() {
 
   const handleEndCallWithoutFeedback = async () => {
     setIsBottomSheetOpen(false); // 👈 Close first
-    await performEndCall(false);
+    await endCall();
+    router.back();
   };
 
   const performEndCall = async (needsFeedback: boolean) => {
-    console.log('hitting end call');
     setLoading(true);
     try {
       await leaveChannel();
       await endCall();
       stopAudioService();
       sendCallEndNotificationToUser(Number(appointmentId));
-      console.log('hitting end call 11');
 
       if (service_type === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
         if (needsFeedback) {
           return router.push({
             pathname: ROUTES.MOCK_FEEDBACK_PAGE as any,
             params: {
-              consultant_id: JSON.stringify(userId),
-              appointment: JSON.stringify({ id: appointmentId }),
+              consultant_id: `${userId}`,
+              appointment_id: `${appointmentId}`,
             },
           });
         }
@@ -152,8 +154,8 @@ export default function CallScreen() {
         router.push({
           pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE as any,
           params: {
-            consultant_id: JSON.stringify(userId),
-            appointment: JSON.stringify({ id: appointmentId }),
+            consultant_id: `${userId}`,
+            appointment_id: `${appointmentId}`,
           },
         });
       } else {
@@ -161,7 +163,6 @@ export default function CallScreen() {
         router.back();
       }
 
-      console.log('hitting end call 2');
     } catch (error) {
       console.error('Error ending call:', error);
       router.back();
@@ -407,7 +408,7 @@ export default function CallScreen() {
     );
   }
 
-  console.log('params:', userId, appointmentId, service_type);
+  // console.log('params:', userId, appointmentId, service_type);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
@@ -567,10 +568,12 @@ export default function CallScreen() {
 
       {/* Moved to separate component */}
       <EndCallConfirmationBottomSheet
+        isBottomSheetOpen={isBottomSheetOpen}
         index={isBottomSheetOpen ? 0 : -1}
         onEndCallWithFeedback={handleConfirmEndCall}
         onEndCallWithoutFeedback={handleEndCallWithoutFeedback}
         onCancel={handleCancelEndCall}
+        onChange={setIsBottomSheetOpen}
       />
     </SafeAreaView>
   );
