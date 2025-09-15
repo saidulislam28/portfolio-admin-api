@@ -12,6 +12,8 @@ export const NotificationChannel = {
     "calls": "calls",
     "call": "call"
 };
+export const NO_IMAGE_TEXT = "NOT_AVAILABLE"; // the fcm data push we get when someone calls, this is the valeu we will receive if user or consultant 
+// image is not available, so that we can show a placeholder
 export const ADMIN_CALL_USER_ID = 999999;
 export const PACKAGE_SERVICE_TYPE = {
     book_purchase: 'book_purchase',

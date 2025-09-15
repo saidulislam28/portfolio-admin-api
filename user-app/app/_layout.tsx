@@ -36,11 +36,6 @@ LogBox.ignoreLogs([
 export default function HomeLayout() {
   useNotifications();
 
-  console.log(
-    "url base api??????>>>>>",
-    Constants.expoConfig?.extra?.apiBaseUrl
-  );
-
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>

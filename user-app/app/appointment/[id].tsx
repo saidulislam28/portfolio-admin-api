@@ -80,7 +80,7 @@ const AppointmentDetailPage = () => {
     // Start the call process
     await startCall(appointment?.token, user?.id);
     //router remain
-    router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: appointment?.Consultant?.id }) as any);
+    router.push(ROUTES.CALL_CONSULTANT);
 
   };
 

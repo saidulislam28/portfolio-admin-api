@@ -40,7 +40,6 @@ export default ({
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION",
         "android.permission.WAKE_LOCK",
-        "android.permission.READ_CALL_LOG",
         "android.permission.CALL_PHONE",
         "android.permission.READ_PHONE_STATE",
       ],
