@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { RECIPIENT_TYPE } from 'src/common/constants';
 import { UserUpdatedEvent } from 'src/common/events/user-updated.event';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RegisterDeviceTokenDto } from './dto/device-token.dto';
 
 @Injectable()
 export class DeviceTokenService {
@@ -15,10 +15,10 @@ export class DeviceTokenService {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async registerToken(user_id: number, token: string, recipient_type: string) {
-    if (recipient_type === 'Consultant') {
+  async registerToken(payload: RegisterDeviceTokenDto) {
+    if (payload.consultant_id) {
       const existingUser = await this.prisma.consultant.findUnique({
-        where: { id: user_id },
+        where: { id: payload.consultant_id },
       });
 
       if (!existingUser) {
@@ -26,18 +26,18 @@ export class DeviceTokenService {
       }
 
       await this.prisma.consultant.update({
-        where: { id: user_id },
-        data: { token },
+        where: { id: payload.consultant_id },
+        data: { token: payload.token },
       });
       this.eventEmitter.emit(
         'user.updated',
-        new UserUpdatedEvent(user_id, 'consultant', ['token']),
+        new UserUpdatedEvent(payload.consultant_id, 'consultant', ['token']),
       );
     }
 
-    if (recipient_type === 'User') {
+    if (payload.user_id) {
       const existingUser = await this.prisma.user.findUnique({
-        where: { id: user_id },
+        where: { id: payload.user_id },
       });
 
       if (!existingUser) {
@@ -45,16 +45,16 @@ export class DeviceTokenService {
       }
 
       await this.prisma.user.update({
-        where: { id: user_id },
-        data: { token },
+        where: { id: payload.user_id },
+        data: { token: payload.token },
       });
       this.eventEmitter.emit(
         'user.updated',
-        new UserUpdatedEvent(user_id, 'user', ['token']),
+        new UserUpdatedEvent(payload.user_id, 'user', ['token']),
       );
     }
 
-    throw new BadRequestException('Invalid recipient type');
+    return {};
   }
 
 }

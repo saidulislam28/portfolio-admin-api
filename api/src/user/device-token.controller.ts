@@ -1,23 +1,37 @@
-import { BadRequestException, Body, Controller, Delete, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
 import { DeviceTokenService } from './device-token.service';
+import {
+  DeviceTokenResponseDto,
+  RegisterDeviceTokenDto,
+} from './dto/device-token.dto';
 
+@ApiTags('User Device Tokens')
 @Controller('user/device-tokens')
 export class DeviceTokenController {
-    constructor(private readonly deviceTokenService: DeviceTokenService) { }
+  constructor(private readonly deviceTokenService: DeviceTokenService) {}
 
-    @Post()
-    async registerToken(
-        @Body() body: { token: string; recipient_type: string; user_id: number },
-    ) {
-        const { token, recipient_type, user_id } = body;
+  @Post()
+  @ApiOperation({ summary: 'Register a device token for a user' })
+  @ApiResponse({
+    status: 201,
+    description: 'Device token registered successfully',
+    type: DeviceTokenResponseDto,
+  })
+  @ApiBody({
+    type: RegisterDeviceTokenDto,
+    description: 'Device token data',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Missing token, user_id, or consultant_id',
+  })
+  async registerToken(
+    @Body() dto: RegisterDeviceTokenDto,
+  ): Promise<DeviceTokenResponseDto> {
+    const result = await this.deviceTokenService.registerToken(dto);
 
-        if (!token || !user_id || !recipient_type) {
-            throw new BadRequestException('Missing token, user_id, or recipient_type');
-        }
-
-        const result = await this.deviceTokenService.registerToken(user_id, token, recipient_type);
-        return res.success(result);
-    }
-
+    return res.success(result);
+  }
 }
