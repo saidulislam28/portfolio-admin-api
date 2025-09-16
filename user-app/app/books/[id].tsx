@@ -39,7 +39,7 @@ export default function BookDetailsScreen() {
       try {
         setLoading(true);
         const book = await GetOne(API_USER.get_books, Number(id));
-        console.log("book from fetching>>", book)
+        // console.log("book from fetching>>", book)
         if (book?.success) {
           setBookDetails(book?.data ?? {});
         }

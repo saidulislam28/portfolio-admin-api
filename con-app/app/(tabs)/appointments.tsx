@@ -1,17 +1,16 @@
 import AnimatedTabView from '@/components/myappointments_/AnimatedTabView';
 import LiveAppointments from '@/components/myappointments_/LiveAppointmentCard';
 import { ROUTES } from '@/constants/app.routes';
+import { useConsultantAppointment } from '@/hooks/queries/useAppointment';
 import { PRIMARY_COLOR } from '@/lib/constants';
 import {
-  API_CONSULTANT,
-  categorizeAppointments,
-  Get,
   Appointment,
+  categorizeAppointments
 } from '@sm/common';
 import * as Localization from 'expo-localization';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Type definitions
@@ -19,57 +18,38 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export default function AppointmentsScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
-  const [responseData, setResponseData] = useState<any>([]);
+  // const [responseData, setResponseData] = useState<any>([]);
   const [refresh, setRefresh] = useState(false);
   const user_timezone = Localization.getCalendars()[0].timeZone;
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleGetConsultantAppointments = async () => {
-    try {
-      setIsLoading(true);
-      const response = await Get(API_CONSULTANT.get_appointments);
-
-      if (response.data) {
-        setResponseData(response.data);
-        setRefresh(false);
-        setIsLoading(false);
-        return;
-      }
-    } catch (error: any) {
-      Alert.alert('Error', error?.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  const { data: responseData, isLoading, refetch } = useConsultantAppointment()
   const categorizedAppointments = useMemo(() => {
     return categorizeAppointments(responseData, user_timezone as string);
   }, [responseData]);
 
+
   const handleRefresh = async () => {
     setRefresh(true);
-    // handleGetAppointments();
-    handleGetConsultantAppointments();
+    refetch();
   };
-
   const handleAppointmentPress = (appointment: Appointment) => {
     router.push({
       pathname: ROUTES.APPOINTMENT_DETAIL as any,
       params: { appointment: JSON.stringify(appointment) },
     });
   };
-
   useEffect(() => {
-    // if (autoFetchOnMount) {
-    // handleGetAppointments();
-    handleGetConsultantAppointments();
-    // }
-  }, []);
-
-  useEffect(() => {
-    // handleGetAppointments();
-    handleGetConsultantAppointments();
+    refetch();
   }, [activeTab]);
+
+  if (isLoading) {
+    return (
+      <View style={{}}>
+        <Text style={{ textAlign: 'center', fontSize: 24 }}>Loading...</Text>
+      </View>
+    );
+  }
+
 
   return (
     <View style={styles.container}>

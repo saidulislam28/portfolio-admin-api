@@ -1,319 +1,178 @@
-import { ROUTES } from '@/constants/app.routes';
-import { Order, SectionData } from '@/types/group-order';
-import { API_USER, displayPrice, Get, PACKAGE_SERVICE_TYPE } from '@sm/common';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+// screens/OrdersScreen.tsx
+import { LoadingIndicator } from '@/components/order/LoadingIndicator';
+import { OrdersTab } from '@/components/order/OrdersTab';
+import { useOrders } from '@/hooks/queries/useOrder';
+import { PRIMARY_COLOR } from '@/lib/constants';
+import { PACKAGE_SERVICE_TYPE } from '@sm/common';
+import React, { useState, useRef } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Platform,
-  SectionList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  Text,
+  StyleSheet,
+  Platform,
+  StatusBar,
+  TouchableOpacity,
 } from 'react-native';
+import PagerView from 'react-native-pager-view';
+
 
 const OrdersScreen = () => {
-  const [orders, setOrders] = useState<SectionData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [currentTab, setCurrentTab] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const router = useRouter();
+  const pagerRef = useRef<PagerView>(null);
 
-  const fetchOrders = async () => {
-    try {
-      const response = await Get(API_USER.group_order);
-      console.log("response group", response)
-      if (!response?.data) {
-        throw new Error('Failed to fetch orders');
-      }
+  const { data: ordersData = [], isLoading, error, refetch } = useOrders();
 
-      const groupedData = transformData(response.data);
-      setOrders(groupedData);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to load orders');
-      console.error('Error fetching orders:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+  const orders = ordersData
+    .filter((section: any) => section?.title !== "Book Purchase")
+    .map((section: any) => ({
+      ...section,
+      title:
+        section.title === "Ielts Academic"
+          ? 'Online Course' // rename
+          : section.title,
+    }));
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
   };
 
-  const handleNavigate = (item: any) => {
-    router.push({
-      pathname: ROUTES.GROUP_ORDER as any,
-      params: { order: JSON.stringify(item), id: item?.id }
-    })
+  const handleTabPress = (index: number) => {
+    setCurrentTab(index);
+    pagerRef.current?.setPage(index);
+  };
+
+  const handlePageSelected = (e: any) => {
+    setCurrentTab(e.nativeEvent.position);
+  };
+
+  if (isLoading) {
+    return <LoadingIndicator />;
   }
 
-  const transformData = (data: { [key: string]: Order[] }): SectionData[] => {
-    return Object.entries(data)
-      // Filter out CONVERSATION and IELTS_ACADEMIC service types
-      .filter(([serviceType]) =>
-        serviceType !== PACKAGE_SERVICE_TYPE.conversation &&
-        serviceType !== PACKAGE_SERVICE_TYPE.speaking_mock_test
-      )
-      .map(([serviceType, orders]) => ({
-        title: formatServiceType(serviceType),
-        data: orders,
-      }));
-  };
-
-  const formatServiceType = (serviceType: string): string => {
-    return serviceType
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
-  const getStatusColor = (status: string): string => {
-    switch (status.toLowerCase()) {
-      case 'paid':
-        return '#4CAF50';
-      case 'pending':
-        return '#FF9800';
-      case 'unpaid':
-        return '#F44336';
-      default:
-        return '#9E9E9E';
-    }
-  };
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchOrders();
-  };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  // ... rest of the component remains the same
-  const renderOrderItem = ({ item }: { item: Order }) => (
-    <TouchableOpacity
-      style={styles.orderCard}
-      onPress={() => handleNavigate(item)}
-    >
-      <View style={styles.orderHeader}>
-        <Text style={styles.orderId}>Order #{item.id}</Text>
-        <Text style={styles.orderDate}>{formatDate(item.created_at)}</Text>
-      </View>
-
-      <View style={styles.orderBody}>
-        <Text style={styles.packageName}>
-          {item.package?.name || 'Custom Order'}
-        </Text>
-
-        {item.items.length > 0 && (
-          <Text style={styles.itemsCount}>
-            {item.items.length} item{item.items.length !== 1 ? 's' : ''}
-          </Text>
-        )}
-      </View>
-
-      <View style={styles.orderFooter}>
-        <View style={styles.amountContainer}>
-          <Text style={styles.totalAmount}>{displayPrice(item.total)}</Text>
-        </View>
-
-        <View
-          style={[
-            styles.statusBadge,
-            { backgroundColor: getStatusColor(item.payment_status) + '20' },
-          ]}
-        >
-          <Text
-            style={[
-              styles.statusText,
-              { color: getStatusColor(item.payment_status) },
-            ]}
-          >
-            {item.payment_status.toUpperCase()}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderSectionHeader = ({ section }: { section: SectionData }) => (
-    <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <Text style={styles.sectionCount}>({section.data.length})</Text>
-    </View>
-  );
-
-  if (loading) {
+  if (error) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading orders...</Text>
+        <Text style={styles.errorText}>Failed to load orders</Text>
+        <TouchableOpacity onPress={() => refetch()} style={styles.retryButton}>
+          <Text style={styles.retryText}>Retry</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <SectionList
-        sections={orders}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderOrderItem}
-        renderSectionHeader={renderSectionHeader}
-        contentContainerStyle={styles.listContent}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        SectionSeparatorComponent={() => <View style={styles.sectionSeparator} />}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No orders found</Text>
-            <Text style={styles.emptySubText}>
-              You haven't placed any orders yet.
+      {/* Tabs Header */}
+      <View style={styles.tabsContainer}>
+        {orders.map((section, index) => (
+          <TouchableOpacity
+            key={section.title}
+            style={[
+              styles.tab,
+              currentTab === index && styles.activeTab,
+            ]}
+            onPress={() => handleTabPress(index)}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                currentTab === index && styles.activeTabText,
+              ]}
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {section.title} ({section.data.length})
             </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Pager View */}
+      <PagerView
+        ref={pagerRef}
+        style={styles.pagerView}
+        initialPage={0}
+        onPageSelected={handlePageSelected}
+      >
+        {orders.map((section) => (
+          <View key={section.title} style={styles.page}>
+            <OrdersTab
+              section={section}
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+            />
           </View>
-        }
-      />
+        ))}
+      </PagerView>
     </View>
   );
 };
 
-// ... styles remain the same
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    position: 'relative',
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
-  listContent: {
-    padding: 16,
+  tabsContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 4,
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+    minWidth: 0, // Important for flexbox with text truncation
+  },
+  activeTab: {
+    borderBottomColor: PRIMARY_COLOR,
+  },
+  tabText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#666666',
+    textAlign: 'center',
+  },
+  activeTabText: {
+    color: PRIMARY_COLOR,
+    fontWeight: '600',
+  },
+  pagerView: {
+    flex: 1,
+  },
+  page: {
+    flex: 1,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
+    padding: 20,
   },
-  loadingText: {
-    marginTop: 16,
+  errorText: {
     fontSize: 16,
-    color: '#666666',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginRight: 8,
-  },
-  sectionCount: {
-    fontSize: 16,
-    color: '#666666',
-  },
-  orderCard: {
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  orderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  orderId: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333333',
-  },
-  orderDate: {
-    fontSize: 12,
-    color: '#666666',
-  },
-  orderBody: {
-    marginBottom: 12,
-  },
-  packageName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 4,
-  },
-  itemsCount: {
-    fontSize: 14,
-    color: '#666666',
-  },
-  orderFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  amountContainer: {
-    flex: 1,
-  },
-  totalAmount: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007AFF',
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  separator: {
-    height: 8,
-  },
-  sectionSeparator: {
-    height: 16,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
-  },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#666666',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptySubText: {
-    fontSize: 14,
-    color: '#999999',
+    color: '#F44336',
+    marginBottom: 16,
     textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
 });
 

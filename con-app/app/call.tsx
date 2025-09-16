@@ -30,6 +30,10 @@ import { RtcSurfaceView, VideoViewSetupMode } from 'react-native-agora';
 import EndCallConfirmationBottomSheet from '@/components/call/EndCallConfirmationBottomSheet';
 import { PACKAGE_SERVICE_TYPE } from '@/lib/constants';
 import { ROUTES } from '@/constants/app.routes';
+import { LoadingView } from '@/components/call/LoadingView';
+import { LocalVideoView } from '@/components/call/LocalVideoView';
+import { CallInfoOverlay } from '@/components/call/CallInfoOverlay';
+import { CallControls } from '@/components/call/CallControls';
 
 const { width, height } = Dimensions.get('window');
 
@@ -45,7 +49,7 @@ export default function CallScreen() {
   const service_type = params.service_type;
   const { setLoading } = useLoading();
 
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 👈 NEW STATE
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const {
     isInCall,
@@ -84,19 +88,15 @@ export default function CallScreen() {
     startScreenShareVirtualUser,
   } = useCallService();
 
-  // Timer for call duration
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Set call screen as active
     setCallScreenActive(true);
 
-    // Join channel if we have the necessary data
     if (token && channelName && uid && !isInCall) {
       handleJoinChannel();
     }
 
-    // Start timer
     if (isInCall) {
       startDurationTimer();
     }
@@ -109,42 +109,40 @@ export default function CallScreen() {
     };
   }, [token, channelName, uid, isInCall]);
 
-  // Update handlers:
   const handleEndCallPress = () => {
-    setIsBottomSheetOpen(true); // 👈 Open sheet
+    setIsBottomSheetOpen(true);
   };
 
   const handleCancelEndCall = () => {
-    setIsBottomSheetOpen(false); // 👈 Close sheet
+    setIsBottomSheetOpen(false);
   };
 
   const handleConfirmEndCall = async () => {
-    setIsBottomSheetOpen(false); // 👈 Close first
+    setIsBottomSheetOpen(false);
     await performEndCall(true);
   };
 
   const handleEndCallWithoutFeedback = async () => {
-    setIsBottomSheetOpen(false); // 👈 Close first
-    await performEndCall(false);
+    setIsBottomSheetOpen(false);
+    await endCall();
+    router.back();
   };
 
   const performEndCall = async (needsFeedback: boolean) => {
-    console.log('hitting end call');
     setLoading(true);
     try {
       await leaveChannel();
       await endCall();
       stopAudioService();
       sendCallEndNotificationToUser(Number(appointmentId));
-      console.log('hitting end call 11');
 
       if (service_type === PACKAGE_SERVICE_TYPE.speaking_mock_test) {
         if (needsFeedback) {
           return router.push({
             pathname: ROUTES.MOCK_FEEDBACK_PAGE as any,
             params: {
-              consultant_id: JSON.stringify(userId),
-              appointment: JSON.stringify({ id: appointmentId }),
+              consultant_id: `${userId}`,
+              appointment_id: `${appointmentId}`,
             },
           });
         }
@@ -152,29 +150,24 @@ export default function CallScreen() {
         router.push({
           pathname: ROUTES.CONVERSATION_FEEDBACK_PAGE as any,
           params: {
-            consultant_id: JSON.stringify(userId),
-            appointment: JSON.stringify({ id: appointmentId }),
+            consultant_id: `${userId}`,
+            appointment_id: `${appointmentId}`,
           },
         });
       } else {
-        // No feedback path
         router.back();
       }
 
-      console.log('hitting end call 2');
     } catch (error) {
       console.error('Error ending call:', error);
       router.back();
     } finally {
       if (userId) {
-        await sendCallEndNotificationToUser(Number(appointmentId)); // TODO fix hardcoded
+        await sendCallEndNotificationToUser(Number(appointmentId));
       }
       setLoading(false);
     }
   };
-
-  // Auto-hide controls (commented out as per original)
-  // useEffect(() => { ... }, [showControls]);
 
   const checkAndRequestPermissions = async () => {
     if (Platform.OS === 'android') {
@@ -222,31 +215,13 @@ export default function CallScreen() {
 
   const startDurationTimer = () => {
     if (timerRef.current) clearInterval(timerRef.current);
-
-    timerRef.current = setInterval(() => {
-      // Timer is handled in the store
-    }, 1000);
+    timerRef.current = setInterval(() => { }, 1000);
   };
 
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const handleEndCall = async () => {
-    setLoading(true);
-    try {
-      await leaveChannel();
-      await endCall();
-      stopAudioService();
-    } catch (error) {
-      console.error('Error ending call:', error);
-    } finally {
-      userId && (await sendCallEndNotificationToUser(3)); // TODO fix hardcoded
-      setLoading(false);
-      router.back();
-    }
   };
 
   const handleToggleAudio = async () => {
@@ -353,12 +328,10 @@ export default function CallScreen() {
     router.back();
   };
 
-  // Function to get the current user's video uid
   const getLocalVideoUid = () => {
-    return isScreenSharing ? uid + 1 : 0; // Use different uid for screen share
+    return isScreenSharing ? uid + 1 : 0;
   };
 
-  // Function to check if we should show local video
   const shouldShowLocalVideo = () => {
     return !isVideoMuted || isScreenSharing;
   };
@@ -397,17 +370,11 @@ export default function CallScreen() {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <StatusBar barStyle="light-content" backgroundColor="#000" />
-        <View style={styles.loadingContent}>
-          <Text style={styles.loadingText}>Connecting...</Text>
-          <Text style={styles.loadingSubtext}>
-            {appointmentTitle || 'Preparing your call'}
-          </Text>
-        </View>
+        <LoadingView appointmentTitle={appointmentTitle} />
       </SafeAreaView>
     );
   }
 
-  console.log('params:', userId, appointmentId, service_type);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
@@ -427,150 +394,49 @@ export default function CallScreen() {
         )}
 
         {/* Local video */}
-        {shouldShowLocalVideo() && (
-          <Animated.View
-            {...panResponder.panHandlers}
-            style={[
-              styles.localVideoContainer,
-              {
-                transform: pan.getTranslateTransform(),
-              },
-              isFullScreen && styles.localVideoFullscreen,
-            ]}
-          >
-            <RtcSurfaceView
-              style={styles.localVideo}
-              canvas={{
-                uid: getLocalVideoUid(),
-                setupMode: VideoViewSetupMode.VideoViewSetupAdd,
-              }}
-              zOrderMediaOverlay
-            />
-            {isScreenSharing && (
-              <View style={styles.screenShareIndicator}>
-                <Ionicons name="desktop" size={12} color="#FFFFFF" />
-                <Text style={styles.screenShareText}>Screen</Text>
-              </View>
-            )}
-          </Animated.View>
-        )}
+        <LocalVideoView
+          isScreenSharing={isScreenSharing}
+          isVideoMuted={isVideoMuted}
+          localVideoUid={getLocalVideoUid()}
+          panHandlers={panResponder.panHandlers}
+          panX={pan.x._value}
+          panY={pan.y._value}
+          isFullScreen={isFullScreen}
+        />
 
         {/* Call info overlay */}
         {showControls && (
-          <View style={styles.callInfoOverlay}>
-            <Text style={styles.participantName}>
-              {otherParticipant?.name || 'Unknown'}
-            </Text>
-            <Text style={styles.callDuration}>
-              {formatDuration(callDuration)}
-            </Text>
-            {isScreenSharing && (
-              <Text style={styles.screenSharingStatus}>📱 Screen Sharing</Text>
-            )}
-          </View>
+          <CallInfoOverlay
+            participantName={otherParticipant?.name}
+            callDuration={formatDuration(callDuration)}
+            isScreenSharing={isScreenSharing}
+          />
         )}
 
         {/* Controls overlay */}
         {showControls && (
-          <View style={styles.controlsOverlay}>
-            {/* Top controls */}
-            <View style={styles.topControls}>
-              <TouchableOpacity
-                style={styles.topControlButton}
-                onPress={handleMinimize}
-              >
-                <Ionicons name="chevron-down" size={24} color="#FFFFFF" />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.topControlButton}
-                onPress={handleSwitchCamera}
-                disabled={isScreenSharing}
-              >
-                <Ionicons
-                  name="camera-reverse"
-                  size={24}
-                  color={isScreenSharing ? '#9CA3AF' : '#FFFFFF'}
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/* Bottom controls */}
-            <View style={styles.bottomControls}>
-              <TouchableOpacity
-                style={[
-                  styles.controlButton,
-                  isAudioMuted && styles.controlButtonMuted,
-                ]}
-                onPress={handleToggleAudio}
-              >
-                <Ionicons
-                  name={isAudioMuted ? 'mic-off' : 'mic'}
-                  size={24}
-                  color="#FFFFFF"
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.endCallButton}
-                onPress={handleEndCallPress} // Now triggers bottom sheet via ref
-              >
-                <Ionicons name="call" size={28} color="#FFFFFF" />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.controlButton,
-                  isVideoMuted && styles.controlButtonMuted,
-                ]}
-                onPress={handleToggleVideo}
-                disabled={isScreenSharing}
-              >
-                <Ionicons
-                  name={isVideoMuted ? 'videocam-off' : 'videocam'}
-                  size={24}
-                  color={isScreenSharing ? '#9CA3AF' : '#FFFFFF'}
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.controlButton,
-                  isScreenSharing && styles.controlButtonActive,
-                ]}
-                onPress={handleToggleScreenShare}
-              >
-                <Ionicons
-                  name={isScreenSharing ? 'desktop' : 'desktop-outline'}
-                  size={24}
-                  color="#FFFFFF"
-                />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.controlButton,
-                  isSpeakerOn && styles.controlButtonActive,
-                ]}
-                onPress={handleToggleSpeaker}
-              >
-                <Ionicons
-                  name={isSpeakerOn ? 'volume-high' : 'volume-medium'}
-                  size={24}
-                  color="#FFFFFF"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <CallControls
+            isAudioMuted={isAudioMuted}
+            isVideoMuted={isVideoMuted}
+            isSpeakerOn={isSpeakerOn}
+            isScreenSharing={isScreenSharing}
+            onToggleAudio={handleToggleAudio}
+            onToggleVideo={handleToggleVideo}
+            onToggleSpeaker={handleToggleSpeaker}
+            onToggleScreenShare={handleToggleScreenShare}
+            onSwitchCamera={handleSwitchCamera}
+            onMinimize={handleMinimize}
+            onEndCall={handleEndCallPress}
+          />
         )}
       </TouchableOpacity>
 
-      {/* Moved to separate component */}
       <EndCallConfirmationBottomSheet
-        index={isBottomSheetOpen ? 0 : -1}
+        isBottomSheetOpen={isBottomSheetOpen}
         onEndCallWithFeedback={handleConfirmEndCall}
         onEndCallWithoutFeedback={handleEndCallWithoutFeedback}
         onCancel={handleCancelEndCall}
+        onChange={setIsBottomSheetOpen}
       />
     </SafeAreaView>
   );
@@ -587,20 +453,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loadingContent: {
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 8,
-  },
-  loadingSubtext: {
-    fontSize: 16,
-    color: '#9CA3AF',
-    textAlign: 'center',
-  },
   videoContainer: {
     flex: 1,
     position: 'relative',
@@ -609,121 +461,5 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-  },
-  localVideoContainer: {
-    position: 'absolute',
-    width: 120,
-    height: 160,
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    zIndex: 100,
-  },
-  localVideoFullscreen: {
-    top: 0,
-    right: 0,
-    left: 0,
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-    borderRadius: 0,
-    borderWidth: 0,
-  },
-  localVideo: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  screenShareIndicator: {
-    position: 'absolute',
-    top: 4,
-    left: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-  },
-  screenShareText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  callInfoOverlay: {
-    position: 'absolute',
-    top: 30,
-    left: 20,
-    right: 160,
-  },
-  participantName: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  callDuration: {
-    fontSize: 14,
-    color: '#D1D5DB',
-  },
-  screenSharingStatus: {
-    fontSize: 12,
-    color: '#10B981',
-    fontWeight: '600',
-    marginTop: 4,
-  },
-  controlsOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'space-between',
-  },
-  topControls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 30,
-  },
-  topControlButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bottomControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingBottom: 50,
-    gap: 16,
-  },
-  controlButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  controlButtonMuted: {
-    backgroundColor: 'rgba(239, 68, 68, 0.8)',
-  },
-  controlButtonActive: {
-    backgroundColor: 'rgba(59, 130, 246, 0.8)',
-  },
-  endCallButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#EF4444',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

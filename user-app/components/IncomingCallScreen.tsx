@@ -24,7 +24,14 @@ const IncomingCallScreen = () => {
         stopRingtone();
         hideCallScreen();
         //ROUTES REMAIN
-        router.push(replacePlaceholders(ROUTES.CALL_CONSULTANT, { consultant_id: incomingCallInfo?.additionalInfo?.Consultant?.id }) as any)
+        router.push(
+            {
+                pathname: ROUTES.CALL_CONSULTANT as any,
+                params: {
+                    consultant_id: incomingCallInfo?.additionalInfo?.Consultant?.id
+                }
+            }
+        )
     }
 
     return (

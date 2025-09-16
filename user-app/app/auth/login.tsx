@@ -42,15 +42,15 @@ export default function LoginScreen() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
 
-  const { signInWithApple, signInWithGoogle } = useNewAuth();
+  const { signInWithGoogle } = useNewAuth();
 
 
-  const {
-    socialLoading,
-    // isGoogleLoading,
-    isFacebookLoading,
-    signInWithFacebook
-  } = useSocialAuth();
+  // const {
+  //   socialLoading,
+  //   isFacebookLoading,
+  //   signInWithFacebook
+  // } = useSocialAuth();
+
 
   const validateInputs = () => {
     const cleanedEmail = email.replace(/\s+/g, "").toLowerCase();
@@ -170,7 +170,6 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Logo */}
           <View style={styles.logoContainer}>
             <Image source={smLogo} style={styles.logo} resizeMode="contain" />
           </View>
@@ -181,7 +180,6 @@ export default function LoginScreen() {
             scholarship for abroad studies
           </Text>
 
-          {/* Email Input */}
           <View style={{ width: '100%' }}>
             <InputField
               label="Email"
@@ -198,7 +196,6 @@ export default function LoginScreen() {
               testID="input-email"
             />
 
-            {/* Password Input */}
             <InputField
               label="Password"
               value={password}
@@ -224,16 +221,14 @@ export default function LoginScreen() {
 
           <BaseButton title="Login" onPress={handleLogin} isLoading={loading} testID="btn-submit-login" />
 
-          {/* Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
             <Text style={styles.orText}>Or</Text>
             <View style={styles.divider} />
           </View>
 
-          {/* Social Buttons */}
           <View style={styles.socialContainer}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[styles.socialButton, isFacebookLoading && styles.disabledButton]}
               onPress={signInWithFacebook}
               disabled={socialLoading !== null}
@@ -248,7 +243,8 @@ export default function LoginScreen() {
               <Text style={styles.socialButtonText}>
                 {isFacebookLoading ? 'Connecting...' : 'Login With Facebook'}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
 
             <GoogleSigninButton onPress={handleGoogleSignIn} />
             {/* <TouchableOpacity
@@ -268,8 +264,6 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity> */}
           </View>
-
-          {/* Join Us Link */}
           <View style={styles.signupContainer}>
             <Text style={styles.joinText}>Don't have an account? </Text>
             <Link href={ROUTES.REGISTRATION as any}>

@@ -69,7 +69,7 @@ export function categorizeAppointments(appointments: Appointment[], deviceTimezo
     const hasEnded = now >= endTime;
     
     // Categorization logic
-    if (hasStarted && !hasEnded && ![IAppointmentStatus.COMPLETED, IAppointmentStatus.CANCELLED, IAppointmentStatus.NO_SHOW].includes(status)) {
+    if (hasStarted && [IAppointmentStatus.CONFIRMED].includes(status)) {
       // Live: started but not ended, and not in a terminal state
       categories.live.push(appointment);
     } else if (([IAppointmentStatus.COMPLETED, IAppointmentStatus.CANCELLED, IAppointmentStatus.NO_SHOW,].includes(status))) {

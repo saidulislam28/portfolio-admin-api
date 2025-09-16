@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Card, Text, TextInput } from "react-native-paper";
+import { Card, Text } from "react-native-paper";
 import { useRouter } from "expo-router";
 import CommonHeader from "@/components/CommonHeader";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { BaseButton } from "@/components/BaseButton";
+import { InputField } from "@/components/InputField"; // Add this import
 
 const ChangePasswordScreen = () => {
   const router = useRouter();
@@ -13,8 +14,9 @@ const ChangePasswordScreen = () => {
     newPassword: "",
     confirmPassword: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<any>({});
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
   const handlePasswordChange = (name, value) => {
     setPasswordData({
@@ -24,7 +26,7 @@ const ChangePasswordScreen = () => {
   };
 
   const validatePasswordForm = () => {
-    const newErrors = {};
+    const newErrors: any = {};
 
     if (!passwordData.currentPassword) {
       newErrors.currentPassword = "Current password is required";
@@ -97,52 +99,49 @@ const ChangePasswordScreen = () => {
             Change Password
           </Text>
 
-          <TextInput
+          <InputField
             label="Current Password"
             value={passwordData.currentPassword}
-            onChangeText={(text) =>
-              handlePasswordChange("currentPassword", text)
-            }
-            error={!!errors.currentPassword}
-            style={styles.input}
-            mode="outlined"
-            secureTextEntry
-            left={<TextInput.Icon icon="lock" />}
+            onChangeText={(text) => handlePasswordChange("currentPassword", text)}
+            error={errors.currentPassword}
+            isPassword={true}
+            focusedField={focusedField}
+            fieldKey="currentPassword"
+            onFocus={() => setFocusedField("currentPassword")}
+            onBlur={() => setFocusedField(null)}
+            placeholder="Enter your current password"
+            testID="currentPassword-input"
           />
-          {errors.currentPassword && (
-            <Text style={styles.errorText}>{errors.currentPassword}</Text>
-          )}
 
-          <TextInput
+          <InputField
             label="New Password"
             value={passwordData.newPassword}
             onChangeText={(text) => handlePasswordChange("newPassword", text)}
-            error={!!errors.newPassword}
-            style={styles.input}
-            mode="outlined"
-            secureTextEntry
-            left={<TextInput.Icon icon="lock-reset" />}
+            error={errors.newPassword}
+            isPassword={true}
+            focusedField={focusedField}
+            fieldKey="newPassword"
+            onFocus={() => setFocusedField("newPassword")}
+            onBlur={() => setFocusedField(null)}
+            placeholder="Enter your new password"
+            testID="newPassword-input"
           />
-          {renderPasswordStrength(passwordData.newPassword)}
-          {errors.newPassword && (
-            <Text style={styles.errorText}>{errors.newPassword}</Text>
-          )}
+          {passwordData.newPassword && renderPasswordStrength(passwordData.newPassword)}
 
-          <TextInput
+          <InputField
             label="Confirm New Password"
             value={passwordData.confirmPassword}
-            onChangeText={(text) =>
-              handlePasswordChange("confirmPassword", text)
-            }
-            error={!!errors.confirmPassword}
-            style={styles.input}
-            mode="outlined"
-            secureTextEntry
-            left={<TextInput.Icon icon="lock-check" />}
+            onChangeText={(text) => handlePasswordChange("confirmPassword", text)}
+            error={errors.confirmPassword}
+            isPassword={true}
+            focusedField={focusedField}
+            fieldKey="confirmPassword"
+            onFocus={() => setFocusedField("confirmPassword")}
+            onBlur={() => setFocusedField(null)}
+            placeholder="Confirm your new password"
+            testID="confirmPassword-input"
           />
-          {errors.confirmPassword && (
-            <Text style={styles.errorText}>{errors.confirmPassword}</Text>
-          )}
+
           <BaseButton
             title="Change Password"
             onPress={savePassword}
@@ -158,40 +157,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    // padding: 16,
   },
   section: {
     borderRadius: 12,
     elevation: 2,
+    margin: 16,
   },
   title: {
     marginBottom: 24,
     fontWeight: "bold",
     textAlign: "center",
   },
-  input: {
-    marginBottom: 8,
-    backgroundColor: "white",
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 12,
-    marginLeft: 8,
-    fontSize: 12,
-  },
-  saveButton: {
-    marginTop: 16,
-    borderRadius: 8,
-    backgroundColor: PRIMARY_COLOR,
-  },
-  buttonLabel: {
-    color: "white",
-    fontWeight: "bold",
-  },
   strengthContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
+    marginTop: -8, // Adjust spacing since InputField has its own margin
   },
   strengthBar: {
     flexDirection: "row",

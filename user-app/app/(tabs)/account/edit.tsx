@@ -15,9 +15,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
-import { Button, Card, Text, TextInput } from "react-native-paper";
+import { Card, Text } from "react-native-paper";
 import { BaseButton } from "@/components/BaseButton";
+import { InputField } from "@/components/InputField"; // Import your InputField component
 
 interface IFormData {
   name: string;
@@ -44,6 +46,7 @@ const EditProfileScreen = () => {
   const [errors, setErrors] = useState<any>({});
   const [saving, setSaving] = useState(false);
   const [imageChanged, setImageChanged] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const pickAvatar = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -65,7 +68,7 @@ const EditProfileScreen = () => {
     }
   };
 
-  const handleInputChange = (name: any, value: any) => {
+  const handleInputChange = (name: string, value: string) => {
     setFormData({
       ...formData,
       [name]: value,
@@ -76,6 +79,14 @@ const EditProfileScreen = () => {
         [name]: null,
       });
     }
+  };
+
+  const handleFocus = (fieldKey: string) => {
+    setFocusedField(fieldKey);
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null);
   };
 
   const validateForm = () => {
@@ -114,10 +125,7 @@ const EditProfileScreen = () => {
           imageUrl = await uploadImage(formData.profile_image);
           console.log("Uploaded image URL:", imageUrl);
         } catch (uploadErr) {
-          Alert.alert(
-            "Upload Error",
-            "Failed to upload profile image. Please try again."
-          );
+          setErrors({ upload: "Failed to upload profile image. Please try again." });
           setSaving(false);
           return;
         }
@@ -153,7 +161,7 @@ const EditProfileScreen = () => {
     } catch (err: any) {
       console.error("Profile update error:", err);
       console.error("Error details:", err.response?.data || err.message);
-      Alert.alert("Error", err.message || "Could not update profile");
+      setErrors({ general: err.message || "Could not update profile" });
     } finally {
       setSaving(false);
     }
@@ -162,89 +170,114 @@ const EditProfileScreen = () => {
   return (
     <View style={styles.container}>
       <CommonHeader />
-      <Card style={styles.section}>
-        <Card.Content>
-          <Text variant="titleLarge" style={styles.title}>
-            Edit Profile
-          </Text>
-
-          {/* Show upload error if any */}
-          {uploadError && (
-            <Text style={styles.errorText}>
-              Image upload error: {uploadError}
+      <ScrollView style={styles.scrollView}>
+        <Card style={styles.section}>
+          <Card.Content>
+            <Text variant="titleLarge" style={styles.title}>
+              Edit Profile
             </Text>
-          )}
 
-          {/* Avatar Section */}
-          <View style={styles.avatarSection}>
-            <TouchableOpacity onPress={pickAvatar} disabled={isUploadingImage}>
-              <View style={styles.avatarContainer}>
-                {formData.profile_image ? (
-                  <Image
-                    source={{ uri: formData.profile_image }}
-                    style={styles.avatar}
-                  />
-                ) : (
-                  <View style={[styles.avatar, styles.avatarPlaceholder]}>
-                    <Text style={styles.avatarText}>
-                      {formData.name.charAt(0).toUpperCase()}
-                    </Text>
-                  </View>
-                )}
-                <View style={styles.cameraButton}>
-                  {isUploadingImage ? (
-                    <ActivityIndicator size="small" color="white" />
+            {/* Show upload error if any */}
+            {uploadError && (
+              <Text style={styles.errorText}>
+                Image upload error: {uploadError}
+              </Text>
+            )}
+
+            {/* Show general error if any */}
+            {errors.general && (
+              <Text style={styles.errorText}>
+                {errors.general}
+              </Text>
+            )}
+
+            {/* Show upload error if any */}
+            {errors.upload && (
+              <Text style={styles.errorText}>
+                {errors.upload}
+              </Text>
+            )}
+
+            {/* Avatar Section */}
+            <View style={styles.avatarSection}>
+              <TouchableOpacity onPress={pickAvatar} disabled={isUploadingImage}>
+                <View style={styles.avatarContainer}>
+                  {formData.profile_image ? (
+                    <Image
+                      source={{ uri: formData.profile_image }}
+                      style={styles.avatar}
+                    />
                   ) : (
-                    <Ionicons name="camera" size={16} color="white" />
+                    <View style={[styles.avatar, styles.avatarPlaceholder]}>
+                      <Text style={styles.avatarText}>
+                        {formData.name.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
                   )}
+                  <View style={styles.cameraButton}>
+                    {isUploadingImage ? (
+                      <ActivityIndicator size="small" color="white" />
+                    ) : (
+                      <Ionicons name="camera" size={16} color="white" />
+                    )}
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.avatarLabel}>
-              {isUploadingImage ? "Uploading..." : "Profile photo"}
-            </Text>
-          </View>
+              </TouchableOpacity>
+              <Text style={styles.avatarLabel}>
+                {isUploadingImage ? "Uploading..." : "Profile photo"}
+              </Text>
+            </View>
 
-          <TextInput
-            label="Full Name"
-            value={formData.name}
-            onChangeText={(text) => handleInputChange("name", text)}
-            error={!!errors.name}
-            style={styles.input}
-            mode="outlined"
-            left={<TextInput.Icon icon="account" />}
-          />
-          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+            <InputField
+              label="Full Name"
+              value={formData.name}
+              onChangeText={(text) => handleInputChange("name", text)}
+              error={errors.name}
+              fieldKey="name"
+              focusedField={focusedField}
+              onFocus={() => handleFocus("name")}
+              onBlur={handleBlur}
+              placeholder="Enter your full name"
+              testID="name-input"
+            />
 
-          <TextInput
-            label="Email Address"
-            value={formData.email}
-            onChangeText={(text) => handleInputChange("email", text)}
-            error={!!errors.email}
-            style={styles.input}
-            mode="outlined"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            left={<TextInput.Icon icon="email" />}
-          />
-          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+            <InputField
+              label="Email Address"
+              value={formData.email}
+              onChangeText={(text) => handleInputChange("email", text)}
+              error={errors.email}
+              fieldKey="email"
+              focusedField={focusedField}
+              onFocus={() => handleFocus("email")}
+              onBlur={handleBlur}
+              placeholder="Enter your email address"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              testID="email-input"
+            />
 
-          <TextInput
-            label="Phone Number"
-            value={formData.phone}
-            onChangeText={(text) => handleInputChange("phone", text)}
-            style={styles.input}
-            mode="outlined"
-            keyboardType="phone-pad"
-            left={<TextInput.Icon icon="phone" />}
-          />
-          <BaseButton
-            title="Save Changes"
-            onPress={saveProfile}
-            isLoading={saving || isUploadingImage}
-          />
-        </Card.Content>
-      </Card>
+            <InputField
+              label="Phone Number"
+              value={formData.phone}
+              onChangeText={(text) => handleInputChange("phone", text)}
+              error={errors.phone}
+              fieldKey="phone"
+              focusedField={focusedField}
+              onFocus={() => handleFocus("phone")}
+              onBlur={handleBlur}
+              placeholder="Enter your phone number"
+              keyboardType="phone-pad"
+              testID="phone-input"
+            />
+
+            <BaseButton
+              title="Save Changes"
+              onPress={saveProfile}
+              isLoading={saving || isUploadingImage}
+            />
+          </Card.Content>
+        </Card>
+      </ScrollView>
     </View>
   );
 };
@@ -255,24 +288,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     position: "relative",
   },
+  scrollView: {
+    flex: 1,
+  },
   section: {
     borderRadius: 12,
     elevation: 2,
+    margin: 16,
   },
   title: {
     marginBottom: 24,
     fontWeight: "bold",
     textAlign: "center",
   },
-  input: {
-    marginBottom: 8,
-    backgroundColor: "white",
-  },
   errorText: {
     color: "red",
     marginBottom: 12,
     marginLeft: 8,
     fontSize: 12,
+    textAlign: "center",
   },
   saveButton: {
     marginTop: 16,

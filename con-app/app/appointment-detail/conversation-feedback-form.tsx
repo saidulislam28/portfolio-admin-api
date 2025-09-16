@@ -1,7 +1,9 @@
 import { BaseButton } from '@/components/BaseButton';
+import FeedbackSection from '@/components/conversation/FeedbackSection';
 import Logo from '@/components/Logo';
 import { ROUTES } from '@/constants/app.routes';
 import { PRIMARY_COLOR } from '@/lib/constants';
+import { FeedbackComment, FeedbackData, getInitialFeedbackState } from '@/types/conversation-feedback';
 import { API_CONSULTANT, Get, Post } from '@sm/common';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -15,168 +17,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Checkbox } from 'react-native-paper';
 
 const { width } = Dimensions.get('window');
 const isTablet = width >= 768;
-
-// Type definitions
-export interface FeedbackComment {
-  id: string;
-  title: string;
-  desc: string;
-}
-
-export interface FeedbackData {
-  appointment_id: string | null;
-  consultant_id: string | null;
-  testTakerName: string;
-  // Fluency & Coherence
-  speaksFluently: boolean;
-  occasionalPauses: boolean;
-  mark_assignment_complete: boolean;
-  oftenPauses: boolean;
-  disorganizedIdeas: boolean;
-  needsLongerAnswers: boolean;
-  fluencyUseLinkingWords: boolean;
-  fluencyPracticeThinking: boolean;
-  fluencySpeakWithDetails: boolean;
-  // Vocabulary
-  wideVocabularyRange: boolean;
-  repeatsBasicWords: boolean;
-  usesTopicTerms: boolean;
-  wordChoiceErrors: boolean;
-  lacksParaphrasing: boolean;
-  vocabBuildList: boolean;
-  vocabPracticeSynonyms: boolean;
-  vocabUseGames: boolean;
-  // Grammar
-  mostlyCorrectGrammar: boolean;
-  errorsDontAffect: boolean;
-  limitedSentenceTypes: boolean;
-  frequentGrammarMistakes: boolean;
-  needsComplexStructures: boolean;
-  grammarFocusTenses: boolean;
-  grammarUseConditionals: boolean;
-  grammarWriteThenSpeak: boolean;
-  // Pronunciation
-  pronunciationClear: boolean;
-  minorPronunciationIssues: boolean;
-  mispronouncesKeyWords: boolean;
-  lacksIntonation: boolean;
-  strongL1Influence: boolean;
-  pronShadowSpeakers: boolean;
-  pronRecordAndCheck: boolean;
-  pronPracticePhonemes: boolean;
-  // Overall
-  overallLevel: string;
-  generalComments: string;
-}
-
-export interface CheckboxItem {
-  label: string;
-  field: keyof FeedbackData;
-}
-
-export interface FeedbackFormProps {
-  appointment?: any;
-  consultantId?: string;
-  headerTitle?: string;
-  submitButtonText?: string;
-  loadingText?: string;
-  // Custom sections
-  sections?: Array<{
-    title: string;
-    items: CheckboxItem[];
-    suggestionsTitle?: string;
-    suggestionItems?: CheckboxItem[];
-  }>;
-  // API endpoints
-  commentsEndpoint?: string;
-  submitEndpoint?: string;
-  // Callbacks
-  onSubmitSuccess?: () => void;
-  onSubmitError?: (error: any) => void;
-  onFetchCommentsError?: (error: any) => void;
-  // Custom styles
-  containerStyle?: object;
-  headerStyle?: object;
-  sectionStyle?: object;
-  checkboxStyle?: object;
-  submitButtonStyle?: object;
-}
-
-// Initial feedback state as a constant to avoid recreation
-const getInitialFeedbackState = (): FeedbackData => ({
-  appointment_id: null,
-  consultant_id: null,
-  testTakerName: '',
-  // Fluency & Coherence
-  speaksFluently: false,
-  mark_assignment_complete: false,
-  occasionalPauses: false,
-  oftenPauses: false,
-  disorganizedIdeas: false,
-  needsLongerAnswers: false,
-  fluencyUseLinkingWords: false,
-  fluencyPracticeThinking: false,
-  fluencySpeakWithDetails: false,
-  // Vocabulary
-  wideVocabularyRange: false,
-  repeatsBasicWords: false,
-  usesTopicTerms: false,
-  wordChoiceErrors: false,
-  lacksParaphrasing: false,
-  vocabBuildList: false,
-  vocabPracticeSynonyms: false,
-  vocabUseGames: false,
-  // Grammar
-  mostlyCorrectGrammar: false,
-  errorsDontAffect: false,
-  limitedSentenceTypes: false,
-  frequentGrammarMistakes: false,
-  needsComplexStructures: false,
-  grammarFocusTenses: false,
-  grammarUseConditionals: false,
-  grammarWriteThenSpeak: false,
-  // Pronunciation
-  pronunciationClear: false,
-  minorPronunciationIssues: false,
-  mispronouncesKeyWords: false,
-  lacksIntonation: false,
-  strongL1Influence: false,
-  pronShadowSpeakers: false,
-  pronRecordAndCheck: false,
-  pronPracticePhonemes: false,
-  // Overall
-  overallLevel: '',
-  generalComments: '',
-});
-
-const FeedbackForm: React.FC<FeedbackFormProps> = ({
-  appointment: propAppointment,
-  consultantId: propConsultantId,
-  headerTitle = 'Conversation Feedback Form',
-  submitButtonText = 'Submit Feedback',
-  loadingText = 'Submitting....',
-  sections: customSections,
-  commentsEndpoint = API_CONSULTANT.feedback_comments,
-  submitEndpoint = API_CONSULTANT.conversation_feedback,
-  onSubmitSuccess,
-  onSubmitError,
-  onFetchCommentsError,
-  containerStyle,
-  headerStyle,
-  sectionStyle,
-  checkboxStyle,
-  submitButtonStyle,
-}) => {
+const FeedbackForm = () => {
   const params = useLocalSearchParams();
-  const parseAppointment =
-    propAppointment ||
-    (params.appointment ? JSON.parse(params.appointment as string) : null);
+  const appointment_id = params.appointment_id ? JSON.parse(params.appointment_id as string) : null;
   const consultant_id =
-    propConsultantId ||
+    params.consultant_id ||
     (params.consultant_id ? JSON.parse(params?.consultant_id as string) : null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -194,7 +42,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   }, []);
 
   // Memoized text input handler
-
   const handleGeneralCommentsChange = useCallback((text: string) => {
     setFeedback(prev => ({ ...prev, generalComments: text }));
   }, []);
@@ -209,152 +56,49 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
   const fetchComments = useCallback(async () => {
     try {
-      const response = await Get(commentsEndpoint);
+      const response = await Get(API_CONSULTANT.feedback_comments);
       if (response.success) {
         setComments(response?.data || []);
       }
     } catch (error) {
       const errorMessage = 'Could not fetch comments';
       Alert.alert(errorMessage);
-      onFetchCommentsError?.(error);
     }
-  }, [commentsEndpoint, onFetchCommentsError]);
+  }, [params]);
 
   useEffect(() => {
     fetchComments();
   }, [params]);
 
-  // console.log("paramasss from conversation feedback", parseAppointment)
-  // console.log("paramasss from conversation id>>>", consultant_id)
+  const handleBackToHome = () => {
+    router.dismissAll();
+    router.replace(ROUTES.MY_APPOINTMENTS as any);
+  };
 
   const handleSubmit = useCallback(async () => {
     const finalFeedback = {
       ...feedback,
       consultant_id: Number(consultant_id),
-      appointment_id: Number(parseAppointment?.id),
+      appointment_id: Number(appointment_id),
     };
-
-    // return console.log("idssss>>", finalFeedback?.consultant_id)
 
     try {
       setLoading(true);
-      const response = await Post(submitEndpoint, finalFeedback);
+      const response = await Post(API_CONSULTANT.conversation_feedback, finalFeedback);
 
-      // console.log("conversation response >", response.data)
-      // console.log("conversation response", response)
-
-      if (response?.data?.success) {
-        onSubmitSuccess
-          ? onSubmitSuccess()
-          : router.push(ROUTES.MY_APPOINTMENTS as any);
+      if (response?.data?.success) {        
+           handleBackToHome();
+        Alert.alert("Feedback Form Submitted Successfully");
       }
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = 'Failed to submit feedback';
       Alert.alert('Error', errorMessage);
-      onSubmitError?.(error);
       setLoading(false);
     } finally {
       setLoading(false);
     }
-  }, [
-    feedback,
-    consultant_id,
-    parseAppointment?.id,
-    router,
-    submitEndpoint,
-    onSubmitSuccess,
-    onSubmitError,
-  ]);
-
-  // Memoized EnhancedCheckbox component to prevent unnecessary re-renders
-  const EnhancedCheckbox = React.memo(
-    ({
-      label,
-      field,
-      isChecked,
-      onPress,
-    }: {
-      label: string;
-      field: keyof FeedbackData;
-      isChecked: any;
-      onPress: () => void;
-    }) => {
-      return (
-        <TouchableOpacity
-          style={[styles.checkboxContainer, checkboxStyle]}
-          onPress={onPress}
-          activeOpacity={0.7}
-        >
-          <View style={styles.checkboxWrapper}>
-            <Checkbox.Android
-              status={isChecked ? 'checked' : 'unchecked'}
-              onPress={onPress}
-              color="#3a86ff"
-              uncheckedColor="#888"
-            />
-          </View>
-          <Text style={styles.checkboxLabel}>{label}</Text>
-        </TouchableOpacity>
-      );
-    }
-  );
-
-  // Memoized section renderer
-  const renderTwoColumnSection = useCallback(
-    (
-      title: string,
-      items: CheckboxItem[],
-      suggestionsTitle?: string,
-      suggestionItems?: CheckboxItem[]
-    ) => (
-      <View style={[styles.section, sectionStyle]}>
-        <Text style={styles.sectionTitle}>{title}</Text>
-        <View style={styles.twoColumnContainer}>
-          <View style={styles.column}>
-            {items.slice(0, Math.ceil(items.length / 2)).map((item, index) => (
-              <EnhancedCheckbox
-                key={`${item.field}-${index}`}
-                label={item.label}
-                field={item.field}
-                isChecked={feedback[item.field]}
-                onPress={() => handleCheckboxChange(item.field)}
-              />
-            ))}
-          </View>
-          <View style={styles.column}>
-            {items.slice(Math.ceil(items.length / 2)).map((item, index) => (
-              <EnhancedCheckbox
-                key={`${item.field}-${index + Math.ceil(items.length / 2)}`}
-                label={item.label}
-                field={item.field}
-                isChecked={feedback[item.field]}
-                onPress={() => handleCheckboxChange(item.field)}
-              />
-            ))}
-          </View>
-        </View>
-
-        {suggestionsTitle && suggestionItems && (
-          <>
-            <Text style={styles.subsectionTitle}>{suggestionsTitle}</Text>
-            <View style={styles.suggestionsContainer}>
-              {suggestionItems.map((item, index) => (
-                <EnhancedCheckbox
-                  key={`${item.field}-suggestion-${index}`}
-                  label={item.label}
-                  field={item.field}
-                  isChecked={feedback[item.field]}
-                  onPress={() => handleCheckboxChange(item.field)}
-                />
-              ))}
-            </View>
-          </>
-        )}
-      </View>
-    ),
-    [feedback, handleCheckboxChange, sectionStyle, checkboxStyle]
-  );
+  }, [feedback, consultant_id, appointment_id]);
 
   // Default sections if not provided via props
   const defaultSections = useMemo(
@@ -496,22 +240,8 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
     []
   );
 
-  const sectionsToRender = customSections || defaultSections;
-
-  const updateSection = [
-    {
-      title: 'Mark Appointment',
-      items: [
-        {
-          label: 'Mark appointment as complete.',
-          field: 'mark_assignment_complete',
-        },
-      ],
-    },
-  ];
-
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container]}>
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
@@ -520,23 +250,26 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         windowSize={10}
       >
         {/* Test Information */}
-        <View style={[styles.headerContainer, headerStyle]}>
+        <View style={[styles.headerContainer]}>
           <Logo />
-          <Text style={styles.header}>{headerTitle}</Text>
+          <Text style={styles.header}>{"Conversation Feedback Form"}</Text>
         </View>
 
         {/* Sections */}
-        {sectionsToRender.map((section: any, index) =>
-          renderTwoColumnSection(
-            section.title,
-            section.items,
-            section.suggestionsTitle,
-            section.suggestionItems
-          )
-        )}
+        {defaultSections.map((section, index) => (
+          <FeedbackSection
+            key={section.title}
+            title={section.title}
+            items={section.items}
+            suggestionsTitle={section.suggestionsTitle}
+            suggestionItems={section.suggestionItems}
+            feedback={feedback}
+            onCheckboxChange={handleCheckboxChange}
+          />
+        ))}
 
         {/* Give built in comments */}
-        <View style={[styles.section, sectionStyle]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionTitle}>Overall Speaking Level</Text>
           <View style={styles.radioGroup}>
             {comments?.map(level => (
@@ -558,7 +291,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
         </View>
 
         {/* General Comments */}
-        <View style={[styles.section, sectionStyle]}>
+        <View style={[styles.section]}>
           <Text style={styles.sectionTitle}>General Comments</Text>
           <TextInput
             style={styles.commentsInput}
@@ -581,7 +314,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
   );
 };
 
-// Styles remain the same...
 const styles = StyleSheet.create({
   container: {
     flex: 1,

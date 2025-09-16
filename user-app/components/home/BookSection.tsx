@@ -1,17 +1,15 @@
 import { ROUTES } from "@/constants/app.routes";
-import { PRIMARY_COLOR, SECONDARY_COLOR } from "@/lib/constants";
-import { AntDesign } from "@expo/vector-icons";
+import { PRIMARY_COLOR } from "@/lib/constants";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  Dimensions,
   FlatList,
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 const BookSection = ({ books }: any) => {
   const router = useRouter();
@@ -29,7 +27,6 @@ const BookSection = ({ books }: any) => {
       : books?.filter((item: any) => item?.category === activeFilter);
 
   const loadMoreCards = () => {
-    // console.log("fikl", filteredData);
     if (visibleCards < filteredData.length) {
       setVisibleCards((prev) => Math.min(prev + 2, filteredData.length));
     }
@@ -37,7 +34,7 @@ const BookSection = ({ books }: any) => {
 
   const navigateToDetails = (book: any) => {
     router.push({
-      pathname: ROUTES.BOOK_DETAILS,
+      pathname: ROUTES.BOOK_DETAILS as any,
       params: { id: book.id },
     });
   };
@@ -53,28 +50,9 @@ const BookSection = ({ books }: any) => {
           padding: 10,
           backgroundColor: "white",
           borderRadius: 8,
-          flex: 1, // Ensures proper flex behavior
+          flex: 1, 
         }}
       >
-        <View
-          style={{
-            alignSelf: "flex-end",
-            padding: 8,
-            backgroundColor: SECONDARY_COLOR,
-            borderRadius: 30,
-            position: "absolute",
-            top: 8,
-            right: 8,
-            zIndex: 20,
-          }}
-        >
-          <AntDesign
-            style={{ marginRight: 4 }}
-            name="hearto"
-            size={22}
-            color="black"
-          />
-        </View>
         <View style={styles.cardHeader}>
           <Image
             source={{
@@ -104,15 +82,6 @@ const BookSection = ({ books }: any) => {
           By: {item?.writer ?? "N/A"}
         </Text>
         <Text style={styles.cardPrice}>BDT {item?.price}</Text>
-      </View>
-      <View style={styles.cardFooter}>
-        <AntDesign
-          style={{ marginRight: 4 }}
-          name="shoppingcart"
-          size={28}
-          color="white"
-        />
-        <Text style={styles.cardStats}>Add To Cart</Text>
       </View>
     </TouchableOpacity>
   );
