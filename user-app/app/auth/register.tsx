@@ -288,7 +288,7 @@ export default function RegisterScreen() {
                   clearError('phone');
                 }}
                 error={errors.phone}
-                placeholder="01712345678"
+                placeholder="Enter Your Phone Number"
                 fieldKey="phone"
                 focusedField={focusedField}
                 onFocus={() => setFocusedField('phone')}
