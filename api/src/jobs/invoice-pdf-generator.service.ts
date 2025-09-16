@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable, Logger } from '@nestjs/common';
 import PDFDocument from 'pdfkit';
 
@@ -99,8 +101,8 @@ export class InvoicePdfGeneratorService {
            .fillColor('#2c3e50')
            .text('Bill To:', 50, currentY);
 
-        const customerName = order.first_name && order.last_name 
-            ? `${order.first_name} ${order.last_name}` 
+        const customerName = order.first_name
+            ? `${order.first_name}` 
             : order.User?.full_name || 'Customer';
 
         const customerEmail = order.email || order.User?.email || '';

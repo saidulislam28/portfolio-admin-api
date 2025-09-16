@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Process, Processor } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bull';
@@ -42,34 +43,34 @@ export class SendPdfInvoiceService {
 
             // Fetch complete order details with all related data
             const order = await this.fetchOrderDetails(orderId);
-            
+
             if (!order) {
                 throw new Error(`Order not found with ID: ${orderId}`);
             }
 
             // Fetch payment details
             const payment = await this.fetchPaymentDetails(orderId);
-            
+
             if (!payment) {
                 throw new Error(`Payment not found for order ID: ${orderId}`);
             }
 
             // Get user email from order
             const email = order.email || order.User?.email;
-            
+
             if (!email) {
                 throw new Error(`No email found for order ID: ${orderId}`);
             }
 
             // Generate PDF invoice
             const pdfBuffer = await this.invoicePdfService.generateInvoicePDF(order, payment);
-            
+
             // Generate email content
             const emailHtml = this.generateEmailTemplate(order, payment);
-            
+
             // Generate filename with order ID and timestamp
             const filename = `invoice_${order.id}_${Date.now()}.pdf`;
-            
+
             // Send email with PDF attachment
             await this.sendEmailWithAttachment(
                 email,
@@ -172,10 +173,10 @@ export class SendPdfInvoiceService {
     }
 
     private generateEmailTemplate(order: any, payment: any): string {
-        const customerName = order.first_name && order.last_name 
-            ? `${order.first_name} ${order.last_name}` 
+        const customerName = order.first_name
+            ? `${order.first_name}`
             : order.User?.full_name || 'Valued Customer';
-            
+
         const serviceName = this.getServiceDisplayName(order.service_type);
 
         return `
@@ -199,7 +200,7 @@ export class SendPdfInvoiceService {
             <div class="container">
                 <div class="header">
                     <h1>Payment Confirmation</h1>
-                    <p>IELTS Training Center</p>
+                    <p>SpeakingMate</p>
                 </div>
                 
                 <div class="content">
@@ -210,6 +211,8 @@ export class SendPdfInvoiceService {
                     <div class="order-details">
                         <h3>Order Details</h3>
                         <p><strong>Order ID:</strong> #${order.id}</p>
+                        <p><strong>Customer Phone:</strong> #${order?.User?.phone}</p>
+                        <p><strong>Customer Email:</strong> #${order?.User?.email}</p>
                         <p><strong>Service:</strong> ${serviceName}</p>
                         <p><strong>Amount:</strong> ৳${(payment.amount || order.total || 0).toFixed(2)}</p>
                         <p><strong>Payment Status:</strong> <span class="status-paid">${payment.status}</span></p>
@@ -225,8 +228,8 @@ export class SendPdfInvoiceService {
                 </div>
                 
                 <div class="footer">
-                    <p>&copy; ${new Date().getFullYear()} IELTS Training Center. All rights reserved.</p>
-                    <p>Email: info@ieltscentre.com | Phone: +880 123 456 7890</p>
+                    <p>&copy; ${new Date().getFullYear()} SpeakingMate. All rights reserved.</p>
+                    <p>Email: info@speakingmate.com | Phone: +880 123 456 7890</p>
                 </div>
             </div>
         </body>
