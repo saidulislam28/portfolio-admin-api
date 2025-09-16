@@ -10,11 +10,11 @@ export default ({
       projectId: "speaking-mate-app",
       apiBaseUrl: process.env.API_BASE_URL,
     },
-    facebookAppId: "YOUR_FACEBOOK_APP_ID",
+    facebookAppId: "770838519017608",
     facebookClientToken: "YOUR_FACEBOOK_CLIENT_TOKEN",
-    facebookDisplayName: "Your App Name",
+    facebookDisplayName: "SpeakingMate",
     android: {
-      facebookScheme: "fbYOUR_FACEBOOK_APP_ID"
+      facebookScheme: "770838519017608"
     },
     jsEngine: "hermes",
     version: "1.0.0",
@@ -56,7 +56,7 @@ export default ({
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
-      "expo-router",
+      "expo-router",      
       "expo-notifications",
       [
         "expo-splash-screen",
