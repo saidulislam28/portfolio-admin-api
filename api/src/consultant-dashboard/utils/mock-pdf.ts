@@ -1,326 +1,227 @@
 /* eslint-disable */
 const PDFDocument = require('pdfkit');
+const fs = require('fs');
 
 export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-        const doc = new PDFDocument({ 
-            margin: 40, 
+        const doc = new PDFDocument({
+            margin: 40,
             size: 'A4',
-            bufferPages: true
+            bufferPages: true,
         });
-        const chunks: Buffer[] = [];
 
-        doc.on('data', chunk => chunks.push(chunk));
+        const chunks: Buffer[] = [];
+        doc.on('data', (chunk) => chunks.push(chunk));
         doc.on('end', () => resolve(Buffer.concat(chunks)));
         doc.on('error', reject);
 
         // Colors
-        const primaryColor = '#2c3e50';
-        const accentColor = '#e74c3c';
-        const lightGray = '#ecf0f1';
-        const darkGray = '#7f8c8d';
+        const primaryColor = '#f25a29'; // orange from screenshot
+        const darkGray = '#333333';
 
-        // Page dimensions
+        // Page setup
         const pageWidth = doc.page.width;
         const margin = 40;
-        const contentWidth = pageWidth - (margin * 2);
+        const contentWidth = pageWidth - margin * 2;
+        let currentY = 0;
 
-        // Helper function to create table rows
-        const createTableRow = (y, criteria, rating, feedback, isHeader = false) => {
-            const fontSize = isHeader ? 11 : 10;
-            const textColor = isHeader ? 'white' : '#2c3e50';
-            const bgColor = isHeader ? primaryColor : (y % 60 < 30 ? '#f8f9fa' : 'white');
-            const rowHeight = 25;
-            
-            // Draw background
-            doc.rect(margin, y - 5, contentWidth, rowHeight).fill(bgColor);
-            
-            // Add border
-            doc.rect(margin, y - 5, contentWidth, rowHeight).stroke('#ddd');
-            
-            doc.fillColor(textColor)
-               .fontSize(fontSize)
-               .font(isHeader ? 'Helvetica-Bold' : 'Helvetica');
-            
-            // Column widths
-            const col1Width = 180;
-            const col2Width = 80;
-            const col3Width = contentWidth - col1Width - col2Width;
-            
-            // Draw vertical lines
-            doc.moveTo(margin + col1Width, y - 5)
-               .lineTo(margin + col1Width, y + rowHeight - 5)
-               .stroke('#ddd');
-            
-            doc.moveTo(margin + col1Width + col2Width, y - 5)
-               .lineTo(margin + col1Width + col2Width, y + rowHeight - 5)
-               .stroke('#ddd');
-            
-            // Add text content
-            doc.text(criteria, margin + 5, y, { width: col1Width - 10, align: 'left' });
-            doc.text(rating, margin + col1Width + 5, y, { width: col2Width - 10, align: 'center' });
-            doc.text(feedback, margin + col1Width + col2Width + 5, y, { width: col3Width - 10, align: 'left' });
-            
-            return y + rowHeight;
-        };
+        // Helper: draw checkbox
+        function drawCheckbox(x, y, label, checked = false) {
+            doc.rect(x, y, 10, 10).stroke();
+            if (checked) {
+                doc.moveTo(x + 2, y + 5).lineTo(x + 5, y + 8).lineTo(x + 9, y + 2).stroke();
+            }
+            doc.fontSize(9).fillColor(darkGray).text(label, x + 15, y - 1);
+        }
 
-        let currentY = margin;
+        // ---------------- HEADER ----------------
+        doc.rect(0, 0, pageWidth, 100).fill(primaryColor);
 
-        // -------- HEADER SECTION --------
-        doc.fillColor(primaryColor)
-           .fontSize(24)
-           .font('Helvetica-Bold')
-           .text('SpeakingMate', margin, currentY, { width: contentWidth, align: 'center' });
-        
+        // Logo placeholder (local image)
+        try {
+            doc.image('logo.png', margin, 20, { width: 60, height: 60 });
+        } catch {
+            doc.fillColor('white').fontSize(10).text('[Logo Here]', margin, 50);
+        }
+
+        doc.fillColor('white').font('Helvetica-Bold').fontSize(16).text('SpeakingMate', margin + 70, 30);
+        doc.font('Helvetica').fontSize(9).text('MASTER IELTS SPEAKING WITH CONFIDENCE', margin + 70, 50);
+
+        doc.fontSize(9).text('+8801711-779687', pageWidth - margin - 120, 30);
+        doc.text('info@speakingmate.org', pageWidth - margin - 120, 45);
+
+        // ---------------- TITLE ----------------
+        currentY = 120;
+        doc.fillColor(primaryColor).fontSize(20).font('Helvetica-Bold').text('Speaking Mock Test Report', margin, currentY, { align: 'center', width: contentWidth });
+
+        // ---------------- MOCK TEST INFO ----------------
         currentY += 30;
-        
-        doc.fontSize(14)
-           .font('Helvetica')
-           .text('Live Speaking Tests – Practice Like the Real Exam', margin, currentY, { width: contentWidth, align: 'center' });
-        
-        currentY += 20;
-        
-        doc.fontSize(12)
-           .fillColor(accentColor)
-           .text('MASTER IELTS SPEAKING WITH CONFIDENCE', margin, currentY, { width: contentWidth, align: 'center' });
+        const infoBoxHeight = 80;
+        doc.rect(margin, currentY, contentWidth, infoBoxHeight).stroke('#d9d9d9');
 
-        currentY += 40;
+        doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('MOCK TEST INFORMATION', margin + 10, currentY + 10);
 
-        // Test Information Box
-        const infoBoxHeight = 100;
-        doc.rect(margin, currentY, contentWidth, infoBoxHeight)
-           .fillAndStroke(lightGray, darkGray);
-        
-        doc.fillColor(primaryColor)
-           .fontSize(14)
-           .font('Helvetica-Bold')
-           .text('MOCK TEST INFORMATION', margin + 10, currentY + 15);
-
-        const infoY = currentY + 40;
-        doc.fontSize(10)
-           .font('Helvetica')
-           .fillColor('#2c3e50')
-           .text(`Test Taker Name: ${feedback?.Appointment?.User?.full_name || 'N/A'}`, margin + 10, infoY)
-           .text(`Date: ${new Date(feedback?.testDate || feedback?.createdAt).toLocaleDateString() || 'N/A'}`, margin + 280, infoY)
-           .text(`Examiner: ${feedback?.Consultant?.full_name || 'N/A'}`, margin + 10, infoY + 20)
-           .text(`Time: ${feedback?.Appointment?.slot_time || 'N/A'}`, margin + 280, infoY + 20);
+        doc.fillColor(darkGray).fontSize(10).font('Helvetica');
+        doc.text(`Test Taker Name: ${feedback?.Appointment?.User?.full_name || '__________'}`, margin + 10, currentY + 30);
+        doc.text(`Examiner: ${feedback?.Consultant?.full_name || '__________'}`, margin + 10, currentY + 50);
+        doc.text(`Date: ${new Date(feedback?.testDate || feedback?.createdAt).toLocaleDateString()}`, margin + 280, currentY + 30);
+        doc.text(`Time: ${feedback?.Appointment?.slot_time || '__________'}`, margin + 280, currentY + 50);
 
         currentY += infoBoxHeight + 30;
 
-        // -------- TITLE AND OVERALL SCORE SECTION --------
-        // Title on the left, score box on the right
-        doc.fillColor(primaryColor)
-           .fontSize(16)
-           .font('Helvetica-Bold')
-           .text('Speaking Mock Test Report Card', margin, currentY);
+        // ---------------- CRITERIA TABLE ----------------
+        doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Criteria', margin, currentY);
+        doc.text('Star Rating (1.0–9.0)', margin + 200, currentY);
+        doc.text('Feedback', margin + 380, currentY);
 
-        // Overall Band Score Box (positioned on the right)
-        const scoreBoxWidth = 135;
-        const scoreBoxHeight = 80;
-        const scoreBoxX = pageWidth - margin - scoreBoxWidth;
-        
-        doc.rect(scoreBoxX, currentY - 10, scoreBoxWidth, scoreBoxHeight)
-           .fillAndStroke('#fff5f5', accentColor);
-        
-        doc.fillColor(accentColor)
-           .fontSize(12)
-           .font('Helvetica-Bold')
-           .text('Overall Band Score', scoreBoxX + 10, currentY + 5, { width: scoreBoxWidth - 20, align: 'center' });
-        
-        doc.fontSize(36)
-           .text(`${feedback.overallBandScore || '0'}`, scoreBoxX + 10, currentY + 25, { width: scoreBoxWidth - 20, align: 'center' });
+        currentY += 40;
 
-        currentY += 50;
-
-        // -------- CRITERIA TABLE --------
-        // Table header
-        currentY = createTableRow(currentY, 'Criteria', 'Star Rating (1.0-9.0)', 'Feedback', true);
-
-        // Band descriptors data
-        const bandDescriptors = [
+        const criteria = [
             {
-                criteria: 'Fluency & Coherence',
-                rating: feedback.fluencyCoherence || '-',
-                feedbacks: [
-                    { label: 'Fluent', value: feedback.fluencyFluent },
-                    { label: 'Natural flow', value: feedback.fluencyNaturalFlow },
-                    { label: 'Needs coherence', value: feedback.fluencyNeedsCoherence },
-                    { label: 'Repeats ideas', value: feedback.fluencyRepeatsIdeas }
-                ].filter(f => f.value).map(f => f.label)
+                title: 'Fluency & Coherence',
+                rating: feedback.fluencyCoherence || '★★★★★★★☆☆☆',
+                checks: [
+                    { label: 'Fluent', val: feedback.fluencyFluent },
+                    { label: 'Natural flow', val: feedback.fluencyNaturalFlow },
+                    { label: 'Needs coherence', val: feedback.fluencyNeedsCoherence },
+                    { label: 'Repeats ideas', val: feedback.fluencyRepeatsIdeas },
+                ],
             },
             {
-                criteria: 'Lexical Resource',
-                rating: feedback.lexicalResource || '-',
-                feedbacks: [
-                    { label: 'Good variety', value: feedback.lexicalGoodVariety },
-                    { label: 'Repetitive', value: feedback.lexicalRepetitive },
-                    { label: 'Topic mismatch', value: feedback.lexicalTopicMismatch },
-                    { label: 'Limited range', value: feedback.lexicalLimitedRange }
-                ].filter(f => f.value).map(f => f.label)
+                title: 'Lexical Resource',
+                rating: feedback.lexicalResource || '★★★★★★☆☆☆☆',
+                checks: [
+                    { label: 'Good variety', val: feedback.lexicalGoodVariety },
+                    { label: 'Repetitive', val: feedback.lexicalRepetitive },
+                    { label: 'Topic mismatch', val: feedback.lexicalTopicMismatch },
+                    { label: 'Limited range', val: feedback.lexicalLimitedRange },
+                ],
             },
             {
-                criteria: 'Grammatical Range & Accuracy',
-                rating: feedback.grammaticalRange || '-',
-                feedbacks: [
-                    { label: 'Frequent errors', value: feedback.grammarFrequentErrors },
-                    { label: 'Tense issues', value: feedback.grammarTenseIssues },
-                    { label: 'Limited Range', value: feedback.grammarLimitedRange },
-                    { label: 'Mostly Accurate', value: feedback.grammarMostlyAccurate }
-                ].filter(f => f.value).map(f => f.label)
+                title: 'Grammatical Range & Accuracy',
+                rating: feedback.grammaticalRange || '★★★★★☆☆☆☆☆',
+                checks: [
+                    { label: 'Frequent errors', val: feedback.grammarFrequentErrors },
+                    { label: 'Tense issues', val: feedback.grammarTenseIssues },
+                    { label: 'Limited Range', val: feedback.grammarLimitedRange },
+                    { label: 'Mostly Accurate', val: feedback.grammarMostlyAccurate },
+                ],
             },
             {
-                criteria: 'Pronunciation',
-                rating: feedback.pronunciation || '-',
-                feedbacks: [
-                    { label: 'Sound Clear', value: feedback.pronunciationClearSounds },
-                    { label: 'Good Stress', value: feedback.pronunciationGoodStress },
-                    { label: 'Mispronunciation', value: feedback.pronunciationMispronunciations },
-                    { label: 'Accent issues', value: feedback.pronunciationAccentIssues }
-                ].filter(f => f.value).map(f => f.label)
-            }
+                title: 'Pronunciation',
+                rating: feedback.pronunciation || '★★★★★★★☆☆☆',
+                checks: [
+                    { label: 'Sound Clear', val: feedback.pronunciationClearSounds },
+                    { label: 'Good Stress', val: feedback.pronunciationGoodStress },
+                    { label: 'Mispronunciation', val: feedback.pronunciationMispronunciations },
+                    { label: 'Accent issues', val: feedback.pronunciationAccentIssues },
+                ],
+            },
         ];
 
-        // Draw table rows
-        bandDescriptors.forEach((descriptor) => {
-            const feedbackText = descriptor.feedbacks.length > 0 ? descriptor.feedbacks.join(', ') : '-';
-            currentY = createTableRow(currentY, descriptor.criteria, descriptor.rating.toString(), feedbackText);
+        criteria.forEach((c) => {
+            doc.fillColor(darkGray).font('Helvetica-Bold').text(c.title, margin, currentY);
+            doc.font('Helvetica').text(c.rating, margin + 200, currentY);
+            let y = currentY;
+            c.checks.forEach((chk, i) => {
+                drawCheckbox(margin + 380, y + i * 14, chk.label, chk.val);
+            });
+            currentY += 50;
         });
+
+        // ---------------- OVERALL SCORE ----------------
+        const scoreBoxX = pageWidth - margin - 120;
+        const scoreBoxY = 150;
+        doc.rect(scoreBoxX, scoreBoxY, 100, 80).stroke(primaryColor);
+        doc.fillColor(primaryColor).font('Helvetica-Bold').fontSize(12).text('Overall Band Score', scoreBoxX, scoreBoxY + 5, { width: 100, align: 'center' });
+        doc.fontSize(32).text(`${feedback.overallBandScore || '0'}`, scoreBoxX, scoreBoxY + 30, { width: 100, align: 'center' });
 
         currentY += 30;
 
-        // -------- SECTION WISE FEEDBACK --------
-        doc.fillColor(primaryColor)
-           .fontSize(14)
-           .font('Helvetica-Bold')
-           .text('Section Wise Feedback', margin, currentY);
-
-        currentY += 25;
+        // ---------------- SECTION FEEDBACK ----------------
+        doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Section Wise Feedback', margin, currentY);
+        currentY += 20;
 
         const sectionFeedbacks = [
             {
                 title: 'Part 1: Introduction & Interview',
                 items: [
-                    { label: 'Confident', value: feedback.part1Confident },
-                    { label: 'Short Answer', value: feedback.part1ShortAnswer },
-                    { label: 'Needs more details', value: feedback.part1NeedsMoreDetails }
-                ]
+                    { label: 'Confident', val: feedback.part1Confident },
+                    { label: 'Short Answer', val: feedback.part1ShortAnswer },
+                    { label: 'Needs more details', val: feedback.part1NeedsMoreDetails },
+                ],
             },
             {
                 title: 'Part 2: Cue Card',
                 items: [
-                    { label: 'Well-organized', value: feedback.part2WellOrganized },
-                    { label: 'Missed points', value: feedback.part2MissedPoints },
-                    { label: 'Too short', value: feedback.part2TooShort }
-                ]
+                    { label: 'Well-organized', val: feedback.part2WellOrganized },
+                    { label: 'Missed points', val: feedback.part2MissedPoints },
+                    { label: 'Too short', val: feedback.part2TooShort },
+                ],
             },
             {
                 title: 'Part 3: Discussion',
                 items: [
-                    { label: 'Insightful', value: feedback.part3Insightful },
-                    { label: 'Repetitive', value: feedback.part3Repetitive },
-                    { label: 'Well-developed', value: feedback.part3WellDeveloped },
-                    { label: 'Too short', value: feedback.part3TooShort }
-                ]
-            }
+                    { label: 'Insightful', val: feedback.part3Insightful },
+                    { label: 'Repetitive', val: feedback.part3Repetitive },
+                    { label: 'Well-developed', val: feedback.part3WellDeveloped },
+                    { label: 'Too short', val: feedback.part3TooShort },
+                ],
+            },
         ];
 
-        sectionFeedbacks.forEach(section => {
-            const selected = section.items.filter(i => i.value).map(i => i.label);
-            if (selected.length > 0) {
-                doc.fontSize(10)
-                   .fillColor('#2c3e50')
-                   .font('Helvetica-Bold')
-                   .text(`${section.title} – `, margin, currentY, { continued: true })
-                   .font('Helvetica')
-                   .text(selected.join(', '), { width: contentWidth });
-                currentY += 20;
+        sectionFeedbacks.forEach((s) => {
+            doc.fontSize(10).fillColor(darkGray).font('Helvetica-Bold').text(s.title, margin, currentY, { continued: true });
+            const selected = s.items.filter((i) => i.val).map((i) => i.label);
+            if (selected.length) {
+                doc.font('Helvetica').text(' – ' + selected.join(', '));
+            } else {
+                doc.text('');
             }
-        });
-
-        currentY += 20;
-
-        // -------- RECOMMENDATIONS --------
-        doc.fillColor(primaryColor)
-           .fontSize(14)
-           .font('Helvetica-Bold')
-           .text('Recommendation', margin, currentY);
-
-        currentY += 25;
-
-        const recommendations = [
-            { label: 'Practice cue card strategy', value: feedback.recPracticeCueCard },
-            { label: 'Expand topic vocabulary', value: feedback.recExpandTopicVocab },
-            { label: 'Reduce Grammatical mistake', value: feedback.recReduceGrammarMistakes },
-            { label: 'Watch native conversations', value: feedback.recWatchNativeConversations },
-            { label: 'Use Linking Phrases', value: feedback.recUseLinkingPhrases },
-            { label: 'Improve fluency', value: feedback.recImproveFluency },
-            { label: 'Improve pronunciation', value: feedback.recImprovePronunciation }
-        ].filter(f => f.value);
-
-        // Display recommendations in a single column for better readability
-        recommendations.forEach(rec => {
-            doc.fontSize(10)
-               .fillColor('#2c3e50')
-               .font('Helvetica')
-               .text(`• ${rec.label}`, margin, currentY, { width: contentWidth });
             currentY += 18;
         });
 
-        // -------- EXAMINER COMMENT --------
-        if (feedback.additionalNotes && feedback.additionalNotes.trim()) {
-            currentY += 20;
-            
-            doc.fillColor(primaryColor)
-               .fontSize(14)
-               .font('Helvetica-Bold')
-               .text('Examiner Comment', margin, currentY);
+        // ---------------- RECOMMENDATIONS ----------------
+        currentY += 15;
+        doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Recommendation', margin, currentY);
+        currentY += 20;
 
-            currentY += 20;
-            
-            const commentHeight = 60;
-            doc.rect(margin, currentY, contentWidth, commentHeight)
-               .fillAndStroke('#f8f9fa', darkGray);
+        const recs = [
+            { label: 'Practice cue card strategy', val: feedback.recPracticeCueCard },
+            { label: 'Expand topic vocabulary', val: feedback.recExpandTopicVocab },
+            { label: 'Reduce Grammatical mistake', val: feedback.recReduceGrammarMistakes },
+            { label: 'Watch native conversations', val: feedback.recWatchNativeConversations },
+            { label: 'Use Linking Phrases', val: feedback.recUseLinkingPhrases },
+            { label: 'Improve fluency', val: feedback.recImproveFluency },
+            { label: 'Improve pronunciation', val: feedback.recImprovePronunciation },
+        ].filter((f) => f.val);
 
-            doc.fontSize(10)
-               .fillColor('#2c3e50')
-               .font('Helvetica')
-               .text(feedback.additionalNotes, margin + 10, currentY + 15, { 
-                   width: contentWidth - 20, 
-                   height: commentHeight - 30
-               });
+        recs.forEach((r) => {
+            doc.fontSize(10).fillColor(darkGray).text(`• ${r.label}`, margin, currentY);
+            currentY += 15;
+        });
 
-            currentY += commentHeight + 20;
+        // ---------------- EXAMINER COMMENT ----------------
+        currentY += 15;
+        doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Examiner Comment', margin, currentY);
+        currentY += 20;
+
+        doc.rect(margin, currentY, contentWidth, 60).stroke('#d9d9d9');
+        doc.fontSize(10).fillColor(darkGray).font('Helvetica').text(feedback.additionalNotes || '__________________________', margin + 10, currentY + 10, {
+            width: contentWidth - 20,
+        });
+        currentY += 80;
+
+        // ---------------- FOOTER ----------------
+        const footerY = doc.page.height - 100;
+        try {
+            doc.image('qr.png', margin, footerY, { width: 50, height: 50 }); // QR placeholder
+        } catch {
+            doc.fontSize(8).text('[QR]', margin, footerY + 20);
         }
 
-        // -------- FOOTER --------
-        // Calculate footer position (ensure it's at the bottom)
-        const footerY = Math.max(currentY + 40, doc.page.height - 120);
-        
-        // Contact info centered
-        doc.fontSize(10)
-           .fillColor(primaryColor)
-           .font('Helvetica-Bold')
-           .text('+8801711-779687', margin, footerY, { width: contentWidth, align: 'center' });
-
-        // Left side - website info
-        doc.fontSize(9)
-           .font('Helvetica')
-           .fillColor('#2c3e50')
-           .text('www.speakingmate.org', margin, footerY + 25)
-           .text('info@speakingmate.org', margin, footerY + 40);
-
-        // Right side - signature
-        doc.fontSize(9)
-           .text('(Pre-installed signature)', pageWidth - margin - 150, footerY + 15, { width: 150, align: 'right' })
-           .text('Director-Speaking Test', pageWidth - margin - 150, footerY + 30, { width: 150, align: 'right' })
-           .font('Helvetica-Bold')
-           .text('SpeakingMate.org', pageWidth - margin - 150, footerY + 45, { width: 150, align: 'right' });
-
-        // Bottom brand name
-        doc.fillColor(primaryColor)
-           .fontSize(12)
-           .font('Helvetica-Bold')
-           .text('Speakingmate.0', margin, footerY + 60);
+        doc.fontSize(9).fillColor(darkGray).text('Director-Speaking Test', pageWidth - margin - 150, footerY + 10, { width: 150, align: 'right' });
+        doc.font('Helvetica-Bold').text('SpeakingMate.org', pageWidth - margin - 150, footerY + 25, { width: 150, align: 'right' });
 
         doc.end();
     });
