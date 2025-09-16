@@ -1,7 +1,6 @@
 export type CallPushNotificationEventType = 'end_call' | 'start_call' | 'incoming_call';
 
 export interface CallPushNotificationDataPayload {
-  [key: string]: string; // Firebase Admin SDK’s messaging().send() expects the data field to be data?: { [key: string]: string };
   title: string;
   event_type: CallPushNotificationEventType;
   user_id: string;

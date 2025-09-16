@@ -1,7 +1,7 @@
 import notifee, { AndroidImportance, AndroidColor, AndroidCategory, AndroidStyle } from '@notifee/react-native';
-import { NotificationChannel } from '@sm/common';
+import { NO_IMAGE_TEXT, NotificationChannel } from '@sm/common';
 
-export async function displayIncomingCallNotification(name: string, data: any = null, profileIcon = "https://avatar.iran.liara.run/public") {
+export async function displayIncomingCallNotification(name: string, data: any = null, profileIcon: string) {
     const channelId = await notifee.createChannel({
         id: NotificationChannel.calls,
         name: 'Incoming Calls',
@@ -49,7 +49,7 @@ export async function displayIncomingCallNotification(name: string, data: any = 
                 id: 'default',
             },
             loopSound: true,
-            largeIcon: profileIcon,// user
+            largeIcon: profileIcon === NO_IMAGE_TEXT ? "https://avatar.iran.liara.run/public" : profileIcon,
             sound: 'ringtone',
         },
     });

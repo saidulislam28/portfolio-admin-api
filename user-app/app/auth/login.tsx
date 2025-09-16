@@ -51,6 +51,7 @@ export default function LoginScreen() {
   //   signInWithFacebook
   // } = useSocialAuth();
 
+
   const validateInputs = () => {
     const cleanedEmail = email.replace(/\s+/g, "").toLowerCase();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -244,8 +245,24 @@ export default function LoginScreen() {
               </Text>
             </TouchableOpacity> */}
 
-            {/* <GoogleSigninButton onPress={handleGoogleSignIn} /> */}
-            
+
+            <GoogleSigninButton onPress={handleGoogleSignIn} />
+            {/* <TouchableOpacity
+              style={[styles.socialButton, isGoogleLoading && styles.disabledButton]}
+              onPress={handleGoogleSignIn}
+              disabled={socialLoading !== null}
+            >
+              {isGoogleLoading ? (
+                <ActivityIndicator color="#4285F4" size="small" style={{ marginRight: 12 }} />
+              ) : (
+                <View style={styles.googleIconContainer}>
+                  <Text style={styles.googleIcon}>G</Text>
+                </View>
+              )}
+              <Text style={styles.socialButtonText}>
+                {isGoogleLoading ? 'Connecting...' : 'Login With Google'}
+              </Text>
+            </TouchableOpacity> */}
           </View>
           <View style={styles.signupContainer}>
             <Text style={styles.joinText}>Don't have an account? </Text>

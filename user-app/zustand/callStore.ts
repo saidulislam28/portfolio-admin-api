@@ -1,7 +1,7 @@
 // stores/callStore.ts
 import { callService } from '@/services/AgoraCallService';
 import { callApi } from '@/utils/callApi';
-import { ADMIN_CALL_USER_ID } from '@sm/common';
+import { ADMIN_CALL_USER_ID, CallPushNotificationDataPayload } from '@sm/common';
 import { router } from 'expo-router';
 import { create } from 'zustand';
 import { useShallow } from 'zustand/shallow';
@@ -36,7 +36,7 @@ export interface CallState {
   isCallScreenActive: boolean;
   showCallOverlay: boolean;
   showCallScreen: boolean;
-  incomingCallInfo: any,
+  incomingCallInfo: CallPushNotificationDataPayload | null,
 }
 
 export interface otherParticipant {
@@ -66,7 +66,7 @@ export interface CallActions {
   stopTimer: () => void;
 
   resetCallState: () => void;
-  visibleCallScreen: (callInfo: any) => void;
+  visibleCallScreen: (callInfo: CallPushNotificationDataPayload) => void;
   hideCallScreen: () => void;
   onRemoteUserLeft: (remoteId: string | number) => void
 }
@@ -231,11 +231,7 @@ export const useCallStore = create<CallStore>()((set, get) => ({
     })
   },
   visibleCallScreen: (callInfo) => {
-    if (callInfo?.additionalInfo) {
-      callInfo.additionalInfo = JSON.parse(callInfo?.additionalInfo);
-    }
     set({
-      // showCallScreen: true,
       incomingCallInfo: callInfo
     })
   },

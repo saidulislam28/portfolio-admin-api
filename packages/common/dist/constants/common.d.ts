@@ -11,6 +11,7 @@ export declare const NotificationChannel: {
     calls: string;
     call: string;
 };
+export declare const NO_IMAGE_TEXT = "NOT_AVAILABLE";
 export declare const ADMIN_CALL_USER_ID = 999999;
 export declare const PACKAGE_SERVICE_TYPE: {
     book_purchase: string;
