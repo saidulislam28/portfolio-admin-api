@@ -279,9 +279,8 @@ const renderDetailsTab = ({
                                         Skills
                                     </Text>
                                     <div>
-                                        {appointmentData?.Consultant?.skills
-                                            .split(", ")
-                                            .map((skill, index) => (
+                                        {appointmentData?.Consultant?.skills?.split(", ")
+                                            ?.map((skill, index) => (
                                                 <Tag key={index} color="blue" style={{ marginBottom: "4px" }}>
                                                     {skill}
                                                 </Tag>
