@@ -111,16 +111,16 @@ export const useNotifications = () => {
     await sendCallEndNotificationToUser(Number(data.appointment_id));
   };
 
-  const receiveCall = async (callInfo: CallPushNotificationDataPayload) => {
-    console.log("receiveCall", callInfo);
-    await callService.initialize();
-    await startCall(callInfo?.appointment_token, Number(callInfo?.user_id), {
-      id: callInfo?.consultant_id,
-      name: callInfo?.consultant_name,
-      avatar: callInfo?.consultant_image,
-    });
-    router.replace(ROUTES.CALL_CONSULTANT);
-  };
+  // const receiveCall = async (callInfo: CallPushNotificationDataPayload) => {
+  //   console.log("receiveCall", callInfo);
+  //   await callService.initialize();
+  //   await startCall(callInfo?.appointment_token, Number(callInfo?.user_id), {
+  //     id: callInfo?.consultant_id,
+  //     name: callInfo?.consultant_name,
+  //     avatar: callInfo?.consultant_image,
+  //   });
+  //   router.replace(ROUTES.CALL_CONSULTANT);
+  // };
 
   useEffect(() => {
     // Foreground Handler
@@ -194,26 +194,21 @@ export const useNotifications = () => {
     };
   }, [isInCall]);
 
-    const receiveCall = async (callInfo: CallStartPushNotificationDataPayload) => {
-        console.log('receiveCall', callInfo)
-        await callService.initialize();
-        await startCall(
-            callInfo?.appointment_token,
-            callInfo?.user_id,
-            {
-                id: callInfo?.consultant_id,
-                name: callInfo?.consultant_name,
-                avatar: callInfo?.consultant_image,
-            }
-        );
-        router.push(
-            {
-                pathname: ROUTES.CALL_CONSULTANT as any,
-                params: {
-                    consultant_id: callInfo?.consultant_id
-                }
-            }
-        )}
+  const receiveCall = async (callInfo: CallPushNotificationDataPayload) => {
+    console.log("receiveCall", callInfo);
+    await callService.initialize();
+    await startCall(callInfo?.appointment_token, Number(callInfo?.user_id), {
+      id: callInfo?.consultant_id,
+      name: callInfo?.consultant_name,
+      avatar: callInfo?.consultant_image,
+    });
+    router.push({
+      pathname: ROUTES.CALL_CONSULTANT as any,
+      params: {
+        consultant_id: callInfo?.consultant_id,
+      },
+    });
+  };
 
   useEffect(() => {
     if (!isInCall) {
