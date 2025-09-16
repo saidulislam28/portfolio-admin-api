@@ -44,7 +44,7 @@ const AppointmentManager = () => {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [modalDate, setModalDate] = useState('');
 
-  const { data: appointmentsData, isLoading } = useCalenderAppointment();
+  const { data: appointmentsData, isLoading, refetch } = useCalenderAppointment();
   const router = useRouter();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
@@ -66,8 +66,11 @@ const AppointmentManager = () => {
     return appointmentsData[date] || [];
   };
 
+  console.log("appointment calneder", appointmentsData);
+
   const onDayPress = (day: any) => {
     const appointments = getDayAppointments(day.dateString);
+    refetch();
     if (appointments.length > 0) {
       setModalDate(day.dateString);
       bottomSheetRef.current?.expand();

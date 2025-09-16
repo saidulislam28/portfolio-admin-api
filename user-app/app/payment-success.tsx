@@ -304,7 +304,11 @@ const PaymentSuccessPage = () => {
               <Text style={styles.appointmentValue}>{examData.examDate}</Text>
             </View>
             <View style={styles.divider} />
-            {renderBookItems()}
+            <View style={styles.appointmentRow}>
+              <Text style={styles.appointmentLabel}>Total</Text>
+              <Text style={styles.appointmentValue}>{displayPrice(examData.totalPrice)}</Text>
+            </View>
+            {/* {renderBookItems()} */}
           </>
         );
 

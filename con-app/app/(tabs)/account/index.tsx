@@ -21,7 +21,7 @@ const SettingsScreen = () => {
     {
       icon: 'account-circle',
       title: 'Edit Profile',
-      action: () => router.push(ROUTES.ACCOUNT_EDIT),
+      action: () => router.push(ROUTES.ACCOUNT_EDIT as any),
       iconComponent: MaterialIcons,
     },
     {
@@ -30,30 +30,25 @@ const SettingsScreen = () => {
       // action: () => router.push('/account/password'),
       iconComponent: MaterialIcons,
     },
-    {
-      icon: 'menu-book',
-      title: 'Book Orders',
-      // action: () => router.push('/orders'),
-      iconComponent: MaterialIcons,
-    },
+    
     {
       icon: 'notifications',
       title: 'Notifications',
       // action: () => router.push('/notifications'),
       iconComponent: MaterialIcons,
     },
-    {
-      icon: 'shield-account',
-      title: 'Privacy',
-      // action: () => router.push('/privacy'),
-      iconComponent: MaterialCommunityIcons,
-    },
-    {
-      icon: 'help-circle',
-      title: 'Help & Support',
-      // action: () => router.push('/support'),
-      iconComponent: Feather,
-    },
+    // {
+    //   icon: 'shield-account',
+    //   title: 'Privacy',
+    //   // action: () => router.push('/privacy'),
+    //   iconComponent: MaterialCommunityIcons,
+    // },
+    // {
+    //   icon: 'help-circle',
+    //   title: 'Help & Support',
+    //   // action: () => router.push('/support'),
+    //   iconComponent: Feather,
+    // },
     {
       icon: 'medical-outline',
       title: 'Device Diagnosis',

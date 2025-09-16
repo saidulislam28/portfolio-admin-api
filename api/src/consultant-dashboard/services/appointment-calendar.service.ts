@@ -20,9 +20,9 @@ export class AppointmentCalendarService {
       // Build where clause
       const whereClause: any = {
         consultant_id: consultantId,
-        status: {
-          in: [AppointmentStatus.CONFIRMED],
-        },
+        // status: {
+        //   in: [AppointmentStatus.CONFIRMED],
+        // },
       };
 
       // If date is provided, filter by that specific date using start_at
