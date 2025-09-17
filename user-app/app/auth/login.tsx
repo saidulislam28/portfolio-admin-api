@@ -114,6 +114,7 @@ export default function LoginScreen() {
         "An unexpected error occurred";
 
       console.log("Error status:", status);
+      console.log("Login error:", message);
 
       if (status === 401) {
         setPasswordError("Invalid email or password");

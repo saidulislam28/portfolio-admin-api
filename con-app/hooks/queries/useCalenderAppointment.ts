@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useCalenderAppointment = () => {
   return useQuery({
-    queryKey: ['calender-appointment'],
+    queryKey: ['calender-all-appointment'],
     queryFn: async () => {
       const data = await Get(API_CONSULTANT.appointment_calendar);
       return data;

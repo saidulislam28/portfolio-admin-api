@@ -31,6 +31,7 @@ export default function AppointmentsScreen() {
   const handleRefresh = async () => {
     setRefresh(true);
     refetch();
+    setRefresh(false)
   };
   const handleAppointmentPress = (appointment: Appointment) => {
     router.push({

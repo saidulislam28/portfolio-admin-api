@@ -41,7 +41,6 @@ export interface User {
 export interface LoginUserResponse {
     success: boolean;
     data: User;
-    error: any
 }
 export interface LoginConsultantResponse {
     success: boolean;
