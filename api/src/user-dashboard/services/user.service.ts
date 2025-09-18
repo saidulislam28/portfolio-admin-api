@@ -74,6 +74,7 @@ export class UserService {
         notes: true,
         token: true,
         created_at: true,
+        is_rating_given: true,
         Order: {
           select: {
             service_type: true,
@@ -95,6 +96,7 @@ export class UserService {
         },
         MockTestFeedback: true,
         ConversationFeedback: true,
+        Rating: true
       },
       // include: {
 

@@ -44,4 +44,5 @@ export const ROUTES = {
   INCOMING_SCREEN: "/incoming-call",
   HELP_AND_SUPPORT: "/account/help-and-support",
   ABOUT_APP: "/account/about-us",
+  RATING: '/appointment/rating'
 };

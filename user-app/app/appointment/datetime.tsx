@@ -26,20 +26,31 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import dayjs from 'dayjs'
 
 export default function DateTimeScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams();
+  const params: any = useLocalSearchParams();
 
   const timezone = getUserDeviceTimezone();
-  
+
   const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [lockingSlots, setLockingSlots] = useState(new Set());
   const [currentSelectedDate, setCurrentSelectedDate] = useState(null);
-  
-  const {data: availableDates, isLoading: isLoadingTimeslots} = useAppointmentTimeslots(timezone);
-  const {data: activeAppointments, isLoading: isLoadingActiveAppointment} = useMyActiveAppointments();
+
+  const { data: availableDates, isLoading: isLoadingTimeslots } = useAppointmentTimeslots(timezone);
+  const { data: activeAppointments, isLoading: isLoadingActiveAppointment } = useMyActiveAppointments();
+
+  const today = dayjs().format("YYYY-MM-DD");
+
+  // filter out past days AND today
+  const filteredDates = availableDates?.filter(
+    (item: any) => dayjs(item.date).isAfter(today, "day") // strictly after today
+  );
+
+  // console.log("slot data>>>", filteredDates);
+
 
   const packageData = {
     id: params.packageId,
@@ -55,14 +66,14 @@ export default function DateTimeScreen() {
   const bookedSlotKeys = useMemo(() => {
     console.log('calul', activeAppointments?.data)
     if (!activeAppointments?.data) return new Set();
-    
+
     const bookedKeys = new Set();
     activeAppointments.data.forEach(appointment => {
       // Extract time from start_at (assuming format like "2023-12-01T14:30:00Z" or similar)
       const dateStr = appointment.start_at;
       const result = dateStr.split('.')[0];
       bookedKeys.add(result);
-      });
+    });
     return bookedKeys;
   }, [activeAppointments, isLoadingActiveAppointment]);
 
@@ -70,10 +81,10 @@ export default function DateTimeScreen() {
   const isLoading = isLoadingTimeslots || isLoadingActiveAppointment;
 
   useEffect(() => {
-    if(availableDates && Array.isArray(availableDates) && availableDates.length && !isLoading) {
-      setCurrentSelectedDate(availableDates[0].date);
+    if (filteredDates && Array.isArray(filteredDates) && filteredDates.length && !isLoading) {
+      setCurrentSelectedDate(filteredDates[0].date);
     }
-  }, [isLoading, availableDates]);
+  }, [isLoading, filteredDates]);
 
   const handleDateSelect = (date) => {
     setCurrentSelectedDate(date);
@@ -127,7 +138,7 @@ export default function DateTimeScreen() {
         date,
         slot,
         dateString:
-          availableDates.find((d) => d.date === date)?.dateString || date,
+          filteredDates.find((d) => d.date === date)?.dateString || date,
       },
     ]);
   };
@@ -153,12 +164,12 @@ export default function DateTimeScreen() {
   };
 
   const getCurrentDateSlots = () => {
-    const currentDate = availableDates?.find(
+    const currentDate = filteredDates?.find(
       (d) => d.date === currentSelectedDate
     );
-    
+
     if (!currentDate) return [];
-    
+
     // const bookedSlotKeys = getBookedSlotKeys(activeAppointments?.data);
 
     // Filter out slots that user has already booked
@@ -173,8 +184,8 @@ export default function DateTimeScreen() {
       const userSlotKey = `${slot.date_time_raw}`;
 
       console.log('userslotkey', userSlotKey)
-      
-      if(!bookedSlotKeys) {
+
+      if (!bookedSlotKeys) {
         return true;
       }
       // Return false (hide) if user already has this slot booked
@@ -187,14 +198,14 @@ export default function DateTimeScreen() {
     const userSlotKey = `${date}-${slot.time}`;
     // const bookedSlotKeys = getBookedSlotKeys(activeAppointments?.data);
 
-    
+
     if (lockingSlots.has(slotKey)) return "locking";
     if (selectedSlots.find((s) => s.key === slotKey)) return "selected";
     if (slot.is_booked) return "booked";
-    
+
     // Check if user already has this slot booked
     if (bookedSlotKeys && bookedSlotKeys.has(userSlotKey)) return "user_booked";
-    
+
     return "available";
   };
 
@@ -224,7 +235,7 @@ export default function DateTimeScreen() {
         {params?.packageSessions && (
           <>
             <DateSelector
-              dates={availableDates}
+              dates={filteredDates}
               selectedDate={currentSelectedDate}
               onDateSelect={handleDateSelect}
             />
@@ -262,10 +273,10 @@ export default function DateTimeScreen() {
             <Text style={styles.legendText}>Booked</Text>
           </View>
         </View>
-        <BaseButton 
-          title={`Continue to Payment (${selectedSlots.length}/${packageData.sessions} selected)`} 
-          onPress={handleContinue} 
-          disabled={selectedSlots.length !== packageData.sessions} 
+        <BaseButton
+          title={`Continue to Payment (${selectedSlots.length}/${packageData.sessions} selected)`}
+          onPress={handleContinue}
+          disabled={selectedSlots.length !== packageData.sessions}
         />
       </View>
     </View>

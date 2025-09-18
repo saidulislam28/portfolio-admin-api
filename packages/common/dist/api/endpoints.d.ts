@@ -46,4 +46,5 @@ export declare const API_USER: {
     send_start_call_notification: string;
     send_end_call_notification: string;
     order_details: string;
+    give_rating: string;
 };
