@@ -30,7 +30,7 @@ import dayjs from 'dayjs'
 
 export default function DateTimeScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams();
+  const params: any = useLocalSearchParams();
 
   const timezone = getUserDeviceTimezone();
 
@@ -39,7 +39,7 @@ export default function DateTimeScreen() {
   const [lockingSlots, setLockingSlots] = useState(new Set());
   const [currentSelectedDate, setCurrentSelectedDate] = useState(null);
 
-  const { data: availableDates , isLoading: isLoadingTimeslots } = useAppointmentTimeslots(timezone);
+  const { data: availableDates, isLoading: isLoadingTimeslots } = useAppointmentTimeslots(timezone);
   const { data: activeAppointments, isLoading: isLoadingActiveAppointment } = useMyActiveAppointments();
 
   const today = dayjs().format("YYYY-MM-DD");
@@ -49,7 +49,7 @@ export default function DateTimeScreen() {
     (item: any) => dayjs(item.date).isAfter(today, "day") // strictly after today
   );
 
-  console.log("slot data>>>", filteredDates);
+  // console.log("slot data>>>", filteredDates);
 
 
   const packageData = {

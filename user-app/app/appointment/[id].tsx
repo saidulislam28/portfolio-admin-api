@@ -143,6 +143,21 @@ const AppointmentDetailPage = () => {
     });
   };
 
+
+  const handlegiverating = () => {
+    if (!appointment) return;
+
+    router.push({
+      pathname: ROUTES.RATING as any,
+      params: {
+        appointment_id: `${appointment.id}`
+      },
+    });
+  };
+
+  // Check if rating is already given
+  const isRated = appointment?.is_rating_given;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -166,9 +181,9 @@ const AppointmentDetailPage = () => {
         {/* Status Card */}
         <View style={styles.statusCard}>
           <View style={styles.statusHeader}>
-            <StatusBadge 
-              status={appointment?.status} 
-              isLive={isLive} 
+            <StatusBadge
+              status={appointment?.status}
+              isLive={isLive}
             />
           </View>
         </View>
@@ -206,6 +221,13 @@ const AppointmentDetailPage = () => {
             onPress={handleFeedback}
             disabled={isDisabled}
             variant="primary"
+            fullWidth={false}
+          />
+          <BaseButton
+            title={isRated ? "Rating Submitted" : "Rate Consultant"}
+            onPress={handlegiverating}
+            disabled={isRated}
+            variant={isRated ? "secondary" : "primary"}
             fullWidth={false}
           />
         </View>

@@ -48,5 +48,6 @@ export const API_USER = {
   validate_coupon: 'user/coupons/validate',
   send_start_call_notification: 'notifications/user-start-call',
   send_end_call_notification: 'notifications/user-end-call',
-  order_details: 'orders/{id}/details'
+  order_details: 'orders/{id}/details',
+  give_rating: 'user/ratings',
 };

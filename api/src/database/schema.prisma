@@ -112,7 +112,6 @@ model User {
   login_type           LOGIN_TYPE             @default(EMAIL)
   profile_image        String?
   role                 USER_ROLE              @default(USER)
-  ratings_given        Rating[]               @relation("user_ratings")
   google_id            String?                @unique
   facebook_id          String?                @unique
   payments             Payment[]
@@ -122,6 +121,7 @@ model User {
   ScheduleNotification ScheduleNotification[]
   MockTestFeedback     MockTestFeedback[]
   CouponUser           CouponUser[]
+  Rating               Rating[]
 
   @@map("users")
 }
@@ -175,7 +175,6 @@ model Consultant {
   available_times      Json? // Store availability rules
   created_at           DateTime?              @default(now())
   updated_at           DateTime?              @updatedAt
-  ratings_received     Rating[]               @relation("consultant_ratings")
   Appointment          Appointment[]
   Notification         Notification[]
   ConversationFeedback ConversationFeedback[]
@@ -183,6 +182,7 @@ model Consultant {
   ConsultantWorkHour   ConsultantWorkHour[]
   ConsultantOffDay     ConsultantOffDay[]
   ScheduleNotification ScheduleNotification[]
+  Rating               Rating[]
 
   @@map("consultants")
 }
@@ -219,20 +219,6 @@ model VideoCall {
   Appointment Appointment? @relation(fields: [appointment_id], references: [id])
 
   @@map("video_calls")
-}
-
-model Rating {
-  id            Int       @id @default(autoincrement())
-  user_id       Int?
-  consultant_id Int?
-  rating        Int?
-  comment       String?
-  created_at    DateTime? @default(now())
-
-  user       User?       @relation("user_ratings", fields: [user_id], references: [id])
-  consultant Consultant? @relation("consultant_ratings", fields: [consultant_id], references: [id])
-
-  @@map("ratings")
 }
 
 model Payment {
@@ -353,6 +339,7 @@ model Appointment {
   token                String?               @unique // Make unique for security
   consultant_id        Int?
   user_id              Int?
+  is_rating_given      Boolean               @default(false)
   cancel_reason        String?
   order_id             Int
   slot_date            DateTime // Date part only (for easier querying)
@@ -367,6 +354,7 @@ model Appointment {
   ConversationFeedback ConversationFeedback?
   MockTestFeedback     MockTestFeedback?
   AppointmentLog       AppointmentLog[]
+  Rating               Rating?
 
   @@index([slot_date, slot_time])
   @@index([start_at])
@@ -850,4 +838,19 @@ model AppointmentLog {
   Appointment    Appointment @relation(fields: [appointment_id], references: [id])
 
   @@map("appointment_logs")
+}
+
+model Rating {
+  id             Int          @id @default(autoincrement())
+  user_id        Int?
+  consultant_id  Int?
+  appointment_id Int?         @unique
+  rating         Int? // 1-5 star rating
+  comment        String?
+  created_at     DateTime?    @default(now())
+  Appointment    Appointment? @relation(fields: [appointment_id], references: [id])
+  User           User?        @relation(fields: [user_id], references: [id])
+  Consultant     Consultant?  @relation(fields: [consultant_id], references: [id])
+
+  @@map("ratings")
 }
