@@ -47,7 +47,7 @@ const AppointmentDetailPage = () => {
     setIsLoading(true);
     try {
       const result = await GetOne(API_USER.get_appointments, Number(id));
-      console.log("appointment details from user-app", result?.data?.data);
+      console.log("appointment details from user-app", result?.data);
       if (!result.data) {
         Alert.alert("Error from result", result.error);
         return;

@@ -27,9 +27,9 @@ export class RatingsService {
                 throw new NotFoundException(`Appointment with ID ${appointment_id} not found`);
             }
 
-            if (appointment.status !== 'COMPLETED') {
-                throw new ConflictException('Cannot rate an appointment that is not completed');
-            }
+            // if (appointment.status !== 'COMPLETED') {
+            //     throw new ConflictException('Cannot rate an appointment that is not completed');
+            // }
 
             // Check if rating already exists for this appointment
             if (appointment.Rating) {
