@@ -14,7 +14,7 @@ import {
   ApiForbiddenResponse
 } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
-import { MockTestFeedbackService } from '../services/mock-test.service';
+import { MockTestFeedbackService } from '../services/mock-test-feedback.service';
 import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
 import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
 import { CreateMockTestFeedbackDto, MockTestFeedbackListResponseDto, MockTestFeedbackResponseDto } from '../dto/mock-test-feedback.dto';
