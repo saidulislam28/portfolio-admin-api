@@ -32,6 +32,7 @@ export interface Appointment {
   notes?: string;
   MockTestFeedback?: any;
   ConversationFeedback?: any;
+  Rating?: any;
 }
 
 export interface AppointmentDetailPageProps {
@@ -54,7 +55,7 @@ export interface AppointmentDetailPageProps {
   };
 }
 
-export type BookingStatus = 
+export type BookingStatus =
   | 'PENDING'
   | 'CONFIRMED'
   | 'CANCELLED'

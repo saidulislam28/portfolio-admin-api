@@ -195,7 +195,8 @@ export class ConsultantAppointmentsService {
         },
         consultant_id: true,
         MockTestFeedback: true,
-        ConversationFeedback: true
+        ConversationFeedback: true,
+        Rating: true
       },
     });
 
@@ -205,7 +206,7 @@ export class ConsultantAppointmentsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    
+
 
     return appointment;
   }

@@ -12,7 +12,7 @@ import {
 } from "@/lib/constants";
 import { callService } from "@/services/AgoraCallService";
 import { useCallStore } from "@/zustand/callStore";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { API_USER, GetOne, PACKAGE_SERVICE_TYPE } from "@sm/common";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -25,6 +25,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from "react-native";
 
@@ -47,7 +48,7 @@ const AppointmentDetailPage = () => {
     setIsLoading(true);
     try {
       const result = await GetOne(API_USER.get_appointments, Number(id));
-      console.log("appointment details from user-app", result?.data);
+      // console.log("appointment details from user-app", result?.data);
       if (!result.data) {
         Alert.alert("Error from result", result.error);
         return;
@@ -223,13 +224,35 @@ const AppointmentDetailPage = () => {
             variant="primary"
             fullWidth={false}
           />
-          <BaseButton
-            title={isRated ? "Rating Submitted" : "Rate Consultant"}
-            onPress={handlegiverating}
+          <TouchableOpacity
+            style={[
+              styles.actionItem,
+              isRated && { opacity: 0.6 },
+            ]}
             disabled={isRated}
-            variant={isRated ? "secondary" : "primary"}
-            fullWidth={false}
-          />
+            onPress={handlegiverating}
+          >
+            <View style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+              <AntDesign
+                name={isRated ? "staro" : "star"}
+                size={24}
+                color={isRated ? "gray" : "#faad14"}
+              />
+              <AntDesign
+                name={isRated ? "staro" : "star"}
+                size={24}
+                color={isRated ? "gray" : "#faad14"}
+              />
+              <AntDesign
+                name={isRated ? "staro" : "star"}
+                size={24}
+                color={isRated ? "gray" : "#faad14"}
+              />
+            </View>
+            <Text style={styles.actionText}>
+              {isRated ? "Rating Submitted" : "Rate Consultant"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -292,6 +315,14 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 32,
     gap: 12,
+  },
+  actionItem: {
+    alignItems: "center",
+  },
+  actionText: {
+    marginTop: 6,
+    fontSize: 14,
+    fontWeight: "500",
   },
 });
 
