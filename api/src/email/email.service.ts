@@ -83,8 +83,8 @@ export default class EmailService {
     await transporter.sendMail({
       from: `"Trackify" <${process.env.SMTP_USER}>`,
       to,
-      subject: `Your Test Feedback`,
-      text: 'Please find your feedback attached.',
+      subject: `Your Mock Test Feedback`,
+      text: 'Please find your feedback attached. Have a nice day.',
       attachments: [
         {
           filename: `feedback-${feedback.id}.pdf`,
