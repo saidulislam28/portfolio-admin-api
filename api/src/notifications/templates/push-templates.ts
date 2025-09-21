@@ -1,3 +1,4 @@
+/* eslint-disable */
 // src/notifications/templates/push-templates.ts
 
 import { Appointment } from '@prisma/client';

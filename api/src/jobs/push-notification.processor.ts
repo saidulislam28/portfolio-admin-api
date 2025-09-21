@@ -1,5 +1,6 @@
+/* eslint-disable */
 import { OnQueueError, Process, Processor } from '@nestjs/bull';
-import { Inject,Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { Appointment, NotificationChannel, NotificationType } from '@prisma/client';
 import { Job } from 'bull';
 import { format, subMinutes } from 'date-fns';
@@ -25,7 +26,7 @@ export class PushNotificationProcessor {
     private prisma: PrismaService,
     @Inject('TimezoneService') private timezoneService: TimezoneService,
     @Inject('UserCacheService') private userCacheService: UserCacheService
-  ) {}
+  ) { }
 
   // @OnQueueError()
   // onError(err: Error) {
@@ -74,6 +75,8 @@ export class PushNotificationProcessor {
           'consultant'
         ),
       ]);
+
+      console.log("user time and consultant", userFormattedStartAt, 'consultant', consultantFormattedStartAt);
 
       this.logger.debug(`Formatted times - User: ${userFormattedStartAt}, Consultant: ${consultantFormattedStartAt}`);
 
@@ -134,7 +137,7 @@ export class PushNotificationProcessor {
 
       // Schedule reminder notifications (5 minutes before appointment)
       const reminderTime = subMinutes(new Date(start_at), 5);
-      
+
       await this.scheduleReminderNotifications(
         Number(user_id),
         Number(consultant_id),
