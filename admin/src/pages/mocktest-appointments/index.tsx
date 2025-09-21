@@ -101,6 +101,7 @@ const AppointmentsView: React.FC = () => {
               service_type: true,
             },
           },
+          Rating: true
         },
       }),
     staleTime: 0,

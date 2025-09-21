@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router';
 
 const TableGrid = ({
     appointment,
-    
 }) => {
 
     const navigate = useNavigate();
@@ -35,6 +34,15 @@ const TableGrid = ({
             render: (d: string) => (
                 <Tag color="blue">{d ? new Date(d).toLocaleDateString() : "-"}</Tag>
             ),
+        },
+        {
+            title: "Rating",
+            dataIndex: "Rating",
+            key: "rating",
+            render: (rating) => {
+                // console.log("rating from table", rating);
+                return <Tag color={rating?.rating ? 'blue' : 'red'}>{rating?.rating ? `${rating?.rating} star` : 'No rating'}  </Tag>
+            },
         },
         {
             title: "Start Date",

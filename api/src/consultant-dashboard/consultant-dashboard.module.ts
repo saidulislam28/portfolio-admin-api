@@ -10,13 +10,13 @@ import { ConsultantAuthController } from './controllers/consaltantAuth.controlle
 import { ConsultantController } from './controllers/consultant.controller';
 import { ConsultantAppointmentsController } from './controllers/consultant-appointments.controller';
 import { ConversationfeedbackController } from './controllers/conversation-feedback.controller';
-import { MockTestFeedbackController } from './controllers/mock-test.controller';
+import { MockTestFeedbackController } from './controllers/mock-test-feedback.controller';
 import { AppointmentCalendarService } from './services/appointment-calendar.service';
 import { ConsultantAuthService } from './services/consaltantAuth.service';
 import { ConsultantService } from './services/consultant.service';
 import { ConsultantAppointmentsService } from './services/consultant-appointments.service';
 import { ConversationFeedbackService } from './services/conversation-feedback.service';
-import { MockTestFeedbackService } from './services/mock-test.service';
+import { MockTestFeedbackService } from './services/mock-test-feedback.service';
 
 @Module({
   imports: [
@@ -25,9 +25,9 @@ import { MockTestFeedbackService } from './services/mock-test.service';
     AuthModule
   ],
   controllers: [
-    ConversationfeedbackController, 
-    MockTestFeedbackController, 
-    ConsultantController, 
+    ConversationfeedbackController,
+    MockTestFeedbackController,
+    ConsultantController,
     ConsultantAuthController,
     ConsultantAppointmentsController,
     AppointmentsCalendarController

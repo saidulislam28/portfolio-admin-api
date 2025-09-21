@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -10,6 +11,7 @@ import {
   message,
   notification,
   Popconfirm,
+  Rate,
   Row,
   Select,
   Space,
@@ -24,6 +26,7 @@ import PageTitle from '~/components/PageTitle';
 import { deleteApi, post } from '~/services/api/api';
 import { API_CRUD_FIND_WHERE, getUrlForModel } from '~/services/api/endpoints';
 import { getHeader } from '~/utility/helmet';
+
 import ConsultantDrawerForm from './_DrawerForm';
 const { Option } = Select;
 const model = 'Consultant'
@@ -59,11 +62,14 @@ const ConsultantsPage: React.FC = () => {
     data: fetchData,
     refetch,
   } = useQuery({
-    queryKey: [`get-consultant-list`, filters?.OR, filters?.is_active, filters?.is_conversation, filters?.is_mocktest],
+    queryKey: [`get-consultant-list-all`, filters?.OR, filters?.is_active, filters?.is_conversation, filters?.is_mocktest],
     queryFn: () =>
       post(`${API_CRUD_FIND_WHERE}?model=${model}`, {
         where: filters,
         refetchOnWindowFocus: false,
+        include: {
+          Rating: true
+        }
       }),
     select(data) {
       return data?.data ?? [];
@@ -77,7 +83,7 @@ const ConsultantsPage: React.FC = () => {
     // Refresh your data here
   };
   // console.log("data>>>>>", data)
-  console.log("filters", fetchData)
+  console.log("filters consultant data", fetchData)
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => await deleteApi(getUrlForModel(model, id)),
@@ -196,9 +202,16 @@ const ConsultantsPage: React.FC = () => {
       key: 'phone',
     },
     {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      render: (date) => dayjs(date).format('YYYY-MM-DD')
+      title: "Average Rating",
+      dataIndex: "Rating",
+      render: (ratings: any[]) => {
+        if (!ratings || ratings.length === 0) return "___"; 
+
+        const avg =
+          ratings.reduce((sum, r) => sum + (r.rating || 0), 0) / ratings.length;
+
+        return <Tag color='green'>{avg} star</Tag>;
+      },
     },
     {
       title: 'Status',
@@ -222,7 +235,7 @@ const ConsultantsPage: React.FC = () => {
       ),
 
     },
-    
+
     {
       title: 'Actions',
       key: 'actions',

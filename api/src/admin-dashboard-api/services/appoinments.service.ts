@@ -71,6 +71,13 @@ export class AppointmentsService {
         Order: true,
         MockTestFeedback: true,
         ConversationFeedback: true,
+        Rating: {
+          select: {
+            comment: true,
+            id: true,
+            rating: true
+          }
+        }
       },
     });
     return response;
@@ -89,7 +96,7 @@ export class AppointmentsService {
 
     const updatedAppointment = await this.prisma.appointment.update({
       where: { id },
-      data: { 
+      data: {
         consultant_id: consultant_id,
         status: AppointmentStatus.CONFIRMED
       },

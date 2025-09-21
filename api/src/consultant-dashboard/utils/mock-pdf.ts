@@ -1,4 +1,6 @@
 /* eslint-disable */
+import path from "path";
+
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
@@ -24,7 +26,9 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         const margin = 40;
         const contentWidth = pageWidth - margin * 2;
         let currentY = 0;
+        const logoPath = path.join(process.cwd(), "public", "uploads", "Logo512.png");
 
+        console.log("logo path", logoPath);
         // Helper: draw checkbox
         function drawCheckbox(x, y, label, checked = false) {
             doc.rect(x, y, 10, 10).stroke();
@@ -38,11 +42,9 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         doc.rect(0, 0, pageWidth, 100).fill(primaryColor);
 
         // Logo placeholder (local image)
-        try {
-            doc.image('logo.png', margin, 20, { width: 60, height: 60 });
-        } catch {
-            doc.fillColor('white').fontSize(10).text('[Logo Here]', margin, 50);
-        }
+
+        doc.image(logoPath, margin, 20, { width: 60, height: 60 });
+
 
         doc.fillColor('white').font('Helvetica-Bold').fontSize(16).text('SpeakingMate', margin + 70, 30);
         doc.font('Helvetica').fontSize(9).text('MASTER IELTS SPEAKING WITH CONFIDENCE', margin + 70, 50);
@@ -196,23 +198,49 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
             { label: 'Improve pronunciation', val: feedback.recImprovePronunciation },
         ].filter((f) => f.val);
 
-        recs.forEach((r) => {
-            doc.fontSize(10).fillColor(darkGray).text(`• ${r.label}`, margin, currentY);
+        const colWidth = contentWidth / 2;
+        const col1X = margin;
+        const col2X = margin + colWidth;
+        for (let i = 0; i < recs.length; i += 2) {
+            // First column
+            doc.fontSize(10).fillColor(darkGray).text(`• ${recs[i].label}`, col1X, currentY, {
+                width: colWidth - 10,
+            });
+
+            // Second column (if exists)
+            if (recs[i + 1]) {
+                doc.text(`• ${recs[i + 1].label}`, col2X, currentY, {
+                    width: colWidth - 10,
+                });
+            }
+
+            // Move to next row
             currentY += 15;
-        });
+        }
 
         // ---------------- EXAMINER COMMENT ----------------
         currentY += 15;
         doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Examiner Comment', margin, currentY);
         currentY += 20;
 
-        doc.rect(margin, currentY, contentWidth, 60).stroke('#d9d9d9');
-        doc.fontSize(10).fillColor(darkGray).font('Helvetica').text(feedback.additionalNotes || '__________________________', margin + 10, currentY + 10, {
+        // Measure text height
+        const examinerText = feedback.additionalNotes || '__________________________';
+        const examinerTextOptions = {
             width: contentWidth - 20,
-        });
-        currentY += 80;
+        };
+        const textHeight = doc.heightOfString(examinerText, examinerTextOptions);
 
-        // ---------------- FOOTER ----------------
+        // Draw border rectangle with dynamic height
+        const rectHeight = textHeight + 20; // add padding
+        doc.rect(margin, currentY, contentWidth, rectHeight).stroke('#d9d9d9');
+
+        // Write text inside box
+        doc.fontSize(10).fillColor(darkGray).font('Helvetica').text(examinerText, margin + 10, currentY + 10, examinerTextOptions);
+
+        // Update currentY
+        currentY += rectHeight + 20;
+
+
         const footerY = doc.page.height - 100;
         try {
             doc.image('qr.png', margin, footerY, { width: 50, height: 50 }); // QR placeholder
@@ -226,3 +254,9 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         doc.end();
     });
 }
+
+// fds dsf dsf dsf sdf sdf sdf sdf sdf sdf sdfv sefsdfsd sdf sdf sdf sdfds sdf sd sdfsd sdfsdfvdskj sdfhsdkj sdkjfhsdkj
+// sdfjhsdkjfhsdjf sdfds sdlkfjlskd sdfjklsd sdlfjsdlkfjlsdk sdfjlsdkfjlds dslfjlsdk sdfjlsdfjlds dskfjsdlk fsdljf dslkf l
+// lsdjsdfljhsdlkjsdfjsdhsdfjsdjhsdjhsdujhdsjhdsjdsjhsdj jhdj jhdjh j d j j j j jhdjfjhjhsdjkhfdsjhfjkds dskjfdskj hsdfdsjh
+// sdfvdsjkfhsdkjfhdsjh
+

@@ -41,6 +41,7 @@ import {
 
 // Import types
 import { Appointment, AppointmentDetailPageProps, BookingStatus } from '@/types/appointment-details';
+import AppointmentRating from '@/components/appointment-details/RatingSection';
 
 const { width } = Dimensions.get('window');
 const isTablet = width >= 600;
@@ -251,6 +252,8 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     }
   };
 
+  console.log("Appointment rating", appointment?.Rating);
+
   const handleSubmitFeedback = () => {
     console.log('feebdback click');
     if (!appointment) return;
@@ -397,6 +400,15 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
           formatDate={formatDate}
           formatTime={formatTime}
         />
+
+        {
+          appointment?.Rating ? <>
+            <AppointmentRating
+              rating={appointment?.Rating?.rating}
+              comment={appointment?.Rating?.comment}
+            />
+          </> : ""
+        }
 
         <ConsultationNotesCard
           appointment={appointment}

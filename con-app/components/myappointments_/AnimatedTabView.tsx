@@ -32,6 +32,7 @@ const AnimatedTabView: React.FC<{
 
     const switchTab = useCallback(
       (tabIndex: number) => {
+        onRefresh();
         setActiveTab(tabIndex);
         translateX.value = withTiming(-tabIndex * SCREEN_WIDTH);
         tabIndicatorTranslateX.value = withTiming(

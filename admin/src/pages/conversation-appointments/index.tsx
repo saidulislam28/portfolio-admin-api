@@ -140,6 +140,7 @@ const AppointmentsView: React.FC = () => {
               service_type: true,
             },
           },
+          Rating: true
         },
       }),
     staleTime: 0,
@@ -279,6 +280,15 @@ const AppointmentsView: React.FC = () => {
       render: (d: string) => (
         <Tag color="blue">{d ? new Date(d).toLocaleDateString() : "-"}</Tag>
       ),
+    },
+    {
+      title: "Rating",
+      dataIndex: "Rating",
+      key: "rating",
+      render: (rating) => {
+        // console.log("rating from table", rating);
+        return <Tag color={rating?.rating ? 'blue' : 'red'}>{rating?.rating ? `${rating?.rating} star` : 'No rating'}  </Tag>
+      },
     },
     {
       title: "Start Date",
