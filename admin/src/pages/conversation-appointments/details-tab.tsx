@@ -21,6 +21,7 @@ import {
     Card,
     Col,
     Divider,
+    Rate,
     Row,
     Space,
     Tabs,
@@ -203,7 +204,7 @@ const renderDetailsTab = ({
                     title={
                         <Space>
                             <IdcardOutlined style={{ color: "#fa8c16" }} />
-                            <span>Consultant Information</span>
+                            <span>Consultant Information...</span>
                         </Space>
                     }
                     extra={
@@ -305,6 +306,27 @@ const renderDetailsTab = ({
                             <Text>Not assigned yet.</Text>
                         </div>
                     )}
+                </Card>
+            </Col>
+
+            <Col xs={24}>
+                <Card
+                    title={
+                        <Space>
+                            <IdcardOutlined style={{ color: "green" }} />
+                            <span>Appointment Rating</span>
+                        </Space>
+                    }
+                    extra={""}
+                >
+                    <Space direction="vertical" style={{ width: "100%" }}>
+                        {appointmentData?.Rating ? <>
+                            <Rate value={appointmentData?.Rating?.rating || 0} style={{ pointerEvents: "none" }} />
+                            <Text type="secondary">"{appointmentData?.Rating?.comment}"</Text>
+                        </> : <>
+                            <Text type="secondary">No Rating Given!!</Text>
+                        </>}
+                    </Space>
                 </Card>
             </Col>
 

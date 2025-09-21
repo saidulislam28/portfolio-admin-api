@@ -2,18 +2,13 @@ import {
   CalendarOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
-  DollarOutlined,
-  HomeOutlined,
   MailOutlined,
   PhoneOutlined,
-  UserOutlined,
-  UserSwitchOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import {
   Avatar,
-  Badge,
-  Breadcrumb,
   Card,
   Col,
   Descriptions,
@@ -24,12 +19,13 @@ import {
   Table,
   Tabs,
   Tag,
-  Typography,
+  Typography
 } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router";
+
 import PageTitle from "~/components/PageTitle";
-import { get, post } from "~/services/api/api";
+import { post } from "~/services/api/api";
 import { API_CRUD_FIND_WHERE } from "~/services/api/endpoints";
 import { getHeader } from "~/utility/helmet";
 
@@ -51,13 +47,22 @@ const ConsultantProfile = () => {
     queryFn: () =>
       post(`${API_CRUD_FIND_WHERE}?model=Consultant`, {
         where: { id: Number(id) },
-        include: { Appointment: true },
+        include: { Appointment: true, Rating: true },
       }),
     staleTime: 0,
     select: (data) => {
       return data.data[0] ?? {}
     }
   });
+
+  useEffect(() => {
+    refetch();
+  }, [id])
+
+  const avg = consultant?.Rating?.reduce((sum, r) => sum + (r.rating || 0), 0) / consultant?.Rating?.length;
+
+
+  console.log("consultnat data new>", avg);
 
 
   const appointmentColumns = [
@@ -156,15 +161,15 @@ const ConsultantProfile = () => {
               />
               <div>
                 <Rate
-                  disabled
-                  defaultValue={consultant?.rating}
-                  style={{ fontSize: "14px" }}
+                  style={{ pointerEvents: "none" }}
+                  value={avg || 0}
+                // style={{ fontSize: "14px" }}
                 />
                 <Text
                   type="secondary"
                   style={{ display: "block", fontSize: "12px" }}
                 >
-                  {consultant?.rating} ({consultant?.total_ratings} reviews)
+                  {avg ?? 0} ({consultant?.Rating?.length} reviews)
                 </Text>
               </div>
             </div>
@@ -225,7 +230,7 @@ const ConsultantProfile = () => {
                 >
                   {consultant?.timezone}
                 </Descriptions.Item>
-               
+
                 <Descriptions.Item label="Member Since">
                   {new Date(consultant?.created_at).toLocaleDateString()}
                 </Descriptions.Item>
@@ -239,7 +244,7 @@ const ConsultantProfile = () => {
                   {consultant?.bio}
                 </Paragraph>
               </div>
-              
+
             </div>
           </Col>
         </Row>
