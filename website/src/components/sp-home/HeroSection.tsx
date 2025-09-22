@@ -14,8 +14,10 @@ const HeroSection = () => {
                         Practice speaking English with certified instructors and take realistic mock tests to boost your confidence and fluency.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-
-                        <button className="bg-white text-primary border-2 border-primary px-8 py-4 rounded-lg text-lg font-medium hover:bg-indigo-50 transition">
+                        <button className=" hover:bg-white text-white hover:text-primary border-2 w-44 border-primary px-3 py-4 rounded-lg text-lg font-medium bg-primary transition">
+                            Get Started
+                        </button>
+                        <button className="bg-white text-primary border-2 border-primary  py-4 w-44 rounded-lg text-lg font-medium hover:bg-indigo-50 transition">
                             Watch Demo
                         </button>
                     </div>

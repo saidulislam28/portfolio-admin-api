@@ -13,9 +13,9 @@ const Navbar = () => {
                         <Link href={'/'}>
 
                             <div className="flex-shrink-0 flex items-center">
-                                <div className='mr-2'>
+                                <div className=''>
                                     <img
-                                        src="/img/sp-logo.png"
+                                        src="/img/sp-logo-final-transparent.webp"
                                         alt="SpeakingMate App Interface"
                                         className='w-[60px] h-auto rounded-xl'
                                     />

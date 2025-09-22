@@ -18,11 +18,11 @@ export const metadata = {
   },
   description: "",
   icons: {
-    icon: "/img/Vector.png",
-    shortcut: "/img/Vector.png",
-    apple: "/img/Vector.png",
+    icon: "/img/sp-logo-final-transparent.webp",
+    shortcut: "/img/sp-logo-final-transparent.webp",
+    apple: "/img/sp-logo-final-transparent.webp",
   },
-  logo: "/img/Vector.png",
+  logo: "/img/sp-logo-final-transparent.webp",
 };
 
 const inter = Inter({

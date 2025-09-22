@@ -9,7 +9,7 @@ const CtaSection = () => {
                     Join thousands of students who have improved their speaking skills with SpeakingMate. Start your journey today!
                 </p>
                 <a
-                    href="https://play.google.com/store/apps/details?id=com.yourapp.package"
+                    href="https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"
                     target="_blank"
                     rel="noopener noreferrer"
                 >

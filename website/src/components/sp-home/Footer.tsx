@@ -8,15 +8,31 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div>
-                        <h3 className="text-2xl font-bold mb-4">SpeakingMate</h3>
+                        <Link href={'/'}>
+
+                            <div className="flex-shrink-0 flex items-center">
+                                <div className='mr-2'>
+                                    <img
+                                        src="/img/sp-logo-final-transparent.webp"
+                                        alt="SpeakingMate App Interface"
+                                        className='w-[60px] h-auto rounded-xl'
+                                    />
+                                </div>
+                                <span className="text-2xl font-bold text-primary">Speaking<span className='text-primary'>Mate</span></span>
+                            </div>
+                        </Link>
                         <p className="text-gray-400 mb-4">
                             Master English speaking with real instructors and personalized feedback.
                         </p>
                         <div className="flex space-x-4">
-                            <a href="#" className="text-gray-400 hover:text-white transition">FB</a>
-                            <a href="#" className="text-gray-400 hover:text-white transition">TW</a>
-                            <a href="#" className="text-gray-400 hover:text-white transition">IG</a>
-                            <a href="#" className="text-gray-400 hover:text-white transition">YT</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.yourapp.package"
+                                target="_blank"
+                                rel="noopener noreferrer">
+
+                                <div className="flex-shrink-0 flex items-center">
+                                    <i className="fa-brands fa-google-play mr-2"></i> Download Now
+                                </div>
+                            </a>
                         </div>
                     </div>
 
