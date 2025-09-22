@@ -7,8 +7,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiProperty } from '@nestj
 export class RegisterDeviceTokenDto {
   @ApiProperty({ description: 'The device token string', example: '1231213' })
   @IsString()
-  @IsNotEmpty()
-  token: string;
+  @IsOptional()
+  token?: string;
 
   @ApiProperty({ description: 'ID of the user who owns the token', example: 2 })
   @IsNumber()
@@ -20,6 +20,14 @@ export class RegisterDeviceTokenDto {
   @IsNumber()
   @IsOptional()
   consultant_id: number;
+
+
+  @ApiProperty({ description: 'Timezone:', example: "Asia/Dhaka" })
+  @IsOptional()
+  @IsString()
+  timezone?: string;
+
+
 }
 
 /**

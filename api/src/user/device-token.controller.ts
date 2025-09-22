@@ -10,7 +10,7 @@ import {
 @ApiTags('User Device Tokens')
 @Controller('user/device-tokens')
 export class DeviceTokenController {
-  constructor(private readonly deviceTokenService: DeviceTokenService) {}
+  constructor(private readonly deviceTokenService: DeviceTokenService) { }
 
   @Post()
   @ApiOperation({ summary: 'Register a device token for a user' })
@@ -30,6 +30,7 @@ export class DeviceTokenController {
   async registerToken(
     @Body() dto: RegisterDeviceTokenDto,
   ): Promise<DeviceTokenResponseDto> {
+    console.log("device tokens", dto);
     const result = await this.deviceTokenService.registerToken(dto);
 
     return res.success(result);
