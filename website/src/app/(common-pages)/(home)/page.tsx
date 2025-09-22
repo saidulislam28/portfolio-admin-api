@@ -164,11 +164,11 @@ export default function SpeakingMateLandingPage() {
                 Watch Demo
               </button>
             </div>
-            <div className="mt-12">
-              <img 
-                src="https://via.placeholder.com/800x400?text=SpeakingMate+App+Screenshot" 
-                alt="SpeakingMate App Interface" 
-                className="rounded-xl shadow-xl mx-auto max-w-full h-auto"
+            <div className="mt-12 w-full">
+              <img
+                src="https://www.shutterstock.com/image-photo/cute-character-3d-image-5yearold-260nw-2581826283.jpg"
+                alt="SpeakingMate App Interface"
+                className="rounded-xl shadow-xl mx-auto w-[350px] md:w-[1080px] max-w-full h-auto"
               />
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function SpeakingMateLandingPage() {
               Our proven approach helps you improve your English speaking skills through personalized practice and expert guidance.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <div key={index} className="bg-gray-50 p-6 rounded-xl hover:shadow-lg transition group">
@@ -217,13 +217,13 @@ export default function SpeakingMateLandingPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">What Our Students Say</h2>
             <p className="text-xl text-gray-600">Real results from real students</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
                 <div className="flex items-center mb-4">
-                  <img 
-                    src={testimonial.avatar} 
+                  <img
+                    src={testimonial.avatar}
                     alt={testimonial.name}
                     className="w-12 h-12 rounded-full mr-4"
                   />
@@ -253,14 +253,13 @@ export default function SpeakingMateLandingPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
             <p className="text-xl text-gray-600">Choose the plan that works best for your learning goals</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {pricingPlans.map((plan, index) => (
-              <div 
-                key={index} 
-                className={`bg-white rounded-xl shadow-lg p-8 transition transform hover:scale-105 ${
-                  plan.popular ? 'ring-2 ring-indigo-500 relative' : ''
-                }`}
+              <div
+                key={index}
+                className={`bg-white rounded-xl shadow-lg p-8 transition transform hover:scale-105 ${plan.popular ? 'ring-2 ring-indigo-500 relative' : ''
+                  }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -269,13 +268,13 @@ export default function SpeakingMateLandingPage() {
                     </span>
                   </div>
                 )}
-                
+
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                 <div className="flex items-baseline mb-6">
                   <span className="text-4xl font-extrabold text-gray-900">{plan.price}</span>
                   <span className="text-gray-600 ml-1">{plan.period}</span>
                 </div>
-                
+
                 <ul className="space-y-4 mb-8">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center">
@@ -286,18 +285,17 @@ export default function SpeakingMateLandingPage() {
                     </li>
                   ))}
                 </ul>
-                
-                <button className={`w-full py-3 px-4 rounded-lg font-medium transition ${
-                  plan.popular 
-                    ? 'bg-primary text-white hover:bg-indigo-700' 
+
+                <button className={`w-full py-3 px-4 rounded-lg font-medium transition ${plan.popular
+                    ? 'bg-primary text-white hover:bg-indigo-700'
                     : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                }`}>
+                  }`}>
                   {plan.popular ? 'Get Started' : 'Choose Plan'}
                 </button>
               </div>
             ))}
           </div>
-          
+
           <div className="text-center mt-8">
             <p className="text-gray-600">
               All plans include a 7-day free trial • No credit card required • Cancel anytime
@@ -313,7 +311,7 @@ export default function SpeakingMateLandingPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
             <p className="text-xl text-gray-600">Everything you need to know about SpeakingMate</p>
           </div>
-          
+
           <div className="space-y-6">
             {[
               {
@@ -380,7 +378,7 @@ export default function SpeakingMateLandingPage() {
                 <a href="#" className="text-gray-400 hover:text-white transition">YT</a>
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-gray-400">
@@ -390,7 +388,7 @@ export default function SpeakingMateLandingPage() {
                 <li><a href="#" className="hover:text-white transition">FAQ</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
@@ -400,7 +398,7 @@ export default function SpeakingMateLandingPage() {
                 <li><a href="#" className="hover:text-white transition">Contact</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-gray-400">
@@ -411,7 +409,7 @@ export default function SpeakingMateLandingPage() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
             <p>&copy; {new Date().getFullYear()} SpeakingMate. All rights reserved.</p>
           </div>
