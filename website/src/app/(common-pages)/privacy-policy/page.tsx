@@ -2,7 +2,7 @@
 
 const PrivacyPolicy = () => {
   return (
-    <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "1em" }}>
+    <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "1em" }} className="max-w-5xl mx-auto p-5">
       <strong>Privacy Policy</strong>
       <p>This privacy policy applies to the SpeakingMate app (hereby referred to as "Application") for mobile devices that was created by SpeakingMate (hereby referred to as "Service Provider") as a Free service. This service is intended for use "AS IS".</p>
       <br />

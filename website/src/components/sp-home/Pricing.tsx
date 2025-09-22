@@ -52,12 +52,6 @@ const Pricing = ({
                         </div>
                     ))}
                 </div>
-
-                <div className="text-center mt-8">
-                    <p className="text-gray-600">
-                        All plans include a 7-day free trial • No credit card required • Cancel anytime
-                    </p>
-                </div>
             </div>
         </section>
     );

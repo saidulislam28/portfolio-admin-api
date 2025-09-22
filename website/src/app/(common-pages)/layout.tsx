@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google";
 
 import dynamic from "next/dynamic";
+import Navbar from "@/src/components/sp-home/Navbar";
+import Footer from "@/src/components/sp-home/Footer";
 
 const NextBreadcrumb = dynamic(
   () => import("@/src/components/breadCrumb/NextBredCrumb"),
@@ -45,7 +47,9 @@ const PageLayout = async ({ children }: { children: React.ReactNode }) => {
         />
       </div>
       <main className={`${inter.className} container-min-height`}>
+        <Navbar />
         {children}
+        <Footer />
       </main>
     </div>
   );

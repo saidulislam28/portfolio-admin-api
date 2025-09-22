@@ -1,3 +1,5 @@
+"use client"
+import Link from 'next/link';
 import React from 'react';
 
 const Footer = () => {
@@ -34,14 +36,23 @@ const Footer = () => {
                             <li><a href="#" className="hover:text-white transition">About</a></li>
                             <li><a href="#" className="hover:text-white transition">Careers</a></li>
                             <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                            <li><a href="#" className="hover:text-white transition">Contact</a></li>
+                            <li>
+                                <a
+                                    className="hover:text-white transition"
+                                    href="https://mail.google.com/mail/?view=cm&fs=1&to=saidulislams9028@gmail.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Contact
+                                </a>
+                            </li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-semibold mb-4">Support</h4>
                         <ul className="space-y-2 text-gray-400">
-                            <li><a href="#" className="hover:text-white transition">Help Center</a></li>
+                            <li><a href="/help-center" className="hover:text-white transition">Help Center</a></li>
                             <li><a href="/privacy-policy" className="hover:text-white transition">Privacy Policy</a></li>
                             <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
                             <li><a href="/request-data-delete" className="hover:text-white transition">Request Data Delete</a></li>

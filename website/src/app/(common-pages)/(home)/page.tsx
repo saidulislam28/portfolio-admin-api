@@ -4,16 +4,12 @@
 import CtaSection from '@/src/components/sp-home/CtaSection';
 import FAQSection from '@/src/components/sp-home/FAQSection';
 import Features from '@/src/components/sp-home/Features';
-import FinalCta from '@/src/components/sp-home/FinalCta';
-import Footer from '@/src/components/sp-home/Footer';
 import HeroSection from '@/src/components/sp-home/HeroSection';
-import Navbar from '@/src/components/sp-home/Navbar';
 import Pricing from '@/src/components/sp-home/Pricing';
 import Testimonial from '@/src/components/sp-home/Testimonial';
-import { useState } from 'react';
 
 export default function SpeakingMateLandingPage() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+ 
 
   const features = [
     {
@@ -103,10 +99,10 @@ export default function SpeakingMateLandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <Navbar
+      {/* <Navbar
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
-      ></Navbar>
+      ></Navbar> */}
 
       {/* Hero Section */}
       <HeroSection />
@@ -127,10 +123,10 @@ export default function SpeakingMateLandingPage() {
       <FAQSection />
 
       {/* Final CTA Section */}
-      <FinalCta />
+      {/* <FinalCta /> */}
 
       {/* Footer */}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

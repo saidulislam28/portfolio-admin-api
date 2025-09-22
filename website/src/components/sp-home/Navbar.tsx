@@ -1,25 +1,28 @@
-import React from 'react';
+"use client"
+import Link from 'next/link';
+import React, { useState } from 'react';
 
-const Navbar = ({
-    isMenuOpen,
-    setIsMenuOpen,
+const Navbar = () => {
 
-}: any) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
-                        <div className="flex-shrink-0 flex items-center">
-                            <div className='mr-2'>
-                                <img
-                                    src="/img/sp-logo.png"
-                                    alt="SpeakingMate App Interface"
-                                    className='w-[60px] h-auto rounded-xl'
-                                />
+                        <Link href={'/'}>
+
+                            <div className="flex-shrink-0 flex items-center">
+                                <div className='mr-2'>
+                                    <img
+                                        src="/img/sp-logo.png"
+                                        alt="SpeakingMate App Interface"
+                                        className='w-[60px] h-auto rounded-xl'
+                                    />
+                                </div>
+                                <span className="text-2xl font-bold text-primary">Speaking<span className='text-black'>Mate</span></span>
                             </div>
-                            <span className="text-2xl font-bold text-primary">Speaking<span className='text-black'>Mate</span></span>
-                        </div>
+                        </Link>
                     </div>
                     <div className="hidden md:flex items-center space-x-8">
                         <a href="#features" className="text-gray-700 hover:text-primary transition">Features</a>
