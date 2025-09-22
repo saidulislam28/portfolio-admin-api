@@ -120,7 +120,7 @@ export class OrdersController {
         month: 'long',
         day: 'numeric'
       }) : '',
-      time: apt.slot_time || ''
+      time: apt.start_at || ''
     })) || [];
 
     return {
@@ -141,7 +141,7 @@ export class OrdersController {
         month: 'long',
         day: 'numeric'
       }) : '',
-      time: apt.slot_time || ''
+      time: apt.start_at || ''
     })) || [];
 
     return {
