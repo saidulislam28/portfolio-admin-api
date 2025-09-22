@@ -15,11 +15,12 @@ import React, { useState } from "react";
 import { useParams } from "react-router";
 import PageTitle from "~/components/PageTitle";
 import { get, patch } from "~/services/api/api";
-import { APPOINTMENT_DETAILS, getUrlForModel } from "~/services/api/endpoints";
+import { APPOINTMENT_DETAILS, ASSIGN_CONSULTANT_API, getUrlForModel } from "~/services/api/endpoints";
 import { Appointment_status } from "~/store/slices/app/constants";
 import { getHeader } from "~/utility/helmet";
 import renderDetailsTab from "./details-tab";
 import renderFeedbackTab from "./feedback-tab";
+import AssignConsultant from "./assign-consultant";
 
 const { TabPane } = Tabs;
 // Mock consultant data
@@ -51,11 +52,12 @@ const AppointmentDetails = () => {
   });
   const assignConsultantMutation = useMutation({
     mutationFn: async (data: any) =>
-      await patch(getUrlForModel(model, data?.id), data),
-    onSuccess: (response) => {
+      await patch(ASSIGN_CONSULTANT_API(Number(data?.id)), data),
+    onSuccess: () => {
       message.success("Updated Successfully");
       refetch();
       successModal();
+      console.log("hitting assignment update");
     },
     onError: () => {
       message.error("Something went wrong");
@@ -75,6 +77,7 @@ const AppointmentDetails = () => {
 
   const successModal = () => {
     setAssignModalVisible(false);
+    console.log("hitting modal false");
     setSelectedAppointmentId(null);
     setSelectedConsultantId(null);
     appointmentRefetch();
@@ -180,54 +183,15 @@ const AppointmentDetails = () => {
             </TabPane>
           </Tabs>
 
-          <Modal
-            title="Assign Consultant"
-            open={assignModalVisible}
-            onCancel={() => {
-              setAssignModalVisible(false);
-              setSelectedConsultantId(null);
-            }}
-            onOk={confirmAssignment}
-          >
-            <Select
-              style={{ width: "100%" }}
-              placeholder="Select a consultant"
-              onChange={handleConsultantSelect}
-              value={selectedConsultantId}
-              optionLabelProp="label"
-              showSearch
-
-            >
-              {consultantData?.data?.map((consultant) => (
-                <Select.Option
-                  key={consultant?.id}
-                  value={consultant?.id}
-                  label={consultant?.full_name}
-                >
-                  <div className="flex items-center">
-                    <Avatar
-                      src={
-                        consultant?.image ??
-                        `https://ui-avatars.com/api/?name=${consultant?.full_name}&background=gray&color=fff`
-                      }
-                      size="default"
-                      className="mr-2"
-                    />
-                    <div>
-                      <div>{consultant?.full_name}</div>
-                      <div className="text-xs text-gray-500">
-                        {consultant?.phone}
-                      </div>
-                      {consultant?.is_mocktest && <Tag color="blue">Mock Test</Tag>}
-                      {consultant?.is_conversation && (
-                        <Tag color="cyan">Conversation</Tag>
-                      )}
-                    </div>
-                  </div>
-                </Select.Option>
-              ))}
-            </Select>
-          </Modal>
+          <AssignConsultant
+            assignModalVisible={assignModalVisible}
+            setAssignModalVisible={setAssignModalVisible}
+            setSelectedConsultantId={setSelectedConsultantId}
+            confirmAssignment={confirmAssignment}
+            handleConsultantSelect={handleConsultantSelect}
+            selectedConsultantId={selectedConsultantId}
+            consultantData={consultantData}
+          />
 
           <Modal
             title="Cancel Appointment"

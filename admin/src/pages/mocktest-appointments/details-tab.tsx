@@ -234,7 +234,7 @@ const renderDetailsTab = ({
                         title={
                             <Space>
                                 <IdcardOutlined style={{ color: "#fa8c16" }} />
-                                <span>Consultant Information</span>
+                                <span>Consultant Information...</span>
                             </Space>
                         }
                         extra={

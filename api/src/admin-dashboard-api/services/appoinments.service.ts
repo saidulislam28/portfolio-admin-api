@@ -116,6 +116,8 @@ export class AppointmentsService {
       );
     }
 
+    console.log("update assignement successfully", updatedAppointment);
+
     await this.notificationQueue.add(
       QUEUE_JOBS.NOTIFICATION.ASSIGN_APPOINTMENT,
       updatedAppointment,
