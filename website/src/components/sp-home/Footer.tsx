@@ -13,9 +13,9 @@ const Footer = () => {
                             <div className="flex-shrink-0 flex items-center">
                                 <div className='mr-2'>
                                     <img
-                                        src="/img/sp-logo-final-transparent.webp"
+                                        src="/img/sp-logo-new.jpg"
                                         alt="SpeakingMate App Interface"
-                                        className='w-[60px] h-auto rounded-xl'
+                                        className='w-[50px] h-auto rounded-xl'
                                     />
                                 </div>
                                 <span className="text-2xl font-bold text-primary">Speaking<span className='text-primary'>Mate</span></span>
@@ -50,7 +50,7 @@ const Footer = () => {
                         <h4 className="font-semibold mb-4">Company</h4>
                         <ul className="space-y-2 text-gray-400">
                             <li><a href="#" className="hover:text-white transition">About</a></li>
-                            <li><a href="#" className="hover:text-white transition">Careers</a></li>
+                            <li><a href="/career" className="hover:text-white transition">Careers</a></li>
                             <li><a href="#" className="hover:text-white transition">Blog</a></li>
                             <li>
                                 <a

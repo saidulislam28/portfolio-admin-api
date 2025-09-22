@@ -13,11 +13,11 @@ const Navbar = () => {
                         <Link href={'/'}>
 
                             <div className="flex-shrink-0 flex items-center">
-                                <div className=''>
+                                <div className='mr-2'>
                                     <img
-                                        src="/img/sp-logo-final-transparent.webp"
+                                        src="/img/sp-logo-new.jpg"
                                         alt="SpeakingMate App Interface"
-                                        className='w-[60px] h-auto rounded-xl'
+                                        className='w-[50px] h-auto rounded-xl'
                                     />
                                 </div>
                                 <span className="text-2xl font-bold text-primary">Speaking<span className='text-black'>Mate</span></span>
