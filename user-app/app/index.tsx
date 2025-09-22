@@ -17,6 +17,8 @@ export default function Index() {
 
   // if (!user) return null;
 
+
+
   // console.log(user);
   useEffect(() => {
     if (!user?.id) {
@@ -28,9 +30,12 @@ export default function Index() {
       try {
         const userId = Number(user?.id);
         const token = await registerForPushNotificationsAsync();
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        console.log("timezone<><><><><><><><><", timezone);
         const response = await Post(API_COMMON.post_device_tokens, {
           token,
           user_id: userId,
+          timezone,
           recipient_type: RECIPIENT_TYPE.User,
         });
         if (response?.data?.success) {
@@ -38,6 +43,7 @@ export default function Index() {
         }
       } catch (error) {
         console.log("error from posting data", error);
+        console.log("error message", error?.message);
       }
     };
     postData();

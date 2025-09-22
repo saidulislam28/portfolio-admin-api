@@ -90,6 +90,9 @@ export default function LoginScreen() {
   };
 
   const handleLogin = async () => {
+
+    console.log("hitting login");
+
     if (!validateInputs()) {
       return;
     }
@@ -99,6 +102,9 @@ export default function LoginScreen() {
 
     try {
       const result: LoginUserResponse = await loginUser(cleanedEmail, password, "");
+
+      console.log("Login Email>>>:", cleanedEmail);
+
       if (!result.success) {
         Alert.alert("Error", result.error);
         setLoading(false);

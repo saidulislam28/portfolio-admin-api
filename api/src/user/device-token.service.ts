@@ -13,7 +13,7 @@ export class DeviceTokenService {
   constructor(
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async registerToken(payload: RegisterDeviceTokenDto) {
     if (payload.consultant_id) {
@@ -27,11 +27,11 @@ export class DeviceTokenService {
 
       await this.prisma.consultant.update({
         where: { id: payload.consultant_id },
-        data: { token: payload.token },
+        data: { token: payload.token, timezone: payload.timezone },
       });
       this.eventEmitter.emit(
         'user.updated',
-        new UserUpdatedEvent(payload.consultant_id, 'consultant', ['token']),
+        new UserUpdatedEvent(payload.consultant_id, 'consultant', ['token', 'timezone']),
       );
     }
 
@@ -46,11 +46,11 @@ export class DeviceTokenService {
 
       await this.prisma.user.update({
         where: { id: payload.user_id },
-        data: { token: payload.token },
+        data: { token: payload.token, timezone: payload.timezone },
       });
       this.eventEmitter.emit(
         'user.updated',
-        new UserUpdatedEvent(payload.user_id, 'user', ['token']),
+        new UserUpdatedEvent(payload.user_id, 'user', ['token', 'timezone']),
       );
     }
 

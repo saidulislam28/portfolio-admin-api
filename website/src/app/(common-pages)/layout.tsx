@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google";
 
 import dynamic from "next/dynamic";
+import Navbar from "@/src/components/sp-home/Navbar";
+import Footer from "@/src/components/sp-home/Footer";
 
 const NextBreadcrumb = dynamic(
   () => import("@/src/components/breadCrumb/NextBredCrumb"),
@@ -16,11 +18,11 @@ export const metadata = {
   },
   description: "",
   icons: {
-    icon: "/img/Vector.png",
-    shortcut: "/img/Vector.png",
-    apple: "/img/Vector.png",
+    icon: "/img/sp-logo-new.jpg",
+    shortcut: "/img/sp-logo-new.jpg",
+    apple: "/img/sp-logo-new.jpg",
   },
-  logo: "/img/Vector.png",
+  logo: "/img/sp-logo-new.jpg",
 };
 
 const inter = Inter({
@@ -45,7 +47,9 @@ const PageLayout = async ({ children }: { children: React.ReactNode }) => {
         />
       </div>
       <main className={`${inter.className} container-min-height`}>
+        <Navbar />
         {children}
+        <Footer />
       </main>
     </div>
   );

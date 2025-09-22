@@ -2,8 +2,6 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import { Inter } from "next/font/google";
 import Providers from "./Providers";
 import "./globals.css";
-import Header from "../components/shared/Navbar";
-import Footer from "../components/shared/Footer";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -17,11 +15,11 @@ export const metadata = {
   },
   description: "",
   icons: {
-    icon: "/img/Vector.png",
-    shortcut: "/img/Vector.png",
-    apple: "/img/Vector.png",
+    icon: "/img/sp-logo-new.jpg",
+    shortcut: "/img/sp-logo-new.jpg",
+    apple: "/img/sp-logo-new.jpg",
   },
-  logo: "/img/Vector.png",
+  logo: "/img/sp-logo-new.jpg",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
