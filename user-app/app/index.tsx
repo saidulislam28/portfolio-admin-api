@@ -1,4 +1,3 @@
-import { RECIPIENT_TYPE } from "@/lib/constants";
 import { registerForPushNotificationsAsync } from "@/lib/notification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_COMMON, API_USER, Post } from "@sm/common";
@@ -9,6 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAuth } from "@/context/useAuth";
 import "react-native-reanimated";
 import { ROUTES } from "@/constants/app.routes";
+import { getUserDeviceTimezone } from "@/utils/userTimezone";
 
 export default function Index() {
   const { user, isLoading } = useAuth();
@@ -30,17 +30,12 @@ export default function Index() {
       try {
         const userId = Number(user?.id);
         const token = await registerForPushNotificationsAsync();
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        console.log("timezone<><><><><><><><><", timezone);
+        const timezone = getUserDeviceTimezone();
         const response = await Post(API_COMMON.post_device_tokens, {
           token,
           user_id: userId,
           timezone,
-          recipient_type: RECIPIENT_TYPE.User,
         });
-        if (response?.data?.success) {
-          // ToastAndroid.show("Device token sent successfully", response.success);
-        }
       } catch (error) {
         console.log("error from posting data", error);
         console.log("error message", error?.message);

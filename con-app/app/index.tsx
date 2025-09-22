@@ -4,9 +4,9 @@ import { View, ActivityIndicator, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/context/useAuth';
 import { registerForPushNotificationsAsync } from '@/lib/notification';
-import { RECIPIENT_TYPE } from '@/lib/constants';
 import { ROUTES } from '@/constants/app.routes';
 import { API_COMMON, Post } from '@sm/common';
+import { getUserDeviceTimezone } from '@/utils/userTimezone';
 
 export default function Index() {
   const [checkingLaunch, setCheckingLaunch] = useState(true);
@@ -24,17 +24,12 @@ export default function Index() {
       try {
         const userId = Number(user?.id);
         const token = await registerForPushNotificationsAsync();
+        const timezone = getUserDeviceTimezone();
         const response = await Post(API_COMMON.post_device_tokens, {
           token,
-          user_id: userId,
-          recipient_type: RECIPIENT_TYPE.Consultant,
+          consultant_id: userId,
+          timezone
         });
-        if (response?.data?.success) {
-          ToastAndroid.show(
-            'Device token sent successfully',
-            ToastAndroid.SHORT
-          );
-        }
       } catch (error) {
         console.log('error from posting device token', error);
       }

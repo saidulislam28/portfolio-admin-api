@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,12 +8,14 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserUpdatedEvent } from 'src/common/events/user-updated.event';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RegisterDeviceTokenDto } from './dto/device-token.dto';
+import { UserCacheService } from 'src/user-cache/interfaces/user-cache.interface';
 
 @Injectable()
 export class DeviceTokenService {
   constructor(
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
+    @Inject('UserCacheService') private userCacheService: UserCacheService,
   ) { }
 
   async registerToken(payload: RegisterDeviceTokenDto) {
@@ -25,14 +28,7 @@ export class DeviceTokenService {
         throw new NotFoundException('Consultant not found');
       }
 
-      await this.prisma.consultant.update({
-        where: { id: payload.consultant_id },
-        data: { token: payload.token, timezone: payload.timezone },
-      });
-      this.eventEmitter.emit(
-        'user.updated',
-        new UserUpdatedEvent(payload.consultant_id, 'consultant', ['token', 'timezone']),
-      );
+      await this.userCacheService.updateUserInfo(payload.consultant_id, 'consultant', payload.token, payload.timezone);
     }
 
     if (payload.user_id) {
@@ -44,14 +40,7 @@ export class DeviceTokenService {
         throw new NotFoundException('User not found');
       }
 
-      await this.prisma.user.update({
-        where: { id: payload.user_id },
-        data: { token: payload.token, timezone: payload.timezone },
-      });
-      this.eventEmitter.emit(
-        'user.updated',
-        new UserUpdatedEvent(payload.user_id, 'user', ['token', 'timezone']),
-      );
+      await this.userCacheService.updateUserInfo(payload.user_id, 'user', payload.token, payload.timezone);
     }
 
     return {};

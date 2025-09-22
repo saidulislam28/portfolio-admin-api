@@ -27,6 +27,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useClass: UserCacheServiceImpl,
     },
   ],
-  exports: ['UserCacheService'],
+  exports: [
+    {
+      provide: 'UserCacheService',
+      useClass: UserCacheServiceImpl,
+    },
+  ],
 })
 export class UserCacheModule {}

@@ -63,6 +63,78 @@ export class UserCacheServiceImpl implements UserCacheService {
   }
 
   /**
+   * Update user info if token or timezone has changed
+   */
+  async updateUserInfo(
+    userId: number, 
+    userType: 'user' | 'consultant', 
+    token?: string, 
+    timezone?: string
+  ): Promise<CachedUserInfo | null> {
+    try {
+      // Get current cached info
+      const cachedInfo = await this.getUserInfo(userId, userType);
+      
+      // Check if values are the same as cached
+      const tokenSame = cachedInfo?.pushToken === token || (!cachedInfo?.pushToken && !token);
+      const timezoneSame = cachedInfo?.timezone === timezone || (!timezone && cachedInfo?.timezone === 'UTC');
+      
+      if (cachedInfo && tokenSame && timezoneSame) {
+        this.logger.debug(`No changes detected for ${userType} ${userId}, skipping update`);
+        return cachedInfo;
+      }
+
+      this.logger.debug(`Changes detected for ${userType} ${userId}, updating database and cache`);
+
+      // Update database
+      const updatedData: { token?: string; timezone?: string } = {};
+      if (token !== undefined) updatedData.token = token;
+      if (timezone !== undefined) updatedData.timezone = timezone;
+
+      let updatedUser;
+      if (userType === 'user') {
+        updatedUser = await this.prisma.user.update({
+          where: { id: userId },
+          data: updatedData,
+          select: {
+            id: true,
+            timezone: true,
+            token: true,
+          },
+        });
+      } else {
+        updatedUser = await this.prisma.consultant.update({
+          where: { id: userId },
+          data: updatedData,
+          select: {
+            id: true,
+            timezone: true,
+            token: true,
+          },
+        });
+      }
+
+      // Create updated cache info
+      const updatedCacheInfo: CachedUserInfo = {
+        id: updatedUser.id,
+        timezone: updatedUser.timezone || 'UTC',
+        pushToken: updatedUser.token || undefined,
+        type: userType,
+      };
+
+      // Update cache
+      await this.setUserInfo(updatedCacheInfo);
+      
+      this.logger.debug(`Successfully updated ${userType} ${userId} info`);
+      return updatedCacheInfo;
+
+    } catch (error) {
+      this.logger.error(`Error updating user info for ${userType} ${userId}:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Invalidate user info from cache
    */
   async invalidateUserInfo(userId: number, userType: 'user' | 'consultant'): Promise<void> {

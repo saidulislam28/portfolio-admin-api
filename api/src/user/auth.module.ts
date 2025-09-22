@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { DeviceTokenController } from './device-token.controller';
 import { DeviceTokenService } from './device-token.service';
+import { UserCacheModule } from 'src/user-cache/user-cache.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DeviceTokenService } from './device-token.service';
       ttl: 60000,
       limit: 3,
     }]),
+    UserCacheModule
   ],
   controllers: [AuthController, DeviceTokenController],
   providers: [AuthService, PrismaService, JwtSignService, JwtService, DeviceTokenService],
