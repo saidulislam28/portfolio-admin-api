@@ -241,6 +241,16 @@ const menuItems = [
       },
     ],
   },
+  {
+    label: "Web Settings",
+    icon: <AppstoreOutlined />,
+    children: [
+      {
+        label: "Settings",
+        key: "/web-setting",
+      },
+    ],
+  },
 ];
 
 const SideBar: React.FC = () => {

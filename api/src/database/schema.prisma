@@ -194,6 +194,13 @@ model Setting {
 
   @@map(name: "settings")
 }
+model WebSetting {
+  id    Int     @id @default(autoincrement())
+  key   String? @unique
+  value String?
+
+  @@map(name: "web-settings")
+}
 
 model Admin {
   id             Int       @id @default(autoincrement())

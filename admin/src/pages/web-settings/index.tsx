@@ -9,10 +9,10 @@ import PageTitle from '~/components/PageTitle';
 import { get, post } from '~/services/api/api';
 import { API_FILE_UPLOAD, getUrlForModel } from '~/services/api/endpoints';
 import { getHeader } from '~/utility/helmet';
-import { getImageFieldsKeys } from './settings';
+import { getImageFieldsKeys } from '../setting/settings';
 const { Panel } = Collapse;
-const model = 'Setting';
-const title = 'Setting';
+const model = 'WebSetting';
+const title = 'Web Setting';
 
 const KEY = `all-${model}`;
 
@@ -58,7 +58,7 @@ const Settings = () => {
     }, [isLoading]);
 
     const createData: any = useMutation({
-        mutationFn: async (data: any) => await post('admin/settings', data.data),
+        mutationFn: async (data: any) => await post('admin-website/settings', data.data),
         onSuccess: (response) => {
             refetch();
             form.resetFields();
@@ -195,9 +195,9 @@ const Settings = () => {
                     <Form.Item label="Phone" name="phone">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Phone" name="phone">
+                    {/* <Form.Item label="Phone" name="phone">
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item label="Map Link" name="map">
                         <Input placeholder='<iframe> link' />
                     </Form.Item>

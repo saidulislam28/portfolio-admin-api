@@ -80,6 +80,9 @@ const CouponPage = lazy(
 const ConsultantSchedule = lazy(
   () => import("./pages/consultant-schedule")
 );
+const WebSettings = lazy(
+  () => import("./pages/web-settings")
+);
 
 const routes = [
   { path: "/", element: Dashboard },
@@ -120,6 +123,7 @@ const routes = [
   { path: "/reports/consultants", element: ReportConsultant },
   { path: "/coupon", element: CouponPage },
   { path: "/consultant-schedule", element: ConsultantSchedule },
+  { path: "/web-setting", element: WebSettings },
 ];
 
 export default routes;
