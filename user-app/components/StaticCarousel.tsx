@@ -20,7 +20,7 @@ interface CarouselProps {
 const CarouselComponent: React.FC<CarouselProps> = ({ content }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const progressValue = useSharedValue(0);
-
+    // console.log("width from carousel", width);
     // Get all image keys from the content object
     const imageKeys = ['image', 'image1', 'image2'];
 
@@ -115,10 +115,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     imageContainer: {
-        
+
     },
     image: {
-        width: 385,
+        width: width,
         height: 200,
         resizeMode: 'cover',
         borderRadius: 10,

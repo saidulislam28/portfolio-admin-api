@@ -19,7 +19,7 @@ import {
 } from "react-native";
 import RenderHTML from "react-native-render-html";
 
-const { width: screenWidth } = Dimensions.get("window");
+// const { width: screenWidth } = Dimensions.get("window");
 
 const PackageDetails = () => {
   const { id } = useLocalSearchParams();
@@ -109,7 +109,7 @@ const PackageDetails = () => {
 
   const handleBuyCourses = () => {
     router.push({
-      pathname: ROUTES.ONLINE_REGISTRATION_FORM,
+      pathname: ROUTES.ONLINE_REGISTRATION_FORM as any,
       params: {
         packageId: id.toString(),
       },
