@@ -32,7 +32,6 @@ export class DeviceTokenController {
   ): Promise<DeviceTokenResponseDto> {
     console.log("device tokens", dto);
     const result = await this.deviceTokenService.registerToken(dto);
-
     return res.success(result);
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import VideoModalButton from './VideoModal';
 
 const HeroSection = ({
     hero
@@ -25,9 +26,7 @@ const HeroSection = ({
                         <button className=" hover:bg-white text-white hover:text-primary border-2 w-44 border-primary px-3 py-4 rounded-lg text-lg font-medium bg-primary transition">
                             Get Started
                         </button>
-                        <button className="bg-white text-primary border-2 border-primary  py-4 w-44 rounded-lg text-lg font-medium hover:bg-indigo-50 transition">
-                            Watch Demo
-                        </button>
+                        <VideoModalButton demo={hero?.demo_video} />
                     </div>
                     <div className="mt-12 w-full">
                         <img

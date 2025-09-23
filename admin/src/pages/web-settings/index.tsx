@@ -270,6 +270,9 @@ const Settings = () => {
                     <Form.Item label="Hero description" name="hero_desc">
                         <TextArea rows={5} />
                     </Form.Item>
+                    <Form.Item label="Demo Video (Iframe)" name="demo_video">
+                        <Input placeholder='https://www.youtube.com/embed/CDFVJ6KDJAQ'  />
+                    </Form.Item>
                     <Form.Item
                         label="Hero image"
                         name="hero_image"

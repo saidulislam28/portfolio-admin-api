@@ -35,6 +35,7 @@ export class WebDataSettingService {
             hero_image: settingData?.hero_image,
             hero_desc: settingData?.hero_desc,
             hero_title: settingData?.hero_title,
+            demo_video: settingData?.demo_video
         };
 
         const testimonial = await this.prismaService.testimonial.findMany({
