@@ -133,6 +133,11 @@ const menuItems = [
     key: "/coupon",
     icon: <SolutionOutlined />,
   },
+  {
+    label: "Help Request",
+    key: "/web-help-req",
+    icon: <SolutionOutlined />,
+  },
   // {
   //   label: "Consultants",
   //   key: "/consultants",
@@ -238,6 +243,24 @@ const menuItems = [
       {
         label: "Settings",
         key: "/setting",
+      },
+    ],
+  },
+  {
+    label: "Web Settings",
+    icon: <AppstoreOutlined />,
+    children: [
+      {
+        label: "Settings",
+        key: "/web-setting",
+      },
+      {
+        label: "Faq",
+        key: "/web-faq",
+      },
+      {
+        label: "Testimonial",
+        key: "/web-testimonial",
       },
     ],
   },

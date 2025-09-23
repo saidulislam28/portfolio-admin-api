@@ -8,6 +8,8 @@ import { SettingsController } from './controllers/settings.controller';
 import { SettingsService } from './services/settings.service';
 import { AppointmentStatusController } from './controllers/appointment-status.controller';
 import { AppointmentStatusService } from './services/appointment-status.service';
+import { WebSettingsService } from './services/web-settings.service';
+import { WebSettingsController } from './controllers/web-settings.controller';
 
 
 
@@ -17,15 +19,13 @@ import { AppointmentStatusService } from './services/appointment-status.service'
     SeederController,
     SettingsController,
     AppointmentStatusController,
-    
-
+    WebSettingsController
   ],
   providers: [
     SeederService,
     SettingsService,
     AppointmentStatusService,
-    
-
+    WebSettingsService
   ],
   exports: [],
 })

@@ -1,8 +1,21 @@
 "use client"
+import { fetchHomeContent } from '@/utils/fetchData';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Footer = () => {
+    const [homeData, setHomeData] = useState<any>(null);
+
+    const response = async () => {
+        const data = await fetchHomeContent();
+        setHomeData(data?.base_data);
+    };
+
+    // console.log("navbar data >>", homeData);
+
+    useEffect(() => {
+        response();
+    }, []);
     return (
         <footer className="bg-gray-900 text-white py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,24 +23,26 @@ const Footer = () => {
                     <div>
                         <Link href={'/'}>
 
-                            <div className="flex-shrink-0 flex items-center">
-                                <div className='mr-2'>
+                            <div className="flex-shrink-0 mb-2 flex items-center">
+                                <div className='mr-2 '>
                                     <img
-                                        src="/img/sp-logo-new.jpg"
-                                        alt="SpeakingMate App Interface"
-                                        className='w-[50px] h-auto rounded-xl'
+                                        src={homeData?.logo ? homeData?.logo : "/img/sp-logo-new.jpg"}
+                                        alt={homeData?.brand_name}
+                                        className='w-[45px] h-auto rounded-xl'
                                     />
                                 </div>
-                                <span className="text-2xl font-bold text-primary">Speaking<span className='text-primary'>Mate</span></span>
+                                <span className="text-2xl font-bold text-primary">{homeData?.brand_name?.split(" ")}</span>
                             </div>
                         </Link>
                         <p className="text-gray-400 mb-4">
                             Master English speaking with real instructors and personalized feedback.
                         </p>
                         <div className="flex space-x-4">
-                            <a href="https://play.google.com/store/apps/details?id=com.yourapp.package"
+                            <a
+                                href={homeData?.play_store ? `https://play.google.com/store/apps/details?id=${homeData?.play_store}` : "https://play.google.com/store/apps/details?id=com.yourapp.package"}
                                 target="_blank"
-                                rel="noopener noreferrer">
+                                rel="noopener noreferrer"
+                            >
 
                                 <div className="flex-shrink-0 flex items-center">
                                     <i className="fa-brands fa-google-play mr-2"></i> Download Now
@@ -55,7 +70,7 @@ const Footer = () => {
                             <li>
                                 <a
                                     className="hover:text-white transition"
-                                    href="https://mail.google.com/mail/?view=cm&fs=1&to=saidulislams9028@gmail.com"
+                                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${homeData?.email}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -77,7 +92,7 @@ const Footer = () => {
                 </div>
 
                 <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-                    <p>&copy; {new Date().getFullYear()} SpeakingMate. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} {homeData?.brand_name?.split(" ")}. All rights reserved.</p>
                 </div>
             </div>
         </footer>

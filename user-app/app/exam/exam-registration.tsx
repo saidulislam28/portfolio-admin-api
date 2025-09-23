@@ -3,8 +3,8 @@ import CommonHeader from '@/components/CommonHeader';
 import { ROUTES } from '@/constants/app.routes';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import { PRIMARY_COLOR } from '@/lib/constants';
-import { Link, Stack, useRouter } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 
 interface Content {
@@ -27,6 +27,8 @@ export default function RegistrationLanding() {
         );
     }
 
+    console.log("width", width);
+
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: 'Checkout' }} />
@@ -36,10 +38,11 @@ export default function RegistrationLanding() {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}>
                 {
-                    appSettingsData?.ielts_registration?.image && <View style={styles.imageContainer}>
+                    appSettingsData?.ielts_registration?.image &&
+                    <View style={styles.imageContainer}>
                         <Image
                             source={{ uri: appSettingsData?.ielts_registration?.image }}
-                            style={styles.bookImage}
+                            style={[styles.bookImage, {width: width * 0.9}]}
                             resizeMode="cover"
                         />
                     </View>
@@ -54,7 +57,7 @@ export default function RegistrationLanding() {
             </ScrollView>
 
             {/* Sticky bottom button */}
-            <View style={styles.stickyButtonContainer}>               
+            <View style={styles.stickyButtonContainer}>
                 <BaseButton title="Continue" onPress={() => router.push(ROUTES.EXAM_PACKAGES as any)} disabled={false} />
             </View>
         </View>
@@ -252,8 +255,8 @@ const styles = StyleSheet.create({
         borderRadius: 8
     },
     bookImage: {
-        width: 375,
-        height: 220,
+       
+        height: 180,
         borderRadius: 8,
     },
     // loadingContainer: {

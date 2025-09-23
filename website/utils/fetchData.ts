@@ -32,7 +32,7 @@ export const fetchHomeContent = async () => {
     };
 
     const data = await res.json();
-    return data ?? {};
+    return data?.data ?? {};
 
   } catch (error) {
     console.error('fetch home error ===>', error);

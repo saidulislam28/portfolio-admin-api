@@ -195,6 +195,40 @@ model Setting {
   @@map(name: "settings")
 }
 
+model WebSetting {
+  id    Int     @id @default(autoincrement())
+  key   String? @unique
+  value String?
+
+  @@map(name: "web-settings")
+}
+
+model Faq {
+  id         Int     @id @default(autoincrement())
+  page_id    Int?
+  sort_order Int?
+  question   String?
+  answer     String?
+  is_active  Boolean @default(false)
+
+  @@map(name: "faqs")
+}
+
+model Testimonial {
+  id          Int     @id @default(autoincrement())
+  user_name   String  @db.VarChar(200)
+  desc        String?
+  rating      Int?
+  designation String? @db.VarChar(200)
+  company     String? @db.VarChar(200)
+  city        String? @db.VarChar(200)
+  image       String? @db.VarChar(200)
+  sort_order  Int     @default(1)
+  is_active   Boolean @default(false)
+
+  @@map(name: "testimonials")
+}
+
 model Admin {
   id             Int       @id @default(autoincrement())
   full_name      String?
@@ -853,4 +887,19 @@ model Rating {
   Consultant     Consultant?  @relation(fields: [consultant_id], references: [id])
 
   @@map("ratings")
+}
+
+
+model HelpRequest {
+  id          Int      @id @default(autoincrement())
+  name        String?  
+  email       String?  
+  phone       String?  
+  subject     String?  
+  description String?  
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  
+  @@map("help-request")
 }

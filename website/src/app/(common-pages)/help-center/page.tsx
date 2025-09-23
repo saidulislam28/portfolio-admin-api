@@ -1,6 +1,9 @@
 "use client"
+import { post } from '@/src/services/api/api';
+import { API_POST_HELP_REQ } from '@/src/services/api/endpoints';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const HelpCenter = () => {
     const {
@@ -10,12 +13,24 @@ const HelpCenter = () => {
         formState: { errors }
     } = useForm();
 
-    const onSubmit = (data: any) => {
+    const onSubmit = async (data: any) => {
         console.log('Form submitted:', data);
-        // Show success alert
-        alert('Thank you for contacting us! We\'ll get back to you soon.');
-        // Clear the form
-        reset();
+
+        try {
+            const response = await post(API_POST_HELP_REQ, data);
+            console.log("response", response?.data);
+            if (response?.data) {
+                toast.success("Thank you for contacting us! We\'ll get back to you soon.")
+                // alert('Thank you for contacting us! We\'ll get back to you soon.');
+                reset();
+            }
+
+        } catch (error) {
+            console.log("error:", error);
+        }
+
+
+
     };
 
     return (
@@ -169,12 +184,12 @@ const HelpCenter = () => {
                 </div>
 
                 {/* Additional Help Section */}
-                <div className="mt-8 text-center">
+                {/* <div className="mt-8 text-center">
                     <p className="text-gray-600">
                         Need immediate assistance? Call us at{' '}
                         <span className="text-blue-600 font-medium">1-800-HELP-NOW</span>
                     </p>
-                </div>
+                </div> */}
             </div>
         </div>
     );

@@ -9,10 +9,10 @@ import PageTitle from '~/components/PageTitle';
 import { get, post } from '~/services/api/api';
 import { API_FILE_UPLOAD, getUrlForModel } from '~/services/api/endpoints';
 import { getHeader } from '~/utility/helmet';
-import { getImageFieldsKeys } from './settings';
+import { getImageFieldsKeys } from '../setting/settings';
 const { Panel } = Collapse;
-const model = 'Setting';
-const title = 'Setting';
+const model = 'WebSetting';
+const title = 'Web Setting';
 
 const KEY = `all-${model}`;
 
@@ -58,7 +58,7 @@ const Settings = () => {
     }, [isLoading]);
 
     const createData: any = useMutation({
-        mutationFn: async (data: any) => await post('admin/settings', data.data),
+        mutationFn: async (data: any) => await post('admin-website/settings', data.data),
         onSuccess: (response) => {
             refetch();
             form.resetFields();
@@ -192,18 +192,18 @@ const Settings = () => {
                     <Form.Item label="Email" name="email">
                         <Input type="email" />
                     </Form.Item>
-                    <Form.Item label="Phone" name="phone">
+                    {/* <Form.Item label="Phone" name="phone">
                         <Input />
-                    </Form.Item>
-                    <Form.Item label="Phone" name="phone">
+                    </Form.Item> */}
+                    {/* <Form.Item label="Phone" name="phone">
                         <Input />
+                    </Form.Item> */}
+                    <Form.Item label="App Play Store id" name="play_store">
+                        <Input placeholder='com.yourapp.package' />
                     </Form.Item>
-                    <Form.Item label="Map Link" name="map">
-                        <Input placeholder='<iframe> link' />
-                    </Form.Item>
-                    <Form.Item label="Address" name="address">
+                    {/* <Form.Item label="Address" name="address">
                         <TextArea rows={5} />
-                    </Form.Item>
+                    </Form.Item> */}
                     <h3 style={{ borderBottom: '1px ridge' }}>Images</h3>
                     <Form.Item
                         label="Logo"
@@ -247,8 +247,8 @@ const Settings = () => {
                             <Button icon={<UploadOutlined />}>Click to Upload</Button>
                         </Upload>
                     </Form.Item>
-                    <h3 style={{ borderBottom: '1px ridge' }}>Social links</h3>
-                    <Form.Item label="Facebook" name="facebook">
+                    {/* <h3 style={{ borderBottom: '1px ridge' }}>Social links</h3> */}
+                    {/* <Form.Item label="Facebook" name="facebook">
                         <Input type="url" />
                     </Form.Item>
                     <Form.Item label="Linkedin" name="linkedin">
@@ -262,13 +262,16 @@ const Settings = () => {
                     </Form.Item>
                     <Form.Item label="Twitter" name="twitter">
                         <Input type="url" />
-                    </Form.Item>
+                    </Form.Item> */}
                     <h3 style={{ borderBottom: '1px ridge' }}>Hero</h3>
                     <Form.Item label="Hero title" name="hero_title">
                         <Input />
                     </Form.Item>
                     <Form.Item label="Hero description" name="hero_desc">
                         <TextArea rows={5} />
+                    </Form.Item>
+                    <Form.Item label="Demo Video (Iframe)" name="demo_video">
+                        <Input placeholder='https://www.youtube.com/embed/CDFVJ6KDJAQ'  />
                     </Form.Item>
                     <Form.Item
                         label="Hero image"
@@ -300,9 +303,9 @@ const Settings = () => {
                     <Form.Item label="Brand Url" name="brand_url">
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Delivery Charge" name="delivery_charge">
+                    {/* <Form.Item label="Delivery Charge" name="delivery_charge">
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
 
                     <Form.Item wrapperCol={{ offset: 2, span: 16 }}>
                         <Button type="primary" htmlType="submit" loading={createData?.isLoading}>

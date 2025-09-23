@@ -4,7 +4,7 @@
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
 
-export const WEBSITE_HOME_CONTENT =`${API_URL}/website/home-data`
+export const WEBSITE_HOME_CONTENT =`${API_URL}/web-setting/web-home-data`
 export const WEBSITE_BLOG_CONTENT =`${API_URL}/blogs/list`
 export const WEBSITE_CORPORATE_CONTENT =`${process.env.NEXT_PUBLIC_CONTENT_URL}/corporate-page`
 export const GET_PACKAGES = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/list`

@@ -7,9 +7,24 @@ import Features from '@/src/components/sp-home/Features';
 import HeroSection from '@/src/components/sp-home/HeroSection';
 import Pricing from '@/src/components/sp-home/Pricing';
 import Testimonial from '@/src/components/sp-home/Testimonial';
+import { fetchHomeContent } from '@/utils/fetchData';
+import { useEffect, useState } from 'react';
 
 export default function SpeakingMateLandingPage() {
- 
+  const [homeData, setHomeData] = useState<any>(null);
+
+  const response = async () => {
+    const data = await fetchHomeContent();
+    setHomeData(data);
+  };
+
+  useEffect(() => {
+    response();
+  }, []);
+
+
+  console.log("home data>>", homeData);
+
 
   const features = [
     {
@@ -34,26 +49,6 @@ export default function SpeakingMateLandingPage() {
     }
   ];
 
-  const testimonials = [
-    {
-      name: "Sarah Chen",
-      role: "TOEFL Student",
-      content: "SpeakingMate helped me improve my speaking score by 2 full points! The instructors are patient and give amazing feedback.",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg"
-    },
-    {
-      name: "David Rodriguez",
-      role: "Business Professional",
-      content: "I needed to improve my business English for presentations. SpeakingMate's mock scenarios were incredibly helpful!",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg"
-    },
-    {
-      name: "Emma Johnson",
-      role: "University Student",
-      content: "The flexibility to schedule sessions around my classes has been a game-changer. I'm much more confident now!",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg"
-    }
-  ];
 
   const pricingPlans = [
     {
@@ -105,22 +100,22 @@ export default function SpeakingMateLandingPage() {
       ></Navbar> */}
 
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection base={homeData?.base_data} hero={homeData?.hero_data} />
 
       {/* Features Section */}
       <Features features={features} />
 
       {/* CTA Section */}
-      <CtaSection />
+      <CtaSection data={homeData?.base_data} />
 
       {/* Testimonials Section */}
-      <Testimonial testimonials={testimonials} />
+      <Testimonial testimonials={homeData?.testimonial} />
 
       {/* Pricing Section */}
       <Pricing pricingPlans={pricingPlans} />
 
       {/* FAQ Section */}
-      <FAQSection />
+      <FAQSection data={homeData?.faq} />
 
       {/* Final CTA Section */}
       {/* <FinalCta /> */}

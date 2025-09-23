@@ -40,7 +40,6 @@ export default function CarouselComponent({ data }: any) {
                     parallaxScrollingScale: 0.9,
                     parallaxScrollingOffset: 50,
                 }}
-                style={styles.carousel}
                 onProgressChange={(offsetProgress, absoluteProgress) => {
                     progressValue.value = absoluteProgress;
                 }}
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
         width: width,
     },
     image: {
-        width: 400,
+        width: width,
         height: 200,
         resizeMode: 'cover',
         borderRadius: 10,
