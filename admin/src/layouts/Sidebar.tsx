@@ -133,6 +133,11 @@ const menuItems = [
     key: "/coupon",
     icon: <SolutionOutlined />,
   },
+  {
+    label: "Help Request",
+    key: "/web-help-req",
+    icon: <SolutionOutlined />,
+  },
   // {
   //   label: "Consultants",
   //   key: "/consultants",
