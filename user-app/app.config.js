@@ -59,6 +59,12 @@ export default ({
       "expo-router",      
       "expo-notifications",
       [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           image: "./assets/images/Logo1024.png",

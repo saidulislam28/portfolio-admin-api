@@ -1,5 +1,7 @@
 import smLogo from "@/assets/images/smlogo.png";
 import { BaseButton } from "@/components/BaseButton";
+import { FacebookSigninButton } from "@/components/FacebookSigninButton";
+import { GoogleSigninButton } from "@/components/GoogleSigninButton";
 import { InputField } from "@/components/InputField";
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
@@ -23,15 +25,15 @@ import {
   View,
 } from "react-native";
 
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+//   statusCodes,
+// } from '@react-native-google-signin/google-signin';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login }: any = useAuth();
+  const { login, signInWithGoogle }: any = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,10 +42,7 @@ export default function LoginScreen() {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [showEmailOption, setShowEmailOption] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isAppleLoading, setIsAppleLoading] = useState(false);
-
-  const { signInWithGoogle } = useNewAuth();
-
+  const [isFacebookLoading, setIsFacebookLoading] = useState(false);
 
   // const {
   //   socialLoading,
@@ -253,7 +252,9 @@ export default function LoginScreen() {
             </TouchableOpacity> */}
 
 
-            <GoogleSigninButton onPress={handleGoogleSignIn} />
+            {/* <GoogleSigninButton onPress={handleGoogleSignIn} /> */}
+            <GoogleSigninButton onPress={handleGoogleSignIn} isLoading={isGoogleLoading} />
+            <FacebookSigninButton onPress={handleGoogleSignIn} isLoading={isFacebookLoading} />
             {/* <TouchableOpacity
               style={[styles.socialButton, isGoogleLoading && styles.disabledButton]}
               onPress={handleGoogleSignIn}

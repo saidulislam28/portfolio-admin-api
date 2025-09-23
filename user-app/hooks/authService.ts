@@ -12,8 +12,8 @@ class AuthService {
     GoogleSignin.configure({
       webClientId:
         '447938351048-8nnq6optf12q3qh4ou3792v1v0usg0dd.apps.googleusercontent.com', // From Google Console, take the Client ID
-      iosClientId:
-        '169494258933-8pulsl2th2ot5jrkn8f0b56f7cgiuheh.apps.googleusercontent.com', // Optional, auto-detected from GoogleService-Info.plist
+      // iosClientId:
+      //   '169494258933-8pulsl2th2ot5jrkn8f0b56f7cgiuheh.apps.googleusercontent.com', // Optional, auto-detected from GoogleService-Info.plist
       scopes: ['profile', 'email'],
       offlineAccess: true,
     });
@@ -44,7 +44,7 @@ class AuthService {
       return authResult;
 
     } catch (error: any) {
-      console.log('Detailed error:', error.code, error.message);
+      console.log('AuthService, signInWithGoogle, Detailed error:', error.code, error.message);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
