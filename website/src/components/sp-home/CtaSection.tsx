@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CtaSection = () => {
+const CtaSection = ({ data }: { data: any }) => {
     return (
         <section className="py-16 bg-primary">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -9,7 +9,7 @@ const CtaSection = () => {
                     Join thousands of students who have improved their speaking skills with SpeakingMate. Start your journey today!
                 </p>
                 <a
-                    href="https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"
+                    href={data?.play_store ? `https://play.google.com/store/apps/details?id=${data?.play_store}` : "https://play.google.com/store/apps/details?id=com.yourapp.package"}
                     target="_blank"
                     rel="noopener noreferrer"
                 >

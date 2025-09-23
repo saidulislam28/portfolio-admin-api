@@ -1,10 +1,29 @@
 "use client"
+import { fetchHomeContent } from '@/utils/fetchData';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Navbar = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [homeData, setHomeData] = useState<any>(null);
+
+    const response = async () => {
+        const data = await fetchHomeContent();
+        setHomeData(data?.base_data);
+    };
+
+    // console.log("navbar data >>", homeData);
+
+    useEffect(() => {
+        response();
+    }, []);
+
+    const words = homeData?.brand_name?.split(" ") || [];
+    const firstPart = words.slice(0, 1).join(" ");
+    const lastPart = words.slice(1).join(" ");
+
+
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,12 +34,12 @@ const Navbar = () => {
                             <div className="flex-shrink-0 flex items-center">
                                 <div className='mr-2'>
                                     <img
-                                        src="/img/sp-logo-new.jpg"
-                                        alt="SpeakingMate App Interface"
+                                        src={homeData?.logo ? homeData?.logo : "/img/sp-logo-new.jpg"}
+                                        alt={homeData?.brand_name}
                                         className='w-[50px] h-auto rounded-xl'
                                     />
                                 </div>
-                                <span className="text-2xl font-bold text-primary">Speaking<span className='text-black'>Mate</span></span>
+                                <span className="text-2xl font-bold text-primary">{firstPart}<span className='text-black'>{lastPart}</span></span>
                             </div>
                         </Link>
                     </div>
@@ -31,7 +50,7 @@ const Navbar = () => {
                         <a href="#faq" className="text-gray-700 hover:text-primary transition">FAQ</a>
 
                         <a
-                            href="https://play.google.com/store/apps/details?id=com.yourapp.package"
+                            href={homeData?.play_store ? `https://play.google.com/store/apps/details?id=${homeData?.play_store}` : "https://play.google.com/store/apps/details?id=com.yourapp.package"}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -65,9 +84,14 @@ const Navbar = () => {
                         <a href="#testimonials" className="block px-3 py-2 text-gray-700 hover:text-primary">Testimonials</a>
                         <a href="#pricing" className="block px-3 py-2 text-gray-700 hover:text-primary">Pricing</a>
                         <a href="#faq" className="block px-3 py-2 text-gray-700 hover:text-primary">FAQ</a>
-                        <button className="w-full mt-2 bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
-                            Get Started
-                        </button>
+                        <a href={homeData?.play_store ?? ""}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <button className="w-full mt-2 bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
+                                <i className="fa-brands fa-google-play mr-2"></i> Download Now
+                            </button>
+                        </a>
                     </div>
                 </div>
             )}

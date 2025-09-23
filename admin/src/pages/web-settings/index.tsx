@@ -198,8 +198,8 @@ const Settings = () => {
                     {/* <Form.Item label="Phone" name="phone">
                         <Input />
                     </Form.Item> */}
-                    <Form.Item label="App Play Store Link" name="play_store">
-                        <Input placeholder='' />
+                    <Form.Item label="App Play Store id" name="play_store">
+                        <Input placeholder='com.yourapp.package' />
                     </Form.Item>
                     {/* <Form.Item label="Address" name="address">
                         <TextArea rows={5} />
