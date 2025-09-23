@@ -249,6 +249,14 @@ const menuItems = [
         label: "Settings",
         key: "/web-setting",
       },
+      {
+        label: "Faq",
+        key: "/web-faq",
+      },
+      {
+        label: "Testimonial",
+        key: "/web-testimonial",
+      },
     ],
   },
 ];
