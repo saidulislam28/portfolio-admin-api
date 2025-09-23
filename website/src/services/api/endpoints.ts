@@ -67,3 +67,5 @@ export const PRODUCT_APIS = {
   products: "products",
   singleProduct: "products/single_product",
 };
+
+export const API_POST_HELP_REQ = 'web-help-request'
