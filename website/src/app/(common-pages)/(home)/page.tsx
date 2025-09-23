@@ -100,7 +100,7 @@ export default function SpeakingMateLandingPage() {
       ></Navbar> */}
 
       {/* Hero Section */}
-      <HeroSection hero={homeData?.hero_data} />
+      <HeroSection base={homeData?.base_data} hero={homeData?.hero_data} />
 
       {/* Features Section */}
       <Features features={features} />

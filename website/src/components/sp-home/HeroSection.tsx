@@ -2,8 +2,9 @@ import React from 'react';
 import VideoModalButton from './VideoModal';
 
 const HeroSection = ({
-    hero
-}: { hero: any }) => {
+    hero,
+    base
+}: { hero: any, base: any }) => {
 
 
     const words = hero?.hero_title?.split(" ") || [];
@@ -23,9 +24,16 @@ const HeroSection = ({
                         {hero?.hero_desc ?? ''}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <button className=" hover:bg-white text-white hover:text-primary border-2 w-44 border-primary px-3 py-4 rounded-lg text-lg font-medium bg-primary transition">
-                            Get Started
-                        </button>
+                        <a
+                            href={base?.play_store ? `https://play.google.com/store/apps/details?id=${base?.play_store}` : "https://play.google.com/store/apps/details?id=com.yourapp.package"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <button className=" hover:bg-white text-white hover:text-primary border-2 w-44 border-primary px-3 py-4 rounded-lg text-lg font-medium bg-primary transition">
+                                Get Started
+                            </button>
+
+                        </a>
                         <VideoModalButton demo={hero?.demo_video} />
                     </div>
                     <div className="mt-12 w-full">

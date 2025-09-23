@@ -99,11 +99,15 @@ const ConsultationNotesCard = ({
                 title="Cancel"
                 onPress={() => setIsModalVisible(false)}
                 isLoading={false}
+                variant='outline'
+                fullWidth={false}
               />
               <BaseButton
                 title="Add Note"
                 onPress={handleAddNote}
                 isLoading={isLoading}
+                fullWidth={false}
+
               />
             </View>
           </View>
