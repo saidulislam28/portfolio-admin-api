@@ -3,6 +3,8 @@ import { config } from 'dotenv';
 config();
 import { join } from 'path';
 
+import "./instrument";
+
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json } from 'body-parser';
@@ -96,9 +98,9 @@ async function bootstrap() {
 
 
 
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
-  app.useGlobalFilters(new PrismaClientValidationExceptionFilter(httpAdapter));
+  // const { httpAdapter } = app.get(HttpAdapterHost);
+  // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  // app.useGlobalFilters(new PrismaClientValidationExceptionFilter(httpAdapter));
 
   /* to make stripe webhook raw body parsing work*/
   //https://yanndanthu.github.io/2019/07/04/Checking-Stripe-Webhook-Signatures-from-NestJS.html

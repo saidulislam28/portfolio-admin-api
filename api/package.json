@@ -43,7 +43,7 @@
     "@nestjs/throttler": "^6.4.0",
     "@prisma/client": "^5.22.0",
     "@sentry/integrations": "^7.120.4",
-    "@sentry/node": "^7.120.4",
+    "@sentry/nestjs": "^10.14.0",
     "@sentry/tracing": "^7.120.3",
     "agora-access-token": "^2.0.4",
     "axios": "^1.12.1",

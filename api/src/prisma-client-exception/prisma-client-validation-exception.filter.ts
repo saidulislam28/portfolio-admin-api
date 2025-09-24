@@ -1,11 +1,14 @@
 import { ArgumentsHost, Catch, HttpStatus } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Prisma } from '@prisma/client';
+import { SentryExceptionCaptured } from '@sentry/nestjs';
 import { Response } from 'express';
 
 //https://www.prisma.io/blog/nestjs-prisma-error-handling-7D056s1kOop2
 @Catch(Prisma.PrismaClientValidationError)
 export class PrismaClientValidationExceptionFilter extends BaseExceptionFilter {
+
+  @SentryExceptionCaptured()
   catch(exception: Prisma.PrismaClientValidationError, host: ArgumentsHost) {
     console.error('PrismaClientValidationError', exception.message);
     const ctx = host.switchToHttp();

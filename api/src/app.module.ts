@@ -38,10 +38,21 @@ import { CommonModule } from './common/common.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UserAuthModule } from './user-auth/user-auth.module';
 import { WebsiteModule } from './website/website.module';
+import { MetricsService } from './metrics/metrics.service';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+// import { SentryExceptionFilter } from './common/filters/sentry-exception.filter';
+
+import { HttpLoggingInterceptor } from './metrics/http-logging.interceptor';
+import { MetricsController } from './metrics/metrics.controller';
+
+// sentry
+import { SentryModule } from '@sentry/nestjs/setup';
+import { SentryGlobalFilter } from "@sentry/nestjs/setup";
 
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
@@ -87,7 +98,18 @@ import { WebsiteModule } from './website/website.module';
     UserAuthModule,
     WebsiteModule
   ],
-  controllers: [AppController, UsersController, UserDashBoardController],
-  providers: [AppService, UserDashBoardService],
+  controllers: [AppController, UsersController, MetricsController],
+  providers: [
+    AppService,
+    MetricsService,
+    {
+      provide: APP_FILTER,
+      useClass: SentryGlobalFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpLoggingInterceptor,
+    },
+  ],
 })
 export class AppModule { }

@@ -10,6 +10,10 @@ export class AppController {
     return this.appService.healthCheck();
   }
   
+  @Get("/debug-sentry")
+  getError() {
+    throw new Error("My first Sentry error!");
+  }
   // @Get()
   // healthCheck():string{
   //   return this.appService.getHello()
