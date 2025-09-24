@@ -48,9 +48,9 @@ export class SocialAuthService {
     if (!user) {
       user = await this.prisma.user.create({
         data: {
-          full_name: profile.name,
-          email: profile.email,
-          profile_image: profile.picture,
+          full_name: dto?.full_name,
+          email: dto?.email,
+          profile_image: dto?.profile_image,
           login_type:
             dto.provider === SocialProvider.GOOGLE ? LOGIN_TYPE.GOOGLE : LOGIN_TYPE.FACEBOOK,
           google_id: dto.provider === SocialProvider.GOOGLE ? profile.id : null,
@@ -101,12 +101,12 @@ export class SocialAuthService {
 
   private async verifyGoogle(token: string) {
     // TODO hardcoded for test
-    return {
-        id: 'payload.sub',
-        email: 'payload.email',
-        name: 'payload.name',
-        picture: 'payload.picture',
-      };
+    // return {
+    //     id: 'payload.sub',
+    //     email: 'payload.email',
+    //     name: 'payload.name',
+    //     picture: 'payload.picture',
+    //   };
 
     try {
       const ticket = await this.googleClient.verifyIdToken({

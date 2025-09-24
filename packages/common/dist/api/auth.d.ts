@@ -37,6 +37,9 @@ export interface User {
     login_type?: 'EMAIL' | 'GOOGLE' | 'APPLE' | string;
     profile_image?: string;
     role?: 'USER' | 'ADMIN' | string;
+    google_id?: string;
+    apple_id?: string;
+    facebook_id?: string;
 }
 export interface LoginUserResponse {
     success: boolean;
@@ -72,6 +75,20 @@ export interface ApiResponse<T> {
     status: number;
     statusText: string;
 }
+export interface SocialLoginPayload {
+    token: string;
+    provider: 'google' | 'facebook' | string;
+    full_name?: string;
+    profile_image?: string;
+    email?: string;
+}
+export type SocialLoginResponse = User;
+/**
+ * Authenticates user via social provider (Google, Apple, etc.)
+ * @param payload - Social login data
+ * @returns User object with token on success
+ */
+export declare const socialLogin: (payload: SocialLoginPayload) => Promise<SocialLoginResponse>;
 export declare const registerUser: (userData: RegisterUserData) => Promise<RegisterUserResponse>;
 export declare const loginUser: (email: string, password: string, phone: string) => Promise<LoginUserResponse>;
 export declare const loginConsultant: (email: string, password: string) => Promise<LoginConsultantResponse>;

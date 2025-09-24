@@ -1,5 +1,5 @@
-import { API_BASE_URL } from '@/constants/api-url';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { socialLogin } from '@sm/common';
 import * as AppleAuthentication from 'expo-apple-authentication';
 
 class AuthService {
@@ -12,8 +12,8 @@ class AuthService {
     GoogleSignin.configure({
       webClientId:
         '447938351048-8nnq6optf12q3qh4ou3792v1v0usg0dd.apps.googleusercontent.com', // From Google Console, take the Client ID
-      iosClientId:
-        '169494258933-8pulsl2th2ot5jrkn8f0b56f7cgiuheh.apps.googleusercontent.com', // Optional, auto-detected from GoogleService-Info.plist
+      // iosClientId:
+      //   '169494258933-8pulsl2th2ot5jrkn8f0b56f7cgiuheh.apps.googleusercontent.com', // Optional, auto-detected from GoogleService-Info.plist
       scopes: ['profile', 'email'],
       offlineAccess: true,
     });
@@ -25,6 +25,8 @@ class AuthService {
       let userInfo: any = await GoogleSignin.signIn();
       userInfo = userInfo.data;
 
+      console.log('AuthService, SignInWithGoogle, got data from google', userInfo);
+
       const tokens = await GoogleSignin.getTokens();
 
       const authResult = await this.authenticateWithBackend({
@@ -35,7 +37,7 @@ class AuthService {
           id: userInfo.user.id,
           email: userInfo.user.email,
           name: userInfo.user.name,
-          picture: userInfo.user.photo,
+          photo: userInfo.user.photo,
           givenName: userInfo.user.givenName,
           familyName: userInfo.user.familyName,
         },
@@ -44,7 +46,7 @@ class AuthService {
       return authResult;
 
     } catch (error: any) {
-      console.log('Detailed error:', error.code, error.message);
+      console.log('AuthService, signInWithGoogle, Detailed error:', error.code, error.message);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -127,41 +129,38 @@ class AuthService {
   async authenticateWithBackend(socialData: any) {
     try {
       const payload = {
-        idToken: socialData.idToken || socialData.identityToken,
+        token: socialData.idToken || socialData.identityToken,
         provider: socialData.provider,
-        firstName:
-          socialData.user.givenName ||
-          socialData.user.fullName?.givenName ||
-          '',
-        lastName:
-          socialData.user.familyName ||
-          socialData.user.fullName?.familyName ||
-          '',
+        full_name: socialData?.user?.name,
+        email: socialData?.user?.email,
+        profile_image: socialData?.user?.photo,
       };
 
-      const url = `${API_BASE_URL}auth/social-login`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await socialLogin(payload);
 
-      if (!response.ok) {
-        if (response.status === 400) {
-          const result = await response.json();
-          throw new Error(result.message);
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-      }
+      return response;
 
-      const result = await response.json();
-      return result;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Backend authentication error:', error);
-      throw error;
+
+      // Handle Axios error structure
+      if (error.response) {
+        // Server responded with error status (4xx, 5xx)
+        const status = error.response.status;
+        const message = error.response.data?.message || `HTTP error! status: ${status}`;
+
+        if (status === 400) {
+          throw new Error(message);
+        } else {
+          throw new Error(message);
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        throw new Error('No response received from server');
+      } else {
+        // Something else happened
+        throw new Error(error.message || 'Unknown error occurred');
+      }
     }
   }
 }

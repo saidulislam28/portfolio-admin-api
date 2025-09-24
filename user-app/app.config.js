@@ -59,6 +59,25 @@ export default ({
       "expo-router",      
       "expo-notifications",
       [
+        "react-native-fbsdk-next",
+        {
+          "appID": "770838519017608",
+          "clientToken": "da995bbb533e75e981cafc9fe8be2fda",
+          "displayName": "SpeakingMate",
+          "scheme": "fb770838519017608",
+          "advertiserIDCollectionEnabled": false,
+          "autoLogAppEventsEnabled": false,
+          "isAutoInitEnabled": true,
+          "iosUserTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           image: "./assets/images/Logo1024.png",

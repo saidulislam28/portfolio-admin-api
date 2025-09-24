@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { ROUTES } from "@/constants/app.routes";
 import { removeAuthTokenMobile, setAuthTokenMobile } from "@/lib/authToken";
 import { User } from "@sm/common";
+import authService from "@/hooks/authService";
 
 const AuthContext = createContext<any>(null);
 
@@ -50,6 +51,22 @@ export const AuthProvider = ({ children }: any) => {
     router.replace(ROUTES.LOGIN as any);
   };
 
+  const signInWithGoogle = useCallback(async () => {
+    try {
+      const result = await authService.signInWithGoogle();
+
+      setUser(result);
+      setToken(result?.token);
+      await AsyncStorage.setItem("user", JSON.stringify(result));
+      await setAuthTokenMobile(result?.token);
+
+      return { success: true };
+    } catch (error) {
+      console.log('Google sign-in error:', error);
+      throw error;
+    }
+  }, []);
+
   // Add updateUser function
   const updateUser = async (updatedUserData: any) => {
     try {
@@ -66,6 +83,7 @@ export const AuthProvider = ({ children }: any) => {
     <AuthContext.Provider value={{
       user,
       isLoading,
+      signInWithGoogle,
       token, // Include token in context
       login,
       logout,

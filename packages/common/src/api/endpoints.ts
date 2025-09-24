@@ -27,6 +27,7 @@ export const API_COMMON = {
 
 export const API_USER = {
   user_registration: "auth/register",
+  social_login: "auth/social-login",
   verify_otp: "auth/verify-otp",
   login_user: "auth/login",
   forget_password: "auth/forget-password",

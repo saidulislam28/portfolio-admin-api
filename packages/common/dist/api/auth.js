@@ -1,5 +1,14 @@
 import { getApiClient } from "./apiClient";
 import { API_CONSULTANT, API_USER } from "./endpoints";
+/**
+ * Authenticates user via social provider (Google, Apple, etc.)
+ * @param payload - Social login data
+ * @returns User object with token on success
+ */
+export const socialLogin = async (payload) => {
+    const resp = await getApiClient().post(API_USER.social_login, payload);
+    return resp.data;
+};
 // Updated registerUser function with proper types
 export const registerUser = async (userData) => {
     const resp = await getApiClient().post('auth/register', userData);
@@ -17,26 +26,3 @@ export const verifyOtpUser = async (email, otp) => {
     const resp = await getApiClient().post(API_USER.verify_otp, { email, otp });
     return resp.data;
 };
-// Usage example in the registration screen:
-/*
-const registerData: RegisterUserData = {
-  full_name: name,
-  email: cleanedEmail,
-  password,
-  phone: cleanedPhone,
-  expected_level: expectedLevel as 'low' | 'medium' | 'high',
-};
-
-try {
-  const response = await registerUser(registerData);
-  if (response.success) {
-    await AsyncStorage.setItem('email', response?.data?.email || '');
-    router.push('/verify-otp');
-  } else {
-    const errorMessage = response.message || response.error || 'Registration failed. Please try again.';
-    Alert.alert('Registration Error', errorMessage);
-  }
-} catch (error) {
-  // Handle error
-}
-*/ 
