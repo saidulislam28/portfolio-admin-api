@@ -22,21 +22,26 @@ export const fetchBlogs = async () => {
 
 export const fetchHomeContent = async () => {
   try {
-    const res = await fetch(WEBSITE_HOME_CONTENT, {
+    const timestamp = Date.now(); // Add cache busting
+    const res = await fetch(`${WEBSITE_HOME_CONTENT}?t=${timestamp}`, {
       method: 'GET',
-      cache: 'no-store'
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
     });
 
     if (!res.ok) {
-      throw new Error(`failed to fetch: ${res.statusText}`)
-    };
+      throw new Error(`Failed to fetch: ${res.statusText}`);
+    }
 
     const data = await res.json();
     return data?.data ?? {};
 
   } catch (error) {
-    console.error('fetch home error ===>', error);
-    return [];
+    console.error('Fetch home error:', error);
+    return null; // Return null instead of empty array for better error handling
   }
 }
 
