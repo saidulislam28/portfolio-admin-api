@@ -68,7 +68,7 @@ const CouponsManagement: React.FC = () => {
           {record.discount_type === 'PERCENTAGE' ? (
             `${record.discount_value}%`
           ) : (
-            `$${record.discount_value}`
+            `BDT ${record.discount_value}`
           )}
         </span>
       ),
@@ -77,7 +77,7 @@ const CouponsManagement: React.FC = () => {
       title: 'Min Order',
       dataIndex: 'min_order_amount',
       key: 'min_order_amount',
-      render: (amount: number) => amount ? `$${amount}` : '-',
+      render: (amount: number) => amount ? `BDT${amount}` : '-',
     },
     {
       title: 'Max Uses',
@@ -127,7 +127,7 @@ const CouponsManagement: React.FC = () => {
               setDrawerVisible(true);
             }}
           >
-            
+
           </Button>
           <Button
             icon={<EditOutlined />}
@@ -138,7 +138,7 @@ const CouponsManagement: React.FC = () => {
               setDrawerVisible(true);
             }}
           >
-            
+
           </Button>
           {/* <Button
             icon={<ShoppingCartOutlined />}
@@ -162,7 +162,7 @@ const CouponsManagement: React.FC = () => {
               danger
               loading={deleteCouponMutation.isPending}
             >
-              
+
             </Button>
           </Popconfirm>
         </Space>
