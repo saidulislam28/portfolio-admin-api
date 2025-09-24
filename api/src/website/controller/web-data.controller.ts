@@ -12,7 +12,7 @@ import { WebDataSettingService } from '../service/web-data.service';
 export class WebDataSettingsController {
   constructor(private readonly webDataSettingService: WebDataSettingService) {}
 
-  @CacheTTL(CACHE_TTL.threeminute)
+  // @CacheTTL(CACHE_TTL.threeminute)
   @Get('web-home-data')
   @ApiOperation({ summary: 'Get all essential website data for the home page' })
   @ApiResponse({

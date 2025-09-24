@@ -93,12 +93,6 @@ export default function SpeakingMateLandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      {/* <Navbar
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-      ></Navbar> */}
-
       {/* Hero Section */}
       <HeroSection base={homeData?.base_data} hero={homeData?.hero_data} />
 
