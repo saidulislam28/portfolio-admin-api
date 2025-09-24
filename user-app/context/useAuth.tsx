@@ -4,7 +4,8 @@ import { useRouter } from "expo-router";
 import { ROUTES } from "@/constants/app.routes";
 import { removeAuthTokenMobile, setAuthTokenMobile } from "@/lib/authToken";
 import { User } from "@sm/common";
-import authService from "@/hooks/authService";
+import authService from "@/services/authService";
+import { showErrorToast } from "@/utils/toast";
 
 const AuthContext = createContext<any>(null);
 
@@ -52,19 +53,23 @@ export const AuthProvider = ({ children }: any) => {
   };
 
   const signInWithGoogle = useCallback(async () => {
+    let result;
     try {
-      const result = await authService.signInWithGoogle();
-
-      setUser(result);
-      setToken(result?.token);
-      await AsyncStorage.setItem("user", JSON.stringify(result));
-      await setAuthTokenMobile(result?.token);
-
-      return { success: true };
+      result = await authService.signInWithGoogle();
+      console.log('rsu', result)
     } catch (error) {
       console.log('Google sign-in error:', error);
+      showErrorToast('Google login failed');
       throw error;
     }
+
+    // at this point, we can assume all went well
+    setUser(result);
+    setToken(result?.token);
+    await AsyncStorage.setItem("user", JSON.stringify(result));
+    await setAuthTokenMobile(result?.token);
+
+    return { success: true };
   }, []);
 
   // Add updateUser function

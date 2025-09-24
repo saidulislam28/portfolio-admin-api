@@ -5,8 +5,6 @@ import { GoogleSigninButton } from "@/components/GoogleSigninButton";
 import { InputField } from "@/components/InputField";
 import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
-import { useAuth as useNewAuth } from "@/hooks/useAuth";
-import { useSocialAuth } from "@/hooks/useSocialAuth";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { loginUser, LoginUserResponse } from "@sm/common";
 import { Link, useRouter } from "expo-router";
@@ -160,6 +158,8 @@ export default function LoginScreen() {
       setIsGoogleLoading(true);
       await signInWithGoogle();
       router.replace(ROUTES.HOME as any);
+    } catch(err) {
+      console.log('Login screen, handleGoogleSignIn, failed', err);
     } finally {
       setIsGoogleLoading(false);
     }
@@ -254,7 +254,8 @@ export default function LoginScreen() {
 
             {/* <GoogleSigninButton onPress={handleGoogleSignIn} /> */}
             <GoogleSigninButton onPress={handleGoogleSignIn} isLoading={isGoogleLoading} />
-            <FacebookSigninButton onPress={handleGoogleSignIn} isLoading={isFacebookLoading} />
+            {/* <FacebookSigninButton onPress={handleGoogleSignIn} isLoading={isFacebookLoading} /> */}
+
             {/* <TouchableOpacity
               style={[styles.socialButton, isGoogleLoading && styles.disabledButton]}
               onPress={handleGoogleSignIn}

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OAuth2Client } from 'google-auth-library';
 import axios from 'axios';
@@ -114,6 +114,15 @@ export class SocialAuthService {
         audience: process.env.GOOGLE_CLIENT_ID,
       });
       const payload = ticket.getPayload();
+
+      if (!payload?.email_verified) {
+        throw new BadRequestException('Google email is not verified');
+      }
+
+      if (!payload || !payload.email || !payload.name) {
+        throw new BadRequestException('Invalid token payload');
+      }
+      
       return {
         id: payload.sub,
         email: payload.email,

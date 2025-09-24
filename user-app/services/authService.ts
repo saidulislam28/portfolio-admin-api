@@ -47,6 +47,7 @@ class AuthService {
 
     } catch (error: any) {
       console.log('AuthService, signInWithGoogle, Detailed error:', error.code, error.message);
+      throw error;
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -127,41 +128,52 @@ class AuthService {
   }
 
   async authenticateWithBackend(socialData: any) {
-    try {
-      const payload = {
-        token: socialData.idToken || socialData.identityToken,
-        provider: socialData.provider,
-        full_name: socialData?.user?.name,
-        email: socialData?.user?.email,
-        profile_image: socialData?.user?.photo,
-      };
+    const payload = {
+      token: socialData.idToken,
+      provider: socialData.provider,
+      full_name: socialData?.user?.name,
+      email: socialData?.user?.email,
+      profile_image: socialData?.user?.photo,
+    };
 
-      const response = await socialLogin(payload);
+    const response = await socialLogin(payload);
 
-      return response;
+    return response;
+    // try {
+    //   const payload = {
+    //     token: socialData.idToken,
+    //     provider: socialData.provider,
+    //     full_name: socialData?.user?.name,
+    //     email: socialData?.user?.email,
+    //     profile_image: socialData?.user?.photo,
+    //   };
 
-    } catch (error: any) {
-      console.error('Backend authentication error:', error);
+    //   const response = await socialLogin(payload);
 
-      // Handle Axios error structure
-      if (error.response) {
-        // Server responded with error status (4xx, 5xx)
-        const status = error.response.status;
-        const message = error.response.data?.message || `HTTP error! status: ${status}`;
+    //   return response;
 
-        if (status === 400) {
-          throw new Error(message);
-        } else {
-          throw new Error(message);
-        }
-      } else if (error.request) {
-        // Request was made but no response received
-        throw new Error('No response received from server');
-      } else {
-        // Something else happened
-        throw new Error(error.message || 'Unknown error occurred');
-      }
-    }
+    // } catch (error: any) {
+    //   console.error('Backend authentication error:', error);
+
+    //   // Handle Axios error structure
+    //   if (error.response) {
+    //     // Server responded with error status (4xx, 5xx)
+    //     const status = error.response.status;
+    //     const message = error.response.data?.message || `HTTP error! status: ${status}`;
+
+    //     if (status === 400) {
+    //       throw new Error(message);
+    //     } else {
+    //       throw new Error(message);
+    //     }
+    //   } else if (error.request) {
+    //     // Request was made but no response received
+    //     throw new Error('No response received from server');
+    //   } else {
+    //     // Something else happened
+    //     throw new Error(error.message || 'Unknown error occurred');
+    //   }
+    // }
   }
 }
 
