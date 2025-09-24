@@ -45,6 +45,9 @@ export interface User {
   login_type?: 'EMAIL' | 'GOOGLE' | 'APPLE' | string;
   profile_image?: string;
   role?: 'USER' | 'ADMIN' | string;
+  google_id?: string;
+  apple_id?: string;
+  facebook_id?: string;
 }
 
 export interface LoginUserResponse {
@@ -84,6 +87,28 @@ export interface ApiResponse<T> {
   statusText: string;
 }
 
+export interface SocialLoginPayload {
+  token: string; //idToken
+  provider: 'google' | 'facebook' | string;
+  full_name?: string;
+  profile_image?: string;
+  email?: string;
+}
+
+export type SocialLoginResponse = User;
+
+/**
+ * Authenticates user via social provider (Google, Apple, etc.)
+ * @param payload - Social login data
+ * @returns User object with token on success
+ */
+export const socialLogin = async (
+  payload: SocialLoginPayload
+): Promise<SocialLoginResponse> => {
+  const resp = await getApiClient().post(API_USER.social_login, payload);
+  return resp.data;
+};
+
 // Updated registerUser function with proper types
 export const registerUser = async (
   userData: RegisterUserData
@@ -117,28 +142,3 @@ export const verifyOtpUser = async (
   const resp = await getApiClient().post(API_USER.verify_otp, {email, otp});
   return resp.data;
 };
-
-
-// Usage example in the registration screen:
-/*
-const registerData: RegisterUserData = {
-  full_name: name,
-  email: cleanedEmail,
-  password,
-  phone: cleanedPhone,
-  expected_level: expectedLevel as 'low' | 'medium' | 'high',
-};
-
-try {
-  const response = await registerUser(registerData);
-  if (response.success) {
-    await AsyncStorage.setItem('email', response?.data?.email || '');
-    router.push('/verify-otp');
-  } else {
-    const errorMessage = response.message || response.error || 'Registration failed. Please try again.';
-    Alert.alert('Registration Error', errorMessage);
-  }
-} catch (error) {
-  // Handle error
-}
-*/

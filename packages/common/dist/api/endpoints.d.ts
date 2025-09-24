@@ -24,6 +24,7 @@ export declare const API_COMMON: {
 };
 export declare const API_USER: {
     user_registration: string;
+    social_login: string;
     verify_otp: string;
     login_user: string;
     forget_password: string;

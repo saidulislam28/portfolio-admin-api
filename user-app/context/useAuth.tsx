@@ -55,12 +55,12 @@ export const AuthProvider = ({ children }: any) => {
     try {
       const result = await authService.signInWithGoogle();
 
-      // setUser(userData);
-      // setToken(authToken);
-      // await AsyncStorage.setItem("user", JSON.stringify(userData));
-      // await setAuthTokenMobile(authToken);
+      setUser(result);
+      setToken(result?.token);
+      await AsyncStorage.setItem("user", JSON.stringify(result));
+      await setAuthTokenMobile(result?.token);
 
-      return result;
+      return { success: true };
     } catch (error) {
       console.log('Google sign-in error:', error);
       throw error;
