@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-export default function PaymentSummary({ packageData, selectedSlots, totals }) {
+export default function PaymentSummary({ packageData, selectedSlots, totals }: any) {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -39,7 +39,7 @@ export default function PaymentSummary({ packageData, selectedSlots, totals }) {
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>Payment Summary</Text> */}
-      
+
       {/* Package Information */}
       <View style={styles.section}>
         <View style={styles.packageHeader}>
@@ -56,8 +56,8 @@ export default function PaymentSummary({ packageData, selectedSlots, totals }) {
       {/* Selected Slots */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Scheduled Sessions</Text>
-        <ScrollView 
-          style={styles.slotsContainer} 
+        <ScrollView
+          style={styles.slotsContainer}
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}
         >
@@ -117,24 +117,24 @@ export default function PaymentSummary({ packageData, selectedSlots, totals }) {
             <Text style={styles.priceLabel}>Subtotal</Text>
             <Text style={styles.priceValue}>৳{totals.subtotal.toLocaleString()}</Text>
           </View>
-          
+
           {totals.processingFee > 0 && (
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Processing Fee (2.5%)</Text>
               <Text style={styles.priceValue}>৳{totals.processingFee.toLocaleString()}</Text>
             </View>
           )}
-          
+
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Tax (5%)</Text>
             <Text style={styles.priceValue}>৳{totals.tax.toLocaleString()}</Text>
           </View>
-          
+
           <View style={styles.divider} />
-          
+
           <View style={[styles.priceRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total Amount</Text>
-            <Text style={styles.totalValue}>৳{totals.total.toLocaleString()}</Text>
+            <Text style={styles.totalValue}>৳{totals?.final_amount?.toLocaleString()}</Text>
           </View>
         </View>
       </View>

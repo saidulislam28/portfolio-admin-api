@@ -64,7 +64,7 @@ export default function DateTimeScreen() {
 
   // Create a set of already booked slot keys for quick lookup
   const bookedSlotKeys = useMemo(() => {
-    console.log('calul', activeAppointments?.data)
+    // console.log('calul', activeAppointments?.data)
     if (!activeAppointments?.data) return new Set();
 
     const bookedKeys = new Set();
@@ -183,7 +183,7 @@ export default function DateTimeScreen() {
       // });
       const userSlotKey = `${slot.date_time_raw}`;
 
-      console.log('userslotkey', userSlotKey)
+      // console.log('userslotkey', userSlotKey)
 
       if (!bookedSlotKeys) {
         return true;

@@ -150,101 +150,105 @@ export class OrdersService {
     };
   }
 
-  private async createAppointments(orderId: number, appointments: any[], user_id: number, user_timezone: string) {
-
-    const results = [];
+  private async createAppointments(
+    prisma: Prisma.TransactionClient,
+    orderId: number,
+    appointments: any[],
+    user_id: number,
+    user_timezone: string
+  ) {
+    const createdAppointments = [];
 
     // Validate all appointments first
     for (const appointment of appointments) {
-      await this.validateAppointment(appointment, orderId);
+      await this.validateAppointment(appointment, orderId, prisma);
     }
 
-    // Use transaction to ensure atomicity
-    return this.prisma.$transaction(async (prisma) => {
-      const createdAppointments = [];
+    for (const appointmentData of appointments) {
+      const startDateTime = DateTime.fromISO(appointmentData.start_at);
+      const endDateTime = DateTime.fromISO(appointmentData.end_at);
 
-      for (const appointmentData of appointments) {
-        const startDateTime = DateTime.fromISO(appointmentData.start_at);
-        const endDateTime = DateTime.fromISO(appointmentData.end_at);
+      // Convert to UTC for storage
+      const startUTC = startDateTime.toUTC();
+      const endUTC = endDateTime.toUTC();
 
-        // Convert to UTC for storage
-        const startUTC = startDateTime.toUTC();
-        const endUTC = endDateTime.toUTC();
+      // Extract slot information
+      const slotDate = startUTC.startOf('day').toJSDate();
+      const slotTime = startUTC.toFormat('HH:mm');
 
-        // Extract slot information
-        const slotDate = startUTC.startOf('day').toJSDate();
-        const slotTime = startUTC.toFormat('HH:mm');
+      const appointment = await prisma.appointment.create({
+        data: {
+          start_at: startUTC.toJSDate(),
+          end_at: endUTC.toJSDate(),
+          slot_date: slotDate,
+          slot_time: slotTime,
+          duration_in_min: endDateTime.diff(startDateTime, 'minutes').minutes,
+          user_id: user_id,
+          order_id: orderId,
+          notes: appointmentData.notes,
+          user_timezone: user_timezone,
+          token: uuidv4(),
+        },
+        include: {
+          User: true,
+          Consultant: true,
+          Order: true
+        }
+      });
 
-        const appointment = await prisma.appointment.create({
-          data: {
-            start_at: startUTC.toJSDate(),
-            end_at: endUTC.toJSDate(),
-            slot_date: slotDate,
-            slot_time: slotTime,
-            duration_in_min: endDateTime.diff(startDateTime, 'minutes').minutes,
-            user_id: user_id,
-            order_id: orderId,
-            notes: appointmentData.notes,
-            user_timezone: user_timezone,
-            token: uuidv4(),
-          },
-          include: {
-            User: true,
-            Consultant: true,
-            Order: true
-          }
-        });
+      createdAppointments.push(appointment);
+    }
 
-        createdAppointments.push(appointment);
-      }
-
-      return createdAppointments;
-    });
-    // return this.prisma.appointment.createMany({
-    //   data: appointments.map(appointment => ({
-    //     ...appointment,
-    //     order_id: orderId,
-    //     user_id
-    //   })),
-    // });
+    return createdAppointments;
   }
 
   /**
      * Validate appointment before creation
      */
-  private async validateAppointment(appointment, orderId): Promise<void> {
-    const startDateTime = DateTime.fromISO(appointment.start_at);
-    const endDateTime = DateTime.fromISO(appointment.end_at);
+  private async validateAppointment(appointment, orderId, prisma): Promise<void> {
 
-    // Check if appointment is in the future
-    if (startDateTime <= DateTime.now()) {
-      throw new BadRequestException('Appointment must be scheduled for a future time');
-    }
+    const client = prisma || this.prisma;
+    try {
+      const startDateTime = DateTime.fromISO(appointment.start_at);
+      const endDateTime = DateTime.fromISO(appointment.end_at);
 
-    // Check if slot is available
-    const startUTC = startDateTime.toUTC();
-    const slotDate = startUTC.startOf('day');
-    const slotTime = startUTC.toFormat('HH:mm');
+      console.log("order id validateAppointment>>", orderId);
 
-    const totalConsultants = await this.prisma.consultant.count({ where: { is_active: true } });
 
-    const existingAppointments = await this.prisma.appointment.count({
-      where: {
-        slot_date: slotDate.toJSDate(),
-        slot_time: slotTime,
-        status: { not: 'CANCELLED' }
+      // Check if appointment is in the future
+      if (startDateTime <= DateTime.now()) {
+        throw new BadRequestException('Appointment must be scheduled for a future time');
       }
-    });
 
-    if (existingAppointments >= totalConsultants) {
-      throw new BadRequestException(`Time slot ${slotTime} is fully booked`);
-    }
+      // Check if slot is available
+      const startUTC = startDateTime.toUTC();
+      const slotDate = startUTC.startOf('day');
+      const slotTime = startUTC.toFormat('HH:mm');
 
-    // Validate order exists
-    const order = await this.prisma.order.findUnique({ where: { id: orderId } });
+      const totalConsultants = await this.prisma.consultant.count({ where: { is_active: true } });
 
-    if (!order) {
-      throw new BadRequestException(`Order with ID ${orderId} not found`);
+      const existingAppointments = await this.prisma.appointment.count({
+        where: {
+          slot_date: slotDate.toJSDate(),
+          slot_time: slotTime,
+          status: { not: 'CANCELLED' }
+        }
+      });
+
+      if (existingAppointments >= totalConsultants) {
+        throw new BadRequestException(`Time slot ${slotTime} is fully booked`);
+      }
+
+      // Validate order exists
+      const existingOrder = await client.order.findUnique({
+        where: { id: orderId }
+      });
+
+      if (!existingOrder) {
+        throw new BadRequestException(`Order with ID ${orderId} not found`);
+      }
+    } catch (error) {
+      console.log("error validate appointment", error);
     }
   }
 
@@ -346,128 +350,134 @@ export class OrdersService {
   }
 
   async createOrder(payload: CreateOrderDto, userId: number, baseUrl: string) {
-    const { appointments, items, user_timezone, coupon_code, ...orderData } = payload;
-    const transactionId = uuidv4();
+    try {
+      const { appointments, items, user_timezone, coupon_code, ...orderData } = payload;
+      const transactionId = uuidv4();
 
-    // Calculate original total
-    let originalTotal = orderData.total || 0;
+      // Calculate original total
+      let originalTotal = orderData.total || 0;
 
-    if (payload?.package_id
-      && (orderData?.service_type === ServiceType.exam_registration
-        || orderData?.service_type === ServiceType.ielts_academic)) {
-      const findPackage = await this.prisma.package.findFirst({ where: { id: payload?.package_id } })
-      originalTotal = findPackage?.price_bdt || 0;
-      orderData.subtotal = findPackage?.price_bdt;
-    }
+      if (payload?.package_id
+        && (orderData?.service_type === ServiceType.exam_registration
+          || orderData?.service_type === ServiceType.ielts_academic)) {
+        const findPackage = await this.prisma.package.findFirst({ where: { id: payload?.package_id } })
+        originalTotal = findPackage?.price_bdt || 0;
+        orderData.subtotal = findPackage?.price_bdt;
+      }
 
-    let couponResult: CouponCalculationResult = {
-      coupon: null,
-      discountAmount: 0,
-      finalTotal: originalTotal,
-      originalTotal: originalTotal
-    };
+      let couponResult: CouponCalculationResult = {
+        coupon: null,
+        discountAmount: 0,
+        finalTotal: originalTotal,
+        originalTotal: originalTotal
+      };
 
-    // Process coupon if provided
-    if (coupon_code && coupon_code.trim()) {
-      couponResult = await this.validateAndCalculateCoupon(
-        coupon_code.trim(),
-        userId,
-        orderData.service_type,
-        originalTotal
-      );
-    }
+      // Process coupon if provided
+      if (coupon_code && coupon_code.trim()) {
+        couponResult = await this.validateAndCalculateCoupon(
+          coupon_code.trim(),
+          userId,
+          orderData.service_type,
+          originalTotal
+        );
+      }
 
-    // Update order data with final total
-    orderData.total = couponResult.finalTotal;
+      // Update order data with final total
+      orderData.total = couponResult.finalTotal;
 
-    this.logger.log(`Order creation: Original: ${originalTotal}, Discount: ${couponResult.discountAmount}, Final: ${couponResult.finalTotal}`);
+      this.logger.log(`Order creation: Original: ${originalTotal}, Discount: ${couponResult.discountAmount}, Final: ${couponResult.finalTotal}`);
 
-    const { package_id, payment_status, center_id, ...rest } = orderData;
+      const { package_id, payment_status, center_id, ...rest } = orderData;
 
-    const dataToInsert: Prisma.OrderCreateInput = {
-      ...rest,
-      User: {
-        connect: { id: userId }
-      },
-      status: 'Pending',
-      payment_status: 'unpaid',
-      sslc_transaction_id: transactionId,
-    }
+      const dataToInsert: Prisma.OrderCreateInput = {
+        ...rest,
+        User: {
+          connect: { id: userId }
+        },
+        status: 'Pending',
+        payment_status: 'unpaid',
+        sslc_transaction_id: transactionId,
+      }
 
-    if (package_id && payload.service_type !== ServiceType.book_purchase) {
-      dataToInsert.Package = { connect: { id: package_id } };
-    }
-    if (center_id && (payload.service_type === ServiceType.ielts_academic || payload.service_type === ServiceType.exam_registration)) {
-      dataToInsert.ExamCenter = { connect: { id: center_id } };
-    }
+      if (package_id && payload.service_type !== ServiceType.book_purchase) {
+        dataToInsert.Package = { connect: { id: package_id } };
+      }
+      if (center_id && (payload.service_type === ServiceType.ielts_academic || payload.service_type === ServiceType.exam_registration)) {
+        dataToInsert.ExamCenter = { connect: { id: center_id } };
+      }
 
-    // Use transaction to ensure data integrity
-    const result = await this.prisma.$transaction(async (prisma) => {
-      // Create the order
-      const order: any = await prisma.order.create({
-        data: dataToInsert
-      });
-
-      // Create coupon order record if coupon was used
-      if (couponResult.coupon) {
-        await prisma.orderCoupon.create({
-          data: {
-            order_id: order.id,
-            coupon_id: couponResult.coupon.id,
-            discount_amount: couponResult.discountAmount
-          }
+      // Use transaction to ensure data integrity
+      const result = await this.prisma.$transaction(async (prisma) => {
+        // Create the order
+        const order: any = await prisma.order.create({
+          data: dataToInsert
         });
 
-        // Update coupon usage count
-        await prisma.coupon.update({
-          where: { id: couponResult.coupon.id },
-          data: { used_count: { increment: 1 } }
-        });
-
-        // Create coupon usage record (if you added the CouponUsage model)
-        if (prisma.couponUsage) {
-          await prisma.couponUsage.create({
+        // Create coupon order record if coupon was used
+        if (couponResult.coupon) {
+          await prisma.orderCoupon.create({
             data: {
+              order_id: order.id,
               coupon_id: couponResult.coupon.id,
-              user_id: userId,
-              order_id: order.id
+              discount_amount: couponResult.discountAmount
             }
           });
+
+          // Update coupon usage count
+          await prisma.coupon.update({
+            where: { id: couponResult.coupon.id },
+            data: { used_count: { increment: 1 } }
+          });
+
+          // Create coupon usage record (if you added the CouponUsage model)
+          if (prisma.couponUsage) {
+            await prisma.couponUsage.create({
+              data: {
+                coupon_id: couponResult.coupon.id,
+                user_id: userId,
+                order_id: order.id
+              }
+            });
+          }
         }
-      }
 
-      // Create appointments if applicable
-      if (
-        (order.service_type === ServiceType.speaking_mock_test ||
-          order.service_type === ServiceType.conversation) &&
-        appointments &&
-        appointments.length > 0
-      ) {
-        await this.createAppointments(order.id, appointments, +userId, payload.user_timezone);
-      } 
-      // Create order items if applicable
-      else if (
-        order.service_type === ServiceType.book_purchase &&
-        items &&
-        items.length > 0
-      ) {
-        await this.createOrderItems(order.id, items);
-      }
 
-      return order;
-    });
+        // Create appointments if applicable
+        if (
+          (order.service_type === ServiceType.speaking_mock_test ||
+            order.service_type === ServiceType.conversation) &&
+          appointments &&
+          appointments.length > 0
+        ) {
+          await this.createAppointments(prisma, order.id, appointments, +userId, payload.user_timezone);
+        }
+        // Create order items if applicable
+        else if (
+          order.service_type === ServiceType.book_purchase &&
+          items &&
+          items.length > 0
+        ) {
+          await this.createOrderItems(order.id, items);
+        }
 
-    // Create payment record
-    const createPayment = await this.createPaymentRecord(result, userId, baseUrl, transactionId);
+        return order;
+      });
 
-    return {
-      order_id: result.id,
-      payment_url: createPayment.payment_url,
-      total_amount: result?.total,
-      discount_applied: couponResult.discountAmount,
-      coupon_used: couponResult.coupon?.code || null,
-      original_amount: couponResult.originalTotal
-    };
+      // Create payment record
+      const createPayment = await this.createPaymentRecord(result, userId, baseUrl, transactionId);
+
+      return {
+        order_id: result.id,
+        payment_url: createPayment.payment_url,
+        total_amount: result?.total,
+        discount_applied: couponResult.discountAmount,
+        coupon_used: couponResult.coupon?.code || null,
+        original_amount: couponResult.originalTotal
+      };
+    } catch (error) {
+      console.log("error from create order service>>", error);
+      console.log("error", error?.message);
+    }
   }
 
 
@@ -533,7 +543,7 @@ export class OrdersService {
             where: { id: payment.id },
             data: { status: "FAILED" }
           });
-          
+
           await prisma.order.update({
             where: { id: payment.order_id },
             data: {

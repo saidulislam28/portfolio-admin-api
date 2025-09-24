@@ -76,7 +76,8 @@ export default function PaymentScreen() {
       processingFee: Math.round(processingFee),
       tax: Math.round(tax),
       discount: discountAmount,
-      total: finalTotal,
+      total: totalBeforeDiscount,
+      final_amount: finalTotal,
       totalBeforeDiscount
     };
   }, [packageData.price, selectedPaymentMethod, discountAmount]);
@@ -162,6 +163,10 @@ export default function PaymentScreen() {
         user_timezone: Localization.getCalendars()[0].timeZone,
         coupon_code: appliedCoupon?.code,
       };
+      // console.log("totals", totals);
+      // console.log("order data>", orderData);
+      // setProcessing(false);
+      // return
 
       const response = await Post(API_USER.create_order, orderData);
       const responseData = response?.data?.data;
@@ -179,9 +184,11 @@ export default function PaymentScreen() {
           }
         );
       }
-    } catch (error: any) {
-      console.log('Full error:', error);
-      Alert.alert('Error', 'An error occurred during payment processing. Please try again.');
+    } catch (err: any) {
+
+      console.error("Profile update error:", err);
+      console.error("Error details:", err.response?.data || err.message);
+      Alert.alert('Error', err.response?.data?.message ?? "An error occured during order");
     } finally {
       setProcessing(false);
     }
@@ -198,12 +205,12 @@ export default function PaymentScreen() {
         discountAmount={discountAmount}
       />
 
-      {/* <CouponSection
+      <CouponSection
         appliedCoupon={appliedCoupon}
         discountAmount={discountAmount}
         onAddCoupon={() => setShowCouponModal(true)}
         onRemoveCoupon={removeCoupon}
-      /> */}
+      />
 
       <PaymentButton
         onPress={handlePayment}
