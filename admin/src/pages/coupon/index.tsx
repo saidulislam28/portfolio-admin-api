@@ -47,6 +47,8 @@ const CouponsManagement: React.FC = () => {
   const { data: coupons, isLoading, error } = useCoupons();
   const deleteCouponMutation = useDeleteCoupon();
 
+  console.log("coupons", coupons);
+
   const columns = [
     {
       title: 'Code',
@@ -78,6 +80,12 @@ const CouponsManagement: React.FC = () => {
       dataIndex: 'min_order_amount',
       key: 'min_order_amount',
       render: (amount: number) => amount ? `BDT${amount}` : '-',
+    },
+    {
+      title: 'Max Usage Per User',
+      dataIndex: 'max_uses_per_user',
+      key: 'max_uses_per_user',
+      // render: (amount: number) => amount ? `${amount}` : '-',
     },
     {
       title: 'Max Uses',

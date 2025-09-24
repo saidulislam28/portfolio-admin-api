@@ -252,8 +252,8 @@ export class OrdersService {
     }
   }
 
-  private async createOrderItems(orderId: number, items: any[]) {
-    return this.prisma.orderItem.createMany({
+  private async createOrderItems(prisma: Prisma.TransactionClient, orderId: number, items: any[]) {
+    return await prisma.orderItem.createMany({
       data: items.map(item => ({
         ...item,
         order_id: orderId,
@@ -350,12 +350,14 @@ export class OrdersService {
   }
 
   async createOrder(payload: CreateOrderDto, userId: number, baseUrl: string) {
+
+    console.log("order payload", payload);
     try {
       const { appointments, items, user_timezone, coupon_code, ...orderData } = payload;
       const transactionId = uuidv4();
 
       // Calculate original total
-      let originalTotal = orderData.total || 0;
+      let originalTotal = orderData.subtotal || 0;
 
       if (payload?.package_id
         && (orderData?.service_type === ServiceType.exam_registration
@@ -363,6 +365,7 @@ export class OrdersService {
         const findPackage = await this.prisma.package.findFirst({ where: { id: payload?.package_id } })
         originalTotal = findPackage?.price_bdt || 0;
         orderData.subtotal = findPackage?.price_bdt;
+        orderData.total = findPackage?.price_bdt;
       }
 
       let couponResult: CouponCalculationResult = {
@@ -385,7 +388,9 @@ export class OrdersService {
       console.log("coupon validation result", couponResult);
 
       // Update order data with final total
-      orderData.total = couponResult.finalTotal;
+      orderData.total = couponResult.finalTotal + (orderData.total - orderData.subtotal);
+
+      console.log("order total after calculation>>", orderData.total);
 
       this.logger.log(`Order creation: Original: ${originalTotal}, Discount: ${couponResult.discountAmount}, Final: ${couponResult.finalTotal}`);
 
@@ -459,7 +464,7 @@ export class OrdersService {
           items &&
           items.length > 0
         ) {
-          await this.createOrderItems(order.id, items);
+          await this.createOrderItems(prisma, order.id, items);
         }
 
         return order;

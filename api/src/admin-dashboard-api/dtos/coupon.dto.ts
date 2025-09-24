@@ -132,6 +132,9 @@ export class CouponResponseDto {
 
   @ApiProperty({ required: false, example: 100 })
   max_uses?: number;
+  
+  @ApiProperty({ required: false, example: 100 })
+  max_uses_per_user?: number;
 
   @ApiProperty({ required: false, example: 10 })
   used_count: number;

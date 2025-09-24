@@ -48,17 +48,17 @@ const generateCouponCode = (): string => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const codeLength = 8; // Standard coupon code length
     let couponCode = '';
-    
+
     // Generate random alphanumeric code
     for (let i = 0; i < codeLength; i++) {
         const randomIndex = Math.floor(Math.random() * characters.length);
         couponCode += characters[randomIndex];
     }
-    
+
     // Add a prefix for better readability (optional)
     const prefixes = ['SUMMER', 'WINTER', 'SPRING', 'FALL', 'SALE', 'OFFER'];
     const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    
+
     return `${randomPrefix}${couponCode}`;
 };
 
@@ -171,8 +171,8 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
                             label="Coupon Code"
                             rules={[{ required: true, message: 'Please enter coupon code' }]}
                         >
-                            <Input 
-                                placeholder="SUMMER2024" 
+                            <Input
+                                placeholder="SUMMER2024"
                                 suffix={
                                     !isViewMode && mode !== 'edit' && (
                                         <Button
@@ -188,9 +188,9 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
                         </Form.Item>
                         {!isViewMode && mode !== 'edit' && (
                             <Text type="secondary" style={{ fontSize: '12px', marginTop: '-8px', marginBottom: '16px', display: 'block' }}>
-                                <Button 
-                                    type="link" 
-                                    size="small" 
+                                <Button
+                                    type="link"
+                                    size="small"
                                     onClick={handleGenerateCode}
                                     icon={<ReloadOutlined />}
                                     style={{ padding: 0, height: 'auto', fontSize: '12px' }}
@@ -263,7 +263,7 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
                     <Col span={12}>
                         <Form.Item
                             name="max_uses"
-                            label="Maximum Uses Per User"
+                            label="Maximum Uses"
                         >
                             <InputNumber
                                 min={1}
@@ -273,6 +273,7 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
                         </Form.Item>
                     </Col>
                 </Row>
+
 
                 <Row gutter={16}>
                     <Col span={12}>
@@ -289,6 +290,22 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
                             label="End Date"
                         >
                             <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col span={24}>
+                        <Form.Item
+                            name="max_uses_per_user"
+                            label="Max Uses Per User"
+                            required
+                        >
+                            <InputNumber
+                                min={0}
+                                style={{ width: '100%' }}
+                                addonAfter="$"
+                                placeholder="Max Uses Per User"
+                            />
                         </Form.Item>
                     </Col>
                 </Row>

@@ -26,7 +26,7 @@ export interface Coupon {
 
 export const useCoupons = () => {
   return useQuery({
-    queryKey: ['coupons'],
+    queryKey: ['coupons-all'],
     queryFn: () => get(COUPON),
     select: (data) => {
       return data?.data ?? []
