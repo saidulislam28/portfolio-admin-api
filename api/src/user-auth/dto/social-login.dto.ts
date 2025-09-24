@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export enum SocialProvider {
   GOOGLE = 'google',
@@ -7,7 +7,11 @@ export enum SocialProvider {
 }
 
 export class SocialLoginDto {
-  @ApiProperty({ enum: SocialProvider, example: SocialProvider.GOOGLE })
+  @ApiProperty({ 
+    enum: SocialProvider, 
+    example: SocialProvider.GOOGLE,
+    description: 'Social provider used for login'
+  })
   @IsEnum(SocialProvider)
   provider: SocialProvider;
 
@@ -18,4 +22,31 @@ export class SocialLoginDto {
   @IsString()
   @IsNotEmpty()
   token: string;
+
+  @ApiProperty({
+    description: 'Full name of the user from social profile',
+    example: 'John Doe',
+    required: false
+  })
+  @IsString()
+  @IsOptional()
+  full_name?: string;
+  
+  @ApiProperty({
+    description: 'Email address from social provider',
+    example: 'john.doe@example.com',
+    required: false
+  })
+  @IsString()
+  @IsOptional()
+  email?: string;
+
+  @ApiProperty({
+    description: 'URL to the user’s profile picture from social provider',
+    example: 'https://lh3.googleusercontent.com/...',
+    required: true
+  })
+  @IsString()
+  @IsOptional()
+  profile_image?: string;
 }
