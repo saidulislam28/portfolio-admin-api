@@ -206,9 +206,12 @@ export class CreateOrderDto {
   @IsOptional()
   payment_status?: string;
 
-  @ApiProperty({ required: false })
-  @IsString()
+  @ApiProperty({
+    description: 'Coupon code',
+    example: 'AFAFA'
+  })
   @IsOptional()
+  @IsString()
   coupon_code?: string;
 }
 
