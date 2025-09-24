@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from "@nestjs/config";
-import { S3 } from "aws-sdk";
-import { v4 as uuid } from 'uuid';
 
 import { PrismaService } from "../prisma/prisma.service";
 
@@ -14,15 +12,15 @@ export class AttachmentsService {
 
 
   async upload(file) {
-    const { originalname } = file;
-    const bucketS3 = this.configService.get('s3.bucket');
-    const mime = file.mimetype;
-    try {
-      const uploadResult = await this.uploadS3(file.buffer, bucketS3, originalname, mime);
-      return uploadResult;
-    } catch (e) {
-      return null;
-    }
+    // const { originalname } = file;
+    // const bucketS3 = this.configService.get('s3.bucket');
+    // const mime = file.mimetype;
+    // try {
+    //   const uploadResult = await this.uploadS3(file.buffer, bucketS3, originalname, mime);
+    //   return uploadResult;
+    // } catch (e) {
+    //   return null;
+    // }
   }
 
   async create(data, file: any) {
@@ -39,7 +37,7 @@ export class AttachmentsService {
   }
 
   async uploadS3(file, bucket, name, mime) {
-    const s3 = this.getS3();
+    // const s3 = this.getS3();
     // const params = {
     //   Bucket: bucket,
     //   Key: `${uuid()}-${name}`,
@@ -57,12 +55,12 @@ export class AttachmentsService {
     });
   }
 
-  getS3() {
-    return new S3({
-      accessKeyId: this.configService.get('s3.awsConfig.accessKeyId'),
-      secretAccessKey: this.configService.get('s3.awsConfig.secretAccessKey'),
-    });
-  }
+  // getS3() {
+  //   return new S3({
+  //     accessKeyId: this.configService.get('s3.awsConfig.accessKeyId'),
+  //     secretAccessKey: this.configService.get('s3.awsConfig.secretAccessKey'),
+  //   });
+  // }
 
   async remove(id: number) {
     try {

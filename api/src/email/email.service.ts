@@ -1,4 +1,3 @@
-// email.service.ts
 import { InjectQueue } from '@nestjs/bull';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
@@ -6,7 +5,6 @@ import * as nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import { QUEUE_NAME } from 'src/common/constants';
 
-const SendGrid = require('@sendgrid/mail')
 
 @Injectable()
 export default class EmailService {
@@ -17,7 +15,6 @@ export default class EmailService {
     @InjectQueue(QUEUE_NAME) private speakingQue: Queue,
     // private readonly pdfGeneratorService: PdfGeneratorService
   ) {
-    SendGrid.setApiKey(process.env.SENDGRID_KEY);
     this.nodemailerTransport = nodemailer.createTransport({
       pool: true,
       service: 'Gmail',
@@ -32,7 +29,6 @@ export default class EmailService {
   }
 
   sendMailReset(mail) {
-    return SendGrid.send(mail)
   }
 
   async sendEmail(

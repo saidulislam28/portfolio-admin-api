@@ -16,8 +16,6 @@ import SSLCommerzPayment from 'sslcommerz-lts';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateOrderDto } from '../dto/order.dto';
 
-const SendGrid = require('@sendgrid/mail')
-
 // Interface for coupon calculation result
 interface CouponCalculationResult {
   coupon: Coupon | null;
@@ -40,7 +38,6 @@ export class OrdersService {
     private prisma: PrismaService,
     @InjectQueue(QUEUE_NAME) private speakingQue: Queue,
   ) {
-    SendGrid.setApiKey(process.env.SENDGRID_KEY);
     this.nodemailerTransport = nodemailer.createTransport({
       pool: true,
       service: 'Gmail',

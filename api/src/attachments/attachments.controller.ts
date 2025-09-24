@@ -30,23 +30,29 @@ export class AttachmentsController {
 
     console.log('request reached: attachements/upload-image', file)
 
-    if (process.env.NODE_ENV === 'development') {
-      return {
-        url: `${process.env.APP_URL}/uploads/${file.filename}`,
-        name,
-        message: 'Success',
-      };
-    } else {
-      const uploaded: any = await this.attachmentsService.upload(file);
-      if (uploaded) {
-        return {
-          url: uploaded?.Location,
-          name,
-          message: 'Success',
-        };
-      } else {
-        throw new Error('Failed to upload file');
-      }
-    }
+    // TODO allow chose between local & cloudinary based on .env
+    return {
+      url: `${process.env.APP_URL}/uploads/${file.filename}`,
+      name,
+      message: 'Success',
+    };
+    // if (process.env.NODE_ENV === 'development') {
+    //   return {
+    //     url: `${process.env.APP_URL}/uploads/${file.filename}`,
+    //     name,
+    //     message: 'Success',
+    //   };
+    // } else {
+    //   const uploaded: any = await this.attachmentsService.upload(file);
+    //   if (uploaded) {
+    //     return {
+    //       url: uploaded?.Location,
+    //       name,
+    //       message: 'Success',
+    //     };
+    //   } else {
+    //     throw new Error('Failed to upload file');
+    //   }
+    // }
   }
 }
