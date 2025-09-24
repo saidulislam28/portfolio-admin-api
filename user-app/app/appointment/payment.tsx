@@ -6,7 +6,6 @@ import * as Localization from 'expo-localization';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
-import { BaseButton } from '@/components/BaseButton';
 import { ROUTES } from '@/constants/app.routes';
 import { Coupon, CouponValidationResponse } from '@/types/paymentTypes';
 import { CouponSection } from '@/components/payment/CouponSection';

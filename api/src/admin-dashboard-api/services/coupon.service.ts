@@ -6,7 +6,7 @@ import { ApplyCouponDto, ApplyCouponResponseDto, CouponResponseDto, CreateCoupon
 
 @Injectable()
 export class CouponsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createCouponDto: CreateCouponDto): Promise<CouponResponseDto> {
     const { categories, user_ids, ...couponData } = createCouponDto;
@@ -118,19 +118,19 @@ export class CouponsService {
 
     // Validate coupon
     const validation = await this.validateCoupon(coupon, order_amount, service_type, user_id);
-    
+
     if (!validation.valid) {
       return validation;
     }
 
     // Calculate discount
     let discountAmount = 0;
-    
+
     if (coupon.discount_type === DiscountType.FIXED) {
       discountAmount = Math.min(coupon.discount_value, order_amount);
     } else {
       discountAmount = (order_amount * coupon.discount_value) / 100;
-      
+
       if (coupon.max_discount && discountAmount > coupon.max_discount) {
         discountAmount = coupon.max_discount;
       }
@@ -175,9 +175,9 @@ export class CouponsService {
 
     // Check minimum order amount
     if (coupon.min_order_amount && orderAmount < coupon.min_order_amount) {
-      return { 
-        valid: false, 
-        message: `Minimum order amount of ${coupon.min_order_amount} required` 
+      return {
+        valid: false,
+        message: `Minimum order amount of ${coupon.min_order_amount} required`
       };
     }
 
@@ -186,7 +186,7 @@ export class CouponsService {
       const validCategory = coupon.coupon_categories.some(
         (cat: any) => cat.category === serviceType
       );
-      
+
       if (!validCategory) {
         return { valid: false, message: 'Coupon not valid for this service type' };
       }
@@ -197,7 +197,7 @@ export class CouponsService {
       const validUser = coupon.coupon_users.some(
         (cu: any) => cu.user_id === userId
       );
-      
+
       if (!validUser) {
         return { valid: false, message: 'Coupon not valid for this user' };
       }
@@ -230,6 +230,7 @@ export class CouponsService {
       discount_type: coupon.discount_type,
       discount_value: coupon.discount_value,
       min_order_amount: coupon.min_order_amount,
+      max_uses_per_user: coupon.max_uses_per_user,
       max_discount: coupon.max_discount,
       max_uses: coupon.max_uses,
       used_count: coupon.used_count,
