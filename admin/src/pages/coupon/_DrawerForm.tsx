@@ -263,7 +263,7 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
                     <Col span={12}>
                         <Form.Item
                             name="max_uses"
-                            label="Maximum Uses"
+                            label="Maximum Uses Per User"
                         >
                             <InputNumber
                                 min={1}

@@ -382,6 +382,8 @@ export class OrdersService {
         );
       }
 
+      console.log("coupon validation result", couponResult);
+
       // Update order data with final total
       orderData.total = couponResult.finalTotal;
 

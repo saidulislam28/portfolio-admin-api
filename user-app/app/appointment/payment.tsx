@@ -71,6 +71,7 @@ export default function PaymentScreen() {
     const totalBeforeDiscount = Math.round(subtotal + processingFee + tax);
     const finalTotal = Math.max(0, totalBeforeDiscount - discountAmount);
 
+
     return {
       subtotal,
       processingFee: Math.round(processingFee),
@@ -164,6 +165,7 @@ export default function PaymentScreen() {
         coupon_code: appliedCoupon?.code,
       };
       // console.log("totals", totals);
+      // console.log("discountAmount", discountAmount);
       // console.log("order data>", orderData);
       // setProcessing(false);
       // return
