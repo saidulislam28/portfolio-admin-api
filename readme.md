@@ -15,3 +15,17 @@ Docker PG Container Dump
 # BitPixel BD
 
 ## [Facebook Page](https://www.facebook.com/bitpixelbd)
+
+
+
+### Grafana
+
+3. Import Ready-Made Dashboards
+
+Grafana has community dashboards for Prometheus HTTP metrics.
+For example:
+
+Go to Dashboards → Import → Enter ID 3662 (Prometheus Stats).
+
+Or search on Grafana Dashboards
+

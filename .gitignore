@@ -40,3 +40,5 @@ lerna-debug.log*
 pg-data/*
 public/uploads/*
 pull.sh
+
+grafana/*
