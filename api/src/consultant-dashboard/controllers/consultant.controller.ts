@@ -3,51 +3,40 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
-  Req,
   UseGuards
 } from '@nestjs/common';
 import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiQuery,
-  ApiParam,
-  ApiBody,
-  ApiOkResponse,
-  ApiNotFoundResponse,
   ApiBadRequestResponse,
-  ApiUnauthorizedResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
-  ApiNoContentResponse,
-  ApiCreatedResponse
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+  ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
 import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
 import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
 
-import { ConsultantService } from '../services/consultant.service';
 import {
-  ConsultantQueryDto,
-  CreateConsultantDto,
-  UpdateConsultantDto,
-  ConsultantResponseDto,
   ConsultantListResponseDto,
-  AppointmentListQueryDto,
-  UpdateAppointmentStatusDto,
-  UpdateAppointmentNotesDto,
-  AppointmentResponseDto,
-  AppointmentListResponseDto
+  ConsultantQueryDto,
+  ConsultantResponseDto,
+  CreateConsultantDto,
+  UpdateConsultantDto
 } from '../dto/consultant.dto';
+import { ConsultantService } from '../services/consultant.service';
 
 @ApiTags('Consultant: Consultants')
 @ApiBearerAuth()

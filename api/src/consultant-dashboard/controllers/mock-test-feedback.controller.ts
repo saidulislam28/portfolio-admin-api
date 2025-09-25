@@ -15,13 +15,17 @@ import {
 } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
 import { MockTestFeedbackService } from '../services/mock-test-feedback.service';
-import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
-import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
 import { CreateMockTestFeedbackDto, MockTestFeedbackListResponseDto, MockTestFeedbackResponseDto } from '../dto/mock-test-feedback.dto';
 
+import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
+import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
+import { Role } from 'src/user-auth/dto/role.enum';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@HasRoles(Role.Consultant)
 @ApiTags('Consultant: Mocktest Feedback')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('mocktest-feedback')
 export class MockTestFeedbackController {
   constructor(

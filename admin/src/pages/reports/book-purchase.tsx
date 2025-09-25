@@ -192,11 +192,11 @@ const OrderReportsPage = () => {
 
     const summaryData = [
       ['Metric', 'Value'],
-      ['Total Sales', `$${reportData.total_sales}`],
+      ['Total Sales', `BDT ${reportData.total_sales}`],
       ['Total Orders', reportData.total_orders.toString()],
-      ['Total Revenue', `$${reportData.total_revenue}`],
-      ['Cancelled Amount', `$${reportData.total_cancelled_amount}`],
-      ['Average Order Value', `$${reportData.average_order_value}`],
+      ['Total Revenue', `BDT ${reportData.total_revenue}`],
+      ['Cancelled Amount', `BDT ${reportData.total_cancelled_amount}`],
+      ['Average Order Value', `BDT ${reportData.average_order_value}`],
       ['COD Orders', reportData.payment_stats.cod_orders.toString()],
       ['Online Orders', reportData.payment_stats.online_orders.toString()],
     ];
@@ -219,8 +219,8 @@ const OrderReportsPage = () => {
         ...reportData.service_type_stats.map(stat => [
           stat.service_type,
           stat.order_count.toString(),
-          `$${stat.total_revenue}`,
-          `$${stat.average_order_value}`
+          `BDT ${stat.total_revenue}`,
+          `BDT ${stat.average_order_value}`
         ])
       ];
 
@@ -287,7 +287,7 @@ const OrderReportsPage = () => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: (total) => `$${total}`,
+      render: (total) => `BDT ${total}`,
       align: 'right',
     },
     {
@@ -481,7 +481,7 @@ const OrderReportsPage = () => {
                     title="COD Orders"
                     value={reportData.payment_stats.cod_orders}
                     prefix={<BankOutlined />}
-                    suffix={`($${reportData.payment_stats.cod_amount})`}
+                    suffix={`(BDT ${reportData.payment_stats.cod_amount})`}
                   />
                 </Card>
               </Col>
@@ -491,7 +491,7 @@ const OrderReportsPage = () => {
                     title="Online Orders"
                     value={reportData.payment_stats.online_orders}
                     prefix={<CreditCardOutlined />}
-                    suffix={`($${reportData.payment_stats.online_amount})`}
+                    suffix={`(BDT ${reportData.payment_stats.online_amount})`}
                   />
                 </Card>
               </Col>
@@ -529,7 +529,7 @@ const OrderReportsPage = () => {
                             <Statistic
                               title="Revenue"
                               value={stat.total_revenue}
-                              prefix="$"
+                              prefix="BDT"
                               precision={2}
                               valueStyle={{ fontSize: '16px', color: '#3f8600' }}
                             />
@@ -537,7 +537,7 @@ const OrderReportsPage = () => {
                         </Row>
                         <div style={{ marginTop: '8px' }}>
                           <Text type="secondary">
-                            Avg: ${stat.average_order_value}
+                            Avg: BDT {stat.average_order_value}
                           </Text>
                         </div>
                       </Card>

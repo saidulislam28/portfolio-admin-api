@@ -1,18 +1,22 @@
-// src/orders/orders.controller.ts
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+/* eslint-disable  */
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import {
-    ApiTags,
+    ApiBearerAuth,
     ApiOperation,
     ApiResponse,
-    ApiParam,
-    ApiBearerAuth
+    ApiTags
 } from '@nestjs/swagger';
-import { User } from '@prisma/client';
-import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
-import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
 import { GroupedOrdersResponseDto } from '../dto/group-order.dto';
 import { UserOrdersService } from '../services/group-order.service';
 
+
+import { Role } from 'src/user-auth/dto/role.enum';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
+import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
+import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@HasRoles(Role.User)
 @ApiTags('User: User orders')
 @ApiBearerAuth()
 @Controller('user/orders')

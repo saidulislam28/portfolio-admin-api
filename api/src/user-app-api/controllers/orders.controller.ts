@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Controller, Get, HttpStatus,NotFoundException, Param } from '@nestjs/common';
-import { ApiOperation, ApiParam,ApiResponse, ApiTags } from '@nestjs/swagger';
+/* eslint-disable  */
+import { Controller, Get, HttpStatus, NotFoundException, Param, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ServiceType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -11,15 +11,23 @@ import {
   GenericOrderResponseDto,
   IeltsAcademicResponseDto,
   OrderDetailsResponse,
-  SpeakingMockTestResponseDto} from '../dtos/order-details.dto';
+  SpeakingMockTestResponseDto
+} from '../dtos/order-details.dto';
 
+import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
+import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
+import { Role } from 'src/user-auth/dto/role.enum';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@HasRoles(Role.User)
 @ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   @Get(':orderId/details')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get order details by ID',
     description: 'Retrieves detailed information about an order based on its service type. Returns different data structures\
      depending on the service type. \
@@ -91,19 +99,19 @@ export class OrdersController {
     switch (order.service_type) {
       case ServiceType.speaking_mock_test:
         return this.generateSpeakingMockTestResponse(order, baseData);
-      
+
       case ServiceType.conversation:
         return this.generateConversationResponse(order, baseData);
-      
+
       case ServiceType.book_purchase:
         return this.generateBookPurchaseResponse(order, baseData);
-      
+
       case ServiceType.exam_registration:
         return this.generateExamRegistrationResponse(order, baseData);
-      
+
       case ServiceType.ielts_academic:
         return this.generateIeltsAcademicResponse(order, baseData);
-      
+
       case ServiceType.ielts_gt:
       case ServiceType.spoken:
       case ServiceType.study_abroad:

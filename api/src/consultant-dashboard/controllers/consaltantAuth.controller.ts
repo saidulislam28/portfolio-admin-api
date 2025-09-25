@@ -16,18 +16,11 @@ import {
 } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
 import EmailService from 'src/email/email.service';
-import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
-import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
 
 import { ConsultantResponseDto, ForgetPasswordDTO, LoginDto, OtpVerificationDto, registrationDTO, ResetPasswordDto, UpdateConsultantDto } from '../dto/consultant.dto';
 import { ConsultantAuthService } from '../services/consaltantAuth.service';
-import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
-import { Role } from 'src/user-auth/dto/role.enum';
 
 @ApiTags('Consultant: Auth')
-@ApiBearerAuth()
-// @UseGuards(JwtAuthGuard, RolesGuard)
-// @HasRoles(Role.User)
 @Controller('consultant-auth')
 export class ConsultantAuthController {
   constructor(

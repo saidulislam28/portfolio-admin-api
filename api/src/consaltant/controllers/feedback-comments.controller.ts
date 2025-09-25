@@ -14,11 +14,14 @@ import { CreateFeedbackCommentDto, FeedbackCommentResponseDto } from '../dto/fee
 import { FeedbackCommentService } from '../services/feedback-comments.service';
 import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
 import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
+import { Role } from 'src/user-auth/dto/role.enum';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@HasRoles(Role.Consultant)
 @ApiTags('Consultant: Feedback Comments')
 @Controller('feedback-comments')
 // @HasRoles(Role.Admin)
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class FeedbackCommentController {
     constructor(
         private readonly feedbackCommentService: FeedbackCommentService,
