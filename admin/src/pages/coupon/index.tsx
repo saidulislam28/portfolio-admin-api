@@ -1,38 +1,29 @@
-// src/pages/CouponsManagement.tsx
-import React, { useState } from 'react';
+/* eslint-disable  */
 import {
-  Table,
-  Card,
-  Button,
-  Space,
-  Tag,
-  Modal,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  DatePicker,
-  Switch,
-  Divider,
-  Typography,
-  Row,
-  Col,
-  Statistic,
-  Popconfirm,
-  message,
-  Drawer,
-} from 'antd';
-import {
-  PlusOutlined,
-  EditOutlined,
   DeleteOutlined,
+  EditOutlined,
   EyeOutlined,
-  ShoppingCartOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
+import {
+  Button,
+  Card,
+  Col,
+  Modal,
+  Popconfirm,
+  Row,
+  Select,
+  Space,
+  Statistic,
+  Table,
+  Tag,
+  Typography
+} from 'antd';
+import React, { useState } from 'react';
 import { Coupon } from '~/@types/coupon';
-import { getHeader } from '~/utility/helmet';
 import PageTitle from '~/components/PageTitle';
 import { useCoupons, useDeleteCoupon } from '~/hooks/useCoupon';
+import { getHeader } from '~/utility/helmet';
 import CouponDrawerForm from './_DrawerForm';
 
 const { Title } = Typography;
@@ -44,7 +35,7 @@ const CouponsManagement: React.FC = () => {
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const [isApplyModalVisible, setIsApplyModalVisible] = useState(false);
 
-  const { data: coupons, isLoading, error } = useCoupons();
+  const { data: coupons, isLoading, error, refetch } = useCoupons();
   const deleteCouponMutation = useDeleteCoupon();
 
   console.log("coupons", coupons);
@@ -265,6 +256,7 @@ const CouponsManagement: React.FC = () => {
         onClose={() => setDrawerVisible(false)}
         mode={drawerMode}
         coupon={selectedCoupon}
+        refetch={refetch}
       />
 
       {/* Apply Coupon Modal (you can implement this similarly) */}

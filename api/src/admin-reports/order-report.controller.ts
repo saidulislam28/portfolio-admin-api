@@ -1,3 +1,4 @@
+/* eslint-disable  */
 import { Controller, Get, Query, UseGuards,ValidationPipe } from '@nestjs/common';
 import { 
   ApiBearerAuth,

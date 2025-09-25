@@ -1,4 +1,4 @@
-// src/components/CouponDrawerForm.tsx
+/* eslint-disable  */
 import React, { useEffect, useCallback } from 'react';
 import {
     Drawer,
@@ -30,6 +30,7 @@ interface CouponDrawerFormProps {
     onClose: () => void;
     mode: 'create' | 'edit' | 'view';
     coupon?: Coupon | null;
+    refetch?: any
 }
 
 const serviceTypes = [
@@ -67,6 +68,7 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
     onClose,
     mode,
     coupon,
+    refetch
 }) => {
     const [form] = Form.useForm();
     const createMutation = useCreateCoupon();
@@ -113,7 +115,7 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
             } else if (mode === 'create') {
                 await createMutation.mutateAsync(data);
             }
-
+            refetch();
             form.resetFields();
             onClose();
         } catch (error) {
@@ -124,6 +126,7 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
     const handleClose = () => {
         form.resetFields();
         onClose();
+        refetch();
     };
 
     const footer = (
