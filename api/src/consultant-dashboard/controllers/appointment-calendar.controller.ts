@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   Controller,
   Get,
@@ -13,15 +14,19 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
-import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
+
 
 import { GetAppointmentsQueryDto, GetAppointmentsResponseDto } from '../dto/calendar-response.dto';
 import { AppointmentCalendarService } from '../services/appointment-calendar.service';
+import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
+import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
+import { Role } from 'src/user-auth/dto/role.enum';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@HasRoles(Role.Consultant)
 @ApiTags('Consultant: Appointments')
 @Controller('consultant/appointment')
-@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class AppointmentsCalendarController {
   constructor(private readonly appointmentCalendarService: AppointmentCalendarService) { }

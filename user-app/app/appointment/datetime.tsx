@@ -16,7 +16,7 @@ import {
 } from "@/lib/constants";
 import { getUserDeviceTimezone } from "@/utils/userTimezone";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -38,6 +38,7 @@ export default function DateTimeScreen() {
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [lockingSlots, setLockingSlots] = useState(new Set());
   const [currentSelectedDate, setCurrentSelectedDate] = useState(null);
+  const hasInitialized = useRef(false);
 
   const { data: availableDates, isLoading: isLoadingTimeslots } = useAppointmentTimeslots(timezone);
   const { data: activeAppointments, isLoading: isLoadingActiveAppointment } = useMyActiveAppointments();
@@ -80,11 +81,18 @@ export default function DateTimeScreen() {
   // Wait for both APIs to complete before showing content
   const isLoading = isLoadingTimeslots || isLoadingActiveAppointment;
 
-  useEffect(() => {
-    if (filteredDates && Array.isArray(filteredDates) && filteredDates.length && !isLoading) {
+useEffect(() => {
+  if (filteredDates && Array.isArray(filteredDates) && filteredDates.length && !isLoading) {
+    if (!hasInitialized.current) {
+      // Only set initially
+      setCurrentSelectedDate(filteredDates[0].date);
+      hasInitialized.current = true;
+    } else if (!currentSelectedDate || !filteredDates.find(d => d.date === currentSelectedDate)) {
+      // If current selected date is no longer available, reset to first available
       setCurrentSelectedDate(filteredDates[0].date);
     }
-  }, [isLoading, filteredDates]);
+  }
+}, [isLoading, filteredDates, currentSelectedDate]);
 
   const handleDateSelect = (date) => {
     setCurrentSelectedDate(date);

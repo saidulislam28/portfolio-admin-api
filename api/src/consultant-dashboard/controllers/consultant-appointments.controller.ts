@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   Patch,
-  Query,
   Req,
   UseGuards
 } from '@nestjs/common';
@@ -17,25 +16,24 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
-  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
+import { Role } from 'src/user-auth/dto/role.enum';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
 import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
 import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
-
 import {
   AppointmentListResponseDto,
   AppointmentResponseDto,
   UpdateAppointmentNotesDto,
   UpdateAppointmentStatusDto
 } from '../dto/consultant.dto';
-import { ConsultantService } from '../services/consultant.service';
 import { ConsultantAppointmentsService } from '../services/consultant-appointments.service';
-import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
-import { Role } from 'src/user-auth/dto/role.enum';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@HasRoles(Role.Consultant)
 @ApiTags('Consultant: Appointments')
 @ApiBearerAuth()
 @Controller('consultant')

@@ -1,49 +1,54 @@
 // consultant-schedule.controller.ts
-
+/* eslint-disable  */
 import {
-    Controller,
-    Get,
-    Post,
-    Put,
-    Delete,
     Body,
-    Param,
-    Query,
+    Controller,
+    Delete,
+    Get,
     HttpCode,
     HttpStatus,
-    UseGuards,
-    ParseIntPipe,
+    Param,
     Patch,
+    Post,
+    Query,
+    UseGuards
 } from '@nestjs/common';
 import {
-    ApiTags,
-    ApiOperation,
-    ApiResponse,
-    ApiParam,
-    ApiQuery,
     ApiBearerAuth,
     ApiBody,
+    ApiOperation,
+    ApiParam,
+    ApiQuery,
+    ApiResponse,
+    ApiTags,
 } from '@nestjs/swagger';
 import {
-    CreateWorkHourDto,
-    UpdateWorkHourDto,
+    ConsultantParamDto,
+    ConsultantScheduleResponseDto,
+    CreateBulkOffDaysDto,
     CreateBulkWorkHoursDto,
     CreateOffDayDto,
-    UpdateOffDayDto,
-    CreateBulkOffDaysDto,
-    GetWorkHoursQueryDto,
+    CreateWorkHourDto,
     GetOffDaysQueryDto,
-    WorkHourResponseDto,
-    OffDayResponseDto,
-    ConsultantScheduleResponseDto,
-    ConsultantParamDto,
-    WorkHourParamDto,
+    GetWorkHoursQueryDto,
     OffDayParamDto,
+    OffDayResponseDto,
+    UpdateOffDayDto,
+    UpdateWorkHourDto,
+    WorkHourParamDto,
+    WorkHourResponseDto,
 } from '../dtos/work-hour.dto';
 import { ConsultantScheduleService } from '../services/consultant-schedule.service';
+import { HasRoles } from "src/user-auth/jwt/has-roles.decorator";
+import { Role } from "src/user-auth/dto/role.enum";
+import { JwtAuthGuard } from "src/user-auth/jwt/jwt-auth.guard";
+import { RolesGuard } from "src/user-auth/jwt/roles.guard";
 
+@HasRoles(Role.Admin)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Admin: Consultant Schedule')
 @ApiBearerAuth()
+
 @Controller('consultants/:consultant_id')
 export class ConsultantScheduleController {
     constructor(private readonly scheduleService: ConsultantScheduleService) { }

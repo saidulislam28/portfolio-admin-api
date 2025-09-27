@@ -10,12 +10,15 @@ import { res } from 'src/common/response.helper';
 
 import { LiveAppointmentsResponseDto } from '../dtos/live-appointment.dto';
 import { LiveAppointmentService } from '../services/live-appointment.service';
-import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
-import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
+import { HasRoles } from "src/user-auth/jwt/has-roles.decorator";
+import { Role } from "src/user-auth/dto/role.enum";
+import { JwtAuthGuard } from "src/user-auth/jwt/jwt-auth.guard";
+import { RolesGuard } from "src/user-auth/jwt/roles.guard";
 
+@HasRoles(Role.Admin)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Admin: Live Appointments')
 @Controller('live-appointments')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class LiveAppointmentController {
     constructor(private readonly liveAppointmentService: LiveAppointmentService) { }
 
