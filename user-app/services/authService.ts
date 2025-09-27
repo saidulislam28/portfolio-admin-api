@@ -1,6 +1,5 @@
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { socialLogin } from '@sm/common';
-import * as AppleAuthentication from 'expo-apple-authentication';
 
 class AuthService {
   constructor() {
@@ -84,46 +83,6 @@ class AuthService {
     } catch (error) {
       console.error('Error getting current Google user:', error);
       return null;
-    }
-  }
-
-  async signInWithApple() {
-    try {
-      const isAvailable = await AppleAuthentication.isAvailableAsync();
-      if (!isAvailable) {
-        throw new Error('Apple Sign-In is not available on this device');
-      }
-
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
-
-      if (!credential.identityToken) {
-        throw new Error('Apple Sign-In failed: No identity token received');
-      }
-
-      const authResult = await this.authenticateWithBackend({
-        provider: 'apple',
-        idToken: credential.identityToken,
-        user: {
-          id: credential.user,
-          email: credential.email,
-          givenName: credential?.fullName?.givenName,
-          familyName: credential?.fullName?.familyName,
-        },
-      });
-
-      return authResult;
-    } catch (error: any) {
-      if (error.code === 'ERR_CANCELED') {
-        console.log('User cancelled Apple sign-in');
-        return null;
-      } else {
-        throw error;
-      }
     }
   }
 
