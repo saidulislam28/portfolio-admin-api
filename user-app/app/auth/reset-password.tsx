@@ -88,8 +88,8 @@ export default function ResetPasswordScreen() {
       await AsyncStorage.removeItem("email");
 
       login(result?.data?.data, result?.data?.data?.token);
-      router.push(ROUTES.HOME as any);
-
+      router.dismissAll();
+      router.replace(ROUTES.HOME as any);
     } catch (error:any) {
       Alert.alert('Error', error?.message ?? 'An unexpected error occurred');
       setLoading(false);

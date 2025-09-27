@@ -108,7 +108,8 @@ export default function LoginScreen() {
         return;
       }
       login(result.data, result.data.token);
-      router.push(ROUTES.HOME as any);
+      router.dismissAll();
+      router.replace(ROUTES.HOME as any);
     } catch (error: any) {
       const status = error?.response?.status;
       const message =

@@ -124,7 +124,8 @@ const VerifyOtpScreen = () => {
         return;
       }
       login(result?.data?.user, result?.data?.user?.token);
-      router.push(ROUTES.HOME as any);
+      router.dismissAll();
+      router.replace(ROUTES.HOME as any);
     } catch (error: any) {
       Alert.alert("Error", error?.message ?? "An unexpected error occurred");
       setIsVerifying(false);

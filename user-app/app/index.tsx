@@ -32,8 +32,6 @@ export default function Index() {
         const token = await registerForPushNotificationsAsync();
         const timezone = getUserDeviceTimezone();
 
-        console.log("timezone <><><><><><><><><><><><", timezone);
-
         const response = await Post(API_COMMON.post_device_tokens, {
           token,
           user_id: userId,
