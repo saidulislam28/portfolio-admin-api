@@ -16,7 +16,7 @@ import React, { useState } from "react";
 
 import PageTitle from "~/components/PageTitle";
 import { patch, post } from "~/services/api/api";
-import { API_CRUD_FIND_WHERE, getUrlForModel } from "~/services/api/endpoints";
+import { API_CRUD_FIND_WHERE, ASSIGN_CONSULTANT_API, getUrlForModel } from "~/services/api/endpoints";
 import { SERVICE_TYPE } from "~/store/slices/app/constants";
 import { getHeader } from "~/utility/helmet";
 
@@ -140,11 +140,13 @@ const AppointmentsView: React.FC = () => {
 
   const assignConsultantMutation = useMutation({
     mutationFn: async (data: any) =>
-      await patch(getUrlForModel("Appointment", data.id), data),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onSuccess: (response: any) => {
+      await patch(ASSIGN_CONSULTANT_API(Number(data?.id)), data),
+    onSuccess: () => {
       message.success("Updated Successfully");
       refetch();
+      setAssignModalVisible(false);
+      setSelectedAppointmentId(null);
+      setSelectedConsultantId(null);
       successModal();
     },
     onError: () => {

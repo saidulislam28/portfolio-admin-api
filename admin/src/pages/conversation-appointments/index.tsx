@@ -21,7 +21,7 @@ import { useNavigate } from "react-router";
 
 import PageTitle from "~/components/PageTitle";
 import { get, patch, post } from "~/services/api/api";
-import { API_CRUD_FIND_WHERE, getUrlForModel } from "~/services/api/endpoints";
+import { API_CRUD_FIND_WHERE, ASSIGN_CONSULTANT_API, getUrlForModel } from "~/services/api/endpoints";
 import { getHeader } from "~/utility/helmet";
 import AppointmentDrawer from "./_DrawerForm";
 import { SERVICE_TYPE } from "~/store/slices/app/constants";
@@ -195,8 +195,8 @@ const AppointmentsView: React.FC = () => {
 
   const assignConsultantMutation = useMutation({
     mutationFn: async (data: any) =>
-      await patch(getUrlForModel("Appointment", data.id), data),
-    onSuccess: (response) => {
+      await patch(ASSIGN_CONSULTANT_API(Number(data?.id)), data),
+    onSuccess: () => {
       message.success("Updated Successfully");
       refetch();
       successModal();

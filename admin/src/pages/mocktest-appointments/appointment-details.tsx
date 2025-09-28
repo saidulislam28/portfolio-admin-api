@@ -105,7 +105,7 @@ const AppointmentDetails = () => {
         consultant_id: selectedConsultantId,
       });
     } else {
-      console.log("something went wrong with upload");
+      console.log("something went consultant id or appointment id");
     }
   };
 
