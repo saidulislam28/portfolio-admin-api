@@ -1,5 +1,6 @@
-import { useAuth } from "@/context/useAuth";
+import { BaseButton } from "@/components/BaseButton";
 import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import {
   Feather,
@@ -10,14 +11,12 @@ import {
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { Avatar, Button, Card, Divider, Text } from "react-native-paper";
-import { BaseButton } from "@/components/BaseButton";
+import { Avatar, Card, Divider, Text } from "react-native-paper";
 
 const SettingsScreen = () => {
   const router = useRouter();
@@ -45,7 +44,7 @@ const SettingsScreen = () => {
     {
       icon: "notifications",
       title: "Notifications",
-      // action: () => router.push('/notifications'),
+      action: () => router.push(ROUTES.ACCOUNT_NOTIFICATION as any),
       iconComponent: MaterialIcons,
     },
     {
@@ -99,7 +98,7 @@ const SettingsScreen = () => {
           />
           <TouchableOpacity
             style={styles.editAvatarButton}
-            onPress={() => router.push(ROUTES.ACCOUNT_EDIT)}
+            onPress={() => router.push(ROUTES.ACCOUNT_EDIT as any)}
           >
             <MaterialIcons name="edit" size={18} color="white" />
           </TouchableOpacity>
@@ -132,7 +131,7 @@ const SettingsScreen = () => {
             <TouchableOpacity style={styles.settingItem} onPress={item.action}>
               <View style={styles.settingIcon}>
                 <item.iconComponent
-                  name={item.icon}
+                  name={item.icon as any}
                   size={24}
                   color={PRIMARY_COLOR}
                 />

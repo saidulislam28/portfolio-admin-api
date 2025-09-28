@@ -1,35 +1,35 @@
 // src/notifications/notifications.controller.ts
 import {
-    Controller,
-    Get,
-    Put,
-    Delete,
     Body,
-    Query,
-    UseGuards,
+    Controller,
+    Delete,
+    Get,
     HttpCode,
     HttpStatus,
+    Patch,
+    Put,
+    Query,
     Req,
+    UseGuards,
 } from '@nestjs/common';
 import {
-    ApiTags,
+    ApiBearerAuth,
     ApiOperation,
     ApiResponse,
-    ApiBearerAuth,
-    ApiQuery,
+    ApiTags
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
-import { NotificationsService } from '../services/user-notification.service';
-import { PaginatedNotificationsDto } from '../dto/paginated-notifications.dto';
+import { DeleteNotificationsDto } from '../dto/delete-notifications.dto';
 import { GetNotificationsDto } from '../dto/get-notifications.dto';
 import { MarkAsReadDto } from '../dto/mark-as-read.dto';
-import { DeleteNotificationsDto } from '../dto/delete-notifications.dto';
+import { PaginatedNotificationsDto } from '../dto/paginated-notifications.dto';
+import { NotificationsService } from '../services/user-notification.service';
 
 
-@ApiTags('notifications')
+@ApiTags('User Notifications')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('notifications')
+@Controller('user-notifications')
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) { }
 
@@ -52,7 +52,7 @@ export class NotificationsController {
         return this.notificationsService.getUserNotifications(id, dto);
     }
 
-    @Put('mark-as-read')
+    @Patch('mark-as-read')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({
         summary: 'Mark notifications as read',
@@ -100,7 +100,7 @@ export class NotificationsController {
         @Req() req: any,
         @Body() dto: DeleteNotificationsDto,
     ) {
-         const { id } = req.user;
+        const { id } = req.user;
         return this.notificationsService.deleteNotifications(id, dto);
     }
 }
