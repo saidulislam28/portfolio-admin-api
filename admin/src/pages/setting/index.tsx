@@ -92,6 +92,11 @@ const Settings = () => {
             formValues.favicon = faviconImage;
         }
 
+        if (formValues?.delivery_charge) {
+            const convertedNumber = Number(formValues.delivery_charge);
+            formValues.delivery_charge = convertedNumber
+        }
+
 
         // return
         for (const key in formValues) {
@@ -282,7 +287,7 @@ const Settings = () => {
                     <Form.Item label="Video Tutorial" name="video_tutorial">
                         <Input type="url" />
                     </Form.Item>
-                   
+
 
                     <h3 style={{ borderBottom: '1px ridge' }}>Hero</h3>
                     <Form.Item label="Hero title" name="hero_title">
@@ -322,7 +327,7 @@ const Settings = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item label="Delivery Charge" name="delivery_charge">
-                        <Input />
+                        <Input type="number" />
                     </Form.Item>
 
                     <Form.Item wrapperCol={{ offset: 2, span: 16 }}>

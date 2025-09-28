@@ -43,7 +43,7 @@ const BookOrderPage = () => {
   const [filters, setFilters] = useState<any>({
     service_type: SERVICE_TYPE.book_purchase,
     // user_id: user_id,
-    payment_status: "paid",
+    // payment_status: "paid",
     // Payment: {
     //   some: {
     //     status: "PAID",

@@ -109,7 +109,7 @@ export default function HomeScreen() {
           isSettingsFetchSuccess,
         }}
         data={homeSections}
-        renderItem={renderItem}
+        renderItem={renderItem as any}
         keyExtractor={(item, index) => `${item.type}-${index}`}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
