@@ -54,9 +54,17 @@ const Navbar = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <button className="bg-primary text-white px-4 py-2 border rounded-md hover:bg-white hover:text-primary transition hover:border-primary">
-                                <i className="fa-brands fa-google-play mr-2"></i> Download Now
-                            </button>
+                            <div className=" px-4 py-1 rounded-md  flex gap-4 items-center bg-black text-white">
+                                <img className='w-10 h-10' src="/img/Playstore.png" alt="Click for app" />
+                                <div className='flex flex-col text-start'>
+                                    <p className='text-sm text-gray-200'>GET IT ON</p>
+                                    <p className='font-bold'>Google Play</p>
+                                </div>
+                            </div>
+                            {/* <button className=" text-white px-4 py-2 rounded-md hover:bg-white hover:text-primary transition hover:border-primary"> */}
+                            {/* <i className="fa-brands fa-google-play mr-2"></i> Download Now
+                                 */}
+                            {/* </button> */}
                         </a>
                     </div>
                     <div className="md:hidden flex items-center">
@@ -88,9 +96,19 @@ const Navbar = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            <button className="w-full mt-2 bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
+
+                            <div className=" px-4 py-1 rounded-md  flex gap-4 items-center bg-black text-white justify-center">
+                                <img className='w-10 h-10' src="/img/Playstore.png" alt="Click for app" />
+                                <div className='flex flex-col text-start'>
+                                    <p className='text-sm text-gray-200'>GET IT ON</p>
+                                    <p className='font-bold'>Google Play</p>
+                                </div>
+                            </div>
+
+                            {/* <button className="w-full mt-2 bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
                                 <i className="fa-brands fa-google-play mr-2"></i> Download Now
-                            </button>
+                                <img src="/img/Playstore.png" alt="Click for app" />
+                            </button> */}
                         </a>
                     </div>
                 </div>
