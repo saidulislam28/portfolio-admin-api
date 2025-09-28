@@ -118,17 +118,17 @@ export default function PaymentSummary({ packageData, selectedSlots, totals }: a
             <Text style={styles.priceValue}>৳{totals.subtotal.toLocaleString()}</Text>
           </View>
 
-          {totals.processingFee > 0 && (
+          {/* {totals.processingFee > 0 && (
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Processing Fee (2.5%)</Text>
               <Text style={styles.priceValue}>৳{totals.processingFee.toLocaleString()}</Text>
             </View>
-          )}
+          )} */}
 
-          <View style={styles.priceRow}>
+          {/* <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Tax (5%)</Text>
             <Text style={styles.priceValue}>৳{totals.tax.toLocaleString()}</Text>
-          </View>
+          </View> */}
 
           <View style={styles.divider} />
 
