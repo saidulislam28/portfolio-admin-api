@@ -25,7 +25,7 @@ const HeroSection = ({
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <a
-                            href={base?.play_store ? `https://play.google.com/store/apps/details?id=${base?.play_store}` : "https://play.google.com/store/apps/details?id=com.yourapp.package"}
+                            href={base?.play_store ? `${base?.play_store}` : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"}
                             target="_blank"
                             rel="noopener noreferrer"
                         >

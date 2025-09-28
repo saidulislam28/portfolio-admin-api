@@ -39,7 +39,7 @@ const Footer = () => {
                         </p>
                         <div className="flex space-x-4">
                             <a
-                                href={homeData?.play_store ? `https://play.google.com/store/apps/details?id=${homeData?.play_store}` : "https://play.google.com/store/apps/details?id=com.yourapp.package"}
+                                href={homeData?.play_store ? `${homeData?.play_store}` : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >

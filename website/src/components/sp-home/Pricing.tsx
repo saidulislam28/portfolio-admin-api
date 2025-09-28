@@ -32,7 +32,7 @@ const Pricing = ({
                                 {/* <span className="text-gray-600 ml-1">{plan.period}</span> */}
                             </div>
 
-                            <ul className="space-y-4 mb-8">
+                            <ul className="space-y-4 mb-8 min-h-48">
                                 {plan?.features?.map((feature: any, featureIndex: any) => (
                                     <li key={featureIndex} className="flex items-center">
                                         <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
