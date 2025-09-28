@@ -42,19 +42,18 @@ export class AppSettingService {
       orderBy: { sort_order: 'asc' },
     });
 
-    // const ielts_registration = await this.prismaService.ieltsTestRegistration.findFirst({
-    //   where: { is_active: true }
-    // })
-    //   model StudyAbroadRegistration {
-    // id        Int      @id @default(autoincrement())
-    // is_active Boolean?
-    // values    String
-    // image     String?
-    // image1    String?
-    // image2    String?
 
-    // @@map("study_abroad_reg")
-    // }
+    const navigations = {
+      privacy_policy: settingData.privacy_policy,
+      terms: settingData.terms,
+      help_chat: settingData.help_chat,
+      user_guide: settingData.user_guide,
+      video_tutorial: settingData.video_tutorial,
+      brand_url: settingData.brand_url,
+      email: settingData.email,
+      phone: settingData.phone,
+    }
+
     const ielts_registration = {
       values: settingData.ielts_description,
       image: settingData.ielts_image,
@@ -71,15 +70,6 @@ export class AppSettingService {
       image1: settingData.study_abroad_image_2,
       image2: settingData.study_abroad_image_3,
     };
-    // const online_course = await this.prismaService.onlineCourseRegistration.findFirst({
-    //   where: { is_active: true }
-    // })
-
-    // const packages = await this.prismaService.package.findMany({
-    //   where: { is_features: true },
-    //   orderBy: { sort_order: 'asc' },
-    //   take: 3,
-    // });
 
     return {
       base_data,
@@ -88,6 +78,7 @@ export class AppSettingService {
       online_course,
       study_abroad,
       video_slider_data,
+      navigations
     };
   }
 }

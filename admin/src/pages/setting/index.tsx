@@ -190,14 +190,14 @@ const Settings = () => {
                     <h3 style={{ borderBottom: '1px ridge' }}>Contact</h3>
 
                     <Form.Item label="Email" name="email">
-                        <Input type="email" />
+                        <Input type="email" placeholder="support email" />
                     </Form.Item>
                     <Form.Item label="Phone" name="phone">
-                        <Input />
+                        <Input placeholder="Contact Number" />
                     </Form.Item>
-                    <Form.Item label="Phone" name="phone">
+                    {/* <Form.Item label="Phone" name="phone">
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item label="Map Link" name="map">
                         <Input placeholder='<iframe> link' />
                     </Form.Item>
@@ -263,6 +263,27 @@ const Settings = () => {
                     <Form.Item label="Twitter" name="twitter">
                         <Input type="url" />
                     </Form.Item>
+
+
+
+                    <h3 style={{ borderBottom: '1px ridge' }}>App Navigation links</h3>
+                    <Form.Item label="Privacy Policy" name="privacy_policy">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="Terms Of Service" name="terms">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="Help Chat" name="help_chat">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="User Guide" name="user_guide">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="Video Tutorial" name="video_tutorial">
+                        <Input type="url" />
+                    </Form.Item>
+                   
+
                     <h3 style={{ borderBottom: '1px ridge' }}>Hero</h3>
                     <Form.Item label="Hero title" name="hero_title">
                         <Input />
