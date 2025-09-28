@@ -1,4 +1,5 @@
 // components/NotificationItem.tsx
+import { Notification } from '@/hooks/useNotificationApi';
 import { useDeleteNotification, useMarkAsRead } from '@/hooks/useUserNotification';
 import React from 'react';
 import {
@@ -13,7 +14,7 @@ interface NotificationItemProps {
     notification: Notification;
 }
 
-export const NotificationItem: React.FC<NotificationItemProps> = ({ notification }: any) => {
+export const NotificationItem: React.FC<NotificationItemProps> = ({ notification }: { notification: Notification }) => {
     const markAsReadMutation = useMarkAsRead();
     const deleteMutation = useDeleteNotification();
 
@@ -55,6 +56,19 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
         }
     };
 
+    const getTypeStyle = (type: string) => {
+        switch (type) {
+            case 'GENERAL':
+                return styles.typeGeneral;
+            case 'APPOINTMENT_REMINDER':
+                return styles.typeAppointment;
+            case 'PAYMENT_REMINDER':
+                return styles.typePayment;
+            default:
+                return styles.typeGeneral;
+        }
+    };
+
     return (
         <TouchableOpacity
             style={[
@@ -91,10 +105,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                 </Text>
 
                 <View style={styles.footer}>
-                    <View style={[
-                        styles.typeBadge,
-                        // styles[`type${notification.type}`],
-                    ]}>
+                    <View style={[styles.typeBadge, getTypeStyle(notification.type)]}>
                         <Text style={styles.typeText}>
                             {notification.type.replace('_', ' ').toLowerCase()}
                         </Text>
@@ -167,13 +178,13 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         borderRadius: 12,
     },
-    typeGENERAL: {
+    typeGeneral: {
         backgroundColor: '#e9ecef',
     },
-    typeAPPOINTMENT_REMINDER: {
+    typeAppointment: {
         backgroundColor: '#d1ecf1',
     },
-    typePAYMENT_REMINDER: {
+    typePayment: {
         backgroundColor: '#f8d7da',
     },
     typeText: {

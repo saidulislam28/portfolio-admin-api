@@ -35,10 +35,8 @@ export const useBooksAll = () => {
             const data = await Get(API_USER.get_books);
             return data;
         },
-        // staleTime: __DEV__ ? 0 : Infinity,
         staleTime: 0,
         gcTime: 0,
-        // gcTime: __DEV__ ? 0 : Infinity,
         retry: 3,
         retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     });

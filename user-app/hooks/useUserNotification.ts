@@ -1,30 +1,6 @@
 // hooks/useNotifications.ts
-import { InfiniteData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNotificationApi } from './useNotificationApi';
-
-export interface Notification {
-    id: number;
-    title: string;
-    message: string;
-    isRead: boolean;
-    user_id: number;
-    meta: any;
-    type: string;
-    consultant_id: number | null;
-    created_at: string;
-    updated_at: string | null;
-    Consultant: any | null;
-}
-
-export interface NotificationsResponse {
-    data: Notification[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-}
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { NotificationsResponse, useNotificationApi } from './useNotificationApi';
 
 export const useNotifications = (filters?: { type?: string; isRead?: boolean }) => {
     const notificationApi = useNotificationApi();
@@ -41,7 +17,7 @@ export const useNotifications = (filters?: { type?: string; isRead?: boolean }) 
         getNextPageParam: (lastPage) => {
             return lastPage.hasNext ? lastPage.page + 1 : undefined;
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 5 * 60 * 1000,
     });
 };
 
@@ -54,7 +30,6 @@ export const useMarkAsRead = () => {
             notificationApi.markAsRead(notificationIds),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
-            queryClient.invalidateQueries({ queryKey: ['unread-count'] });
         },
     });
 };
@@ -62,26 +37,29 @@ export const useMarkAsRead = () => {
 export const useMarkAllAsRead = () => {
     const queryClient = useQueryClient();
     const notificationApi = useNotificationApi();
+    const { data } = useNotifications();
 
     return useMutation({
-        mutationFn: () => {
-            // Get all unread notification IDs and mark them as read
-            const notifications = queryClient.getQueryData<InfiniteData<NotificationsResponse>>(['notifications']);
+        mutationFn: async () => {
+            // Get all unread notification IDs from all pages
             const unreadIds: number[] = [];
 
-            notifications?.pages?.forEach(page => {
-                page.data.forEach(notification => {
+            data?.pages?.forEach(page => {
+                page.data.forEach((notification: any) => {
                     if (!notification.isRead) {
                         unreadIds.push(notification.id);
                     }
                 });
             });
 
+            if (unreadIds.length === 0) {
+                return { message: 'No unread notifications', count: 0 };
+            }
+
             return notificationApi.markAsRead(unreadIds);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
-            queryClient.invalidateQueries({ queryKey: ['unread-count'] });
         },
     });
 };
@@ -95,19 +73,21 @@ export const useDeleteNotification = () => {
             notificationApi.deleteNotifications(notificationIds),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
-            queryClient.invalidateQueries({ queryKey: ['unread-count'] });
         },
     });
 };
 
+// Calculate unread count from cached data
 export const useUnreadCount = () => {
-    const notificationApi = useNotificationApi();
+    const queryClient = useQueryClient();
 
-    return useQuery({
-        queryKey: ['unread-count'],
-        queryFn: async () => {
-            const response = await notificationApi.getNotifications({ page: 1, limit: 1 });
-            return response.total; // You might want to adjust this based on your API
-        },
-    });
+    const notificationsData = queryClient.getQueryData<
+        { pages: NotificationsResponse[] }
+    >(['notifications']);
+
+    if (!notificationsData?.pages) return 0;
+
+    return notificationsData.pages.reduce((count, page) => {
+        return count + page.data.filter((notification: any) => !notification.isRead).length;
+    }, 0);
 };

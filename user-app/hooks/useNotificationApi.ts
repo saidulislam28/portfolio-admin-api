@@ -1,7 +1,5 @@
 // hooks/api/useNotificationApi.ts
-import { useAuth } from '@/context/useAuth';
-import { NotificationsResponse } from './useUserNotification';
-import Constants from "expo-constants";
+import { Get, Put, Delete } from '@sm/common';
 
 interface GetNotificationsParams {
     page: number;
@@ -10,15 +8,32 @@ interface GetNotificationsParams {
     isRead?: boolean;
 }
 
+export interface Notification {
+    id: number;
+    title: string;
+    message: string;
+    isRead: boolean;
+    user_id: number;
+    meta: any;
+    type: string;
+    consultant_id: number | null;
+    created_at: string;
+    updated_at: string | null;
+    Consultant: any | null;
+}
+
+export interface NotificationsResponse {
+    data: Notification[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+}
+
 export const useNotificationApi = () => {
-    const { token } = useAuth();
-
-    const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl
-    console.log("token from notification hook:", token);
-
-
     const getNotifications = async (params: GetNotificationsParams): Promise<NotificationsResponse> => {
-        // const token = await getAccessToken();
         const queryParams = new URLSearchParams();
 
         Object.entries(params).forEach(([key, value]) => {
@@ -27,67 +42,21 @@ export const useNotificationApi = () => {
             }
         });
 
-        const response = await fetch(`${API_BASE_URL}/user-notifications?${queryParams}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch notifications');
-        }
-
-        return response.json();
+        const url = `/user-notifications?${queryParams}`;
+        return Get(url);
     };
 
     const markAsRead = async (notificationIds: number[]) => {
-        // const token = await getAccessToken();
-
-        const response = await fetch(`${API_BASE_URL}/user-notifications/mark-as-read`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ notificationIds }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to mark notifications as read');
-        }
-
-        return response.json();
-    };
-
-    const markAllAsRead = async () => {
-        // Implementation would depend on your API
-        // This is a placeholder that would need to be implemented
+        return Put('/user-notifications/mark-as-read', { notificationIds });
     };
 
     const deleteNotifications = async (notificationIds: number[]) => {
-        // const token = await getAccessToken();
-
-        const response = await fetch(`${API_BASE_URL}/user-notifications`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ notificationIds }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to delete notifications');
-        }
-
-        return response.json();
+        return Delete(`/user-notifications/${notificationIds}`);
     };
 
     return {
         getNotifications,
         markAsRead,
-        markAllAsRead,
         deleteNotifications,
     };
 };
