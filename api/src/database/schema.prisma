@@ -140,18 +140,39 @@ enum LOGIN_TYPE {
 }
 
 model Notification {
-  id            Int         @id @default(autoincrement())
+  id            Int              @id @default(autoincrement())
   title         String?
   message       String?
-  isRead        Boolean?    @default(false)
+  isRead        Boolean?         @default(false)
   user_id       Int?
+  meta          Json?
+  type          NotificationType @default(GENERAL)
   consultant_id Int?
-  User          User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
-  Consultant    Consultant? @relation(fields: [consultant_id], references: [id], onDelete: SetNull)
-  created_at    DateTime?   @default(now())
-  updated_at    DateTime?   @updatedAt
+  User          User?            @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  Consultant    Consultant?      @relation(fields: [consultant_id], references: [id], onDelete: SetNull)
+  created_at    DateTime?        @default(now())
+  updated_at    DateTime?        @updatedAt
 
   @@map("notifications")
+}
+
+enum NotificationType {
+  APPOINTMENT_REMINDER
+  PAYMENT_REMINDER
+  GENERAL
+  // Add more types as needed
+}
+
+model NotificationLog {
+  id                   Int                  @id @default(autoincrement())
+  ScheduleNotification ScheduleNotification @relation(fields: [notification_id], references: [id])
+  notification_id      Int
+  status               NotificationStatus
+  error_message        String?
+  sent_at              DateTime             @default(now())
+  response_time        Int?
+
+  @@map("notification_logs")
 }
 
 model Consultant {
@@ -475,18 +496,6 @@ model ScheduleNotification {
   @@map("schedule_notifications")
 }
 
-model NotificationLog {
-  id                   Int                  @id @default(autoincrement())
-  ScheduleNotification ScheduleNotification @relation(fields: [notification_id], references: [id])
-  notification_id      Int
-  status               NotificationStatus
-  error_message        String?
-  sent_at              DateTime             @default(now())
-  response_time        Int?
-
-  @@map("notification_logs")
-}
-
 model AppSlider {
   id         Int     @id @default(autoincrement())
   url        String
@@ -668,13 +677,6 @@ model ExamCenter {
   Order      Order[]
 
   @@map("exam_centers")
-}
-
-enum NotificationType {
-  APPOINTMENT_REMINDER
-  PAYMENT_REMINDER
-  GENERAL
-  // Add more types as needed
 }
 
 enum NotificationChannel {
