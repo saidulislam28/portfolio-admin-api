@@ -12,10 +12,26 @@ import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import Logo from "@/assets/images/Logo512.png";
 import { PRIMARY_COLOR } from '@/lib/constants';
 import CommonHeader from '@/components/CommonHeader';
+import { useAppSettings } from '@/hooks/queries/useAppSettings';
 
 const AboutAppScreen = () => {
+
+
+
+  const {
+    data,
+    isLoading,
+    error,
+    isSuccess: isSettingsFetchSuccess,
+  } = useAppSettings();
+
+  const navigation = data?.navigations
+  console.log("appsettingsData", navigation);
+
+
+
   const handleContactSupport = () => {
-    Linking.openURL('mailto:support@englishapp.com');
+    Linking.openURL(`mailto:${navigation?.email}`);
   };
 
   const handleRateApp = () => {
@@ -24,8 +40,16 @@ const AboutAppScreen = () => {
   };
 
   const handleVisitWebsite = () => {
-    Linking.openURL('https://www.yourappwebsite.com');
+    Linking.openURL(navigation?.brand_url);
   };
+
+  if (isLoading) {
+    <View>
+      <Text>
+        Loading.....
+      </Text>
+    </View>
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -103,13 +127,13 @@ const AboutAppScreen = () => {
 
         <TouchableOpacity style={styles.contactItem} onPress={handleContactSupport}>
           <Ionicons name="mail" size={24} color={PRIMARY_COLOR} />
-          <Text style={styles.contactText}>support@speakingmate.com</Text>
+          <Text style={styles.contactText}>{navigation?.email}</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} style={styles.chevron} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.contactItem} onPress={handleVisitWebsite}>
           <Ionicons name="globe" size={24} color={PRIMARY_COLOR} />
-          <Text style={styles.contactText}>www.speakingmate.com</Text>
+          <Text style={styles.contactText}>{navigation?.brand_url}</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} style={styles.chevron} />
         </TouchableOpacity>
       </View>
@@ -118,24 +142,24 @@ const AboutAppScreen = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Legal</Text>
 
-        <TouchableOpacity style={styles.legalItem}>
+        <TouchableOpacity onPress={() => Linking.openURL(navigation?.privacy_policy)} style={styles.legalItem}>
           <Text style={styles.legalText}>Privacy Policy</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.legalItem}>
+        <TouchableOpacity onPress={() => Linking.openURL(navigation?.terms)} style={styles.legalItem}>
           <Text style={styles.legalText}>Terms of Service</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} />
         </TouchableOpacity>
       </View>
 
       {/* Rate App Section */}
-      <View style={styles.rateSection}>
+      {/* <View style={styles.rateSection}>
         <TouchableOpacity style={styles.rateButton} onPress={handleRateApp}>
           <Ionicons name="star" size={20} color={"#ffffff"} />
           <Text style={styles.rateButtonText}>Rate Our App</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {/* Footer */}
       <View style={styles.footer}>

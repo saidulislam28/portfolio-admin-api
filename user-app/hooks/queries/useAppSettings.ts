@@ -15,6 +15,7 @@ interface AppSettingsResponse {
         online_course: any;
         ielts_registration: any;
         base_data: any;
+        navigations: any
         // Add other properties as needed
     };
 }
