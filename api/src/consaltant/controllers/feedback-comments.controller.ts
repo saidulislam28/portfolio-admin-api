@@ -1,8 +1,6 @@
 /* eslint-disable */
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {  Controller, Get,  UseGuards } from '@nestjs/common';
 import {
-    ApiBody,
-    ApiCreatedResponse,
     ApiInternalServerErrorResponse,
     ApiOkResponse,
     ApiOperation,
@@ -18,7 +16,7 @@ import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
 import { Role } from 'src/user-auth/dto/role.enum';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@HasRoles(Role.Consultant)
+// @HasRoles(Role.Consultant)
 @ApiTags('Consultant: Feedback Comments')
 @Controller('feedback-comments')
 // @HasRoles(Role.Admin)
