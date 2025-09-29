@@ -1,5 +1,6 @@
 import {
   DeleteOutlined,
+  EditOutlined,
   EyeOutlined,
   LeftOutlined,
   RightOutlined,
@@ -11,7 +12,6 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Form,
   Input,
   message,
@@ -22,8 +22,7 @@ import {
   Space,
   Table,
   Tabs,
-  Tag,
-  Typography,
+  Tag
 } from "antd";
 import dayjs from "dayjs";
 import React, { useState } from "react";
@@ -38,12 +37,9 @@ import {
   getUrlForModel,
 } from "~/services/api/endpoints";
 import { PROGRESS_STATUS, SERVICE_TYPE } from "~/store/slices/app/constants";
-import { formatMoney } from "~/utility/format_money";
 import { getHeader } from "~/utility/helmet";
 const { TabPane } = Tabs;
 
-const { RangePicker } = DatePicker;
-const { Title } = Typography;
 const { Option } = Select;
 const title = "Study Abroad";
 
@@ -122,6 +118,16 @@ const ExamRegistrationPage = () => {
       message.error("Failed to archive order", error);
     },
   });
+
+  // const handleStatusUpdate = () =>{
+
+  //   updateMutation.mutate({
+  //     id: ....,
+  //     data: {
+  //       status: ....
+  //     }
+  //   })
+  // }
 
   const handleUpdate = (record) => {
     const newValue = !record.is_archive;
@@ -262,7 +268,7 @@ const ExamRegistrationPage = () => {
         if (status === PROGRESS_STATUS.Rejected) color = "error";
         if (status === PROGRESS_STATUS.Pending) color = "processing";
 
-        return <Tag color={color}>{status}</Tag>;
+        return <Tag icon={<EditOutlined />} color={color}>{status}  </Tag>;
       },
     },
     // {

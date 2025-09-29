@@ -1,3 +1,4 @@
+/* eslint-disable  */
 import React, { useEffect, useState } from "react";
 import { Button, Form, message, Card, Upload } from "antd";
 import { useMutation, useQuery } from "@tanstack/react-query";

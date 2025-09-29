@@ -47,7 +47,8 @@ export const CONTACT_SECTION_TYPE = {
 export const PROGRESS_STATUS = {
   Pending: "Pending",
   Approved: "Approved",
-  Rejected: "Rejected"
+  Rejected: "Rejected",
+  Canceled: "Canceled"
 }
 
 export const ORDER_PROGRESS = {
