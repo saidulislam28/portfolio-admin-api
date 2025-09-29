@@ -34,7 +34,7 @@ const SettingsScreen = () => {
     {
       icon: 'notifications',
       title: 'Notifications',
-      // action: () => router.push('/notifications'),
+      // action: () => router.push(''),
       iconComponent: MaterialIcons,
     },
     // {
