@@ -1,5 +1,5 @@
 // hooks/useNotifications.ts
-import { Delete, Get, Put } from '@sm/common';
+import { Delete, Get, Patch } from '@sm/common';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface Notification {
@@ -54,7 +54,7 @@ export const useMarkAsRead = () => {
 
     return useMutation({
         mutationFn: (notificationIds: number[]) =>
-            Put('/user-notifications/mark-as-read', { notificationIds }),
+            Patch('/user-notifications/mark-as-read', { notificationIds }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
         },
@@ -82,7 +82,7 @@ export const useMarkAllAsRead = () => {
                 return { message: 'No unread notifications', count: 0 };
             }
 
-            return Put('/user-notifications/mark-as-read', { notificationIds: unreadIds });
+            return Patch('/user-notifications/mark-as-read', { notificationIds: unreadIds });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });

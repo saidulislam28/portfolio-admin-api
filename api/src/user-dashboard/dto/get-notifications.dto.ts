@@ -1,8 +1,9 @@
+/* eslint-disable  */
 // src/notifications/dto/get-notifications.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsInt, Min, IsArray, IsEnum } from 'class-validator';
-import { Type } from 'class-transformer';
 import { NotificationType } from '@prisma/client';
+import { Type } from 'class-transformer';
+import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
 
 export class GetNotificationsDto {
   @ApiProperty({
@@ -43,5 +44,6 @@ export class GetNotificationsDto {
     description: 'Filter by read status',
   })
   @IsOptional()
+  @Type(() => Boolean)
   isRead?: boolean;
 }

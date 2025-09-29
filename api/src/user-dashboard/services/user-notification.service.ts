@@ -1,3 +1,4 @@
+/* eslint-disable  */
 // src/notifications/notifications.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -8,9 +9,10 @@ import { DeleteNotificationsDto } from '../dto/delete-notifications.dto';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getUserNotifications(userId: number, dto: GetNotificationsDto) {
+
     const { page, limit, type, isRead } = dto;
     const skip = (page - 1) * limit;
 

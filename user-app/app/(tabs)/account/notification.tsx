@@ -38,6 +38,7 @@ const NotificationsScreen = () => {
   });
 
   console.log("data>>>>", data);
+  console.log("filter >>>>", filter);
 
   const markAllAsReadMutation = useMarkAllAsRead();
   const deleteMutation = useDeleteNotification();
