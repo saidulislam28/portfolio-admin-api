@@ -1,5 +1,5 @@
 // hooks/useNotifications.ts
-import { Delete, Get, Patch } from '@sm/common';
+import { Delete, Get, Patch, Post } from '@sm/common';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface Notification {
@@ -96,8 +96,8 @@ export const useDeleteNotification = () => {
     return useMutation({
         mutationFn: (notificationIds: number[]) => {
             // For multiple IDs, join them with commas
-            const idsString = notificationIds.join(',');
-            return Delete(`/user-notifications/${idsString}`);
+            // const idsString = notificationIds.join(',');
+            return Post(`user-notifications/delete`, { notificationIds });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
@@ -109,9 +109,12 @@ export const useDeleteNotification = () => {
 export const useUnreadCount = () => {
     const queryClient = useQueryClient();
 
-    const notificationsData = queryClient.getQueryData<{
-        pages: NotificationsResponse[];
-    }>(['notifications']);
+    // const notificationsData = queryClient.getQueryData<{
+    //     pages: NotificationsResponse[];
+    // }>(['notifications']);
+    const { data: notificationsData } = useNotifications();
+
+    // console.log("notification api unread count", notificationsData);
 
     if (!notificationsData?.pages) return 0;
 

@@ -8,6 +8,7 @@ import {
     HttpCode,
     HttpStatus,
     Patch,
+    Post,
     Query,
     Req,
     UseGuards
@@ -50,7 +51,7 @@ export class NotificationsController {
     ) {
         const { id } = req.user;
 
-        console.log("notification controller", id);
+        // console.log("notification controller", id);
 
         return this.notificationsService.getUserNotifications(id, dto);
     }
@@ -81,7 +82,7 @@ export class NotificationsController {
         return this.notificationsService.markAsRead(id, dto);
     }
 
-    @Delete()
+    @Post('delete')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({
         summary: 'Delete notifications',
@@ -103,7 +104,8 @@ export class NotificationsController {
         @Req() req: any,
         @Body() dto: DeleteNotificationsDto,
     ) {
+        console.log("deleted idsss", dto);
         const { id } = req.user;
-        return this.notificationsService.deleteNotifications(id, dto);
+        return this.notificationsService.deleteNotifications(+id, dto);
     }
 }
