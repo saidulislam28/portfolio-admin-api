@@ -1,6 +1,6 @@
+
 // components/NotificationItem.tsx
-import { Notification } from '@/hooks/useNotificationApi';
-import { useDeleteNotification, useMarkAsRead } from '@/hooks/useUserNotification';
+import { useDeleteNotification, useMarkAllAsRead } from '@/hooks/useUserNotification';
 import React from 'react';
 import {
     View,
@@ -10,12 +10,17 @@ import {
     Alert,
 } from 'react-native';
 
-interface NotificationItemProps {
-    notification: Notification;
+interface Notification {
+    id: number;
+    title: string;
+    message: string;
+    isRead: boolean;
+    type: string;
+    created_at: string;
 }
 
-export const NotificationItem: React.FC<NotificationItemProps> = ({ notification }: { notification: Notification }) => {
-    const markAsReadMutation = useMarkAsRead();
+export const NotificationItem = ({ notification }: { notification: Notification }) => {
+    const markAsReadMutation = useMarkAllAsRead();
     const deleteMutation = useDeleteNotification();
 
     const handlePress = () => {
@@ -69,6 +74,10 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
         }
     };
 
+    const formatTypeText = (type: string) => {
+        return type.replace('_', ' ').toLowerCase();
+    };
+
     return (
         <TouchableOpacity
             style={[
@@ -107,7 +116,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
                 <View style={styles.footer}>
                     <View style={[styles.typeBadge, getTypeStyle(notification.type)]}>
                         <Text style={styles.typeText}>
-                            {notification.type.replace('_', ' ').toLowerCase()}
+                            {formatTypeText(notification.type)}
                         </Text>
                     </View>
 

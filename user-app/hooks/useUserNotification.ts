@@ -1,33 +1,60 @@
 // hooks/useNotifications.ts
+import { Delete, Get, Put } from '@sm/common';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { NotificationsResponse, useNotificationApi } from './useNotificationApi';
+
+interface Notification {
+    id: number;
+    title: string;
+    message: string;
+    isRead: boolean;
+    user_id: number;
+    meta: any;
+    type: string;
+    consultant_id: number | null;
+    created_at: string;
+    updated_at: string | null;
+}
+
+interface NotificationsResponse {
+    data: Notification[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+}
 
 export const useNotifications = (filters?: { type?: string; isRead?: boolean }) => {
-    const notificationApi = useNotificationApi();
-
     return useInfiniteQuery({
         queryKey: ['notifications', filters],
-        queryFn: ({ pageParam = 1 }: { pageParam: number }) =>
-            notificationApi.getNotifications({
-                page: pageParam,
-                limit: 10,
-                ...filters,
-            }),
-        initialPageParam: 1,
+        queryFn: async ({ pageParam = 1 }) => {
+            const params = new URLSearchParams({
+                page: pageParam.toString(),
+                limit: '10',
+                ...(filters?.type && { type: filters.type }),
+                ...(filters?.isRead !== undefined && { isRead: filters.isRead.toString() }),
+            });
+
+            const response = await Get(`/user-notifications?${params}`);
+            return response;
+        },
         getNextPageParam: (lastPage) => {
+            // Add null check
+            if (!lastPage) return undefined;
             return lastPage.hasNext ? lastPage.page + 1 : undefined;
         },
+        initialPageParam: 1, // This should be at the root level
         staleTime: 5 * 60 * 1000,
     });
 };
 
 export const useMarkAsRead = () => {
     const queryClient = useQueryClient();
-    const notificationApi = useNotificationApi();
 
     return useMutation({
         mutationFn: (notificationIds: number[]) =>
-            notificationApi.markAsRead(notificationIds),
+            Put('/user-notifications/mark-as-read', { notificationIds }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
         },
@@ -36,7 +63,6 @@ export const useMarkAsRead = () => {
 
 export const useMarkAllAsRead = () => {
     const queryClient = useQueryClient();
-    const notificationApi = useNotificationApi();
     const { data } = useNotifications();
 
     return useMutation({
@@ -45,7 +71,7 @@ export const useMarkAllAsRead = () => {
             const unreadIds: number[] = [];
 
             data?.pages?.forEach(page => {
-                page.data.forEach((notification: any) => {
+                page.data.forEach((notification: Notification) => {
                     if (!notification.isRead) {
                         unreadIds.push(notification.id);
                     }
@@ -56,7 +82,7 @@ export const useMarkAllAsRead = () => {
                 return { message: 'No unread notifications', count: 0 };
             }
 
-            return notificationApi.markAsRead(unreadIds);
+            return Put('/user-notifications/mark-as-read', { notificationIds: unreadIds });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
@@ -66,11 +92,13 @@ export const useMarkAllAsRead = () => {
 
 export const useDeleteNotification = () => {
     const queryClient = useQueryClient();
-    const notificationApi = useNotificationApi();
 
     return useMutation({
-        mutationFn: (notificationIds: number[]) =>
-            notificationApi.deleteNotifications(notificationIds),
+        mutationFn: (notificationIds: number[]) => {
+            // For multiple IDs, join them with commas
+            const idsString = notificationIds.join(',');
+            return Delete(`/user-notifications/${idsString}`);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
         },
@@ -81,13 +109,13 @@ export const useDeleteNotification = () => {
 export const useUnreadCount = () => {
     const queryClient = useQueryClient();
 
-    const notificationsData = queryClient.getQueryData<
-        { pages: NotificationsResponse[] }
-    >(['notifications']);
+    const notificationsData = queryClient.getQueryData<{
+        pages: NotificationsResponse[];
+    }>(['notifications']);
 
     if (!notificationsData?.pages) return 0;
 
     return notificationsData.pages.reduce((count, page) => {
-        return count + page.data.filter((notification: any) => !notification.isRead).length;
+        return count + page.data.filter((notification: Notification) => !notification.isRead).length;
     }, 0);
 };

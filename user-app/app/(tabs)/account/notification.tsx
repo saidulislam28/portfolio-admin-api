@@ -1,4 +1,3 @@
-// screens/NotificationsScreen.tsx
 import { NotificationItem } from '@/components/notification/NotificationItem';
 import { useDeleteNotification, useMarkAllAsRead, useNotifications, useUnreadCount } from '@/hooks/useUserNotification';
 import React, { useState } from 'react';
@@ -13,8 +12,19 @@ import {
   RefreshControl,
 } from 'react-native';
 
+
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  isRead: boolean;
+  type: string;
+  created_at: string;
+}
+
 export const NotificationsScreen = () => {
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  
   const {
     data,
     fetchNextPage,
@@ -22,7 +32,6 @@ export const NotificationsScreen = () => {
     isFetchingNextPage,
     isLoading,
     isError,
-    error,
     refetch,
   } = useNotifications({
     isRead: filter === 'all' ? undefined : false,
@@ -32,7 +41,7 @@ export const NotificationsScreen = () => {
   const deleteMutation = useDeleteNotification();
   const unreadCount = useUnreadCount();
 
-  const notifications = data?.pages.flatMap(page => page.data) || [];
+  const notifications: Notification[] = data?.pages?.flatMap(page => page.data) || [];
 
   const loadMore = () => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -58,7 +67,10 @@ export const NotificationsScreen = () => {
 
   const handleDeleteAllRead = () => {
     const readNotifications = notifications.filter(n => n.isRead);
-    if (readNotifications.length === 0) return;
+    if (readNotifications.length === 0) {
+      Alert.alert('No Read Notifications', 'There are no read notifications to delete.');
+      return;
+    }
 
     Alert.alert(
       'Delete All Read',
@@ -203,8 +215,9 @@ export const NotificationsScreen = () => {
           />
         }
         contentContainerStyle={
-          notifications.length === 0 ? styles.emptyListContent : styles.listContent
+          notifications.length === 0 ? styles.emptyListContent : undefined
         }
+        style={styles.list}
       />
     </View>
   );
@@ -219,6 +232,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    backgroundColor: '#ffffff',
   },
   titleContainer: {
     flexDirection: 'row',
@@ -254,6 +268,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 6,
     backgroundColor: '#f8f9fa',
+    borderWidth: 1,
+    borderColor: '#dee2e6',
   },
   actionButtonDisabled: {
     opacity: 0.5,
@@ -270,6 +286,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    backgroundColor: '#ffffff',
   },
   tab: {
     flex: 1,
@@ -287,6 +304,7 @@ const styles = StyleSheet.create({
   },
   tabTextActive: {
     color: '#007bff',
+    fontWeight: '600',
   },
   tabWithBadge: {
     flexDirection: 'row',
@@ -307,11 +325,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
-  listContent: {
-    flexGrow: 1,
+  list: {
+    flex: 1,
   },
   emptyListContent: {
-    flexGrow: 1,
+    flex: 1,
     justifyContent: 'center',
   },
   footer: {
@@ -319,8 +337,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   empty: {
-    padding: 32,
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 32,
   },
   emptyText: {
     fontSize: 16,
@@ -337,6 +357,7 @@ const styles = StyleSheet.create({
     color: '#dc3545',
     marginBottom: 16,
     textAlign: 'center',
+    paddingHorizontal: 16,
   },
   retryButton: {
     paddingHorizontal: 24,

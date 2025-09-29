@@ -8,11 +8,12 @@ import VideoCarousel from "@/components/VideoCarousel";
 import { ROUTES } from "@/constants/app.routes";
 import { useAppSettings } from "@/hooks/queries/useAppSettings";
 import { useBooksAll } from "@/hooks/queries/useBooks";
+import { useNotifications } from "@/hooks/useUserNotification";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { HomeSection } from "@/types/home";
 import { replacePlaceholders } from "@sm/common";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, View, Button } from "react-native";
 
 const homeSections: HomeSection[] = [
@@ -32,15 +33,28 @@ export default function HomeScreen() {
   const {
     data: appSettingsData,
     isLoading,
-    error,
     isSuccess: isSettingsFetchSuccess,
   } = useAppSettings();
   const {
     data: books,
-    isLoading: isBooksLoading,
-    error: errorBooks,
     isSuccess: isBookFetchSuccess,
   } = useBooksAll();
+
+  const [filter, setFilter] = useState<'all' | 'unread'>('all');
+
+  // const {
+  //   data,
+  //   fetchNextPage,
+  //   hasNextPage,
+  //   isFetchingNextPage,
+  //   isError,
+  //   refetch,
+  // } = useNotifications({
+  //   isRead: filter === 'all' ? undefined : false,
+  // });
+
+  // console.log("notifciation <><><><><><><><><><", data);
+
 
   if (isLoading) {
     return (

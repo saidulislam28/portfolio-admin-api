@@ -1,8 +1,8 @@
 import { registerForPushNotificationsAsync } from "@/lib/notification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_COMMON, API_USER, Post } from "@sm/common";
+import { API_COMMON, API_USER, Get, Post } from "@sm/common";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ToastAndroid, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAuth } from "@/context/useAuth";
@@ -15,7 +15,18 @@ export default function Index() {
   const router = useRouter();
   const [checkingLaunch, setCheckingLaunch] = useState(true);
 
-  // if (!user) return null;
+
+
+  // useEffect(() => {
+
+  //   const fetchNotification = async () => {
+  //     const response = await Get('/user-notifications?page=1&limit=10')
+
+  //     console.log("resposne from notification >>>>", response?.data);
+  //   }
+  //   fetchNotification();
+  // }, [])
+
 
 
 
@@ -37,7 +48,7 @@ export default function Index() {
           user_id: userId,
           timezone,
         });
-      } catch (error) {
+      } catch (error: any) {
         console.log("error from posting data", error);
         console.log("error message", error?.message);
       }
@@ -51,13 +62,13 @@ export default function Index() {
       console.log("hasss", hasLaunched);
       if (!hasLaunched) {
         await AsyncStorage.setItem("hasLaunched", "true");
-        router.replace(ROUTES.LANDING);
+        router.replace(ROUTES.LANDING as any);
       } else {
         if (!isLoading) {
           if (user) {
-            router.replace(ROUTES.TABS); // homepage
+            router.replace(ROUTES.TABS as any); // homepage
           } else {
-            router.replace(ROUTES.LANDING);
+            router.replace(ROUTES.LANDING as any);
           }
         }
       }

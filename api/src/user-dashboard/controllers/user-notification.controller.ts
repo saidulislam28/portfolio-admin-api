@@ -1,3 +1,4 @@
+/* eslint-disable */
 // src/notifications/notifications.controller.ts
 import {
     Body,
@@ -49,6 +50,9 @@ export class NotificationsController {
         @Query() dto: GetNotificationsDto,
     ) {
         const { id } = req.user;
+
+        console.log("notification controller", id);
+
         return this.notificationsService.getUserNotifications(id, dto);
     }
 

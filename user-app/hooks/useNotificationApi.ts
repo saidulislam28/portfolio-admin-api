@@ -1,62 +1,37 @@
-// hooks/api/useNotificationApi.ts
-import { Get, Put, Delete } from '@sm/common';
+// // hooks/api/useNotificationApi.ts
 
-interface GetNotificationsParams {
-    page: number;
-    limit: number;
-    type?: string;
-    isRead?: boolean;
-}
+// import { Delete, Get, Put } from "@sm/common";
 
-export interface Notification {
-    id: number;
-    title: string;
-    message: string;
-    isRead: boolean;
-    user_id: number;
-    meta: any;
-    type: string;
-    consultant_id: number | null;
-    created_at: string;
-    updated_at: string | null;
-    Consultant: any | null;
-}
+// // ... (your existing interfaces remain the same)
 
-export interface NotificationsResponse {
-    data: Notification[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-}
+// export const useNotificationApi = () => {
+//     const getNotifications = async (params: any) => {
+//         const queryParams = new URLSearchParams();
 
-export const useNotificationApi = () => {
-    const getNotifications = async (params: GetNotificationsParams): Promise<NotificationsResponse> => {
-        const queryParams = new URLSearchParams();
+//         Object.entries(params).forEach(([key, value]) => {
+//             if (value !== undefined && value !== null) {
+//                 queryParams.append(key, value.toString());
+//             }
+//         });
 
-        Object.entries(params).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-                queryParams.append(key, value.toString());
-            }
-        });
+//         const url = `/user-notifications?${queryParams}`;
+//         return Get(url);
+//     };
 
-        const url = `/user-notifications?${queryParams}`;
-        return Get(url);
-    };
+//     const markAsRead = async (notificationIds: number[]): Promise<{ message: string; count: number }> => {
+//         return Put('/user-notifications/mark-as-read', { notificationIds });
+//     };
 
-    const markAsRead = async (notificationIds: number[]) => {
-        return Put('/user-notifications/mark-as-read', { notificationIds });
-    };
+//     const deleteNotifications = async (notificationIds: number[]): Promise<{ message: string; count: number }> => {
+//         // Fixed: Pass IDs as query parameter or in body based on your API
+//         return Delete(`/user-notifications?ids=${notificationIds.join(',')}`);
+//         // OR if your API expects body in DELETE:
+//         // return DeleteWithBody('/user-notifications', { notificationIds });
+//     };
 
-    const deleteNotifications = async (notificationIds: number[]) => {
-        return Delete(`/user-notifications/${notificationIds}`);
-    };
-
-    return {
-        getNotifications,
-        markAsRead,
-        deleteNotifications,
-    };
-};
+//     return {
+//         getNotifications,
+//         markAsRead,
+//         deleteNotifications,
+//     };
+// };
