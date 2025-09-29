@@ -53,6 +53,7 @@ export class ConsultantAppointmentsController {
     description: 'Unauthorized - Invalid or missing authentication token'
   })
   async getAppointmentList(@Req() req) {
+    console.log("req user consultant", req?.user);
     const { id: consultant_id } = req?.user;
     const response = await this.consultantService.getAppointmentList(+consultant_id);
     return res.success(response)

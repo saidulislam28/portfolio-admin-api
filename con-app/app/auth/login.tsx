@@ -63,7 +63,7 @@ export default function LoginScreen() {
         return;
       }
       login(result?.data, result?.data?.token);
-      router.push(ROUTES.HOME);
+      router.push(ROUTES.HOME as any);
     } catch (error) {
       setErrors({ password: error?.message ?? 'An unexpected error occurred' });
       setLoading(false);

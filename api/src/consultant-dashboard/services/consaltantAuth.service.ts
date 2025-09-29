@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { USER_ROLE } from '@prisma/client';

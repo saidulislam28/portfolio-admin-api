@@ -1,3 +1,4 @@
+/* eslint-disable  */
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
@@ -10,6 +11,8 @@ export class JwtSignService {
   ) { }
 
   signJwt(user: any, role: string = Role.User): string {
+
+    console.log("role guard from role", role);
 
     const secret = process.env.JWT_SECRET
 
