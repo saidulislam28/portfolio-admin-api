@@ -22,9 +22,9 @@ interface Notification {
   created_at: string;
 }
 
-export const NotificationsScreen = () => {
+const NotificationsScreen = () => {
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
-  
+
   const {
     data,
     fetchNextPage,
@@ -37,11 +37,13 @@ export const NotificationsScreen = () => {
     isRead: filter === 'all' ? undefined : false,
   });
 
+  console.log("data>>>>", data);
+
   const markAllAsReadMutation = useMarkAllAsRead();
   const deleteMutation = useDeleteNotification();
   const unreadCount = useUnreadCount();
 
-  const notifications: Notification[] = data?.pages?.flatMap(page => page.data) || [];
+  const notifications: Notification[] = data?.pages?.flatMap(page => page?.data) || [];
 
   const loadMore = () => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -51,7 +53,7 @@ export const NotificationsScreen = () => {
 
   const handleMarkAllAsRead = () => {
     if (unreadCount === 0) return;
-    
+
     Alert.alert(
       'Mark All as Read',
       `Mark all ${unreadCount} unread notifications as read?`,
@@ -91,7 +93,7 @@ export const NotificationsScreen = () => {
 
   const renderFooter = () => {
     if (!isFetchingNextPage) return null;
-    
+
     return (
       <View style={styles.footer}>
         <ActivityIndicator size="small" color="#007bff" />
@@ -140,7 +142,7 @@ export const NotificationsScreen = () => {
             </View>
           )}
         </View>
-        
+
         <View style={styles.actions}>
           <TouchableOpacity
             style={[
@@ -157,7 +159,7 @@ export const NotificationsScreen = () => {
               {markAllAsReadMutation.isPending ? 'Marking...' : 'Mark All Read'}
             </Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={styles.actionButton}
             onPress={handleDeleteAllRead}
@@ -180,7 +182,7 @@ export const NotificationsScreen = () => {
             All
           </Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[styles.tab, filter === 'unread' && styles.tabActive]}
           onPress={() => setFilter('unread')}
@@ -371,3 +373,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+
+export default NotificationsScreen;
