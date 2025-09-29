@@ -1,4 +1,4 @@
-/* eslint-disable import/no-unresolved */
+/* eslint-disable */
 import { Module } from '@nestjs/common';
 import { EmailModule } from 'src/email/email.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
@@ -17,6 +17,8 @@ import { ConsultantService } from './services/consultant.service';
 import { ConsultantAppointmentsService } from './services/consultant-appointments.service';
 import { ConversationFeedbackService } from './services/conversation-feedback.service';
 import { MockTestFeedbackService } from './services/mock-test-feedback.service';
+import { NotificationsController } from './controllers/consultant-notification.controller';
+import { NotificationsService } from './services/consultant-notification.service';
 
 @Module({
   imports: [
@@ -30,7 +32,8 @@ import { MockTestFeedbackService } from './services/mock-test-feedback.service';
     ConsultantController,
     ConsultantAuthController,
     ConsultantAppointmentsController,
-    AppointmentsCalendarController
+    AppointmentsCalendarController,
+    NotificationsController
   ],
   providers: [
     ConversationFeedbackService,
@@ -39,7 +42,8 @@ import { MockTestFeedbackService } from './services/mock-test-feedback.service';
     ConsultantService,
     ConsultantAuthService,
     ConsultantAppointmentsService,
-    AppointmentCalendarService
+    AppointmentCalendarService,
+    NotificationsService
   ],
   exports: [ConsultantAuthService]
 
