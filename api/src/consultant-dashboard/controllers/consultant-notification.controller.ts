@@ -33,7 +33,7 @@ import { GetNotificationsDto } from '../dto/get-notifications.dto';
 @ApiTags('Consultant Notifications')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@HasRoles(Role.Consultant)
+// @HasRoles(Role.Consultant)
 @Controller('consultant-notifications')
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService) { }

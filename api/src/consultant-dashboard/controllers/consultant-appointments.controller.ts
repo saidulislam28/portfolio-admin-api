@@ -33,12 +33,10 @@ import {
 import { ConsultantAppointmentsService } from '../services/consultant-appointments.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@HasRoles(Role.Consultant)
+// @HasRoles(Role.Consultant)
 @ApiTags('Consultant: Appointments')
 @ApiBearerAuth()
 @Controller('consultant')
-@UseGuards(JwtAuthGuard, RolesGuard)
-// @HasRoles(Role.Consultant)
 export class ConsultantAppointmentsController {
   constructor(private readonly consultantService: ConsultantAppointmentsService) { }
 

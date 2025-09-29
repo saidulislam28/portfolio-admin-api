@@ -19,7 +19,7 @@ export class NotificationsService {
     // console.log("isread", isRead)
 
     const where = {
-      user_id: userId,
+      consultant_id: userId,
       ...(type && { type }),
       ...(isRead !== undefined && { isRead }),
     };
@@ -67,7 +67,7 @@ export class NotificationsService {
     const notifications = await this.prisma.notification.findMany({
       where: {
         id: { in: notificationIds },
-        user_id: userId,
+        consultant_id: userId,
       },
       select: { id: true },
     });
@@ -84,7 +84,7 @@ export class NotificationsService {
     await this.prisma.notification.updateMany({
       where: {
         id: { in: notificationIds },
-        user_id: userId,
+        consultant_id: userId,
       },
       data: {
         isRead: true,
@@ -105,7 +105,7 @@ export class NotificationsService {
     const notifications = await this.prisma.notification.findMany({
       where: {
         id: { in: notificationIds },
-        user_id: userId,
+        consultant_id: userId,
       },
       select: { id: true },
     });
@@ -122,7 +122,7 @@ export class NotificationsService {
     await this.prisma.notification.deleteMany({
       where: {
         id: { in: notificationIds },
-        user_id: userId,
+        consultant_id: userId,
       },
     });
 

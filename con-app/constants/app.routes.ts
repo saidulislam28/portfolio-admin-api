@@ -1,5 +1,6 @@
 export const ROUTES = {
   ACCOUNT_EDIT: '/account/edit',
+  ACCOUNT_NOTIFICATION: '/account/notification',
   APPOINTMENT_DETAIL: `/appointment-detail/[id]`,
   MY_APPOINTMENTS: '/appointments',
   CALL_USER: `/call?user_id={id}&appointment_id={appointment_id}&service_type={service_type}`,

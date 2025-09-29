@@ -30,11 +30,11 @@ const SettingsScreen = () => {
       // action: () => router.push('/account/password'),
       iconComponent: MaterialIcons,
     },
-    
+
     {
       icon: 'notifications',
       title: 'Notifications',
-      // action: () => router.push(''),
+      action: () => router.push(ROUTES.ACCOUNT_NOTIFICATION as any),
       iconComponent: MaterialIcons,
     },
     // {

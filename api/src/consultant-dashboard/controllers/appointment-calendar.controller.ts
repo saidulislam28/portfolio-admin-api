@@ -24,7 +24,7 @@ import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
 import { Role } from 'src/user-auth/dto/role.enum';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@HasRoles(Role.Consultant)
+// @HasRoles(Role.Consultant)
 @ApiTags('Consultant: Appointments')
 @Controller('consultant/appointment')
 @ApiBearerAuth()
