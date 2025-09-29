@@ -47,12 +47,12 @@ const CouponsManagement: React.FC = () => {
       key: 'code',
       render: (code: string) => <Tag color="blue">{code}</Tag>,
     },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      ellipsis: true,
-    },
+    // {
+    //   title: 'Description',
+    //   dataIndex: 'description',
+    //   key: 'description',
+    //   ellipsis: true,
+    // },
     {
       title: 'Discount',
       key: 'discount',
