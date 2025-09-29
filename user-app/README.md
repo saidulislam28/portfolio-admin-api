@@ -1,5 +1,10 @@
 # Speakingmate - user app
 
+## DO NOT RUN expo prebuild
+
+This project uses custom configurations on android project. so running expo prebuild will override those changes
+Do not run expo prebuild.
+
 ### Build apk
 
 inside android folder run `./gradlew assembleRelease`
