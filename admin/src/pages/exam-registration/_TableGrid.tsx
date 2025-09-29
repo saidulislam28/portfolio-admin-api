@@ -2,6 +2,7 @@ import { DeleteOutlined, EyeOutlined, LeftOutlined, RightOutlined } from '@ant-d
 import { Button, Popconfirm, Space, Table, Tag } from 'antd';
 import React from 'react';
 import { useNavigate } from 'react-router';
+import StatusTag from '~/components/GlobalStatusModal';
 import PDFDownloadButton from '~/components/PDFButton';
 import { PROGRESS_STATUS } from '~/store/slices/app/constants';
 import { formatMoney } from '~/utility/format_money';
@@ -12,6 +13,8 @@ const TableGrid = ({
     handleTableChange,
     isLoading,
     data,
+    model,
+    refetch
 }) => {
     const navigate = useNavigate();
     const columns = [
@@ -57,13 +60,20 @@ const TableGrid = ({
             title: "Status",
             dataIndex: "status",
             key: "status",
-            render: (status) => {
+            render: (_, record) => {
                 let color = "default";
-                if (status === PROGRESS_STATUS.Approved) color = "success";
-                if (status === PROGRESS_STATUS.Rejected) color = "error";
-                if (status === PROGRESS_STATUS.Pending) color = "processing";
+                if (record.status === PROGRESS_STATUS.Approved) color = "success";
+                if (record.status === PROGRESS_STATUS.Rejected) color = "error";
+                if (record.status === PROGRESS_STATUS.Pending) color = "processing";
 
-                return <Tag color={color}>{status}</Tag>;
+                // return <Tag icon={<EditOutlined />} color={color}>{status}  </Tag>;
+                return <StatusTag
+                    status={record.status}
+                    color={color} // You'll need to implement this function
+                    recordId={record.id}
+                    model={model}
+                    refetch={refetch}
+                />
             },
         },
         {

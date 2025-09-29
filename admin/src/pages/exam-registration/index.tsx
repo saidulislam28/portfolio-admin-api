@@ -231,6 +231,8 @@ const ExamRegistrationPage = () => {
               handleTableChange={handleTableChange}
               isLoading={isLoading}
               data={activeData}
+              model={model}
+              refetch={refetch}
             />
           </>
         </TabPane>
