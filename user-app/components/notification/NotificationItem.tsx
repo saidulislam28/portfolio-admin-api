@@ -1,6 +1,7 @@
 
 // components/NotificationItem.tsx
 import { useDeleteNotification, useMarkAllAsRead } from '@/hooks/useUserNotification';
+import { PRIMARY_COLOR } from '@/lib/constants';
 import React from 'react';
 import {
     View,
@@ -205,6 +206,6 @@ const styles = StyleSheet.create({
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#007bff',
+        backgroundColor: PRIMARY_COLOR,
     },
 });

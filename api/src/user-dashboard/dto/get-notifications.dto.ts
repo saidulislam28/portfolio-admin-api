@@ -2,7 +2,7 @@
 // src/notifications/dto/get-notifications.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { NotificationType } from '@prisma/client';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
 
 export class GetNotificationsDto {
@@ -44,6 +44,11 @@ export class GetNotificationsDto {
     description: 'Filter by read status',
   })
   @IsOptional()
-  @Type(() => Boolean)
+  // @Type(() => Boolean)
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return undefined;
+  })
   isRead?: boolean;
 }

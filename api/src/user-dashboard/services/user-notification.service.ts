@@ -16,6 +16,8 @@ export class NotificationsService {
     const { page, limit, type, isRead } = dto;
     const skip = (page - 1) * limit;
 
+    console.log("isread", isRead)
+
     const where = {
       user_id: userId,
       ...(type && { type }),

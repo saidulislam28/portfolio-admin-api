@@ -1,6 +1,7 @@
 import { NotificationItem } from '@/components/notification/NotificationItem';
 import { useDeleteNotification, useMarkAllAsRead, useNotifications, useUnreadCount } from '@/hooks/useUserNotification';
-import React, { useState } from 'react';
+import { PRIMARY_COLOR } from '@/lib/constants';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -36,9 +37,8 @@ const NotificationsScreen = () => {
   } = useNotifications({
     isRead: filter === 'all' ? undefined : false,
   });
-
-  console.log("data>>>>", data);
-  console.log("filter >>>>", filter);
+  // console.log("data>>>>", data);
+  console.log("filter >>>>", filter === 'all' ? undefined : false);
 
   const markAllAsReadMutation = useMarkAllAsRead();
   const deleteMutation = useDeleteNotification();
@@ -91,6 +91,10 @@ const NotificationsScreen = () => {
       ]
     );
   };
+
+  useEffect(() => {
+    refetch();
+  }, [filter])
 
   const renderFooter = () => {
     if (!isFetchingNextPage) return null;
@@ -214,7 +218,7 @@ const NotificationsScreen = () => {
           <RefreshControl
             refreshing={isLoading}
             onRefresh={refetch}
-            colors={['#007bff']}
+            colors={[PRIMARY_COLOR]}
           />
         }
         contentContainerStyle={
@@ -279,7 +283,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 14,
-    color: '#007bff',
+    color: PRIMARY_COLOR,
     fontWeight: '500',
   },
   actionTextDisabled: {
@@ -298,7 +302,7 @@ const styles = StyleSheet.create({
   },
   tabActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#007bff',
+    borderBottomColor: PRIMARY_COLOR,
   },
   tabText: {
     fontSize: 16,
@@ -306,7 +310,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   tabTextActive: {
-    color: '#007bff',
+    color: PRIMARY_COLOR,
     fontWeight: '600',
   },
   tabWithBadge: {
@@ -365,7 +369,7 @@ const styles = StyleSheet.create({
   retryButton: {
     paddingHorizontal: 24,
     paddingVertical: 12,
-    backgroundColor: '#007bff',
+    backgroundColor: PRIMARY_COLOR,
     borderRadius: 6,
   },
   retryText: {
