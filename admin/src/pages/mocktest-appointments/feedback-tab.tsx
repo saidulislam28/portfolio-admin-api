@@ -1,7 +1,6 @@
 
 /* eslint-disable */
 import {
-    // VideoConferenceOutlined,
     CheckCircleOutlined,
     FileTextOutlined
 } from "@ant-design/icons";

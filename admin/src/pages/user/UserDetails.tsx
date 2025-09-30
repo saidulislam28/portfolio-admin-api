@@ -50,14 +50,7 @@ const paymentsData = [
 const UserProfilePage = () => {
   const { id } = useParams();
 
-  // const { data: userData } = useQuery({
-  //   queryKey: [API_USER, id],
-  //   queryFn: async () => await get(`${API_USER}/${id}`),
-  //   staleTime: 0,
-  //   select(data) {
-  //     return data?.data ?? [];
-  //   },
-  // });
+
 
   const { data: userData, refetch } = useQuery({
     queryKey: [`get-user-detail`, id],
@@ -104,18 +97,12 @@ const UserProfilePage = () => {
       key: "end_at",
       render: (date) => new Date(date).toLocaleTimeString(),
     },
-    // {
-    //   title: "Consultant",
-    //   dataIndex: "consultant",
-    //   key: "consultant",
-    //   render: (record) => <>{record?.full_name}</>,
-    // },
+
     {
       title: "Duration",
       dataIndex: "duration_in_min",
       render: (record) => <>{record} min</>,
     },
-    // { title: 'Service', dataIndex: 'service', key: 'service' },
     {
       title: "Status",
       dataIndex: "status",
@@ -179,20 +166,7 @@ const UserProfilePage = () => {
 
   return (
     <div style={{}}>
-      {/* Header with Title and Breadcrumb */}
-      {/* <div style={{ marginBottom: '24px' }}>
-                <Title level={2} style={{ marginBottom: '8px' }}>
-                    User Profile
-                </Title>
-                <Breadcrumb
-                    items={[
-                        { href: '/', title: <HomeOutlined /> },
-                        { href: '#/users', title: 'Users' },
-                        { title: 'User Details' },
-
-                    ]}
-                />
-            </div> */}
+     
       {getHeader("Details")}
       <PageTitle
         title={"User" + ": " + `${userData?.full_name}`}
@@ -253,11 +227,7 @@ const UserProfilePage = () => {
               </Descriptions.Item>
             </Descriptions>
 
-            {/* <div style={{ marginTop: '16px' }}>
-                            <Button type="primary" icon={<EditOutlined />}>
-                                Edit Profile
-                            </Button>
-                        </div> */}
+        
           </div>
         </div>
       </Card>
@@ -317,50 +287,8 @@ const UserProfilePage = () => {
               dataSource={userData?.Appointment}
               rowKey="id"
             />
-          </TabPane>
-
-          {/* <TabPane
-            tab={
-              <Space size={"small"}>
-                <CreditCardOutlined />
-                <span>Payment History ({paymentsData?.length})</span>
-              </Space>
-            }
-            key="3"
-          >
-            <Table
-              columns={[
-                { title: "ID", dataIndex: "id", key: "id" },
-                {
-                  title: "Date",
-                  dataIndex: "date",
-                  key: "date",
-                  render: (date) => new Date(date).toLocaleString(),
-                },
-                {
-                  title: "Amount",
-                  dataIndex: "amount",
-                  key: "amount",
-                  render: (amount) => `$${amount.toFixed(2)}`,
-                },
-                { title: "Method", dataIndex: "method", key: "method" },
-                {
-                  title: "Status",
-                  dataIndex: "status",
-                  key: "status",
-                  render: (status) => (
-                    <Tag color={status === "completed" ? "green" : "orange"}>
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </Tag>
-                  ),
-                },
-              ]}
-              dataSource={paymentsData}
-              rowKey="id"
-            />
-          </TabPane> */}
-
-          <TabPane
+          </TabPane>    
+           <TabPane
             tab={
               <Space size={"small"}>
                 <BookOutlined />

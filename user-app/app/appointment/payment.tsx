@@ -65,8 +65,8 @@ export default function PaymentScreen() {
 
   const totals = useMemo(() => {
     const subtotal = packageData.price;
-    const processingFee = selectedPaymentMethod === 'stripe' ? subtotal * 0.025 : 0;
-    const tax = subtotal * 0.05;
+    const processingFee = 0;
+    const tax = 0;
     const totalBeforeDiscount = Math.round(subtotal + processingFee + tax);
     const finalTotal = Math.max(0, totalBeforeDiscount - discountAmount);
 

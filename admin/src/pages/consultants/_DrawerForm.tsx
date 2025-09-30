@@ -11,7 +11,6 @@ import * as bcrypt from 'bcryptjs';
 
 const { Option } = Select;
 
-// Timezone options
 const timezoneOptions = [
     'UTC',
     'America/New_York',
@@ -26,7 +25,6 @@ const timezoneOptions = [
     'Australia/Sydney',
 ];
 
-// @ts-ignore
 export default function ConsultantDrawerForm({ title, model, onClose, open, onSubmitSuccess, isEditing, editedItem, ...props }) {
 
     const [form] = Form.useForm();
@@ -37,7 +35,6 @@ export default function ConsultantDrawerForm({ title, model, onClose, open, onSu
             message.success('Consultant Created Successfully');
             form.resetFields();
             onSubmitSuccess();
-            // refetch();
         },
         onError: () => {
             message.error('Something went wrong');
@@ -77,7 +74,6 @@ export default function ConsultantDrawerForm({ title, model, onClose, open, onSu
                 id: editedItem.id,
             });
         } else {
-            // @ts-ignore
             createData.mutate({
                 data: formValues,
             });
@@ -123,8 +119,6 @@ export default function ConsultantDrawerForm({ title, model, onClose, open, onSu
                 <Form
                     form={form}
                     name="consultantForm"
-                    // labelCol={{ span: 8 }}
-                    // wrapperCol={{ span: 16 }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
@@ -245,7 +239,6 @@ export default function ConsultantDrawerForm({ title, model, onClose, open, onSu
                     <Form.Item>
                         <Space>
                             <Button
-                            // onClick={() => setIsDrawerOpen(false)}
                             >Cancel</Button>
                             <Button
                                 type="primary"

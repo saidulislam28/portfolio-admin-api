@@ -10,27 +10,10 @@ import { SERVICE_TYPE } from "~/store/slices/app/constants";
 
 const { Option } = Select;
 
-// Timezone options
-const timezoneOptions = [
-    'UTC',
-    'America/New_York',
-    'America/Chicago',
-    'America/Denver',
-    'America/Los_Angeles',
-    'Europe/London',
-    'Europe/Paris',
-    'Asia/Tokyo',
-    'Asia/Shanghai',
-    'Asia/Kolkata',
-    'Australia/Sydney',
-];
-
-// @ts-ignore
 export default function AppointmentDrawer({ title, model, onClose, open, onSubmitSuccess, isEditing, editedItem, ...props }) {
 
     const [form] = Form.useForm();
 
-    // console.log("foirm>>>", form)
 
     const createData = useMutation({
         mutationFn: async (data: any) => await post(getUrlForModel(model), data?.data),
@@ -38,7 +21,6 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
             message.success('Consultant Created Successfully');
             form.resetFields();
             onSubmitSuccess();
-            // refetch();
         },
         onError: () => {
             message.error('Something went wrong');
@@ -51,7 +33,6 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
             message.success('Consultant Updated Successfully');
             form.resetFields();
             onSubmitSuccess(true);
-            // refetch()
         },
         onError: () => {
             message.error('Something went wrong');
@@ -59,10 +40,6 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
     });
 
     const onFinish = (formValues: any) => {
-
-
-        //   return  console.log("formvalues >>>>", formValues)
-
         if (formValues.experience) {
             formValues.experience = Number(formValues.experience);
         }
@@ -77,7 +54,6 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
                 id: editedItem.id,
             });
         } else {
-            // @ts-ignore
             createData.mutate({
                 data: formValues,
             });
@@ -121,9 +97,7 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
                 bodyStyle={{ paddingBottom: 80 }}>
                 <Form
                     form={form}
-                    name="consultantForm"
-                    // labelCol={{ span: 8 }}
-                    // wrapperCol={{ span: 16 }}
+                    name="consultantForm"                    
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
@@ -156,17 +130,6 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
                     >
                         <Input placeholder="Enter phone number" />
                     </Form.Item>
-
-                    {/* {!isEditing && (
-                        <Form.Item
-                            label="Password"
-                            name="password"
-                            rules={[{ required: true, message: 'Please enter password' }]}
-                        >
-                            <Input.Password placeholder="Enter password" />
-                        </Form.Item>
-                    )} */}
-
                     <Form.Item
                         label="Start At"
                         name="start_at"
@@ -213,23 +176,8 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
                         name="service_type"
                     >
                         <Input value={SERVICE_TYPE.conversation} placeholder="Conversation" disabled />
-                        {/* <Select placeholder="Select timezone">
-                            <Option key={"Mocktest"} value="Mocktext">{"Mocktext"}</Option>
-                            <Option key={"Conversation"} value="Conversation">{"Conversation"}</Option>
-                        </Select> */}
-                    </Form.Item>
-
-                    {/* <Form.Item label="Is Active" name="is_active" initialValue={false}>
-                        <Switch />
-                    </Form.Item>
-
-                    <Form.Item label="Mock Test Available" name="is_mocktest" initialValue={false}>
-                        <Switch />
-                    </Form.Item>
-
-                    <Form.Item label="Conversation Available" name="is_conversation" initialValue={false}>
-                        <Switch />
-                    </Form.Item> */}
+                       
+                    </Form.Item>                 
 
                     <Form.Item
                         label="Status"
@@ -245,9 +193,7 @@ export default function AppointmentDrawer({ title, model, onClose, open, onSubmi
                     <Form.Item>
                         <Space>
                             <Button
-                            // onClick={() => setIsDrawerOpen(false)}
                             >Cancel</Button>
-
                             <Button
                                 type="primary"
                                 htmlType="submit"

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable  */
 import "react-quill/dist/quill.snow.css";
 import {
   DeleteOutlined,

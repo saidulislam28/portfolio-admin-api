@@ -17,6 +17,9 @@ export declare const API_CONSULTANT: {
     mocktest_comments: string;
     send_start_call_notification: string;
     send_end_call_notification: string;
+    consultant_notification: string;
+    notification_mark_as_read: string;
+    delete_notification: string;
 };
 export declare const API_COMMON: {
     post_device_tokens: string;
@@ -48,4 +51,7 @@ export declare const API_USER: {
     send_end_call_notification: string;
     order_details: string;
     give_rating: string;
+    user_notification: string;
+    notification_mark_as_read: string;
+    delete_notification: string;
 };

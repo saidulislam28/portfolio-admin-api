@@ -1,8 +1,6 @@
 /* eslint-disable */
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {  Controller, Get,  UseGuards } from '@nestjs/common';
 import {
-    ApiBody,
-    ApiCreatedResponse,
     ApiInternalServerErrorResponse,
     ApiOkResponse,
     ApiOperation,
@@ -10,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
 
-import { CreateFeedbackCommentDto, FeedbackCommentResponseDto } from '../dto/feedback.dto';
+import {  FeedbackCommentResponseDto } from '../dto/feedback.dto';
 import { FeedbackCommentService } from '../services/feedback-comments.service';
 import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
 import { RolesGuard } from 'src/user-auth/jwt/roles.guard';

@@ -8,11 +8,12 @@ import VideoCarousel from "@/components/VideoCarousel";
 import { ROUTES } from "@/constants/app.routes";
 import { useAppSettings } from "@/hooks/queries/useAppSettings";
 import { useBooksAll } from "@/hooks/queries/useBooks";
+import { useNotifications } from "@/hooks/useUserNotification";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { HomeSection } from "@/types/home";
 import { replacePlaceholders } from "@sm/common";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, View, Button } from "react-native";
 
 const homeSections: HomeSection[] = [
@@ -20,8 +21,6 @@ const homeSections: HomeSection[] = [
   { id: "2", sortOrder: 2, type: "image-carousel" },
   { id: "3", sortOrder: 3, type: "services" },
   { id: "5", sortOrder: 5, type: "video-carousel" },
-  // { id: '4', sortOrder: 4, type: 'fullwidthbanner' },
-  // { id: '5', sortOrder: 5, type: 'dualbanner' },
   { id: "6", sortOrder: 6, type: "card-carousel", data: "onlinecourse" },
   { id: "6", sortOrder: 6, type: "card-carousel", data: "books" },
 ];
@@ -32,16 +31,12 @@ export default function HomeScreen() {
   const {
     data: appSettingsData,
     isLoading,
-    error,
     isSuccess: isSettingsFetchSuccess,
   } = useAppSettings();
   const {
     data: books,
-    isLoading: isBooksLoading,
-    error: errorBooks,
     isSuccess: isBookFetchSuccess,
   } = useBooksAll();
-
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -49,8 +44,6 @@ export default function HomeScreen() {
       </View>
     );
   }
-
-  // console.log("app setttings from index. page", appSettingsData?.video_slider_data)
 
   const renderHeader = () => <PreHeader />;
 
@@ -109,7 +102,7 @@ export default function HomeScreen() {
           isSettingsFetchSuccess,
         }}
         data={homeSections}
-        renderItem={renderItem}
+        renderItem={renderItem as any}
         keyExtractor={(item, index) => `${item.type}-${index}`}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}

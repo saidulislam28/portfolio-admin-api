@@ -28,7 +28,7 @@ import {
   DisconnectOutlined,
   PlusOutlined
 } from '@ant-design/icons';
-import AgoraVideoCall from './AgoraVideoCall'; // Your Agora video component
+import AgoraVideoCall from './AgoraVideoCall';
 import { useQuery } from '@tanstack/react-query';
 import { get, post } from '~/services/api/api';
 import { SERVICE_TYPE } from '~/store/slices/app/constants';
@@ -42,8 +42,6 @@ const { Title, Text } = Typography;
 const ADMIN_USER_ID_HARDCODED = 999999;
 
 const AdminAppointmentList = () => {
-  // const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [videoCallModal, setVideoCallModal] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [adminToken, setAdminToken] = useState('null');
@@ -53,19 +51,12 @@ const AdminAppointmentList = () => {
 
   const {
     isLoading,
-    error,
     data: appointments,
-    refetch,
   } = useQuery({
     queryKey: ["Get live appointments"],
     queryFn: () => get(LIVE_APPOINTMENTS),
     select: (data) => data?.data?.data ?? [],
   });
-
-
-  console.log("get live appointments", appointments?.liveAppointments)
-
-
   // Generate admin token for joining call
   const generateAdminToken = async (token) => {
     setTokenLoading(true);
@@ -284,8 +275,7 @@ const AdminAppointmentList = () => {
             <Button
               type="primary"
               icon={<VideoCameraOutlined />}
-              // onClick={fetchAppointments}
-              loading={loading}
+              loading={isLoading}
             >
               Refresh
             </Button>

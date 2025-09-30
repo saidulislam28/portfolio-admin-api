@@ -7,7 +7,6 @@ import React, { useEffect } from "react";
 import { deleteApi, get } from "~/services/api/api";
 import { getUrlForModel } from "~/services/api/endpoints";
 
-// @ts-ignore
 export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
     const KEY = `all-${model}`;
 
@@ -22,11 +21,6 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
         queryFn: () => get(getUrlForModel(model)),
         staleTime: 0,
     });
-
-
-
-
-
     useEffect(() => {
         if (trigger) {
             refetch();

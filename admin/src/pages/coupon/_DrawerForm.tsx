@@ -1,25 +1,25 @@
 /* eslint-disable  */
-import React, { useEffect, useCallback } from 'react';
+import { ReloadOutlined } from '@ant-design/icons';
 import {
+    Button,
+    Col,
+    DatePicker,
+    Divider,
     Drawer,
     Form,
     Input,
     InputNumber,
-    Select,
-    DatePicker,
-    Switch,
     Row,
-    Col,
-    Tag,
+    Select,
     Space,
-    Divider,
-    Typography,
-    Button,
+    Switch,
+    Typography
 } from 'antd';
+import dayjs from 'dayjs';
+import React, { useCallback, useEffect } from 'react';
 import { Coupon, CreateCouponData } from '~/@types/coupon';
 import { useCreateCoupon, useUpdateCoupon } from '~/hooks/useCoupon';
-import dayjs from 'dayjs';
-import { ReloadOutlined } from '@ant-design/icons';
+import { generateCouponCode } from '~/utility/generateCouponCode';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -44,24 +44,7 @@ const serviceTypes = [
     'study_abroad',
 ];
 
-// Function to generate a random coupon code
-const generateCouponCode = (): string => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const codeLength = 8; // Standard coupon code length
-    let couponCode = '';
 
-    // Generate random alphanumeric code
-    for (let i = 0; i < codeLength; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        couponCode += characters[randomIndex];
-    }
-
-    // Add a prefix for better readability (optional)
-    const prefixes = ['SUMMER', 'WINTER', 'SPRING', 'FALL', 'SALE', 'OFFER'];
-    const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-
-    return `${randomPrefix}${couponCode}`;
-};
 
 const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
     visible,
@@ -78,7 +61,6 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
     const isViewMode = mode === 'view';
     const isEditMode = mode === 'edit';
 
-    // Function to handle coupon code generation
     const handleGenerateCode = useCallback(() => {
         const newCode = generateCouponCode();
         form.setFieldsValue({ code: newCode });
@@ -119,7 +101,6 @@ const CouponDrawerForm: React.FC<CouponDrawerFormProps> = ({
             form.resetFields();
             onClose();
         } catch (error) {
-            // Error handling is done in the mutation
         }
     };
 

@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { deleteApi, get } from "~/services/api/api";
 import { getUrlForModel } from "~/services/api/endpoints";
 
-// @ts-ignore
 export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
     const KEY = `all-${model}`;
 
@@ -25,18 +24,11 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
         queryFn: () => get(getUrlForModel(model)),
         staleTime: 0,
     });
-
-
-
-
-
     useEffect(() => {
         if (trigger) {
             refetch();
         }
     }, [trigger]);
-
-
     const deleteMutation = useMutation({
         mutationFn: async (id: any) => await deleteApi(getUrlForModel(model, id)),
         onSuccess: () => {
@@ -47,7 +39,6 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
             message.error('Something went wrong');
         }
     });
-
     const handleDeleteClient = (id: any) => {
         deleteMutation.mutate(id);
     }

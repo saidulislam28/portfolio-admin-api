@@ -379,8 +379,8 @@ export class AppointmentsService {
         data: {
           slot_duration_minutes: 20,
           booking_advance_weeks: 3,
-          working_hours_start: '09:00',
-          working_hours_end: '21:00',
+          working_hours_start: '10:00',
+          working_hours_end: '22:00',
           working_days: [1, 2, 3, 4, 5, 6] // Monday to Saturday
         }
       });

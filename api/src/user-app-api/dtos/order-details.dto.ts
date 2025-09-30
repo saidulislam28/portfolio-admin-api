@@ -1,6 +1,6 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray,IsDateString, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray,IsDateString, IsNumber, IsString, ValidateNested } from 'class-validator';
 
 // Base appointment DTO
 class AppointmentDto {

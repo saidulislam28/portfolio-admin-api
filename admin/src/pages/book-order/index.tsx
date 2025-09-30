@@ -41,14 +41,7 @@ const BookOrderPage = () => {
     pageSize: 10,
   });
   const [filters, setFilters] = useState<any>({
-    service_type: SERVICE_TYPE.book_purchase,
-    // user_id: user_id,
-    payment_status: "paid",
-    // Payment: {
-    //   some: {
-    //     status: "PAID",
-    //   },
-    // },
+    service_type: SERVICE_TYPE.book_purchase,   
   });
   const [isEditDrawerVisible, setIsEditDrawerVisible] = useState(false);
   const [editingOrder, setEditingOrder] = useState<any>(null);
@@ -82,10 +75,6 @@ const BookOrderPage = () => {
       );
     },
   });
-
-  // service_type === SERVICE_TYPE.book_purchase
-
-  console.log("fetchdata book order >>>......", fetchData);
 
   const deleteMutation = useMutation({
     mutationFn: async (id) => await deleteApi(`${API_BOOK_ORDER}/${id}`),

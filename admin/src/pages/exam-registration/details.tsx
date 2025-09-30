@@ -20,8 +20,6 @@ const OrderDetailsPage = () => {
 
   console.log(id);
   const {
-    isLoading,
-    error,
     data: orderData,
     refetch,
   } = useQuery({
@@ -58,10 +56,7 @@ const OrderDetailsPage = () => {
       await patch(getUrlForModel(model, Number(data.id)), data),
     onSuccess: (response) => {
       message.success("Updated Successfully");
-      refetch();
-      // appointmentRefetch();
-      // setIsModalVisible(false);
-      // successModal();
+      refetch();     
     },
     onError: () => {
       message.error("Something went wrong");

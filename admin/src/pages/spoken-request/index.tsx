@@ -1,12 +1,10 @@
-import { DeleteOutlined, EditOutlined, EyeOutlined, HomeOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { DeleteOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   Badge,
-  Breadcrumb,
   Button,
   Card,
   Col,
-  DatePicker,
   Form,
   Input,
   message,
@@ -16,27 +14,18 @@ import {
   Select,
   Space,
   Table,
-  Tag,
-  Typography
+  Tag
 } from 'antd';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 
 import PageTitle from '~/components/PageTitle';
-import { deleteApi, get, getWithSearchParams, post } from '~/services/api/api';
+import { deleteApi, post } from '~/services/api/api';
 import { API_CRUD_FIND_WHERE, SPOKEN_REQUEST } from '~/services/api/endpoints';
 import { PROGRESS_STATUS } from '~/store/slices/app/constants';
 import { getHeader } from '~/utility/helmet';
 
-interface FormattedFilters {
-  search?: string;
-  status?: string;
-  startDate?: string;
-  endDate?: string;
-}
 
-const { RangePicker } = DatePicker;
-const { Title } = Typography;
 const { Option } = Select;
 const model = 'SpokenRequest'
 const title = 'Spoken Request'
@@ -56,13 +45,10 @@ const OnlineClassRequest = () => {
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const queryClient = useQueryClient();
 
   const [filters, setFilters] = useState(null);
-  // Fetch data with TanStack Query
   const {
     isLoading,
-    error,
     data: fetchData,
     refetch,
   } = useQuery({
@@ -85,11 +71,10 @@ const OnlineClassRequest = () => {
     onSuccess: () => {
       message.success('Deleted Successfully')
       refetch();
-      // queryClient.invalidateQueries(['examRegistrations']);
     },
   });
 
-  const handleTableChange = (newPagination, filters, sorter) => {
+  const handleTableChange = (newPagination) => {
     setPagination({
       ...newPagination,
       current: newPagination.current,
@@ -101,7 +86,6 @@ const OnlineClassRequest = () => {
 
     const whereClouse: any = { created_at: {} }
 
-    //  return console.log("values", values)
 
     if (values.search) {
       whereClouse.OR = [
@@ -139,10 +123,6 @@ const OnlineClassRequest = () => {
     if (values?.dateRange?.length) {
       whereClouse.created_at.lte = new Date(values.dateRange[1].format('YYYY-MM-DD'));
     }
-
-
-    // whereClouse.endDate = values.dateRange[1].format('YYYY-MM-DD');
-
     if (values.status) {
       whereClouse.status = values.status;
     }
@@ -291,12 +271,6 @@ const OnlineClassRequest = () => {
         dataSource={fetchData}
         loading={isLoading}
         onChange={handleTableChange}
-        // pagination={{
-        //   ...pagination,
-        //   total: data?.total || 0,
-        //   showSizeChanger: true,
-        //   showTotal: (total) => `Total ${total} items`,
-        // }}
         bordered
         scroll={{ x: true }}
       />

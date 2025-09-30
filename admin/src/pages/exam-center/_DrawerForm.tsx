@@ -1,17 +1,13 @@
 /* eslint-disable */
 
-import { UploadOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Button, Drawer, Form, Input, Switch, Upload, message } from 'antd';
-import TextArea from "antd/es/input/TextArea";
+import { Button, Drawer, Form, Input, Switch, message } from 'antd';
 import React, { useEffect } from 'react';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { patch, post } from "~/services/api/api";
-import { API_FILE_UPLOAD, getUrlForModel } from "~/services/api/endpoints";
+import { getUrlForModel } from "~/services/api/endpoints";
 
 
-// @ts-ignore
 export default function DrawerForm({ title, model, onClose, open, onSubmitSuccess, isEditing, editedItem, ...props }) {
 
     const [form] = Form.useForm();
@@ -89,41 +85,14 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
-                >
-                    {/* <Form.Item
-                        name="url"
-                        label="Slider Image"
-                        rules={[{ required: true, message: 'Required' }]}
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                    >
-
-                        <Upload
-                            accept='image/*'
-                            name="file"
-                            action={API_FILE_UPLOAD}
-                            maxCount={1}
-                            listType="picture-card"
-                        >
-                            <div className="flex flex-col items-center justify-center">
-                                <UploadOutlined />
-                                <span>Upload</span>
-                            </div>
-                        </Upload>
-                    </Form.Item> */}
+                >               
 
                     <Form.Item
                         label="Name"
                         name="name"
                     >
                         <Input type="text" />
-                    </Form.Item>
-                    {/* <Form.Item
-                        label="Description"
-                        name="desc"
-                    >
-                        <TextArea rows={4} />
-                    </Form.Item> */}
+                    </Form.Item>                    
                     <Form.Item
                         label="Sort Order"
                         name="sort_order"

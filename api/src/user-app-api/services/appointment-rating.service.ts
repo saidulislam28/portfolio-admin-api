@@ -1,4 +1,3 @@
-// src/ratings/ratings.service.ts
 /* eslint-disable */
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';

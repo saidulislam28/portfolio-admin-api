@@ -13,13 +13,7 @@ export const SETTINGS = [
         label: 'Phone',
         type: 'text',
         default: '',
-      },
-      // {
-      //     key: 'logo',
-      //     label: 'Logo',
-      //     type: 'image',
-      //     default: ''
-      // }
+      },      
     ],
   },
   {

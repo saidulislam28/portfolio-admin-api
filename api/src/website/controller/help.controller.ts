@@ -1,4 +1,3 @@
-// src/submissions/submissions.controller.ts
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { res } from 'src/common/response.helper';
 import { HelpReqService } from '../service/help.service';

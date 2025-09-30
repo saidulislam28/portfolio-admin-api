@@ -1,8 +1,8 @@
 import { registerForPushNotificationsAsync } from "@/lib/notification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_COMMON, API_USER, Post } from "@sm/common";
+import { API_COMMON, API_USER, Get, Post } from "@sm/common";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ToastAndroid, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAuth } from "@/context/useAuth";
@@ -14,12 +14,6 @@ export default function Index() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [checkingLaunch, setCheckingLaunch] = useState(true);
-
-  // if (!user) return null;
-
-
-
-  // console.log(user);
   useEffect(() => {
     if (!user?.id) {
       console.warn("User ID is undefined. Skipping token registration.");
@@ -37,7 +31,7 @@ export default function Index() {
           user_id: userId,
           timezone,
         });
-      } catch (error) {
+      } catch (error: any) {
         console.log("error from posting data", error);
         console.log("error message", error?.message);
       }
@@ -51,13 +45,13 @@ export default function Index() {
       console.log("hasss", hasLaunched);
       if (!hasLaunched) {
         await AsyncStorage.setItem("hasLaunched", "true");
-        router.replace(ROUTES.LANDING);
+        router.replace(ROUTES.LANDING as any);
       } else {
         if (!isLoading) {
           if (user) {
-            router.replace(ROUTES.TABS); // homepage
+            router.replace(ROUTES.TABS as any); // homepage
           } else {
-            router.replace(ROUTES.LANDING);
+            router.replace(ROUTES.LANDING as any);
           }
         }
       }

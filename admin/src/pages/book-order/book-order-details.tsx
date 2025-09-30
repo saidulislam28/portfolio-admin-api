@@ -37,7 +37,7 @@ import {
 import { getHeader } from "~/utility/helmet";
 import { formatMoney } from "~/utility/format_money";
 
-const { Title, Text } = Typography;
+const {  Text } = Typography;
 
 const model = "Order";
 

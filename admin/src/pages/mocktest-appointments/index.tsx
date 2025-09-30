@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
+/* eslint-disable  */
 import { PlusOutlined } from "@ant-design/icons";
-// import { useRouter } from 'react-router-dom';
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Button,
@@ -16,20 +15,15 @@ import React, { useState } from "react";
 
 import PageTitle from "~/components/PageTitle";
 import { patch, post } from "~/services/api/api";
-import { API_CRUD_FIND_WHERE, getUrlForModel } from "~/services/api/endpoints";
+import { API_CRUD_FIND_WHERE, ASSIGN_CONSULTANT_API} from "~/services/api/endpoints";
 import { SERVICE_TYPE } from "~/store/slices/app/constants";
 import { getHeader } from "~/utility/helmet";
-
 import { useConsultants } from "~/hooks/useConsultants";
 import DateModal from "../conversation-appointments/DateModal";
 import AppointmentDrawer from "./_DrawerForm";
 import TableGrid from './_TableGrid';
 import AssignConsultant from "./assign-consultant";
 const title = "Mocktest Appointments";
-
-interface Consultant {
-  name: string;
-}
 const model = "Appointment";
 const AppointmentsView: React.FC = () => {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
@@ -135,16 +129,17 @@ const AppointmentsView: React.FC = () => {
     console.log(isUpdate ? "Consultant updated!" : "Consultant created!");
     closeDrawer();
     refetch();
-    // Refresh your data here
   };
 
   const assignConsultantMutation = useMutation({
     mutationFn: async (data: any) =>
-      await patch(getUrlForModel("Appointment", data.id), data),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onSuccess: (response: any) => {
+      await patch(ASSIGN_CONSULTANT_API(Number(data?.id)), data),
+    onSuccess: () => {
       message.success("Updated Successfully");
       refetch();
+      setAssignModalVisible(false);
+      setSelectedAppointmentId(null);
+      setSelectedConsultantId(null);
       successModal();
     },
     onError: () => {
@@ -176,8 +171,6 @@ const AppointmentsView: React.FC = () => {
     );
 
     if (!appsOnDate || appsOnDate.length === 0) return null;
-
-    // Count appointments by status
     const statusCounts = appsOnDate.reduce(
       (acc, appt) => {
         acc[appt.status] = (acc[appt.status] || 0) + 1;
@@ -272,7 +265,7 @@ const AppointmentsView: React.FC = () => {
 
       <AppointmentDrawer
         title={editingConsultant ? "Edit Consultant" : "Add New Consultant"}
-        model={model} // Replace with your actual model name
+        model={model} 
         open={drawerVisible}
         onClose={closeDrawer}
         onSubmitSuccess={handleSubmitSuccess}

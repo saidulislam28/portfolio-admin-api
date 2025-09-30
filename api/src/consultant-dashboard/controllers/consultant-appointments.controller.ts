@@ -37,8 +37,6 @@ import { ConsultantAppointmentsService } from '../services/consultant-appointmen
 @ApiTags('Consultant: Appointments')
 @ApiBearerAuth()
 @Controller('consultant')
-@UseGuards(JwtAuthGuard, RolesGuard)
-// @HasRoles(Role.Consultant)
 export class ConsultantAppointmentsController {
   constructor(private readonly consultantService: ConsultantAppointmentsService) { }
 

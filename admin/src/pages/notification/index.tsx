@@ -32,7 +32,6 @@ const model = 'User'
 
 
 
-// Mock notification history
 const notificationHistory = [
     { id: 1, title: 'System Maintenance', type: 'warning', recipients: 'All Users', sent: '2024-06-14 10:30', status: 'delivered' },
     { id: 2, title: 'New Feature Release', type: 'info', recipients: 'Premium Users', sent: '2024-06-13 15:45', status: 'delivered' },
@@ -42,22 +41,15 @@ const notificationHistory = [
 
 export default function AdminNotificationPanel() {
     const [form] = Form.useForm();
-    // const [selectedUsers, setSelectedUsers] = useState([]);
     const [showPreview, setShowPreview] = useState(false);
     const [previewData, setPreviewData] = useState<any>({});
     const [recipientType, setRecipientType] = useState('specific');
-
-    // const [loading, setLoading] = useState(false);
-
-
-
 
     const createMutation = useMutation({
         mutationFn: async (data: any) => await post(SEND_NOTIFICATION, data),
         onSuccess: () => {
             message.success('Notification has been sent to users');
             form.resetFields();
-            // setSelectedUsers([]);
             setRecipientType('specific');
         },
         onError: () => {
@@ -127,10 +119,7 @@ export default function AdminNotificationPanel() {
                             <Space direction="vertical" style={{ width: '100%' }}>
                                 {getNotificationIcon(previewData?.notificationType)}
                                 <Title level={4}>{previewData?.title}</Title>
-                                <Paragraph>{previewData?.message}</Paragraph>
-                                {/* <Text type="secondary">
-                                    Recipients: {recipientType === 'all' ? 'All Users' : `${selectedUsers?.length} Selected Users`}
-                                </Text> */}
+                                <Paragraph>{previewData?.message}</Paragraph>                              
                             </Space>
                         </Card>
                     </Modal>

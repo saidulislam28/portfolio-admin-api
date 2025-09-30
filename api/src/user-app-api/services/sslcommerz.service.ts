@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-// src/payment/sslcommerz.service.ts
+/* eslint-disable */
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 

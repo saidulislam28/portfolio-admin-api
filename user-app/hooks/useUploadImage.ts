@@ -1,4 +1,3 @@
-// hooks/useImageUpload.ts
 import { useState } from 'react';
 import Constants from 'expo-constants';
 import { API_COMMON } from '@sm/common';

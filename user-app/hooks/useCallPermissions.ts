@@ -1,4 +1,3 @@
-// hooks/useCallPermissions.ts
 import { useEffect, useState } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 

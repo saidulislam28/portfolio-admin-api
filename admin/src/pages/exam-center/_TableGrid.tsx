@@ -1,16 +1,12 @@
 /* eslint-disable */
 
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, Image, Popconfirm, Space, Table, Tag, message } from "antd";
-import Title from "antd/es/typography/Title";
+import { Button, Popconfirm, Space, Table, Tag, message } from "antd";
 import React, { useEffect } from "react";
-import { render } from "react-dom";
-import { Link } from "react-router-dom";
 import { deleteApi, get } from "~/services/api/api";
 import { getUrlForModel } from "~/services/api/endpoints";
 
-// @ts-ignore
 export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
     const KEY = `all-${model}`;
 
@@ -25,11 +21,6 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
         queryFn: () => get(getUrlForModel(model)),
         staleTime: 0,
     });
-
-
-
-
-
     useEffect(() => {
         if (trigger) {
             refetch();

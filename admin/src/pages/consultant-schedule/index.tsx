@@ -14,7 +14,6 @@ import OffDayModal from './OffDayModal';
 import WorkHourModal from './WorkHourModal';
 const model = 'Consultant'
 const ConsultantSchedulePage = () => {
-    // const [consultants, setConsultants] = useState([]);
     const [selectedConsultant, setSelectedConsultant] = useState<any>(null);
     const [workHours, setWorkHours] = useState([]);
     const [offDays, setOffDays] = useState([]);
@@ -31,9 +30,7 @@ const ConsultantSchedulePage = () => {
         }
     }, [selectedConsultant]);
     const {
-        isLoading,
         data: consultants,
-        refetch,
     } = useQuery({
         queryKey: ["fetch-consultant"],
         queryFn: async () => get(getUrlForModel(model)),
@@ -44,19 +41,14 @@ const ConsultantSchedulePage = () => {
     const fetchConsultantSchedule = async (consultantId) => {
         try {
             setLoading(true);
-            // Get work hours
             const workHoursResponse = await get(
                 CONSULTANT_SCHEDULE_WORK_HOURS(consultantId)
             );
-            // console.log("response data workHoursResponse", workHoursResponse)
             setWorkHours(workHoursResponse?.data);
 
-            // Get off days
             const offDaysResponse = await get(
                 CONSULTANT_SCHEDULE_OFF_DAYS(consultantId)
             );
-            // console.log("response data offDaysResponse", offDaysResponse)
-            // const offDaysData = await offDaysResponse.json();
             setOffDays(offDaysResponse?.data);
         } catch (error) {
             message.error('Failed to fetch schedule');
@@ -153,15 +145,13 @@ const ConsultantSchedulePage = () => {
 
 
             if (response.data) {
-                // const data = await response.json();
                 message.success(
                     `Work hour ${editingWorkHour ? 'updated' : 'added'} successfully`
                 );
                 setWorkHourModalVisible(false);
                 fetchConsultantSchedule(selectedConsultant.id);
             } else {
-                // const errorData = await response.json();
-                // throw new Error(errorData.message || 'Failed to save work hour');
+                throw new Error('Failed to save work hour');
             }
         } catch (error) {
             message.error(error.message || 'Failed to save work hour');
@@ -191,15 +181,13 @@ const ConsultantSchedulePage = () => {
             console.log("response handle off day submit>>", response)
 
             if (response.data) {
-                // const data = await response.json();
                 message.success(
                     `Off day ${editingOffDay ? 'updated' : 'added'} successfully`
                 );
                 setOffDayModalVisible(false);
                 fetchConsultantSchedule(selectedConsultant.id);
             } else {
-                // const errorData = await response.json();
-                // throw new Error(errorData.message || 'Failed to save off day');
+               throw new Error('Failed to save off day');
             }
         } catch (error) {
             message.error(error.message || 'Failed to save off day');

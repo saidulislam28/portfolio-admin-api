@@ -1,50 +1,50 @@
-import React, { useState, useMemo } from 'react';
+/* eslint-disable  */
 import {
-  Card,
-  DatePicker,
-  Select,
-  Button,
-  Table,
-  Row,
-  Col,
-  Statistic,
-  Tag,
-  Space,
-  Typography,
-  Spin,
-  message,
-  Empty,
-  Divider,
-  Tooltip,
-  Progress,
-  Alert
-} from 'antd';
-import {
-  ReloadOutlined,
-  DownloadOutlined,
-  UserOutlined,
   CalendarOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
   ClockCircleOutlined,
-  ExclamationCircleOutlined
+  CloseCircleOutlined,
+  DownloadOutlined,
+  ExclamationCircleOutlined,
+  ReloadOutlined,
+  UserOutlined
 } from '@ant-design/icons';
+import { useQuery } from '@tanstack/react-query';
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Divider,
+  Empty,
+  Row,
+  Select,
+  Space,
+  Spin,
+  Statistic,
+  Table,
+  Tag,
+  Tooltip,
+  Typography,
+  message
+} from 'antd';
 import dayjs from 'dayjs';
 import jsPDF from 'jspdf';
-import { useQuery } from '@tanstack/react-query';
 import { autoTable } from 'jspdf-autotable';
+import React, { useMemo, useState } from 'react';
 
+import PageTitle from '~/components/PageTitle';
+import { useConsultants } from '~/hooks/useConsultants';
 import { get } from '~/services/api/api';
 import { API_CONSULTANT_REPORTS } from '~/services/api/endpoints'; // Add this endpoint
-import { useConsultants } from '~/hooks/useConsultants';
 import { getHeader } from '~/utility/helmet';
-import PageTitle from '~/components/PageTitle';
+import { generateConsultantPDF } from '~/utility/pdfGenerator';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
-// Types based on the API response structure
 interface AppointmentStatusCount {
   initiated: number;
   pending: number;
@@ -94,8 +94,6 @@ const fetchConsultantReports = async (params: any): Promise<ApiResponse> => {
   return response.data;
 };
 
-// Mock consultants data - replace with actual API call
-
 const ConsultantAppointmentReport = () => {
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
     dayjs().startOf('month'),
@@ -119,7 +117,6 @@ const ConsultantAppointmentReport = () => {
     { label: 'Custom Range', value: 'custom' },
   ];
 
-  // Calculate actual date range based on preset
   const actualDateRange = useMemo(() => {
     const today = dayjs();
 
@@ -175,11 +172,10 @@ const ConsultantAppointmentReport = () => {
   } = useQuery({
     queryKey: ['consultant-reports', apiParams],
     queryFn: () => fetchConsultantReports(apiParams),
-    staleTime: 30000, // 30 seconds
+    staleTime: 30000,
     enabled: !!(actualDateRange && actualDateRange[0] && actualDateRange[1]),
   });
 
-  // Handle date preset change
   const handleDatePresetChange = (value: string) => {
     setDatePreset(value);
     if (value !== 'custom') {
@@ -216,7 +212,6 @@ const ConsultantAppointmentReport = () => {
     }
   };
 
-  // Handle custom date range change
   const handleDateRangeChange = (dates: [dayjs.Dayjs, dayjs.Dayjs] | null) => {
     if (dates) {
       setDateRange(dates);
@@ -224,90 +219,7 @@ const ConsultantAppointmentReport = () => {
     }
   };
 
-  // Generate PDF report
-  const generatePDF = () => {
-    if (!reportData) return;
 
-    const doc = new jsPDF();
-
-    // Header
-    doc.setFontSize(20);
-    doc.text('Consultant Appointment Report', 20, 20);
-
-    doc.setFontSize(12);
-    const startDate = dayjs(reportData.startDate).format('MMM DD, YYYY');
-    const endDate = dayjs(reportData.endDate).format('MMM DD, YYYY');
-    doc.text(`Report Period: ${startDate} - ${endDate}`, 20, 35);
-
-    if (selectedConsultantId) {
-      const consultant = reportData.consultants[0];
-      if (consultant) {
-        doc.text(`Consultant: ${consultant.consultantName}`, 20, 45);
-      }
-    }
-
-    // Overall Statistics
-    doc.setFontSize(16);
-    doc.text('Summary Statistics', 20, 60);
-
-    const stats = calculateOverallStats();
-    const summaryData = [
-      ['Metric', 'Value'],
-      ['Total Consultants', reportData.totalConsultants.toString()],
-      ['Total Appointments', stats?.totalAppointments.toString() || '0'],
-      ['Completed Appointments', stats?.totalCompleted.toString() || '0'],
-      ['Cancelled Appointments', stats?.totalCancelled.toString() || '0'],
-      ['No Show Appointments', stats?.totalNoShow.toString() || '0'],
-      ['Completion Rate', `${stats?.completionRate || 0}%`],
-    ];
-
-    autoTable(doc, {
-      head: [summaryData[0]],
-      body: summaryData.slice(1),
-      startY: 70,
-      theme: 'striped',
-    });
-
-    // Consultant Details
-    let currentY = doc.lastAutoTable.finalY + 20;
-
-    reportData.consultants.forEach((consultant, index) => {
-      if (currentY > 250) {
-        doc.addPage();
-        currentY = 20;
-      }
-
-      doc.setFontSize(14);
-      doc.text(`${consultant.consultantName}`, 20, currentY);
-      doc.setFontSize(10);
-      doc.text(`${consultant.consultantEmail}`, 20, currentY + 10);
-
-      const consultantData = [
-        ['Status', 'Count'],
-        ['Initiated', consultant.overallStatusCounts.initiated.toString()],
-        ['Pending', consultant.overallStatusCounts.pending.toString()],
-        ['Confirmed', consultant.overallStatusCounts.confirmed.toString()],
-        ['Cancelled', consultant.overallStatusCounts.cancelled.toString()],
-        ['Completed', consultant.overallStatusCounts.completed.toString()],
-        ['No Show', consultant.overallStatusCounts.no_show.toString()],
-      ];
-
-      autoTable(doc, {
-        head: [consultantData[0]],
-        body: consultantData.slice(1),
-        startY: currentY + 20,
-        theme: 'striped',
-        margin: { left: 20, right: 20 },
-        columnStyles: { 0: { cellWidth: 60 }, 1: { cellWidth: 40 } }
-      });
-
-      currentY = doc.lastAutoTable.finalY + 15;
-    });
-
-    const fileName = `consultant-report-${dayjs(reportData.startDate).format('YYYY-MM-DD')}-to-${dayjs(reportData.endDate).format('YYYY-MM-DD')}.pdf`;
-    doc.save(fileName);
-    message.success('PDF report downloaded successfully');
-  };
 
   // Status color mapping
   const getStatusColor = (status: string) => {
@@ -544,7 +456,11 @@ const ConsultantAppointmentReport = () => {
                 </Button>
                 <Button
                   icon={<DownloadOutlined />}
-                  onClick={generatePDF}
+                  onClick={() => generateConsultantPDF({
+                    reportData,
+                    selectedConsultantId,
+                    calculateOverallStats
+                  })}
                   disabled={!reportData}
                 >
                   Download PDF

@@ -1,15 +1,12 @@
 /* eslint-disable */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  Avatar,
   Empty,
   Form,
   Input,
   message,
   Modal,
-  Select,
-  Tabs,
-  Tag
+  Tabs
 } from "antd";
 import React, { useState } from "react";
 import { useParams } from "react-router";
@@ -18,13 +15,11 @@ import { get, patch } from "~/services/api/api";
 import { APPOINTMENT_DETAILS, ASSIGN_CONSULTANT_API, getUrlForModel } from "~/services/api/endpoints";
 import { Appointment_status } from "~/store/slices/app/constants";
 import { getHeader } from "~/utility/helmet";
+import AssignConsultant from "./assign-consultant";
 import renderDetailsTab from "./details-tab";
 import renderFeedbackTab from "./feedback-tab";
-import AssignConsultant from "./assign-consultant";
 
 const { TabPane } = Tabs;
-// Mock consultant data
-const model = "Appointment";
 const consultantModel = "Consultant";
 const AppointmentDetails = () => {
   const { id } = useParams();

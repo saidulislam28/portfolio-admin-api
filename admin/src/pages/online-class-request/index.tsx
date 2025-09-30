@@ -1,3 +1,4 @@
+/* eslint-disable  */
 import {
   DeleteOutlined,
   EyeOutlined,
@@ -11,7 +12,6 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Form,
   Input,
   message,
@@ -22,15 +22,14 @@ import {
   Space,
   Table,
   Tabs,
-  Tag,
-  Typography,
+  Tag
 } from "antd";
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import StatusTag from "~/components/GlobalStatusModal";
 
 import PageTitle from "~/components/PageTitle";
-import PDFDownloadButton from "~/components/PDFButton";
 import { deleteApi, patch, post } from "~/services/api/api";
 import {
   API_CRUD_FIND_WHERE,
@@ -42,8 +41,6 @@ import { formatMoney } from "~/utility/format_money";
 import { getHeader } from "~/utility/helmet";
 const { TabPane } = Tabs;
 
-const { RangePicker } = DatePicker;
-const { Title } = Typography;
 const { Option } = Select;
 const title = "Online Class";
 
@@ -256,13 +253,13 @@ const ExamRegistrationPage = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => {
-        let color = "default";
-        if (status === PROGRESS_STATUS.Approved) color = "success";
-        if (status === PROGRESS_STATUS.Rejected) color = "error";
-        if (status === PROGRESS_STATUS.Pending) color = "processing";
-
-        return <Tag color={color}>{status}</Tag>;
+      render: (_, record) => {
+        return <StatusTag
+          status={record.status}
+          recordId={record.id}
+          model={model}
+          refetch={refetch}
+        />
       },
     },
     {

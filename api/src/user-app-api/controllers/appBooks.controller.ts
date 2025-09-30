@@ -15,7 +15,6 @@ import { BookListResponseDto, BookResponseDto } from '../dtos/book.dto';
 import { BookApiService } from '../services/appBooks.service';
 
 @ApiTags('User: Books')
-// @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('app')
 export class BookApiController {
   constructor(private readonly bookApiService: BookApiService) { }

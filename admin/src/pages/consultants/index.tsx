@@ -11,14 +11,12 @@ import {
   message,
   notification,
   Popconfirm,
-  Rate,
   Row,
   Select,
   Space,
   Table,
   Tag
 } from 'antd';
-import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -80,9 +78,8 @@ const ConsultantsPage: React.FC = () => {
     console.log(isUpdate ? 'Consultant updated!' : 'Consultant created!');
     closeDrawer();
     refetch();
-    // Refresh your data here
+   
   };
-  // console.log("data>>>>>", data)
   console.log("filters consultant data", fetchData)
 
   const deleteMutation = useMutation({
@@ -142,14 +139,6 @@ const ConsultantsPage: React.FC = () => {
       },
       ]
     }
-
-    // if (values?.dateRange?.length) {
-    //   whereClouse.created_at.gte = new Date(values.dateRange[0].format('YYYY-MM-DD'));
-    // }
-
-    // if (values?.dateRange?.length) {
-    //   whereClouse.created_at.lte = new Date(values.dateRange[1].format('YYYY-MM-DD'));
-    // }
 
     if (values.isActive) {
       whereClouse.is_active = values.isActive === "true"

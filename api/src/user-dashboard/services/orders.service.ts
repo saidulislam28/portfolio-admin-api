@@ -16,7 +16,6 @@ import SSLCommerzPayment from 'sslcommerz-lts';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateOrderDto } from '../dto/order.dto';
 
-// Interface for coupon calculation result
 interface CouponCalculationResult {
   coupon: Coupon | null;
   discountAmount: number;

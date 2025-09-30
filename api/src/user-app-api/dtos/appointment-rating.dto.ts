@@ -1,4 +1,3 @@
-// src/ratings/dto/create-rating.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsOptional, IsString, Max,Min } from 'class-validator';
 

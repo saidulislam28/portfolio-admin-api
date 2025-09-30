@@ -1,10 +1,9 @@
 /* eslint-disable */
-import React from 'react';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button, Card, Collapse, Form, Input, Upload, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PageTitle from '~/components/PageTitle';
 import { get, post } from '~/services/api/api';
 import { API_FILE_UPLOAD, getUrlForModel } from '~/services/api/endpoints';
@@ -21,8 +20,6 @@ const Settings = () => {
 
     const {
         isLoading,
-        isError,
-        error,
         data: settingsResponse,
         isSuccess,
         refetch,
@@ -73,10 +70,6 @@ const Settings = () => {
 
     const onFinish = async (formValues: any) => {
         const dataArray: any = [];
-
-
-        // return console.log('formValues', formValues);
-
         if (formValues.hero_image) {
             const heroImage = formValues?.hero_image[0]?.response?.url ?? formValues?.hero_image[0]?.thumbUrl ?? null;
             formValues.hero_image = heroImage;
@@ -92,8 +85,12 @@ const Settings = () => {
             formValues.favicon = faviconImage;
         }
 
+        if (formValues?.delivery_charge) {
+            const convertedNumber = Number(formValues.delivery_charge);
+            formValues.delivery_charge = convertedNumber
+        }
 
-        // return
+
         for (const key in formValues) {
             if (formValues.hasOwnProperty(key)) {
                 dataArray.push({
@@ -102,66 +99,8 @@ const Settings = () => {
                 });
             }
         }
-
-        console.log('formValues>>>>>>', dataArray);
         createData.mutate({ data: dataArray });
     };
-
-    const getFormFields = useCallback(
-        (settings) => {
-            return (
-                <>
-                    {settings.map((item) => {
-                        if (item.type === 'text') {
-                            return (
-                                <Form.Item
-                                    key={`form-item-${item.key}`}
-                                    label={item.label}
-                                    name={item.key}
-                                >
-                                    {item?.field === 'textarea' ? <TextArea rows={4} /> : <Input />}
-                                </Form.Item>
-                            );
-                        }
-
-                        if (item.type === 'image') {
-                            return (
-                                <Form.Item
-                                    key={`form-item-${item.key}`}
-                                    label={item.label}
-                                    name={item.key}
-                                    valuePropName="fileList"
-                                    getValueFromEvent={(e) => {
-                                        if (Array.isArray(e)) {
-                                            return e;
-                                        }
-                                        return e && e.fileList;
-                                    }}
-                                >
-                                    <Upload
-                                        // defaultFileList={[...fileList]}
-                                        name="file"
-                                        action={API_FILE_UPLOAD}
-                                        maxCount={1}
-                                        listType="picture"
-                                    >
-                                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                                    </Upload>
-                                </Form.Item>
-                            );
-                        }
-                    })}
-                    <Form.Item wrapperCol={{ offset: 2, span: 16 }}>
-                        <Button type="primary" htmlType="submit" loading={createData?.isLoading}>
-                            Save
-                        </Button>
-                    </Form.Item>
-                </>
-            );
-        },
-        [form],
-    );
-
     return (
         <>
             {getHeader(title)}
@@ -190,14 +129,12 @@ const Settings = () => {
                     <h3 style={{ borderBottom: '1px ridge' }}>Contact</h3>
 
                     <Form.Item label="Email" name="email">
-                        <Input type="email" />
+                        <Input type="email" placeholder="support email" />
                     </Form.Item>
                     <Form.Item label="Phone" name="phone">
-                        <Input />
+                        <Input placeholder="Contact Number" />
                     </Form.Item>
-                    <Form.Item label="Phone" name="phone">
-                        <Input />
-                    </Form.Item>
+                  
                     <Form.Item label="Map Link" name="map">
                         <Input placeholder='<iframe> link' />
                     </Form.Item>
@@ -217,7 +154,7 @@ const Settings = () => {
                         }}
                     >
                         <Upload
-                            // defaultFileList={[...fileList]}
+                           
                             name="file"
                             action={API_FILE_UPLOAD}
                             maxCount={1}
@@ -238,7 +175,7 @@ const Settings = () => {
                         }}
                     >
                         <Upload
-                            // defaultFileList={[...fileList]}
+                         
                             name="file"
                             action={API_FILE_UPLOAD}
                             maxCount={1}
@@ -263,6 +200,27 @@ const Settings = () => {
                     <Form.Item label="Twitter" name="twitter">
                         <Input type="url" />
                     </Form.Item>
+
+
+
+                    <h3 style={{ borderBottom: '1px ridge' }}>App Navigation links</h3>
+                    <Form.Item label="Privacy Policy" name="privacy_policy">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="Terms Of Service" name="terms">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="Help Chat" name="help_chat">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="User Guide" name="user_guide">
+                        <Input type="url" />
+                    </Form.Item>
+                    <Form.Item label="Video Tutorial" name="video_tutorial">
+                        <Input type="url" />
+                    </Form.Item>
+
+
                     <h3 style={{ borderBottom: '1px ridge' }}>Hero</h3>
                     <Form.Item label="Hero title" name="hero_title">
                         <Input />
@@ -282,7 +240,7 @@ const Settings = () => {
                         }}
                     >
                         <Upload
-                            // defaultFileList={[...fileList]}
+                           
                             name="file"
                             action={API_FILE_UPLOAD}
                             maxCount={1}
@@ -301,7 +259,7 @@ const Settings = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item label="Delivery Charge" name="delivery_charge">
-                        <Input />
+                        <Input type="number" />
                     </Form.Item>
 
                     <Form.Item wrapperCol={{ offset: 2, span: 16 }}>

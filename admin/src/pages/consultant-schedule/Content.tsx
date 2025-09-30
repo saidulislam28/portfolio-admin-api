@@ -2,7 +2,7 @@ import { CalendarOutlined, ClockCircleOutlined, DeleteOutlined, EditOutlined, Ma
 import { Button, Card, Col, Empty, Layout, List, message, Row, Tabs, Tag, Typography } from 'antd';
 import React from 'react';
 const { Content } = Layout;
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const ContentPage = ({
     consultants,
@@ -29,7 +29,6 @@ const ContentPage = ({
 
 
                 <Row gutter={24}>
-                    {/* Left Column - Consultants List */}
                     <Col span={8}>
                         <Card
                             title={`Consultants (${consultants?.length})`}

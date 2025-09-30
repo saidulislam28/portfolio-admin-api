@@ -23,7 +23,6 @@ const _DrawerForm = ({
     const [form] = Form.useForm();
 
 
-    // Create mutation
     const createData = useMutation({
         mutationFn: async (data: any) => await post(getUrlForModel(model), data),
         onSuccess: (response) => {
@@ -109,14 +108,7 @@ const _DrawerForm = ({
                     <Form.Item
                         name="password"
                         label="Password"
-                    // rules={[
-                    //     { required: true, message: 'Please enter password' },
-                    //     { min: 8, message: 'Password must be at least 8 characters' },
-                    //     { 
-                    //         pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                    //         message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
-                    //     },
-                    // ]}
+                    
                     >
                         <Input.Password placeholder="Enter password" />
                     </Form.Item>
@@ -125,12 +117,7 @@ const _DrawerForm = ({
                 <Form.Item
                     name="phone"
                     label="Phone Number"
-                // rules={[
-                //     { 
-                //         pattern: /^[\+]?[1-9][\d]{0,15}$/,
-                //         message: 'Please enter a valid phone number'
-                //     },
-                // ]}
+                
                 >
                     <Input placeholder="Enter phone number (optional)" />
                 </Form.Item>

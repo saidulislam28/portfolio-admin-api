@@ -1,9 +1,10 @@
+/* eslint-disable  */
 import { DeleteOutlined, EyeOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Button, Popconfirm, Space, Table, Tag } from 'antd';
 import React from 'react';
 import { useNavigate } from 'react-router';
+import StatusTag from '~/components/GlobalStatusModal';
 import PDFDownloadButton from '~/components/PDFButton';
-import { PROGRESS_STATUS } from '~/store/slices/app/constants';
 import { formatMoney } from '~/utility/format_money';
 
 const TableGrid = ({
@@ -12,6 +13,8 @@ const TableGrid = ({
     handleTableChange,
     isLoading,
     data,
+    model,
+    refetch
 }) => {
     const navigate = useNavigate();
     const columns = [
@@ -57,13 +60,13 @@ const TableGrid = ({
             title: "Status",
             dataIndex: "status",
             key: "status",
-            render: (status) => {
-                let color = "default";
-                if (status === PROGRESS_STATUS.Approved) color = "success";
-                if (status === PROGRESS_STATUS.Rejected) color = "error";
-                if (status === PROGRESS_STATUS.Pending) color = "processing";
-
-                return <Tag color={color}>{status}</Tag>;
+            render: (_, record) => {
+                return <StatusTag
+                    status={record.status}
+                    recordId={record.id}
+                    model={model}
+                    refetch={refetch}
+                />
             },
         },
         {
@@ -108,11 +111,7 @@ const TableGrid = ({
                     <Button
                         icon={<EyeOutlined />}
                         onClick={() => navigate(`/exam-registration/details/${record.id}`)}
-                    />
-                    {/* <Button 
-                icon={<EditOutlined />} 
-                onClick={() => console.log('Edit', record.id)}
-              /> */}
+                    />                    
                     <PDFDownloadButton
                         data={record}
                         fileName={`order-${record.id}`}

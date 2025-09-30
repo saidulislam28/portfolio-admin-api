@@ -32,7 +32,7 @@ const BlogDetails = () => {
   const BASE_URL = '/blog';
   const navigate = useNavigate();
 
-  const { id } = useParams(); // read id parameter from the url
+  const { id } = useParams(); 
 
   const {
     isLoading,
@@ -115,7 +115,6 @@ const BlogDetails = () => {
           style={{ width: "100%" }}
           cover={<img alt="example" src={details?.data?.image} style={{ maxWidth: "500px", maxHeight: "500px" }} />}
         >
-          {/* <Meta title={details?.data?.title} description={details?.data?.content} /> */}
           <Meta title={details?.data?.title} description={<div
             dangerouslySetInnerHTML={{ __html: details?.data?.content }}
           />} />

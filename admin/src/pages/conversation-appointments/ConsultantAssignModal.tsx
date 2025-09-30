@@ -21,7 +21,6 @@ const ConsultantAssignModal = ({
                 setSelectedConsultantId(null);
             }}
             onOk={confirmAssignment}
-        // confirmLoading={assignConsultantMutation?.isPending}
         >
             <Select
                 style={{ width: "100%" }}

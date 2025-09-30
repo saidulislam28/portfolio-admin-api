@@ -49,8 +49,8 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         doc.fillColor('white').font('Helvetica-Bold').fontSize(16).text('SpeakingMate', margin + 70, 30);
         doc.font('Helvetica').fontSize(9).text('MASTER IELTS SPEAKING WITH CONFIDENCE', margin + 70, 50);
 
-        doc.fontSize(9).text('+8801711-779687', pageWidth - margin - 120, 30);
-        doc.text('info@speakingmate.org', pageWidth - margin - 120, 45);
+        doc.fontSize(9).text('+88 09678 771912', pageWidth - margin - 120, 30);
+        doc.text('Info.speakingmate@gmail.co', pageWidth - margin - 120, 45);
 
         // ---------------- TITLE ----------------
         currentY = 120;

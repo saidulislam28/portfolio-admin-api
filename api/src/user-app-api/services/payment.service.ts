@@ -19,7 +19,6 @@ export class PaymentService {
 
   async verifyPayment(payload: SSLCommerzCallbackDto) {
     this.logger.log(`Starting payment verification for transaction: ${payload.tran_id}`);
-    console.log('verifyPayment', payload)
     try {
       
       const order = await this.prismaService.order.findFirst({
@@ -27,8 +26,6 @@ export class PaymentService {
           sslc_transaction_id: payload.tran_id
         }
       });
-
-      // TODO if order not found, return error
       
       // update order status
       await this.prismaService.order.update({
@@ -62,42 +59,7 @@ export class PaymentService {
   }
 
   private async addInvoiceEmailToQueue(order_id: number) {
-
-     // Fetch order details with user information for email
-      // const orderWithDetails = await this.prismaService.order.findUnique({
-      //   where: { id: order_id },
-      //   include: {
-      //     User: {
-      //       select: {
-      //         email: true,
-      //         full_name: true,
-      //         phone: true
-      //       }
-      //     },
-      //     Appointment: {
-      //       include: {
-      //         // service: true,
-      //         Consultant: {
-      //           select: {
-      //             full_name: true,
-      //             skills: true
-      //           }
-      //         }
-      //       }
-      //     }
-      //   }
-      // });
-
-      // if (!orderWithDetails) {
-      //   throw new HttpException('Order not found', HttpStatus.NOT_FOUND);
-      // }
-
-      // // Get payment details
-      // const payment = await this.prismaService.payment.findFirst({
-      //   where: { transaction_id: payload.tran_id }
-      // });
-
-    // console.log("Invoice queue>>>, ", email, order, payment, paymentCallback)
+    
 
     try {
       const job = await this.emailQueue.add(QUEUE_JOBS.send_payment_invoice, {

@@ -1,4 +1,3 @@
-// src/coupon/coupon.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CouponResponseDto, ValidateCouponDto, ValidateCouponResponseDto } from '../dto/coupon.dto';

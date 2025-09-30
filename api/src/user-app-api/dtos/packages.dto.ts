@@ -1,8 +1,6 @@
-// packages.dto.ts
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
-// Create Package DTO
 export class CreatePackageDto {
   @ApiProperty({ description: 'Package name', example: 'Premium Package' })
   @IsString()

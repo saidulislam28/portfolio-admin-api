@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  TouchableOpacity, 
-  TextInput, 
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
   Alert,
   Linking,
   StatusBar,
@@ -12,15 +12,16 @@ import {
   StyleSheet,
   Dimensions
 } from 'react-native';
-import { 
-  Ionicons, 
-  MaterialIcons, 
-  FontAwesome, 
-  Feather 
+import {
+  Ionicons,
+  MaterialIcons,
+  FontAwesome,
+  Feather
 } from '@expo/vector-icons';
 import CommonHeader from '@/components/CommonHeader';
 import { CONTACTS } from '@sm/common';
 import { BaseButton } from '@/components/BaseButton';
+import { useAppSettings } from '@/hooks/queries/useAppSettings';
 
 const { width } = Dimensions.get('window');
 
@@ -28,6 +29,18 @@ const HelpSupportScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [feedbackText, setFeedbackText] = useState('');
   const [rating, setRating] = useState(0);
+
+
+  const {
+    data,
+    isLoading,
+    error,
+    isSuccess: isSettingsFetchSuccess,
+  } = useAppSettings();
+
+  const navigation = data?.navigations
+  console.log("appsettingsData", navigation);
+
 
   // Icons mapping
   const icons = {
@@ -39,10 +52,10 @@ const HelpSupportScreen = () => {
     Shield: () => <Feather name="shield" size={20} color="#6366F1" />,
     ChevronRight: ({ color, size, style }) => <Feather name="chevron-right" size={size} color={color} style={style} />,
     Star: ({ color, size, fill }) => (
-      <MaterialIcons 
-        name={fill === 'transparent' ? "star-border" : "star"} 
-        size={size} 
-        color={color} 
+      <MaterialIcons
+        name={fill === 'transparent' ? "star-border" : "star"}
+        size={size}
+        color={color}
       />
     ),
     Send: () => <Feather name="send" size={20} color="#FFFFFF" />,
@@ -54,21 +67,21 @@ const HelpSupportScreen = () => {
   };
 
   const contactOptions = [
-    {
-      id: 1,
-      title: 'Live Chat',
-      subtitle: 'Get instant help from our support team',
-      icon: 'MessageCircle',
-      color: '#10B981',
-      action: () => Alert.alert('Live Chat', 'Opening chat support...'),
-    },
+    // {
+    //   id: 1,
+    //   title: 'Live Chat',
+    //   subtitle: 'Get instant help from our support team',
+    //   icon: 'MessageCircle',
+    //   color: '#10B981',
+    //   action: () => Alert.alert('Live Chat', 'Opening chat support...'),
+    // },
     {
       id: 2,
       title: 'Call Support',
       subtitle: 'Speak directly with a support agent',
       icon: 'Phone',
       color: '#3B82F6',
-      action: () => Linking.openURL(`tel:${CONTACTS.call_support}`),
+      action: () => Linking.openURL(`tel:${navigation?.phone ?? "8809678771912"}`),
     },
     {
       id: 3,
@@ -76,7 +89,7 @@ const HelpSupportScreen = () => {
       subtitle: 'Send us your questions via email',
       icon: 'Mail',
       color: '#8B5CF6',
-      action: () => Linking.openURL(`mailto:${CONTACTS.support_mail}`),
+      action: () => Linking.openURL(`mailto:${navigation?.email ?? 'Info.speakingmate@gmail.co'}`),
     },
   ];
 
@@ -119,57 +132,29 @@ const HelpSupportScreen = () => {
       subtitle: 'Learn how to use all features',
       icon: 'FileText',
       color: '#F59E0B',
-      action: () => Alert.alert('User Guide', 'Opening user guide...'),
+      action: () => Linking.openURL(navigation?.user_guide),
     },
     {
       title: 'Video Tutorials',
       subtitle: 'Watch step-by-step guides',
       icon: 'Video',
       color: '#EF4444',
-      action: () => Alert.alert('Tutorials', 'Opening video tutorials...'),
+      action: () => Linking.openURL(navigation?.video_tutorial),
     },
     {
       title: 'Privacy Policy',
       subtitle: 'Read our privacy policy',
       icon: 'Shield',
       color: '#6366F1',
-      action: () => Linking.openURL(`${CONTACTS.privacy_policy_url}`),
+      action: () => Linking.openURL(navigation?.privacy_policy),
     },
   ];
 
-  const submitFeedback = () => {
-    if (!feedbackText.trim()) {
-      Alert.alert('Error', 'Please enter your feedback before submitting.');
-      return;
-    }
-    
-    Alert.alert(
-      'Thank You!',
-      'Your feedback has been submitted successfully. We appreciate your input!',
-      [{ text: 'OK', onPress: () => { setFeedbackText(''); setRating(0); } }]
-    );
-  };
-
-  const renderStars = () => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <TouchableOpacity
-        key={index}
-        onPress={() => setRating(index + 1)}
-        style={styles.starButton}
-      >
-        {icons.Star({
-          size: 28,
-          color: index < rating ? '#F59E0B' : '#D1D5DB',
-          fill: index < rating ? '#F59E0B' : 'transparent',
-        })}
-      </TouchableOpacity>
-    ));
-  };
 
   return (
     <View style={styles.container}>
       <CommonHeader />
-      
+
       {/* Header */}
       {/* <View style={styles.header}>
         <Text style={styles.headerTitle}>Help & Support</Text>
@@ -240,14 +225,14 @@ const HelpSupportScreen = () => {
                   <View style={styles.row}>
                     {icons[category.icon]()}
                     <Text style={styles.faqTitle}>{category.title}</Text>
-                    {icons.ChevronRight({ 
-                      size: 20, 
-                      color: "#9CA3AF", 
+                    {icons.ChevronRight({
+                      size: 20,
+                      color: "#9CA3AF",
                       style: { transform: [{ rotate: isExpanded ? '90deg' : '0deg' }] }
                     })}
                   </View>
                 </TouchableOpacity>
-                
+
                 {isExpanded && (
                   <View style={styles.faqContent}>
                     {category.questions.map((faq, index) => (
@@ -263,36 +248,6 @@ const HelpSupportScreen = () => {
           })}
         </View>
 
-        {/* Feedback Section */}
-        <View style={styles.section}>
-          <View style={styles.feedbackCard}>
-            <Text style={styles.sectionTitle}>Send Feedback</Text>
-            
-            {/* Rating */}
-            <View style={styles.ratingContainer}>
-              <Text style={styles.label}>Rate your experience</Text>
-              <View style={styles.starRow}>{renderStars()}</View>
-            </View>
-
-            {/* Feedback Input */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Your feedback</Text>
-              <TextInput
-                value={feedbackText}
-                onChangeText={setFeedbackText}
-                placeholder="Tell us about your experience or suggest improvements..."
-                multiline
-                numberOfLines={4}
-                style={styles.textInput}
-                textAlignVertical="top"
-              />
-            </View>
-
-            {/* Submit Button */}
-            <BaseButton title='Submit Feedback' onPress={submitFeedback} customIcon={icons.Send()} />
-          </View>
-        </View>
-
         {/* Footer */}
         <View style={styles.footerSection}>
           <View style={styles.footerCard}>
@@ -301,7 +256,7 @@ const HelpSupportScreen = () => {
             <Text style={styles.footerText}>
               Can't find what you're looking for? Our support team is available 24/7 to assist you with any questions or concerns.
             </Text>
-            <BaseButton title='Contact Support' onPress={() => Linking.openURL(`tel:${CONTACTS.call_support}`)} />
+            <BaseButton title='Contact Support' onPress={() => Linking.openURL(navigation?.help_chat)} />
           </View>
         </View>
       </ScrollView>

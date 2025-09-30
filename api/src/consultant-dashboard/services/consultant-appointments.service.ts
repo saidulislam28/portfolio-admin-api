@@ -10,60 +10,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ConsultantAppointmentsService {
   constructor(private readonly prismaService: PrismaService) { }
 
-  async getAppointmentList(consultant_id: number) {
-    console.log('came hrre', consultant_id);
-    // const findConsultant = await this.prismaService.consultant.findFirst({
-    //   where: { id: consultant_id, is_active: true, is_verified: true },
-    // });
-
-    // if (!findConsultant) {
-    //   throw new HttpException(
-    //     { message: 'consultant not found' },
-    //     HttpStatus.NOT_FOUND,
-    //   );
-    // }
-
-    // const now = new Date();
-    // const whereClause: any = {
-    //   consultant_id,
-    //   start_at: {},
-    // };
-
-    // if (type === 'past') {
-    //   whereClause.start_at.lte = now;
-    // } else {
-    //   whereClause.start_at.gte = now;
-    // }
-
-    // const totalUpComing = await this.prismaService.appointment.count({
-    //   where: { consultant_id, start_at: { gte: now } },
-    // });
-    // const totalPast = await this.prismaService.appointment.count({
-    //   where: { consultant_id, start_at: { lte: now } },
-    // });
-
-    // const appointment = await this.prismaService.appointment.findMany({
-    //   where: whereClause,
-    //   orderBy: { created_at: 'desc' },
-    //   include: {
-    //     User: {
-    //       select: { id: true, full_name: true, profile_image: true, phone: true, email: true, is_test_user: true },
-    //     },
-    //     Order: {
-    //       select: { service_type: true },
-    //     },
-    //     MockTestFeedback: {
-    //       select: {
-    //         appointment_id: true
-    //       }
-    //     },
-    //     ConversationFeedback: {
-    //       select: {
-    //         appointment_id: true
-    //       }
-    //     }
-    //   },
-    // });
+  async getAppointmentList(consultant_id: number) {    
 
     const findAppointments = await this.prismaService.appointment.findMany({
       where: {
@@ -289,7 +236,7 @@ export class ConsultantAppointmentsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    console.log('Updating appointment ID:', appointment?.id);
+
 
     const updateData = await this.prismaService.appointment.update({
       where: { id: Number(appointment.id) },
@@ -302,7 +249,6 @@ export class ConsultantAppointmentsService {
       );
     }
 
-    console.log('updated ', updateData);
 
     return updateData;
   }

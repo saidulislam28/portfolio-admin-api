@@ -1,4 +1,3 @@
-// src/services/UserService.js
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OrderPaymentStatus, PAYMENT_STATUS } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';

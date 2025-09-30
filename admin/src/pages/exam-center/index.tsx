@@ -1,12 +1,11 @@
 /* eslint-disable */
 import React, { useState } from "react";
-import { Button, Col, Row, Space, Typography } from "antd";
+import { Button, Col, Row } from "antd";
 import DrawerForm from "./_DrawerForm";
 import { PlusOutlined } from "@ant-design/icons";
 import TableGrid from "./_TableGrid";
 import { getHeader } from "~/utility/helmet";
 import PageTitle from "~/components/PageTitle";
-const { Title } = Typography;
 const model = 'ExamCenter';
 const title = 'Exam Center';
 const drawerTitle = 'Add Center';
@@ -74,11 +73,7 @@ const ExamCenter = () => {
                 isEditing={isEditing}
                 editedItem={editedItem}
                 onSubmitSuccess={onSubmitSuccess}
-            />
-            {/* <Space wrap style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Title level={1}>{title}</Title>
-                <Button type="primary" icon={<PlusOutlined />} onClick={showDrawer}>Add New</Button>
-            </Space> */}
+            />           
             <Row gutter={16}>
                 <Col className="gutter-row" span={24}>
                     <TableGrid

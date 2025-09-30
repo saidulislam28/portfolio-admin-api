@@ -47,6 +47,10 @@ export default function CheckoutScreen() {
   const charge = appSettingsData?.base_data?.delivery_charge ?? 0;
   const deliveryCharge = Number(charge);
 
+
+
+  console.log("delivery charge", charge, deliveryCharge);
+
   const [processing, setProcessing] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -217,7 +221,7 @@ export default function CheckoutScreen() {
     );
   }
   // Use the summary object for the subtotal
-  const total = subtotal + deliveryCharge;
+  const total = subtotal + Number(deliveryCharge);
 
   return (
     <View style={styles.container}>

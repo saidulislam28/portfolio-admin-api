@@ -1,9 +1,10 @@
+/* eslint-disable  */
 import {
   DeleteOutlined,
   EyeOutlined,
   LeftOutlined,
   RightOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
@@ -11,7 +12,6 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Form,
   Input,
   message,
@@ -22,12 +22,12 @@ import {
   Space,
   Table,
   Tabs,
-  Tag,
-  Typography,
+  Tag
 } from "antd";
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import StatusTag from "~/components/GlobalStatusModal";
 
 import PageTitle from "~/components/PageTitle";
 import PDFDownloadButton from "~/components/PDFButton";
@@ -38,12 +38,9 @@ import {
   getUrlForModel,
 } from "~/services/api/endpoints";
 import { PROGRESS_STATUS, SERVICE_TYPE } from "~/store/slices/app/constants";
-import { formatMoney } from "~/utility/format_money";
 import { getHeader } from "~/utility/helmet";
 const { TabPane } = Tabs;
 
-const { RangePicker } = DatePicker;
-const { Title } = Typography;
 const { Option } = Select;
 const title = "Study Abroad";
 
@@ -104,13 +101,11 @@ const ExamRegistrationPage = () => {
     onSuccess: () => {
       message.success("Deleted Successfully");
       refetch();
-      // queryClient.invalidateQueries(['examRegistrations']);
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: any) => {
-      // console.log("id", id, "data", data)
 
       return await patch(getUrlForModel(model, Number(id)), data);
     },
@@ -132,7 +127,6 @@ const ExamRegistrationPage = () => {
     });
   };
 
-  // console.log("values exam order>>>>>", fetchData);
 
   const handleTableChange = (newPagination, filters, sorter) => {
     setPagination({
@@ -142,7 +136,6 @@ const ExamRegistrationPage = () => {
     });
   };
 
-  // console.log("values1", filters)
 
   const handleFilterSubmit = (values) => {
     const whereClouse: any = { created_at: {} };
@@ -201,7 +194,6 @@ const ExamRegistrationPage = () => {
     setPagination({ ...pagination, current: 1 });
   };
 
-  // console.log("values", filters)
 
   const handleClearFilters = () => {
     form.resetFields();
@@ -256,32 +248,15 @@ const ExamRegistrationPage = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => {
-        let color = "default";
-        if (status === PROGRESS_STATUS.Approved) color = "success";
-        if (status === PROGRESS_STATUS.Rejected) color = "error";
-        if (status === PROGRESS_STATUS.Pending) color = "processing";
-
-        return <Tag color={color}>{status}</Tag>;
+      render: (_, record) => {
+        return <StatusTag
+          status={record.status}
+          recordId={record.id}
+          model={model}
+          refetch={refetch}
+        />
       },
     },
-    // {
-    //   title: "Payment Status",
-    //   dataIndex: "payment_status",
-    //   key: "status",
-    //   render: (status) => {
-    //     let color = "default";
-    //     if (status === "unpaid") color = "error";
-    //     if (status === "paid") color = "success";
-
-    //     return <Tag color={color}>{status?.toUpperCase()}</Tag>;
-    //   },
-    // },
-    // {
-    //   title: "total",
-    //   key: "total",
-    //   render: (record) => <>{formatMoney(record)}</>,
-    // },
     {
       title: "Actions",
       key: "actions",
@@ -306,10 +281,6 @@ const ExamRegistrationPage = () => {
             icon={<EyeOutlined />}
             onClick={() => navigate(`/study-abroad/details/${record.id}`)}
           />
-          {/* <Button 
-            icon={<EditOutlined />} 
-            onClick={() => console.log('Edit', record.id)}
-          /> */}
           <PDFDownloadButton
             data={record}
             fileName={`order-${record.id}`}

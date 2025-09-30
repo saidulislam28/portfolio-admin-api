@@ -12,7 +12,6 @@ import {
   Modal,
   Popconfirm,
   Row,
-  Select,
   Space,
   Statistic,
   Table,
@@ -27,7 +26,6 @@ import { getHeader } from '~/utility/helmet';
 import CouponDrawerForm from './_DrawerForm';
 
 const { Title } = Typography;
-const { Option } = Select;
 
 const CouponsManagement: React.FC = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -46,12 +44,6 @@ const CouponsManagement: React.FC = () => {
       dataIndex: 'code',
       key: 'code',
       render: (code: string) => <Tag color="blue">{code}</Tag>,
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      ellipsis: true,
     },
     {
       title: 'Discount',
@@ -76,7 +68,6 @@ const CouponsManagement: React.FC = () => {
       title: 'Max Usage Per User',
       dataIndex: 'max_uses_per_user',
       key: 'max_uses_per_user',
-      // render: (amount: number) => amount ? `${amount}` : '-',
     },
     {
       title: 'Max Uses',
@@ -139,16 +130,6 @@ const CouponsManagement: React.FC = () => {
           >
 
           </Button>
-          {/* <Button
-            icon={<ShoppingCartOutlined />}
-            size="small"
-            onClick={() => {
-              setSelectedCoupon(record);
-              setIsApplyModalVisible(true);
-            }}
-          >
-            Apply
-          </Button> */}
           <Popconfirm
             title="Are you sure you want to delete this coupon?"
             onConfirm={() => deleteCouponMutation.mutate(record.id)}
@@ -259,7 +240,6 @@ const CouponsManagement: React.FC = () => {
         refetch={refetch}
       />
 
-      {/* Apply Coupon Modal (you can implement this similarly) */}
       <Modal
         title={`Apply Coupon: ${selectedCoupon?.code}`}
         open={isApplyModalVisible}

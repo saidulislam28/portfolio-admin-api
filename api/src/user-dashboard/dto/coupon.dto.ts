@@ -1,7 +1,5 @@
-// src/coupon/dto/validate-coupon.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber, IsOptional } from 'class-validator';
-// src/coupon/dto/coupon-response.dto.ts
 import { DiscountType, ServiceType } from '@prisma/client';
 
 export class ValidateCouponDto {

@@ -1,53 +1,44 @@
-import React from "react";
 import {
-  Card,
-  Descriptions,
-  Tag,
-  Typography,
-  Row,
-  Col,
-  Avatar,
-  Divider,
-  Button,
-  Space,
-  Image,
-  Badge,
-  Spin,
-  message,
-  Popconfirm,
-} from "antd";
-import {
-  UserOutlined,
+  BankOutlined,
+  BookOutlined,
+  CalendarOutlined,
+  HomeOutlined,
   MailOutlined,
   PhoneOutlined,
-  CalendarOutlined,
-  DollarOutlined,
-  FileTextOutlined,
-  HomeOutlined,
-  BookOutlined,
-  BankOutlined,
-  FileImageOutlined,
   SolutionOutlined,
-  WhatsAppOutlined,
+  UserOutlined,
+  WhatsAppOutlined
 } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Descriptions,
+  Image,
+  message,
+  Popconfirm,
+  Row,
+  Space,
+  Tag,
+  Typography
+} from "antd";
+import React from "react";
+import { useParams } from "react-router";
+import PageTitle from "~/components/PageTitle";
+import PDFDownloadButton from "~/components/PDFButton";
 import { patch, post } from "~/services/api/api";
 import { API_CRUD_FIND_WHERE, getUrlForModel } from "~/services/api/endpoints";
-import { useParams } from "react-router";
-import PDFDownloadButton from "~/components/PDFButton";
-import { getHeader } from "~/utility/helmet";
-import PageTitle from "~/components/PageTitle";
 import { formatMoney } from "~/utility/format_money";
-import { Appointment_status } from "~/store/slices/app/constants";
+import { getHeader } from "~/utility/helmet";
 
-const { Title, Text } = Typography;
+const {  Text } = Typography;
 const model = "Order";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
   const {
-    isLoading,
-    error,
     data: orderData,
     refetch,
   } = useQuery({
@@ -68,17 +59,6 @@ const OrderDetailsPage = () => {
 
   const orderInformation = orderData?.order_info;
 
-  console.log("orderData>>", orderData);
-
-  // Parse order_info JSON
-  // let orderInfo: any = {};
-  // let examCenter = {};
-  // try {
-  //     orderInfo = orderData?.order_info
-  //     examCenter = JSON.parse(orderInfo?.exam_canter);
-  // } catch (e) {
-  //     console.error('Error parsing order info:', e);
-  // }
 
   const getStatusColor = (status) => {
     const colors = {
@@ -90,15 +70,6 @@ const OrderDetailsPage = () => {
     return colors[status] || "default";
   };
 
-  const getPaymentStatusColor = (status) => {
-    const colors = {
-      paid: "green",
-      unpaid: "red",
-      pending: "orange",
-      refunded: "purple",
-    };
-    return colors[status] || "default";
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString("en-US", {
@@ -120,9 +91,6 @@ const OrderDetailsPage = () => {
     onSuccess: (response) => {
       message.success("Updated Successfully");
       refetch();
-      // appointmentRefetch();
-      // setIsModalVisible(false);
-      // successModal();
     },
     onError: () => {
       message.error("Something went wrong");
@@ -165,16 +133,9 @@ const OrderDetailsPage = () => {
             align="middle"
             style={{ marginBottom: "24px" }}
           >
-            {/* <Col>
-            <Title level={2} style={{ margin: 0 }}>
-              <FileTextOutlined style={{ marginRight: "8px" }} />
-              Order Details #{orderData?.id}
-            </Title>
-          </Col> */}
+          
             <Col style={{ marginLeft: 'auto' }}>
-              <Space>
-                {/* <Button type="primary">Edit Order</Button> */}
-                {/* <Button>Print</Button> */}
+              <Space>               
                 <PDFDownloadButton
                   data={orderData}
                   fileName={`order-${orderData?.id}`}
@@ -184,7 +145,7 @@ const OrderDetailsPage = () => {
                 <Popconfirm
                   title={orderData?.status === 'Canceled' ? "Already Canceled" : "Are you sure you want to cancel this order?"}
                   description="This action cannot be undone."
-                  // onConfirm={handleCancel}
+                  
                   onConfirm={() => {
                     if (orderData?.status === 'Canceled') {
                       return
@@ -412,21 +373,7 @@ const OrderDetailsPage = () => {
             </Col>
           </Row>
 
-          {/* Action Buttons */}
-          {/* <Card style={{ marginTop: "24px" }}>
-          <div style={{ textAlign: "center" }}>
-            <Space size="large">
-              <Button type="primary" size="large">
-                Approve Order
-              </Button>
-              <Button size="large">Send Email</Button>
-              <Button size="large">Generate Invoice</Button>
-              <Button danger size="large">
-                Cancel Order
-              </Button>
-            </Space>
-          </div>
-        </Card> */}
+          
         </div>
       </div>
     </>

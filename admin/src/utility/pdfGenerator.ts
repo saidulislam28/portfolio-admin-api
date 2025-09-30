@@ -1,6 +1,10 @@
+/* eslint-disable */
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { formatMoney } from './format_money';
+import { autoTable } from 'jspdf-autotable';
+import dayjs from 'dayjs';
+import { message } from 'antd';
 
 
 const formatDate = (dateString) => {
@@ -266,4 +270,153 @@ const createPDFContent = (data) => {
   `;
 
   return container;
+};
+
+export const generateReportPDF = (reportData) => {
+  if (!reportData) return;
+
+  const doc = new jsPDF();
+
+  // Header
+  doc.setFontSize(20);
+  doc.text('Order Reports', 20, 20);
+
+  doc.setFontSize(12);
+  doc.text(`Report Period: ${reportData.report_period}`, 20, 35);
+  if (reportData.service_type_filter) {
+    doc.text(`Service Type: ${reportData.service_type_filter}`, 20, 45);
+  }
+
+  // Summary Statistics
+  doc.setFontSize(16);
+  doc.text('Summary Statistics', 20, 60);
+
+  const summaryData = [
+    ['Metric', 'Value'],
+    ['Total Sales', `BDT ${reportData.total_sales}`],
+    ['Total Orders', reportData.total_orders.toString()],
+    ['Total Revenue', `BDT ${reportData.total_revenue}`],
+    ['Cancelled Amount', `BDT ${reportData.total_cancelled_amount}`],
+    ['Average Order Value', `BDT ${reportData.average_order_value}`],
+    ['COD Orders', reportData.payment_stats.cod_orders.toString()],
+    ['Online Orders', reportData.payment_stats.online_orders.toString()],
+  ];
+
+  autoTable(doc, {
+    head: [summaryData[0]],
+    body: summaryData.slice(1),
+    startY: 70,
+    theme: 'striped',
+  });
+
+  // Service Type Stats (if available)
+  if (reportData.service_type_stats.length > 0) {
+    const finalY = doc.lastAutoTable.finalY + 20;
+    doc.setFontSize(16);
+    doc.text('Service Type Breakdown', 20, finalY);
+
+    const serviceData = [
+      ['Service Type', 'Orders', 'Revenue', 'Avg Order Value'],
+      ...reportData.service_type_stats.map(stat => [
+        stat.service_type,
+        stat.order_count.toString(),
+        `BDT ${stat.total_revenue}`,
+        `BDT ${stat.average_order_value}`
+      ])
+    ];
+
+    autoTable(doc, {
+      head: [serviceData[0]],
+      body: serviceData.slice(1),
+      startY: finalY + 10,
+      theme: 'striped',
+    });
+  }
+
+  doc.save(`order-report-${reportData.report_period}.pdf`);
+};
+
+
+export const generateConsultantPDF = ({ reportData, selectedConsultantId, calculateOverallStats }) => {
+  if (!reportData) return;
+
+  const doc: any = new jsPDF();
+
+  // Header
+  doc.setFontSize(20);
+  doc.text('Consultant Appointment Report', 20, 20);
+
+  doc.setFontSize(12);
+  const startDate = dayjs(reportData.startDate).format('MMM DD, YYYY');
+  const endDate = dayjs(reportData.endDate).format('MMM DD, YYYY');
+  doc.text(`Report Period: ${startDate} - ${endDate}`, 20, 35);
+
+  if (selectedConsultantId) {
+    const consultant = reportData.consultants[0];
+    if (consultant) {
+      doc.text(`Consultant: ${consultant.consultantName}`, 20, 45);
+    }
+  }
+
+  // Overall Statistics
+  doc.setFontSize(16);
+  doc.text('Summary Statistics', 20, 60);
+
+  const stats = calculateOverallStats();
+  const summaryData = [
+    ['Metric', 'Value'],
+    ['Total Consultants', reportData.totalConsultants.toString()],
+    ['Total Appointments', stats?.totalAppointments.toString() || '0'],
+    ['Completed Appointments', stats?.totalCompleted.toString() || '0'],
+    ['Cancelled Appointments', stats?.totalCancelled.toString() || '0'],
+    ['No Show Appointments', stats?.totalNoShow.toString() || '0'],
+    ['Completion Rate', `${stats?.completionRate || 0}%`],
+  ];
+
+  autoTable(doc, {
+    head: [summaryData[0]],
+    body: summaryData.slice(1),
+    startY: 70,
+    theme: 'striped',
+  });
+
+  // Consultant Details
+  let currentY = doc.lastAutoTable.finalY + 20;
+
+  reportData.consultants.forEach((consultant, index) => {
+    if (currentY > 250) {
+      doc.addPage();
+      currentY = 20;
+    }
+
+    doc.setFontSize(14);
+    doc.text(`${consultant.consultantName}`, 20, currentY);
+    doc.setFontSize(10);
+    doc.text(`${consultant.consultantEmail}`, 20, currentY + 10);
+
+    const consultantData = [
+      ['Status', 'Count'],
+      ['Initiated', consultant.overallStatusCounts.initiated.toString()],
+      ['Pending', consultant.overallStatusCounts.pending.toString()],
+      ['Confirmed', consultant.overallStatusCounts.confirmed.toString()],
+      ['Cancelled', consultant.overallStatusCounts.cancelled.toString()],
+      ['Completed', consultant.overallStatusCounts.completed.toString()],
+      ['No Show', consultant.overallStatusCounts.no_show.toString()],
+    ];
+
+    autoTable(doc, {
+      head: [consultantData[0]],
+      body: consultantData.slice(1),
+      startY: currentY + 20,
+      theme: 'striped',
+      margin: { left: 20, right: 20 },
+      columnStyles: { 0: { cellWidth: 60 }, 1: { cellWidth: 40 } }
+    });
+
+    currentY = doc.lastAutoTable.finalY + 15;
+  });
+
+  const fileName = `consultant-report-${dayjs(reportData.startDate).format('YYYY-MM-DD')}-to-${dayjs(reportData.endDate).format('YYYY-MM-DD')}.pdf`;
+  doc.save(fileName);
+  message.success('PDF report downloaded successfully');
 };

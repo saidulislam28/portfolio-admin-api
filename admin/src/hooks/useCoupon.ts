@@ -1,6 +1,7 @@
 // src/hooks/useCoupons.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { message } from 'antd';
+
 import { CreateCouponData } from '~/@types/coupon';
 import { deleteApi, get, patch, post } from '~/services/api/api';
 import { COUPON, COUPON_API_WITH_ID } from '~/services/api/endpoints';
@@ -26,7 +27,7 @@ export interface Coupon {
 
 export const useCoupons = () => {
   return useQuery({
-    queryKey: ['coupons-all'],
+    queryKey: ['coupons'],
     queryFn: () => get(COUPON),
     select: (data) => {
       return data?.data ?? []
@@ -36,7 +37,7 @@ export const useCoupons = () => {
 
 export const useCoupon = (id: number) => {
   return useQuery({
-    queryKey: ['coupon', id],
+    queryKey: ['coupons', id],
     queryFn: () => get(COUPON_API_WITH_ID(id)),
     select: (data) => data?.data,
     enabled: !!id,

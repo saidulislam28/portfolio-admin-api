@@ -26,10 +26,9 @@ import { AGORA_APP_ID } from '~/configs';
 
 const { Text } = Typography;
 
-// Inner component that uses the Agora hooks
 const VideoCallRoom = ({ channelName, userId, token, onCallEnd, isAdmin = false }) => {
-  const [isAudioMuted, setIsAudioMuted] = useState(true); // Start muted
-  const [isVideoMuted, setIsVideoMuted] = useState(true); // Start with video off
+  const [isAudioMuted, setIsAudioMuted] = useState(true); 
+  const [isVideoMuted, setIsVideoMuted] = useState(true); 
   const [isJoined, setIsJoined] = useState(false);
 
   const agoraEngine = useRTCClient();
@@ -41,8 +40,8 @@ const VideoCallRoom = ({ channelName, userId, token, onCallEnd, isAdmin = false 
   });
 
   // Local tracks - start muted/disabled
-  const { localMicrophoneTrack } = useLocalMicrophoneTrack(true); // true = muted initially
-  const { localCameraTrack } = useLocalCameraTrack(true); // true = disabled initially
+  const { localMicrophoneTrack } = useLocalMicrophoneTrack(true); 
+  const { localCameraTrack } = useLocalCameraTrack(true);
 
   // Publish tracks
   usePublish([localMicrophoneTrack, localCameraTrack]);
@@ -51,12 +50,10 @@ const VideoCallRoom = ({ channelName, userId, token, onCallEnd, isAdmin = false 
   const remoteUsers = useRemoteUsers();
   const { audioTracks } = useRemoteAudioTracks(remoteUsers);
 
-  // Play remote audio tracks
   useEffect(() => {
     audioTracks.forEach((track) => track.play());
   }, [audioTracks]);
 
-  // Handle connection status
   useEffect(() => {
     if (isConnected && !isJoined) {
       setIsJoined(true);
@@ -310,12 +307,7 @@ const VideoCallRoom = ({ channelName, userId, token, onCallEnd, isAdmin = false 
 
 // Main component with AgoraRTCProvider
 const AgoraVideoCall = ({ channelName, userId, token, onCallEnd, isAdmin = false }) => {
-  console.log("token from agora>>>", token);
-  console.log("AGORA_APP_ID from agora>>>", AGORA_APP_ID);
-
-  // Create Agora client
   const client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
-
   return (
     <AgoraRTCProvider client={client}>
       <VideoCallRoom

@@ -36,18 +36,7 @@ const VehicleModal: React.FC<VehicleModalProps> = ({
       return data?.data;
     }
   });
-  // const {
 
-  //   data: FacilityData,
-  //   refetch: facilityRefetch,
-  // } = useQuery({
-  //   queryKey: ["Facility"],
-  //   queryFn: () => get(getUrlForModel("Facility")),
-  //   staleTime: 0,
-  //   select: (data) => {
-  //     return data?.data;
-  //   }
-  // });
 
 
   const packageOptions = PackageData?.map((item) => {
@@ -57,19 +46,6 @@ const VehicleModal: React.FC<VehicleModalProps> = ({
     }
     return data;
   })
-  // const facilityOption = FacilityData?.map((item) => {
-  //   const data = {
-  //     value: item?.id,
-  //     label: item?.facility_name
-  //   }
-  //   return data;
-  // })
-
-
-  // console.log("userData", FacilityData)
-
-
-
 
   return (
     <Modal
@@ -87,14 +63,6 @@ const VehicleModal: React.FC<VehicleModalProps> = ({
         >
           <Input placeholder="Enter vehicle name" />
         </Form.Item>
-        {/* <Form.Item
-          name="type"
-          label="Vehicle type"
-          rules={[{ required: true, message: 'Please enter vehicle type' }]}
-        >
-          <Input placeholder="Enter vehicle type" />
-        </Form.Item> */}
-
         <Form.Item label="Select Type" name="type">
           <Select
             allowClear
@@ -103,15 +71,7 @@ const VehicleModal: React.FC<VehicleModalProps> = ({
             options={packageOptions}
           />
         </Form.Item>
-        {/* <Form.Item label="Facilities" name="facilities">
-          <Select
-            mode="tags"
-            style={{ width: '100%' }}
-            placeholder="Select Facilities"
-            options={facilityOption}
-          />
-        </Form.Item> */}
-
+       
         <Form.Item
           name="model"
           label="Model"

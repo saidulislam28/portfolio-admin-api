@@ -25,11 +25,6 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
         queryFn: () => get(getUrlForModel(model)),
         staleTime: 0,
     });
-
-
-
-
-
     useEffect(() => {
         if (trigger) {
             refetch();

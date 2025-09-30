@@ -70,7 +70,6 @@ const Notification = ({
 
     const {
         data: consultants = [],
-        isLoading: isLoadingConsultants,
     } = useQuery({
         queryKey: ['get-consultants', consultantSearchText],
         queryFn: () =>
@@ -92,7 +91,6 @@ const Notification = ({
 
     const {
         data: users = [],
-        isLoading: isLoadingUsers,
     } = useQuery({
         queryKey: ['get-users', userSearchText],
         queryFn: () =>
@@ -112,13 +110,12 @@ const Notification = ({
     const handleSendNotification = async (values) => {
         setLoading(true);
 
-        // Construct payload based on backend structure
         const payload = {
             title: values.title,
             message: values.message,
-            recipient_type: recipientCategory,           // "User" or "Consultant"
-            all_user: recipientType === 'all',           // true for all, false for specific
-            selected_users: recipientType === 'specific' ? selectedRecipients : [], // Send only if specific
+            recipient_type: recipientCategory,     
+            all_user: recipientType === 'all',   
+            selected_users: recipientType === 'specific' ? selectedRecipients : [], 
         };
         try {
 
@@ -395,7 +392,6 @@ const Notification = ({
                                 </Button>
                                 <Button
                                     type="text"
-                                // onClick={handleReset}
                                 >
                                     Reset
                                 </Button>
