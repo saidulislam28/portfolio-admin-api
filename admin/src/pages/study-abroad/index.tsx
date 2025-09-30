@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable  */
 import {
   DeleteOutlined,
-  EditOutlined,
   EyeOutlined,
   LeftOutlined,
   RightOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
@@ -39,7 +38,6 @@ import {
   getUrlForModel,
 } from "~/services/api/endpoints";
 import { PROGRESS_STATUS, SERVICE_TYPE } from "~/store/slices/app/constants";
-import { getStatusColor } from "~/utility";
 import { getHeader } from "~/utility/helmet";
 const { TabPane } = Tabs;
 
@@ -103,13 +101,11 @@ const ExamRegistrationPage = () => {
     onSuccess: () => {
       message.success("Deleted Successfully");
       refetch();
-      // queryClient.invalidateQueries(['examRegistrations']);
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: any) => {
-      // console.log("id", id, "data", data)
 
       return await patch(getUrlForModel(model, Number(id)), data);
     },
@@ -122,16 +118,6 @@ const ExamRegistrationPage = () => {
     },
   });
 
-  // const handleStatusUpdate = () =>{
-
-  //   updateMutation.mutate({
-  //     id: ....,
-  //     data: {
-  //       status: ....
-  //     }
-  //   })
-  // }
-
   const handleUpdate = (record) => {
     const newValue = !record.is_archive;
 
@@ -141,7 +127,6 @@ const ExamRegistrationPage = () => {
     });
   };
 
-  // console.log("values exam order>>>>>", fetchData);
 
   const handleTableChange = (newPagination, filters, sorter) => {
     setPagination({
@@ -151,7 +136,6 @@ const ExamRegistrationPage = () => {
     });
   };
 
-  // console.log("values1", filters)
 
   const handleFilterSubmit = (values) => {
     const whereClouse: any = { created_at: {} };
@@ -210,7 +194,6 @@ const ExamRegistrationPage = () => {
     setPagination({ ...pagination, current: 1 });
   };
 
-  // console.log("values", filters)
 
   const handleClearFilters = () => {
     form.resetFields();
@@ -266,38 +249,14 @@ const ExamRegistrationPage = () => {
       dataIndex: "status",
       key: "status",
       render: (_, record) => {
-        let color = "default";
-        if (record.status === PROGRESS_STATUS.Approved) color = "success";
-        if (record.status === PROGRESS_STATUS.Rejected) color = "error";
-        if (record.status === PROGRESS_STATUS.Pending) color = "processing";
-
-        // return <Tag icon={<EditOutlined />} color={color}>{status}  </Tag>;
         return <StatusTag
           status={record.status}
-          color={color} // You'll need to implement this function
           recordId={record.id}
           model={model}
           refetch={refetch}
         />
       },
     },
-    // {
-    //   title: "Payment Status",
-    //   dataIndex: "payment_status",
-    //   key: "status",
-    //   render: (status) => {
-    //     let color = "default";
-    //     if (status === "unpaid") color = "error";
-    //     if (status === "paid") color = "success";
-
-    //     return <Tag color={color}>{status?.toUpperCase()}</Tag>;
-    //   },
-    // },
-    // {
-    //   title: "total",
-    //   key: "total",
-    //   render: (record) => <>{formatMoney(record)}</>,
-    // },
     {
       title: "Actions",
       key: "actions",
@@ -322,10 +281,6 @@ const ExamRegistrationPage = () => {
             icon={<EyeOutlined />}
             onClick={() => navigate(`/study-abroad/details/${record.id}`)}
           />
-          {/* <Button 
-            icon={<EditOutlined />} 
-            onClick={() => console.log('Edit', record.id)}
-          /> */}
           <PDFDownloadButton
             data={record}
             fileName={`order-${record.id}`}

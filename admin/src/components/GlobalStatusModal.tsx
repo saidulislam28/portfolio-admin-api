@@ -1,24 +1,24 @@
 /* eslint-disable */
-import React, { useState } from 'react';
-import { Tag, Modal, Select, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { useMutation } from '@tanstack/react-query';
+import { Modal, Select, Tag, message } from 'antd';
+import React, { useState } from 'react';
 import { patch } from '~/services/api/api';
 import { getUrlForModel } from '~/services/api/endpoints';
+import { PROGRESS_STATUS } from '~/store/slices/app/constants';
 
 const { Option } = Select;
 
-export const PROGRESS_STATUS = {
-    Pending: "Pending",
-    Approved: "Approved",
-    Rejected: "Rejected",
-    Canceled: "Canceled"
-}
 
-// In your component
-const StatusTag = ({ status, color, recordId, model, refetch }) => {
+
+const GlobalStatusModal = ({ status, recordId, model, refetch }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState(status);
+
+    let color = "default";
+    if (status === PROGRESS_STATUS.Approved) color = "success";
+    if (status === PROGRESS_STATUS.Rejected) color = "error";
+    if (status === PROGRESS_STATUS.Pending) color = "processing";
 
     const updateMutation: any = useMutation({
         mutationFn: async ({ id, data }: any) => {
@@ -55,7 +55,7 @@ const StatusTag = ({ status, color, recordId, model, refetch }) => {
 
     const handleModalCancel = () => {
         setIsModalVisible(false);
-        setSelectedStatus(status); // Reset to original status
+        setSelectedStatus(status); 
     };
 
     const handleStatusChange = (value) => {
@@ -109,15 +109,4 @@ const StatusTag = ({ status, color, recordId, model, refetch }) => {
     );
 };
 
-export default StatusTag;
-
-// Usage example in your component:
-/*
-<StatusTag 
-  status={record.status} 
-  color={getStatusColor(record.status)} // You'll need to implement this function
-  recordId={record.id}
-  model={model}
-  refetch={refetch}
-/>
-*/
+export default GlobalStatusModal;

@@ -258,15 +258,8 @@ const ExamRegistrationPage = () => {
       dataIndex: "status",
       key: "status",
       render: (_, record) => {
-        let color = "default";
-        if (record.status === PROGRESS_STATUS.Approved) color = "success";
-        if (record.status === PROGRESS_STATUS.Rejected) color = "error";
-        if (record.status === PROGRESS_STATUS.Pending) color = "processing";
-
-        // return <Tag icon={<EditOutlined />} color={color}>{status}  </Tag>;
         return <StatusTag
           status={record.status}
-          color={color} // You'll need to implement this function
           recordId={record.id}
           model={model}
           refetch={refetch}

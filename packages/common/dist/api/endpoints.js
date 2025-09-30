@@ -17,6 +17,9 @@ export const API_CONSULTANT = {
     mocktest_comments: 'feedback-comments/mock-test',
     send_start_call_notification: 'notifications/consultant-start-call',
     send_end_call_notification: 'notifications/consultant-end-call',
+    consultant_notification: 'consultant-notifications',
+    notification_mark_as_read: 'consultant-notifications/mark-as-read',
+    delete_notification: 'consultant-notifications/delete'
 };
 export const API_COMMON = {
     post_device_tokens: "user/device-tokens",
@@ -48,4 +51,7 @@ export const API_USER = {
     send_end_call_notification: 'notifications/user-end-call',
     order_details: 'orders/{id}/details',
     give_rating: 'user/ratings',
+    user_notification: 'user-notifications',
+    notification_mark_as_read: 'user-notifications/mark-as-read',
+    delete_notification: 'user-notifications/delete'
 };

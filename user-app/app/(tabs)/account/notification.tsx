@@ -37,21 +37,11 @@ const NotificationsScreen = () => {
   } = useNotifications({
     isRead: filter === 'all' ? undefined : false,
   });
-  // console.log("data>>>>", data?.pages);
-  // console.log("filter >>>>", filter === 'all' ? undefined : false);
-
   const markAllAsReadMutation = useMarkAllAsRead();
   const deleteMutation = useDeleteNotification();
   const unreadCount = useUnreadCount();
 
-
-  // console.log("unread count", unreadCount);
-
   const notifications: Notification[] = data?.pages?.flatMap(page => page?.data) || [];
-
-  // console.log("data>>>>", notifications);
-
-
   const loadMore = () => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
@@ -76,7 +66,6 @@ const NotificationsScreen = () => {
 
   const handleDeleteAllRead = () => {
     const readNotifications = notifications?.filter(n => n.isRead === true);
-    // console.log("hiting delete", readNotifications);
     if (readNotifications.length === 0) {
       Alert.alert('No Read Notifications', 'There are no read notifications to delete.');
       return;

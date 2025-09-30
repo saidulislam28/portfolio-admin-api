@@ -1,5 +1,4 @@
 
-// components/NotificationItem.tsx
 import { useDeleteNotification, useMarkAllAsRead } from '@/hooks/useUserNotification';
 import { PRIMARY_COLOR } from '@/lib/constants';
 import React from 'react';

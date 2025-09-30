@@ -14,23 +14,6 @@ export default function Index() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [checkingLaunch, setCheckingLaunch] = useState(true);
-
-
-
-  // useEffect(() => {
-
-  //   const fetchNotification = async () => {
-  //     const response = await Get('/user-notifications?page=1&limit=10')
-
-  //     console.log("resposne from notification >>>>", response?.data);
-  //   }
-  //   fetchNotification();
-  // }, [])
-
-
-
-
-  // console.log(user);
   useEffect(() => {
     if (!user?.id) {
       console.warn("User ID is undefined. Skipping token registration.");
