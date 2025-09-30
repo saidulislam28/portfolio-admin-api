@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  FlatList, 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
   StyleSheet,
-  ActivityIndicator 
+  ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -83,6 +83,14 @@ export const CouponBottomSheet: React.FC<CouponBottomSheetProps> = ({
     </TouchableOpacity>
   ), [handleCouponSelect, validatingCoupon]);
 
+  const handleFocus = () => {
+    bottomSheetRef.current?.expand();
+  };
+
+  const handleBlur = () => {
+    bottomSheetRef.current?.snapToIndex(0);
+  }
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -109,6 +117,8 @@ export const CouponBottomSheet: React.FC<CouponBottomSheetProps> = ({
             onChangeText={setCouponCode}
             autoCapitalize="characters"
             editable={!validatingCoupon}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
           <TouchableOpacity
             style={[styles.applyButton, validatingCoupon && styles.applyButtonDisabled]}
@@ -124,7 +134,7 @@ export const CouponBottomSheet: React.FC<CouponBottomSheetProps> = ({
         </View>
 
         <Text style={styles.availableCouponsTitle}>Your Available Coupons</Text>
-        
+
         {loadingCoupons ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={PRIMARY_COLOR} />

@@ -21,9 +21,6 @@ import { CrudService } from './crud.service';
 @Controller('crud')
 export class CrudController {
   constructor(private readonly crudService: CrudService) {}
-
-  //TODO validate model name
-  //TODO validate request body based on model
   @Post()
   create(@Body() body: any, @Query('model') model: string) {
     return this.crudService.create(body, model);
