@@ -27,6 +27,7 @@ import {
   View,
 } from "react-native";
 import dayjs from 'dayjs'
+import { flattenTimeslots } from "@/utils/timeslots";
 
 export default function DateTimeScreen() {
   const router = useRouter();
@@ -65,34 +66,25 @@ export default function DateTimeScreen() {
 
   // Create a set of already booked slot keys for quick lookup
   const bookedSlotKeys = useMemo(() => {
-    // console.log('calul', activeAppointments?.data)
-    if (!activeAppointments?.data) return new Set();
-
-    const bookedKeys = new Set();
-    activeAppointments.data.forEach(appointment => {
-      // Extract time from start_at (assuming format like "2023-12-01T14:30:00Z" or similar)
-      const dateStr = appointment.start_at;
-      const result = dateStr.split('.')[0];
-      bookedKeys.add(result);
-    });
-    return bookedKeys;
+    if (!activeAppointments?.data) return [];
+    return flattenTimeslots(activeAppointments?.data);
   }, [activeAppointments, isLoadingActiveAppointment]);
 
   // Wait for both APIs to complete before showing content
   const isLoading = isLoadingTimeslots || isLoadingActiveAppointment;
 
-useEffect(() => {
-  if (filteredDates && Array.isArray(filteredDates) && filteredDates.length && !isLoading) {
-    if (!hasInitialized.current) {
-      // Only set initially
-      setCurrentSelectedDate(filteredDates[0].date);
-      hasInitialized.current = true;
-    } else if (!currentSelectedDate || !filteredDates.find(d => d.date === currentSelectedDate)) {
-      // If current selected date is no longer available, reset to first available
-      setCurrentSelectedDate(filteredDates[0].date);
+  useEffect(() => {
+    if (filteredDates && Array.isArray(filteredDates) && filteredDates.length && !isLoading) {
+      if (!hasInitialized.current) {
+        // Only set initially
+        setCurrentSelectedDate(filteredDates[0].date);
+        hasInitialized.current = true;
+      } else if (!currentSelectedDate || !filteredDates.find(d => d.date === currentSelectedDate)) {
+        // If current selected date is no longer available, reset to first available
+        setCurrentSelectedDate(filteredDates[0].date);
+      }
     }
-  }
-}, [isLoading, filteredDates, currentSelectedDate]);
+  }, [isLoading, filteredDates, currentSelectedDate]);
 
   const handleDateSelect = (date) => {
     setCurrentSelectedDate(date);
@@ -115,16 +107,6 @@ useEffect(() => {
       Alert.alert(
         "Slot Unavailable",
         "This time slot is already booked. Please select another."
-      );
-      return;
-    }
-
-    // Check if user already has an active appointment for this slot
-    const userSlotKey = `${date}-${slot.time}`;
-    if (bookedSlotKeys && bookedSlotKeys.has(userSlotKey)) {
-      Alert.alert(
-        "Already Booked",
-        "You already have an active appointment for this time slot. Please select a different slot."
       );
       return;
     }
@@ -178,26 +160,15 @@ useEffect(() => {
 
     if (!currentDate) return [];
 
-    // const bookedSlotKeys = getBookedSlotKeys(activeAppointments?.data);
-
     // Filter out slots that user has already booked
     return currentDate.slots.filter(slot => {
-      console.log('slots', slot)
-      // const startTime = new Date(`1970-01-01T${slot.time}:00`);
-      // const timeString = startTime.toLocaleTimeString('en-US', { 
-      //   hour12: false, 
-      //   hour: '2-digit', 
-      //   minute: '2-digit' 
-      // });
       const userSlotKey = `${slot.date_time_raw}`;
-
-      // console.log('userslotkey', userSlotKey)
-
+      console.log('userslotkey', userSlotKey, bookedSlotKeys)
       if (!bookedSlotKeys) {
         return true;
       }
       // Return false (hide) if user already has this slot booked
-      return !bookedSlotKeys.has(userSlotKey);
+      return !bookedSlotKeys.includes(userSlotKey);
     });
   };
 
@@ -212,7 +183,7 @@ useEffect(() => {
     if (slot.is_booked) return "booked";
 
     // Check if user already has this slot booked
-    if (bookedSlotKeys && bookedSlotKeys.has(userSlotKey)) return "user_booked";
+    if (bookedSlotKeys && bookedSlotKeys.includes(userSlotKey)) return "user_booked";
 
     return "available";
   };

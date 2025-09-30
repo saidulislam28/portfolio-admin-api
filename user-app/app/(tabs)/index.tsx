@@ -114,21 +114,6 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
       />
-
-      {__DEV__ && <Button title='Payment success test screen' onPress={() => router.replace(
-        // replacePlaceholders(ROUTES.PAYMENT_SUCCESS, {
-        //         order_id: 12,
-        //         service_type: 'test'
-        //       })
-        {
-          pathname: ROUTES.PAYMENT_SUCCESS as any,
-          params: {
-            order_id: 12,
-            service_type: 'test'
-          }
-        }
-
-      )} />}
     </View>
   );
 }

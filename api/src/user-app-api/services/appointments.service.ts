@@ -398,9 +398,6 @@ export class AppointmentsService {
     const appointments = await this.prisma.appointment.findMany({
       where: {
         user_id: userId,
-        start_at: {
-          gte: new Date() // Only future appointments
-        },
         status: {
           in: [AppointmentStatus.CONFIRMED, AppointmentStatus.PENDING]
         }
