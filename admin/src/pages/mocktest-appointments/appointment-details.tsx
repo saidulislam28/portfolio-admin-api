@@ -1,63 +1,31 @@
 /* eslint-disable */
-import {
-  CalendarOutlined,
-  // VideoConferenceOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  DollarOutlined,
-  ExclamationCircleOutlined,
-  FileTextOutlined,
-  IdcardOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  RightCircleFilled,
-  StarOutlined,
-  SyncOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  Col,
-  Divider,
   Empty,
   Form,
   Input,
-  List,
   message,
   Modal,
-  Progress,
-  Row,
-  Select,
-  Space,
-  Tabs,
-  Tag,
-  Tooltip,
-  Typography,
+  Tabs
 } from "antd";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import PageTitle from "~/components/PageTitle";
 import { useConsultants } from "~/hooks/useConsultants";
 
 import { get, patch } from "~/services/api/api";
+import { APPOINTMENT_DETAILS, ASSIGN_CONSULTANT_API } from "~/services/api/endpoints";
 import { Appointment_status } from "~/store/slices/app/constants";
+import { formatDateTime } from "~/utility";
 import { getHeader } from "~/utility/helmet";
 import AssignConsultant from "./assign-consultant";
 import renderDetailsTab from "./details-tab";
 import renderFeedbackTab from "./feedback-tab";
-import { formatDateTime } from "~/utility";
-import { APPOINTMENT_DETAILS, ASSIGN_CONSULTANT_API } from "~/services/api/endpoints";
 
 const { TabPane } = Tabs;
 
 const AppointmentDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [assignModalVisible, setAssignModalVisible] = useState(false);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
     number | null
@@ -69,20 +37,15 @@ const AppointmentDetails = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cancellationReason, setCancellationReason] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const { data: appointmentData, refetch: appointmentRefetch } = useQuery({
+  const { data: appointmentData, refetch: appointmentRefetch, isLoading } = useQuery({
     queryKey: [`appointmentss-${id}`],
     queryFn: () => get(APPOINTMENT_DETAILS(id)),
     select(data) {
       return data?.data?.data ?? [];
     },
   });
-
   const feedbackData = appointmentData?.MockTestFeedback;
-
-  console.log("appointment data>>", appointmentData);
-
   const { consultantData, refetch } = useConsultants();
 
   const assignConsultantMutation = useMutation({
@@ -142,7 +105,6 @@ const AppointmentDetails = () => {
       refetch();
       appointmentRefetch();
       setIsModalVisible(false);
-      // successModal();
     },
     onError: () => {
       message.error("Something went wrong");
@@ -156,13 +118,11 @@ const AppointmentDetails = () => {
     }
 
     if (appointmentData) {
-      //  console.log(appointmentData.id, cancellationReason)
       const payload = {
         id: appointmentData.id,
         status: Appointment_status.CANCELLED,
         cancel_reason: cancellationReason,
       };
-      // return console.log(payload)
       CancelAppointment.mutate(payload);
     }
   };
@@ -240,7 +200,7 @@ const AppointmentDetails = () => {
             onOk={handleCancelAppointment}
             okText="Confirm Cancellation"
             okButtonProps={{ danger: true }}
-            confirmLoading={loading}
+            confirmLoading={isLoading}
           >
             <Form layout="vertical">
               <Form.Item label="Cancellation Reason" required>

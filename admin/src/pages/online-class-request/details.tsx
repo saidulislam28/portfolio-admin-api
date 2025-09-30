@@ -41,8 +41,6 @@ const OrderDetailsPage = () => {
   const { id } = useParams();
 
   const {
-    isLoading,
-    error,
     data: orderData,
     refetch,
   } = useQuery({
@@ -61,7 +59,6 @@ const OrderDetailsPage = () => {
     },
   });
 
-  // Parse order_info if it's a string, otherwise use as is
   let orderInfo: any = {};
   try {
     orderInfo =
@@ -111,9 +108,6 @@ const OrderDetailsPage = () => {
     onSuccess: (response) => {
       message.success("Updated Successfully");
       refetch();
-      // appointmentRefetch();
-      // setIsModalVisible(false);
-      // successModal();
     },
     onError: () => {
       message.error("Something went wrong");
@@ -163,8 +157,6 @@ const OrderDetailsPage = () => {
             </Col>
             <Col style={{ marginLeft: 'auto' }}>
               <Space>
-                {/* <Button type="primary">Edit Order</Button>
-                            <Button>Print</Button> */}
                 <PDFDownloadButton
                   data={orderData}
                   fileName={`order-${orderData?.id}`}
@@ -174,7 +166,6 @@ const OrderDetailsPage = () => {
                 <Popconfirm
                   title={orderData?.status === 'Canceled' ? "Already Canceled" : "Are you sure you want to cancel this order?"}
                   description="This action cannot be undone."
-                  // onConfirm={handleCancel}
                   onConfirm={() => {
                     if (orderData?.status === 'Canceled') {
                       return
@@ -335,19 +326,15 @@ const OrderDetailsPage = () => {
                         color: "#52c41a",
                       }}
                     >
-                      ৳{" "}
-                      {/* {orderData?.Package?.price_bdt?.toLocaleString() || "N/A"} */}
+
                       {formatMoney(orderData?.Package?.price_bdt)}
                     </Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Original Price (BDT)">
-                    ৳{" "}
-                    {/* {orderData?.Package?.price_bdt_original?.toLocaleString() || */}
-                    {/* "N/A"} */}
+
                     {formatMoney(orderData?.Package?.price_bdt_original)}
                   </Descriptions.Item>
                   <Descriptions.Item label="Price (USD)">
-                    ${orderData?.Package?.price_usd?.toLocaleString() || "N/A"}
                     {formatMoney(orderData?.Package?.price_usd)}
                   </Descriptions.Item>
                   <Descriptions.Item label="Class Count">
@@ -397,11 +384,11 @@ const OrderDetailsPage = () => {
                     {formatDate(orderData?.updated_at)}
                   </Descriptions.Item>
                   <Descriptions.Item label="Subtotal">
-                    ৳ {orderData?.subtotal?.toLocaleString() || "N/A"}
+                    {formatMoney(orderData?.subtotal)}
                   </Descriptions.Item>
                   <Descriptions.Item label="Total">
                     <Text strong>
-                      ৳ {orderData?.total?.toLocaleString() || "N/A"}
+                      {formatMoney(orderData?.total)}
                     </Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="Status">

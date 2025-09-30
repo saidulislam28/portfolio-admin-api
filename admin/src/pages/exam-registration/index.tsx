@@ -290,16 +290,6 @@ const ExamRegistrationPage = () => {
               isLoading={isLoading}
               data={archiveData}
             />
-
-            {/* <Table
-              columns={columns}
-              rowKey="id"
-              dataSource={archiveData}
-              loading={isLoading}
-              onChange={handleTableChange}
-              bordered
-              scroll={{ x: true }}
-            /> */}
           </>
         </TabPane>
       </Tabs>

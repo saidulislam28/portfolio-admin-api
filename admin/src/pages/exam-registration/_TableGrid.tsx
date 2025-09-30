@@ -1,10 +1,10 @@
+/* eslint-disable  */
 import { DeleteOutlined, EyeOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Button, Popconfirm, Space, Table, Tag } from 'antd';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import StatusTag from '~/components/GlobalStatusModal';
 import PDFDownloadButton from '~/components/PDFButton';
-import { PROGRESS_STATUS } from '~/store/slices/app/constants';
 import { formatMoney } from '~/utility/format_money';
 
 const TableGrid = ({
@@ -111,11 +111,7 @@ const TableGrid = ({
                     <Button
                         icon={<EyeOutlined />}
                         onClick={() => navigate(`/exam-registration/details/${record.id}`)}
-                    />
-                    {/* <Button 
-                icon={<EditOutlined />} 
-                onClick={() => console.log('Edit', record.id)}
-              /> */}
+                    />                    
                     <PDFDownloadButton
                         data={record}
                         fileName={`order-${record.id}`}

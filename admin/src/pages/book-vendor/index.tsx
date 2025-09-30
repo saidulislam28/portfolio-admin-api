@@ -14,14 +14,10 @@ const title = 'Book Vendor';
 const drawerTitle = 'Add Vendor';
 
 const BookVendor = () => {
-
-
-
     const [open, setOpen] = useState(false);
     const [editedItem, setEditedItem] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [trigger, setTrigger] = useState(0);
-
 
     const showDrawer = () => {
         setOpen(true);
@@ -80,11 +76,7 @@ const BookVendor = () => {
                 isEditing={isEditing}
                 editedItem={editedItem}
                 onSubmitSuccess={onSubmitSuccess}
-            />
-            {/* <Space wrap style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Title level={1}>{title}</Title>
-                <Button type="primary" icon={<PlusOutlined />} onClick={showDrawer}>Add New</Button>
-            </Space> */}
+            />        
             <Row gutter={16}>
                 <Col className="gutter-row" span={24}>
                     <TableGrid

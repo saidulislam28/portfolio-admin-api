@@ -9,7 +9,6 @@ import { getHeader } from '~/utility/helmet';
 
 const model = 'HelpRequest';
 const title = 'Help Request';
-// other, feature, account, billing, technical
 const HelpRequest = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<any>(null);

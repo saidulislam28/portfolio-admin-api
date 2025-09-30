@@ -1,7 +1,6 @@
 /* eslint-disable */
 import {
     CalendarOutlined,
-    // VideoConferenceOutlined,
     CheckCircleOutlined,
     ClockCircleOutlined,
     CloseCircleOutlined,
@@ -110,12 +109,7 @@ const renderDetailsTab = ({
                                 <br />
                                 <Tag
                                     icon={getStatusIcon(appointmentData?.status)}
-                                    color={getStatusColor(appointmentData?.status)}
-                                    style={{
-                                        // fontSize: "14px",
-                                        // padding: "4px 12px",
-                                        // height: "auto",
-                                    }}
+                                    color={getStatusColor(appointmentData?.status)}                                   
                                 >
                                     {appointmentData?.status}
                                 </Tag>

@@ -1,3 +1,5 @@
+/* eslint-disable */
+import React from 'react';
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Form, Image,Input, InputNumber, Popconfirm, Row, Select, Space, Table, Tag } from 'antd';
 
@@ -75,13 +77,7 @@ const PackageTable = ({ data, loading, onEdit, onFilterSubmit, onClearFilters , 
             dataIndex: 'service_type',
             key: 'service_type',
             render: (type) => getServiceTypeLabel(type),
-        },
-        // {
-        //     title: 'Description',
-        //     dataIndex: 'description',
-        //     key: 'description',
-        //     ellipsis: true,
-        // },
+        },       
         {
             title: 'Status',
             dataIndex: 'is_active',
@@ -99,7 +95,6 @@ const PackageTable = ({ data, loading, onEdit, onFilterSubmit, onClearFilters , 
                 <Space size="middle">
                     <Button
                         icon={<EyeOutlined />}
-                        // onClick={() => handleView(record)}
                     />
                     <Button
                         icon={<EditOutlined />}

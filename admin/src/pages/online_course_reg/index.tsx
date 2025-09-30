@@ -1,21 +1,14 @@
 /* eslint-disable */
 import React, { useState } from "react";
-import { Button, Col, Row, Space, Typography } from "antd";
-import DrawerForm from "./_DrawerForm";
-import { PlusOutlined } from "@ant-design/icons";
-import TableGrid from "./_TableGrid";
 import { getHeader } from "~/utility/helmet";
+import DrawerForm from "./_DrawerForm";
 
-const { Title } = Typography;
 
 const model = 'OnlineCourseRegistration';
 const title = 'Online Course Registration';
 const drawerTitle = 'Add New';
 
 const BookVendor = () => {
-
-
-
     const [open, setOpen] = useState(false);
     const [editedItem, setEditedItem] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -63,20 +56,6 @@ const BookVendor = () => {
                 editedItem={editedItem}
                 onSubmitSuccess={onSubmitSuccess}
             />
-            {/* <Space wrap style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Title level={1}>{title}</Title>
-                <Button type="primary" icon={<PlusOutlined />} onClick={showDrawer}>Add New</Button>
-            </Space> */}
-            {/* <Row gutter={16}>
-                <Col className="gutter-row" span={24}>
-                    <TableGrid
-                        trigger={trigger}
-                        model={model}
-                        onClickEdit={onClickEdit}
-                    />
-                </Col>
-            </Row> */}
-
         </>
     )
 };

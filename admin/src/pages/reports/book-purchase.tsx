@@ -1,7 +1,7 @@
+/* eslint-disable */
 
 import {
   BankOutlined,
-  CalendarOutlined,
   CloseCircleOutlined,
   CreditCardOutlined,
   DollarOutlined,
@@ -15,9 +15,7 @@ import {
   Card,
   Col,
   DatePicker,
-  Divider,
   Empty,
-  Progress,
   Row,
   Select,
   Space,
@@ -25,20 +23,18 @@ import {
   Statistic,
   Table,
   Tag,
-  Tooltip,
   Typography
 } from 'antd';
 import dayjs from 'dayjs';
-import jsPDF from 'jspdf';
 import React, { useMemo, useState } from 'react';
-import { autoTable } from 'jspdf-autotable';
 
+import PageTitle from '~/components/PageTitle';
 import { get } from '~/services/api/api';
 import { API_ORDER_REPORT } from '~/services/api/endpoints';
 import { getHeader } from '~/utility/helmet';
-import PageTitle from '~/components/PageTitle';
+import { generateReportPDF } from '~/utility/pdfGenerator';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
@@ -140,7 +136,6 @@ const OrderReportsPage = () => {
     return params;
   }, [actualDateRange, serviceType]);
 
-  // TanStack Query
   const {
     data: reportData,
     isLoading,
@@ -149,12 +144,11 @@ const OrderReportsPage = () => {
   } = useQuery({
     queryKey: ['order-reports', apiParams],
     queryFn: () => fetchOrderReports(apiParams),
-    staleTime: 30000, // 30 seconds
+    staleTime: 30000,
     select: (data) => data,
     enabled: !!actualDateRange,
   });
 
-  // Handle date preset change
   const handleDatePresetChange = (value) => {
     setDatePreset(value);
     if (value !== 'custom') {
@@ -162,7 +156,6 @@ const OrderReportsPage = () => {
     }
   };
 
-  // Handle custom date range change
   const handleDateRangeChange = (dates) => {
     setDateRange(dates);
     if (dates) {
@@ -170,70 +163,6 @@ const OrderReportsPage = () => {
     }
   };
 
-  // Generate PDF report
-  const generatePDF = () => {
-    if (!reportData) return;
-
-    const doc = new jsPDF();
-
-    // Header
-    doc.setFontSize(20);
-    doc.text('Order Reports', 20, 20);
-
-    doc.setFontSize(12);
-    doc.text(`Report Period: ${reportData.report_period}`, 20, 35);
-    if (reportData.service_type_filter) {
-      doc.text(`Service Type: ${reportData.service_type_filter}`, 20, 45);
-    }
-
-    // Summary Statistics
-    doc.setFontSize(16);
-    doc.text('Summary Statistics', 20, 60);
-
-    const summaryData = [
-      ['Metric', 'Value'],
-      ['Total Sales', `BDT ${reportData.total_sales}`],
-      ['Total Orders', reportData.total_orders.toString()],
-      ['Total Revenue', `BDT ${reportData.total_revenue}`],
-      ['Cancelled Amount', `BDT ${reportData.total_cancelled_amount}`],
-      ['Average Order Value', `BDT ${reportData.average_order_value}`],
-      ['COD Orders', reportData.payment_stats.cod_orders.toString()],
-      ['Online Orders', reportData.payment_stats.online_orders.toString()],
-    ];
-
-    autoTable(doc, {
-      head: [summaryData[0]],
-      body: summaryData.slice(1),
-      startY: 70,
-      theme: 'striped',
-    });
-
-    // Service Type Stats (if available)
-    if (reportData.service_type_stats.length > 0) {
-      const finalY = doc.lastAutoTable.finalY + 20;
-      doc.setFontSize(16);
-      doc.text('Service Type Breakdown', 20, finalY);
-
-      const serviceData = [
-        ['Service Type', 'Orders', 'Revenue', 'Avg Order Value'],
-        ...reportData.service_type_stats.map(stat => [
-          stat.service_type,
-          stat.order_count.toString(),
-          `BDT ${stat.total_revenue}`,
-          `BDT ${stat.average_order_value}`
-        ])
-      ];
-
-      autoTable(doc, {
-        head: [serviceData[0]],
-        body: serviceData.slice(1),
-        startY: finalY + 10,
-        theme: 'striped',
-      });
-    }
-
-    doc.save(`order-report-${reportData.report_period}.pdf`);
-  };
 
   // Order table columns
   const orderColumns = [
@@ -336,14 +265,7 @@ const OrderReportsPage = () => {
           ""
         }
       />
-      <div style={{ padding: '20px', background: '#f5f5f5', minHeight: '100vh' }}>
-        {/* <div style={{ marginBottom: '24px' }}>
-          <Title level={2}>
-            <ShoppingCartOutlined /> Order Reports
-          </Title>
-        </div> */}
-
-        {/* Filters */}
+      <div style={{ padding: '20px', background: '#f5f5f5', minHeight: '100vh' }}>       
         <Card style={{ marginBottom: '24px' }}>
           <Row gutter={[16, 16]} align="middle">
             <Col xs={24} sm={12} md={8}>
@@ -400,7 +322,7 @@ const OrderReportsPage = () => {
               <Button
                 type="primary"
                 icon={<DownloadOutlined />}
-                onClick={generatePDF}
+                onClick={() => generateReportPDF(reportData)}
                 disabled={!reportData}
                 style={{ marginTop: '24px' }}
               >

@@ -1,25 +1,17 @@
-import React from 'react';
+/* eslint-disable  */
 import { UploadOutlined } from '@ant-design/icons';
 import { useMutation } from '@tanstack/react-query';
-import { Button, DatePicker, Drawer, Form, Input, InputNumber, message, Select, Space, Switch, Upload } from 'antd';
+import { Button, Drawer, Form, Input, InputNumber, message, Select, Space, Switch, Upload } from 'antd';
+import React from 'react';
 
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { patch, post } from '~/services/api/api';
 import { API_FILE_UPLOAD, PACKAGES_API } from '~/services/api/endpoints';
 import { SERVICE_TYPE } from '~/store/slices/app/constants';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { getUrlForModel } from '../../services/api/endpoints';
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 const model = "Package"
-const SERVICE_TYPE_LABELS = {
-    [SERVICE_TYPE.spoken]: 'Spoken Test',
-    [SERVICE_TYPE.conversation]: 'Conversation Partner',
-    [SERVICE_TYPE.speaking_mock_test]: 'Speaking Mock Test',
-    [SERVICE_TYPE.exam_registration]: 'Exam Registration',
-    [SERVICE_TYPE.ielts_academic]: 'IELTS Academic',
-    [SERVICE_TYPE.ielts_gt]: 'IELTS General Test',
-};
 
 const PackageDrawer = ({ open, onClose, currentPackage, onRefresh }) => {
     const [form] = Form.useForm();
@@ -177,14 +169,6 @@ const PackageDrawer = ({ open, onClose, currentPackage, onRefresh }) => {
                         type='number'
                     />
                 </Form.Item>
-
-                {/* <Form.Item
-                    name="description"
-                    label="Description"
-                >
-                    <Input.TextArea rows={4} placeholder="Enter package description" />
-                </Form.Item> */}
-
                 <Form.Item
                     name="description"
                     label="Description"

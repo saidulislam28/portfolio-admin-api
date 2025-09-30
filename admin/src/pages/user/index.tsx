@@ -36,10 +36,7 @@ import PageTitle from "~/components/PageTitle";
 import { deleteApi, patch, post } from "~/services/api/api";
 import { API_CRUD_FIND_WHERE, getUrlForModel } from "~/services/api/endpoints";
 import { getHeader } from "~/utility/helmet";
-// import UserService from '../../services/UserService';
 
-const { Title } = Typography;
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 const title = "Users";
 const model = "User";
@@ -196,10 +193,6 @@ const UserManagement = () => {
     setDrawerVisible(true);
   };
 
-  // const showViewModal = (user) => {
-  //   setViewingUser(user);
-  //   setViewModalVisible(true);
-  // };
 
   const handleDrawerClose = () => {
     setDrawerVisible(false);
@@ -212,7 +205,6 @@ const UserManagement = () => {
       delete values.password;
     }
 
-    // return  console.log("values", values)
 
     if (editingUser) {
       updateUserMutation.mutate({ id: editingUser.id, userData: values });
@@ -429,18 +421,7 @@ const UserManagement = () => {
         onClose={handleDrawerClose}
         open={drawerVisible}
         bodyStyle={{ paddingBottom: 80 }}
-        // extra={
-        //   <Space>
-        //     <Button onClick={handleDrawerClose}>Cancel</Button>
-        //     <Button
-        //       type="primary"
-        //       onClick={() => userForm.submit()}
-        //       loading={createUserMutation.isLoading || updateUserMutation.isLoading}
-        //     >
-        //       {editingUser ? "Update" : "Create"}
-        //     </Button>
-        //   </Space>
-        // }
+
       >
         <Form form={userForm} layout="vertical" onFinish={handleFormSubmit}>
           <Form.Item
@@ -536,64 +517,7 @@ const UserManagement = () => {
             </Button>
           </Space>
         </Form>
-      </Drawer>
-
-      {/* View User Modal */}
-      {/* <Modal
-        title="User Details"
-        open={viewModalVisible}
-        onCancel={() => setViewModalVisible(false)}
-        footer={[
-          <Button key="close" onClick={() => setViewModalVisible(false)}>
-            Close
-          </Button>
-        ]}
-        width={600}
-      >
-        {viewingUser && (
-          <div>
-            <Row gutter={[16, 16]} align="middle">
-              <Col xs={24} sm={8} md={6} style={{ textAlign: 'center' }}>
-                <Avatar
-                  size={100}
-                  src={viewingUser.profile_image}
-                  icon={!viewingUser.profile_image && <UserOutlined />}
-                />
-              </Col>
-              <Col xs={24} sm={16} md={18}>
-                <Typography.Title level={4}>{viewingUser.full_name || '-'}</Typography.Title>
-                <Space>
-                  <Tag color={viewingUser.is_active ? 'green' : 'red'}>
-                    {viewingUser.is_active ? 'Active' : 'Inactive'}
-                  </Tag>
-                  <Tag color={viewingUser.is_verified ? 'blue' : 'orange'}>
-                    {viewingUser.is_verified ? 'Verified' : 'Unverified'}
-                  </Tag>
-                </Space>
-              </Col>
-            </Row>
-
-            <div style={{ marginTop: 24 }}>
-              <Row gutter={[16, 16]}>
-                <Col span={24}>
-                  <Card size="small" title="Contact Information">
-                    <p><strong>Email:</strong> {viewingUser.email}</p>
-                    <p><strong>Phone:</strong> {viewingUser.phone}</p>
-                    <p><strong>Timezone:</strong> {viewingUser.timezone || '-'}</p>
-                  </Card>
-                </Col>
-                <Col span={24}>
-                  <Card size="small" title="System Information">
-                    <p><strong>User ID:</strong> {viewingUser.id}</p>
-                    <p><strong>Created:</strong> {dayjs(viewingUser.created_at).format('YYYY-MM-DD HH:mm:ss')}</p>
-                    <p><strong>Last Updated:</strong> {viewingUser.updated_at ? dayjs(viewingUser.updated_at).format('YYYY-MM-DD HH:mm:ss') : '-'}</p>
-                  </Card>
-                </Col>
-              </Row>
-            </div>
-          </div>
-        )}
-      </Modal> */}
+      </Drawer>    
     </div>
   );
 };

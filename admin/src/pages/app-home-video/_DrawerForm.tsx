@@ -3,15 +3,12 @@
 import { UploadOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
 import { Button, Drawer, Form, Input, Switch, Upload, message } from 'antd';
-import TextArea from "antd/es/input/TextArea";
 import React, { useEffect, useState } from 'react';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { patch, post } from "~/services/api/api";
 import { API_FILE_UPLOAD, getUrlForModel } from "~/services/api/endpoints";
 
 
-// @ts-ignore
 export default function DrawerForm({ title, model, onClose, open, onSubmitSuccess, isEditing, editedItem, ...props }) {
 
     const [form] = Form.useForm();
@@ -42,9 +39,6 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
     });
 
     const onFinish = async (formValues: any) => {
-
-        // return console.log("formValues", formValues)
-
         const videoURL = formValues?.video_url[0]?.response?.url ?? formValues?.video_url[0]?.url;
         formValues.video_url = videoURL;
 
@@ -56,7 +50,6 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
                 id: editedItem.id,
             });
         } else {
-            // @ts-ignore
             createData.mutate({
                 data: formValues,
             });
@@ -101,7 +94,6 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
         const url = file.video_url || file.response?.video_url;
         if (url) {
             setPreviewVideo(url);
-            // You can use a modal to show preview as well
             window.open(url, '_blank');
         }
     };
@@ -137,25 +129,13 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
                             name="file"
                             action={API_FILE_UPLOAD}
                             maxCount={1}
-                            // onPreview={handlePreview}
                             listType="picture-card"
                         >
                             <div className="flex flex-col items-center justify-center">
                                 <UploadOutlined />
                                 <span>Upload</span>
                             </div>
-                        </Upload>
-
-                        {/* <video
-                            width={120}
-                            height={90}
-                            style={{ marginTop: 20 }}
-                            controls
-                            poster="https://via.placeholder.com/120x90?text=Video"
-                        >
-                            <source src={previewVideo ?? ""} type="video/mp4" />
-                            Your browser does not support the video tag.
-                        </video> */}
+                        </Upload>                     
 
                     </Form.Item>
 

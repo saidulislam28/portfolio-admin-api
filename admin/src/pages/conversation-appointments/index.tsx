@@ -1,18 +1,14 @@
 /* eslint-disable */
 import { EyeOutlined, PlusOutlined } from "@ant-design/icons";
-// import { useRouter } from 'react-router-dom';
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  Avatar,
   Button,
   Calendar,
-  List,
   message,
-  Modal,
   Segmented,
   Select,
   Table,
-  Tag,
+  Tag
 } from "antd";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -22,9 +18,9 @@ import { useNavigate } from "react-router";
 import PageTitle from "~/components/PageTitle";
 import { get, patch, post } from "~/services/api/api";
 import { API_CRUD_FIND_WHERE, ASSIGN_CONSULTANT_API, getUrlForModel } from "~/services/api/endpoints";
+import { SERVICE_TYPE } from "~/store/slices/app/constants";
 import { getHeader } from "~/utility/helmet";
 import AppointmentDrawer from "./_DrawerForm";
-import { SERVICE_TYPE } from "~/store/slices/app/constants";
 import ConsultantAssignModal from "./ConsultantAssignModal";
 import DateModal from "./DateModal";
 const title = "Conversation Appointments";
@@ -45,14 +41,7 @@ interface Appointment {
   User: User;
   Consultant: Consultant | null;
 }
-const { Option } = Select;
 
-const statusColors = {
-  Pending: "orange",
-  Confirmed: "green",
-  Cancelled: "red",
-  Completed: "blue",
-};
 const model = "Appointment";
 const AppointmentsView: React.FC = () => {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
@@ -101,23 +90,6 @@ const AppointmentsView: React.FC = () => {
     }
   };
 
-  // const {
-  //   isLoading,
-  //   error,
-  //   data: appointment,
-  //   refetch,
-  //   isError,
-  // } = useQuery({
-  //   queryKey: [`get-all`+ model],
-  //   queryFn: () => get(getUrlForModel(model)),
-  //   select(data) {
-  //     return data?.data ?? [];
-  //   },
-  // });
-  // const [filters, setFilters] = useState({
-  //   service_type: SERVICE_TYPE.conversation
-  // })
-
   const { data: filteredAppointmentData, refetch } = useQuery({
     queryKey: ["get-conversation-all", model],
     queryFn: () =>
@@ -163,9 +135,6 @@ const AppointmentsView: React.FC = () => {
     staleTime: 0,
   });
 
-  // const filteredAppointmentData = appointment?.filter(
-  //   (app) => app?.Order?.service_type === SERVICE_TYPE.conversation
-  // );
 
   console.log("conversation appointment data>>>", filteredAppointmentData);
 
@@ -190,7 +159,6 @@ const AppointmentsView: React.FC = () => {
     console.log(isUpdate ? "Consultant updated!" : "Consultant created!");
     closeDrawer();
     refetch();
-    // Refresh your data here
   };
 
   const assignConsultantMutation = useMutation({
@@ -286,7 +254,6 @@ const AppointmentsView: React.FC = () => {
       dataIndex: "Rating",
       key: "rating",
       render: (rating) => {
-        // console.log("rating from table", rating);
         return <Tag color={rating?.rating ? 'blue' : 'red'}>{rating?.rating ? `${rating?.rating} star` : 'No rating'}  </Tag>
       },
     },
@@ -302,7 +269,6 @@ const AppointmentsView: React.FC = () => {
       render: (_, record) =>
         `${dayjs(record.start_at).format("HH:mm")} - ${dayjs(record.end_at).format("HH:mm")}`,
     },
-    // need to update the time
     {
       title: "Status",
       dataIndex: "status",
@@ -384,7 +350,6 @@ const AppointmentsView: React.FC = () => {
           columns={columns}
           dataSource={filteredAppointmentData}
           rowKey="id"
-        // loading={isLoading}
         />
       ) : (
         <Calendar
@@ -411,7 +376,7 @@ const AppointmentsView: React.FC = () => {
       />
       <AppointmentDrawer
         title={editingConsultant ? "Edit Consultant" : "Add New Consultant"}
-        model={model} // Replace with your actual model name
+        model={model} 
         open={drawerVisible}
         onClose={closeDrawer}
         onSubmitSuccess={handleSubmitSuccess}

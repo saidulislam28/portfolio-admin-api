@@ -1,17 +1,11 @@
 /* eslint-disable */
+import { Typography } from "antd";
 import React, { useState } from "react";
-import { Button, Col, Row, Space, Typography } from "antd";
 import DrawerForm from "./_DrawerForm";
-import { PlusOutlined } from "@ant-design/icons";
-import TableGrid from "./_TableGrid";
-import { getHeader } from "~/utility/helmet";
-import PageTitle from "~/components/PageTitle";
 
 const { Title } = Typography;
 
-// const model = 'Setting';
 const model = 'IeltsTestRegistration';
-const title = 'IELTS Test Registration';
 const drawerTitle = 'Add New';
 
 const BookVendor = () => {

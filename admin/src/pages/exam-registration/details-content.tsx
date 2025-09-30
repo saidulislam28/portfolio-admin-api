@@ -32,16 +32,12 @@ import PDFDownloadButton from "~/components/PDFButton";
 import { formatMoney } from "~/utility/format_money";
 
 const { Text } = Typography;
-const model = "Order";
 const DetailsContent = ({
     orderData,
     handleCancel,
     orderInfo,
 
 }) => {
-
-
-
     const getStatusColor = (status) => {
         const colors = {
             Pending: "orange",
@@ -285,12 +281,10 @@ const DetailsContent = ({
                                         color: "#52c41a",
                                     }}
                                 >
-                                    {/* ৳ {orderData?.Package?.price_bdt?.toLocaleString()} */}
                                     {formatMoney(orderData?.Package?.price_bdt)}
                                 </Text>
                             </Descriptions.Item>
                             <Descriptions.Item label="Original Price (BDT)">
-                                {/* ৳ {orderData?.Package?.price_bdt_original?.toLocaleString()}/ */}
                                 {formatMoney(orderData?.Package?.price_bdt_original)}
                             </Descriptions.Item>
                             <Descriptions.Item label="Service Type">

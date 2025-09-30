@@ -33,8 +33,6 @@ const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
 const title = "Consultant Details";
 const ConsultantProfile = () => {
-  // Mock consultant data based on Prisma model
-
   const { id } = useParams();
 
   const KEY = 'GET consultant' + id;
@@ -90,25 +88,7 @@ const ConsultantProfile = () => {
       dataIndex: "duration_in_min",
       key: "duration_in_min",
       render: (rec) => <>{rec} min</>,
-    },
-    // {
-    //   title: "Type",
-    //   dataIndex: "type",
-    //   key: "type",
-    //   render: (type) => (
-    //     <Tag
-    //       color={
-    //         type === "Mock Test"
-    //           ? "blue"
-    //           : type === "Conversation"
-    //             ? "green"
-    //             : "orange"
-    //       }
-    //     >
-    //       {type}
-    //     </Tag>
-    //   ),
-    // },
+    },    
     {
       title: "Status",
       dataIndex: "status",
@@ -163,7 +143,6 @@ const ConsultantProfile = () => {
                 <Rate
                   style={{ pointerEvents: "none" }}
                   value={avg || 0}
-                // style={{ fontSize: "14px" }}
                 />
                 <Text
                   type="secondary"
@@ -270,22 +249,6 @@ const ConsultantProfile = () => {
             />
           </TabPane>
 
-          {/* <TabPane
-            tab={
-              <Space size={'small'}>
-                <DollarOutlined />
-                Payment History
-              </Space>
-            }
-            key="2"
-          >
-            <Table
-              columns={paymentColumns}
-              dataSource={paymentHistory}
-              pagination={{ pageSize: 10 }}
-              scroll={{ x: 800 }}
-            />
-          </TabPane> */}
         </Tabs>
       </Card>
     </div>

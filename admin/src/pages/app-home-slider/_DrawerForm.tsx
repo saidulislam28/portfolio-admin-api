@@ -11,7 +11,6 @@ import { patch, post } from "~/services/api/api";
 import { API_FILE_UPLOAD, getUrlForModel } from "~/services/api/endpoints";
 
 
-// @ts-ignore
 export default function DrawerForm({ title, model, onClose, open, onSubmitSuccess, isEditing, editedItem, ...props }) {
 
     const [form] = Form.useForm();
@@ -53,7 +52,6 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
                 id: editedItem.id,
             });
         } else {
-            // @ts-ignore
             createData.mutate({
                 data: formValues,
             });

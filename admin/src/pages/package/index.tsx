@@ -1,5 +1,5 @@
+/* eslint-disable  */
 import "react-quill/dist/quill.snow.css";
-
 import {
   DeleteOutlined,
   EditOutlined,
@@ -44,7 +44,6 @@ import {
 import { SERVICE_TYPE } from "~/store/slices/app/constants";
 import { getHeader } from "~/utility/helmet";
 import { formatMoney } from "~/utility/format_money";
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { TabPane } = Tabs;
 
@@ -61,7 +60,6 @@ const SERVICE_TYPE_LABELS = {
   [SERVICE_TYPE.exam_registration]: "Exam Registration",
 };
 
-// Define which service types should be displayed as tabs
 const VISIBLE_SERVICE_TYPES = [
   SERVICE_TYPE.ielts_gt,
   SERVICE_TYPE.ielts_academic,
@@ -75,7 +73,6 @@ const PackagePage = () => {
   const [form] = Form.useForm();
   const [viewForm] = Form.useForm();
   const [filterForm] = Form.useForm();
-  const queryClient = useQueryClient();
 
   // State management
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -115,7 +112,6 @@ const PackagePage = () => {
     },
   });
 
-  // Filter data by service type for each tab
   const getFilteredDataByServiceType = (serviceType) => {
     if (!allPackageList) return [];
     return allPackageList
@@ -123,7 +119,6 @@ const PackagePage = () => {
       .sort((a, b) => a.sort_order - b.sort_order);
   };
 
-  // Get counts for each service type (only for visible service types)
   const getServiceTypeCounts = useMemo(() => {
     if (!allPackageList) return {};
 
@@ -136,11 +131,6 @@ const PackagePage = () => {
     return counts;
   }, [allPackageList]);
 
-  // function getServiceTypeLabel(value) {
-  //     return SERVICE_TYPE_LABELS[value] || value || '-';
-  // }
-
-  // Mutations
   const createMutation = useMutation({
     mutationFn: async (newPackage) => await post(getUrlForModel(model), newPackage),
     onSuccess: () => {
@@ -179,12 +169,10 @@ const PackagePage = () => {
     },
   });
 
-  // Handlers
   const handleAddNew = () => {
     setCurrentPackage(null);
     setIsDrawerOpen(true);
     form.resetFields();
-    // Set the service type to the current active tab
     form.setFieldsValue({ service_type: activeTab });
   };
 
@@ -273,22 +261,9 @@ const PackagePage = () => {
     setActiveTab(key);
   };
 
-  // Table columns with conditional display
   const getColumns = (serviceType) => {
     const baseColumns = [
-      // {
-      //     title: 'Cover',
-      //     dataIndex: 'image',
-      //     key: 'image',
-      //     render: (image) => (
-      //         <Image
-      //             width={80}
-      //             height={90}
-      //             src={image}
-      //             alt="Package Cover"
-      //         />
-      //     ),
-      // },
+     
       {
         title: "Name",
         dataIndex: "name",
@@ -308,7 +283,6 @@ const PackagePage = () => {
       },
     ];
 
-    // Only show class columns for IELTS types
     if (
       [SERVICE_TYPE.ielts_gt, SERVICE_TYPE.ielts_academic].includes(serviceType)
     ) {
@@ -330,12 +304,6 @@ const PackagePage = () => {
 
     // Add remaining columns
     baseColumns.push(
-      //   {
-      //     title: "Description",
-      //     dataIndex: "description",
-      //     key: "description",
-      //     ellipsis: true,
-      //   },
       {
         title: "Status",
         dataIndex: "is_active",
@@ -479,31 +447,16 @@ const PackagePage = () => {
         </Tabs>
       </Card>
 
-      {/* Add/Edit Drawer */}
       <Drawer
         title={currentPackage ? "Edit Package" : "Add New Package"}
         width={600}
         onClose={() => setIsDrawerOpen(false)}
         open={isDrawerOpen}
-        bodyStyle={{ paddingBottom: 80 }}
-      // extra={
-      //     <Space>
-      //         <Button onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
-      //         <Button
-      //             onClick={handleSubmit}
-      //             type="primary"
-      //             loading={createMutation.isLoading || updateMutation.isLoading}
-      //         >
-      //             Submit
-      //         </Button>
-      //     </Space>
-      // }
+        bodyStyle={{ paddingBottom: 80 }}      
       >
         <Form
           form={form}
-          layout="vertical"
-        // labelCol={{ span: 8 }}
-        // wrapperCol={{ span: 16 }}
+          layout="vertical"       
         >
           <Form.Item name="service_type" label="Type">
             <Select placeholder="Select Type" allowClear>
@@ -580,14 +533,6 @@ const PackagePage = () => {
               type="number"
             />
           </Form.Item>
-
-          {/* <Form.Item
-                        name="description"
-                        label="Description"
-                    >
-                        <Input.TextArea rows={4} placeholder="Enter package description" />
-                    </Form.Item> */}
-
           <Form.Item
             name="description"
             label="Description"

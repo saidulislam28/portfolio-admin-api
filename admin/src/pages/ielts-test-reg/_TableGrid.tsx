@@ -1,23 +1,18 @@
 /* eslint-disable */
 
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Image, Popconfirm, Space, Table, Tag, message } from "antd";
-import Title from "antd/es/typography/Title";
 import React, { useEffect } from "react";
-import { render } from "react-dom";
-import { Link } from "react-router-dom";
 import { deleteApi, get } from "~/services/api/api";
 import { getUrlForModel } from "~/services/api/endpoints";
 
-// @ts-ignore
 export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
     const KEY = `all-${model}`;
 
     const {
         isLoading,
         isError,
-        error,
         data: fetchData,
         refetch,
     } = useQuery({
@@ -31,10 +26,6 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
             refetch();
         }
     }, [trigger]);
-
-    console.log("ielts test registration data>>", fetchData)
-
-
     const deleteMutation = useMutation({
         mutationFn: async (id: any) => await deleteApi(getUrlForModel(model, id)),
         onSuccess: () => {
@@ -75,7 +66,6 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
         {
             title: 'Actions',
             render: (record: any) => {
-                // console.log(record)
                 return <Space>
                     <Button onClick={() => onClickEdit(record)} type={'link'}><EditOutlined /></Button>
                     <Popconfirm

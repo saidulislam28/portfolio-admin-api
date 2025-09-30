@@ -13,9 +13,6 @@ const TableGrid = ({
     showBookDetails,
 
 }) => {
-
-
-
     const columns = [
         {
             title: "Cover",

@@ -81,8 +81,6 @@ const IeltsTestRegistrationForm = () => {
       key,
       value: value === undefined ? null : value,
     }));
-
-    // Handle image upload specifically
     if (
       formValues.study_abroad_image_1 &&
       formValues.study_abroad_image_1.length > 0
