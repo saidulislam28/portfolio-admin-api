@@ -10,7 +10,7 @@ import {
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Avatar, Button, Card, Divider, Text } from 'react-native-paper';
+import { Avatar,  Card, Divider, Text } from 'react-native-paper';
 import { BaseButton } from '@/components/BaseButton';
 
 const SettingsScreen = () => {
@@ -27,7 +27,6 @@ const SettingsScreen = () => {
     {
       icon: 'lock',
       title: 'Change Password',
-      // action: () => router.push('/account/password'),
       iconComponent: MaterialIcons,
     },
 
@@ -36,29 +35,15 @@ const SettingsScreen = () => {
       title: 'Notifications',
       action: () => router.push(ROUTES.ACCOUNT_NOTIFICATION as any),
       iconComponent: MaterialIcons,
-    },
-    // {
-    //   icon: 'shield-account',
-    //   title: 'Privacy',
-    //   // action: () => router.push('/privacy'),
-    //   iconComponent: MaterialCommunityIcons,
-    // },
-    // {
-    //   icon: 'help-circle',
-    //   title: 'Help & Support',
-    //   // action: () => router.push('/support'),
-    //   iconComponent: Feather,
-    // },
+    },    
     {
       icon: 'medical-outline',
       title: 'Device Diagnosis',
-      // action: () => router.push('/device-diagnosis'),
       iconComponent: Ionicons,
     },
     {
       icon: 'information-outline',
       title: 'About App',
-      // action: () => router.push('/about'),
       iconComponent: MaterialCommunityIcons,
     },
   ];

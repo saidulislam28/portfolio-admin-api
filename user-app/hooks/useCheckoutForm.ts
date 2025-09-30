@@ -22,12 +22,7 @@ export const useCheckoutForm = (initialState = {}) => {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    
-    // Basic validation example
-    // if (!formData.firstName) newErrors.firstName = 'First name is required';
-    // if (!formData.lastName) newErrors.lastName = 'Last name is required';
-    // if (!formData.email) newErrors.email = 'Email is required';
-    // if (!formData.address) newErrors.address = 'Address is required';
+   
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

@@ -79,7 +79,6 @@ export const useMarkAllAsRead = () => {
 
 export const useDeleteNotification = () => {
     const queryClient = useQueryClient();
-
     return useMutation({
         mutationFn: (notificationIds: number[]) => {
 

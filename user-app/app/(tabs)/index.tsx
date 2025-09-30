@@ -21,8 +21,6 @@ const homeSections: HomeSection[] = [
   { id: "2", sortOrder: 2, type: "image-carousel" },
   { id: "3", sortOrder: 3, type: "services" },
   { id: "5", sortOrder: 5, type: "video-carousel" },
-  // { id: '4', sortOrder: 4, type: 'fullwidthbanner' },
-  // { id: '5', sortOrder: 5, type: 'dualbanner' },
   { id: "6", sortOrder: 6, type: "card-carousel", data: "onlinecourse" },
   { id: "6", sortOrder: 6, type: "card-carousel", data: "books" },
 ];
@@ -39,23 +37,6 @@ export default function HomeScreen() {
     data: books,
     isSuccess: isBookFetchSuccess,
   } = useBooksAll();
-
-  const [filter, setFilter] = useState<'all' | 'unread'>('all');
-
-  // const {
-  //   data,
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   isFetchingNextPage,
-  //   isError,
-  //   refetch,
-  // } = useNotifications({
-  //   isRead: filter === 'all' ? undefined : false,
-  // });
-
-  // console.log("notifciation <><><><><><><><><><", data);
-
-
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -63,8 +44,6 @@ export default function HomeScreen() {
       </View>
     );
   }
-
-  // console.log("app setttings from index. page", appSettingsData?.video_slider_data)
 
   const renderHeader = () => <PreHeader />;
 

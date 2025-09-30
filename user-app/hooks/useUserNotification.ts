@@ -57,7 +57,6 @@ export const useMarkAllAsRead = () => {
 
     return useMutation({
         mutationFn: async () => {
-            // Get all unread notification IDs from all pages
             const unreadIds: number[] = [];
 
             data?.pages?.forEach(page => {

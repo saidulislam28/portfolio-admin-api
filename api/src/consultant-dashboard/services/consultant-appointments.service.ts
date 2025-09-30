@@ -236,7 +236,7 @@ export class ConsultantAppointmentsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    console.log('Updating appointment ID:', appointment?.id);
+
 
     const updateData = await this.prismaService.appointment.update({
       where: { id: Number(appointment.id) },
@@ -249,7 +249,6 @@ export class ConsultantAppointmentsService {
       );
     }
 
-    console.log('updated ', updateData);
 
     return updateData;
   }
