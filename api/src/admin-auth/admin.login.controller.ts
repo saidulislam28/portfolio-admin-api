@@ -1,12 +1,11 @@
 import { Body, Controller, HttpCode, HttpException, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiBody, ApiExcludeEndpoint,ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { res } from '../common/response.helper';
 import { AdminAuthService } from './admin.password-reset.service';
 import { AdminLoginDto } from './dto/adminLogin.dto';
 import { CreateAdminUserDto } from './dto/createAdminUser.dto';
-import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 
 @ApiTags('Admin: Authentication')
@@ -18,8 +17,8 @@ export class AdminLoginController {
 
   @ApiOperation({ summary: 'Admin login', description: 'Authenticate admin user and return access token' })
   @ApiBody({ type: AdminLoginDto })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Login successful',
     schema: {
       example: {
@@ -52,7 +51,7 @@ export class AdminLoginController {
   }
 
   @ApiOperation({ summary: 'Forgot password', description: 'Send password reset code to email' })
-  @ApiBody({ 
+  @ApiBody({
     description: 'Email address to send reset code',
     schema: {
       type: 'object',
@@ -64,8 +63,8 @@ export class AdminLoginController {
       }
     }
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Reset code sent if email exists',
     schema: {
       example: {
@@ -85,8 +84,8 @@ export class AdminLoginController {
 
   @ApiOperation({ summary: 'Reset password', description: 'Reset password using email and reset code' })
   @ApiBody({ type: ResetPasswordDto })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Password reset successful',
     schema: {
       example: {
@@ -111,8 +110,8 @@ export class AdminLoginController {
 
   @ApiOperation({ summary: 'Create initial admin user', description: 'Create the first admin user (only works when no admin users exist)' })
   @ApiBody({ type: CreateAdminUserDto })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'Admin user created successfully',
     schema: {
       example: {
@@ -135,10 +134,10 @@ export class AdminLoginController {
   @HttpCode(HttpStatus.CREATED)
   async createAdminUser(@Request() req, @Body() payload: CreateAdminUserDto) {
     const data = await this.adminAuthService.createAdminUser(
-      payload.email, 
-      payload.first_name, 
-      payload.last_name, 
-      payload.password, 
+      payload.email,
+      payload.first_name,
+      payload.last_name,
+      payload.password,
     );
     if (!data) {
       throw new HttpException('Failed', HttpStatus.BAD_REQUEST);

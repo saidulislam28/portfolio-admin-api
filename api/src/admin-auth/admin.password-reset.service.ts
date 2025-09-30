@@ -86,9 +86,10 @@ export class AdminAuthService {
   }
 
   async loginAdminUser(user: User): Promise<any> {
-    const access_token = this.jwtSignService.signJwt(user, Role.Admin);
+    const access_token = this.jwtSignService.signJwt({ ...user, role: Role.Admin });
     return {
       ...user,
+      role: Role.Admin,
       access_token
     };
   }
@@ -96,11 +97,11 @@ export class AdminAuthService {
   async createAdminUser(email: string, first_name: string, last_name: string, password: string): Promise<any> {
     // Check if any admin users already exist using count for better performance
     const userCount = await this.prismaService.adminUser.count();
-    
+
     if (userCount > 0) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    
+
     const hash = await bcryptjs.hashSync(password.toString(), 10);
     const user = await this.prismaService.adminUser.create({
       data: {
@@ -110,7 +111,7 @@ export class AdminAuthService {
         password: hash
       }
     });
-    
+
     return user;
   }
 
