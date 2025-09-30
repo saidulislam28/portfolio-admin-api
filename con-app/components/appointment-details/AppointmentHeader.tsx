@@ -6,7 +6,6 @@ import { ROUTES } from '@/constants/app.routes';
 
 export interface AppointmentHeaderProps {
   appointmentId: number;
-  showHeader: boolean;
   isTablet: boolean;
   fontSizeLarge: number;
   onBackPress?: () => void;
@@ -14,14 +13,12 @@ export interface AppointmentHeaderProps {
 
 const AppointmentHeader: React.FC<AppointmentHeaderProps> = ({
   appointmentId,
-  showHeader,
   isTablet,
   fontSizeLarge,
   onBackPress,
 }) => {
   const router = useRouter();
 
-  if (!showHeader) return null;
 
   const handleBackPress = () => {
     if (onBackPress) {

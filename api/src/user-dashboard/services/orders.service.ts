@@ -208,9 +208,6 @@ export class OrdersService {
       const startDateTime = DateTime.fromISO(appointment.start_at);
       const endDateTime = DateTime.fromISO(appointment.end_at);
 
-      console.log("order id validateAppointment>>", orderId);
-
-
       // Check if appointment is in the future
       if (startDateTime <= DateTime.now()) {
         throw new BadRequestException('Appointment must be scheduled for a future time');
@@ -347,7 +344,6 @@ export class OrdersService {
 
   async createOrder(payload: CreateOrderDto, userId: number, baseUrl: string) {
 
-    console.log("order payload", payload);
     try {
       const { appointments, items, user_timezone, coupon_code, ...orderData } = payload;
       const transactionId = uuidv4();
@@ -381,12 +377,10 @@ export class OrdersService {
         );
       }
 
-      console.log("coupon validation result", couponResult);
 
       // Update order data with final total
       orderData.total = couponResult.finalTotal + (orderData.total - orderData.subtotal);
 
-      console.log("order total after calculation>>", orderData.total);
 
       this.logger.log(`Order creation: Original: ${originalTotal}, Discount: ${couponResult.discountAmount}, Final: ${couponResult.finalTotal}`);
 

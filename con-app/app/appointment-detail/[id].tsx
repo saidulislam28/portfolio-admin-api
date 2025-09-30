@@ -63,8 +63,6 @@ const BOOKING_STATUS = {
 const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
   appointment: propAppointment,
   onCallStart,
-  showHeader = true,
-  showActions = true,
   isTabletOverride,
 }: any) => {
   const router = useRouter();
@@ -237,6 +235,10 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
     });
   };
 
+  const serviceType = appointment?.Order?.service_type ===
+    PACKAGE_SERVICE_TYPE.conversation;
+
+
   const getStatusIcon = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'Confirmed':
@@ -352,7 +354,6 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
 
       <AppointmentHeader
         appointmentId={appointment.id}
-        showHeader={showHeader}
         isTablet={isTablet}
         fontSizeLarge={FONT_SIZE_LARGE}
       />
@@ -416,26 +417,26 @@ const AppointmentDetailPage: React.FC<AppointmentDetailPageProps> = ({
           handleRefresh={handleRefresh}
         />
 
-        {showActions && (
-          <View style={styles.actionButtons}>
-            <VideoCallButton
-              status={appointment.status}
-              startVideoCall={startVideoCall}
-            />
 
-            <BaseButton
-              title="Provide Feedback"
-              onPress={handleSubmitFeedback}
-              disabled={
-                !!(
-                  appointment.MockTestFeedback ||
-                  appointment.ConversationFeedback
-                )
-              }
-              variant="outline"
-            />
-          </View>
-        )}
+        <View style={styles.actionButtons}>
+          <VideoCallButton
+            status={appointment.status}
+            startVideoCall={startVideoCall}
+          />
+
+          {!serviceType && <BaseButton
+            title="Provide Feedback"
+            onPress={handleSubmitFeedback}
+            disabled={
+              !!(
+                appointment.MockTestFeedback ||
+                appointment.ConversationFeedback
+              )
+            }
+            variant="outline"
+          />}
+        </View>
+
       </ScrollView>
 
       <StatusModal
