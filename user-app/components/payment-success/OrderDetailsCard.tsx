@@ -52,8 +52,6 @@ export const OrderDetailsCard: React.FC<OrderDetailsCardProps> = ({
           <>
             <DetailRow label="Registration ID" value={`#${examData.registrationId}`} />
             <Divider />
-            <DetailRow label="Exam Date" value={examData.examDate} />
-            <Divider />
             <DetailRow label="Total" value={displayPrice(examData.totalPrice)} />
           </>
         );

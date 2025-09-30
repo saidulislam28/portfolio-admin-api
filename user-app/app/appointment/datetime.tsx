@@ -23,7 +23,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import dayjs from 'dayjs'
@@ -35,7 +34,6 @@ export default function DateTimeScreen() {
 
   const timezone = getUserDeviceTimezone();
 
-  const [loading, setLoading] = useState(true);
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [lockingSlots, setLockingSlots] = useState(new Set());
   const [currentSelectedDate, setCurrentSelectedDate] = useState(null);
@@ -50,9 +48,6 @@ export default function DateTimeScreen() {
   const filteredDates = availableDates?.filter(
     (item: any) => dayjs(item.date).isAfter(today, "day") // strictly after today
   );
-
-  // console.log("slot data>>>", filteredDates);
-
 
   const packageData = {
     id: params.packageId,
@@ -163,7 +158,6 @@ export default function DateTimeScreen() {
     // Filter out slots that user has already booked
     return currentDate.slots.filter(slot => {
       const userSlotKey = `${slot.date_time_raw}`;
-      console.log('userslotkey', userSlotKey, bookedSlotKeys)
       if (!bookedSlotKeys) {
         return true;
       }
@@ -175,7 +169,6 @@ export default function DateTimeScreen() {
   const getSlotStatus = (date, slot) => {
     const slotKey = `${date}-${slot.id}`;
     const userSlotKey = `${date}-${slot.time}`;
-    // const bookedSlotKeys = getBookedSlotKeys(activeAppointments?.data);
 
 
     if (lockingSlots.has(slotKey)) return "locking";
