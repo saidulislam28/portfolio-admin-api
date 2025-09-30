@@ -39,7 +39,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.bitpixelbd.speakingmate"/>
-        <data android:scheme="com.bitpixelbd.speakingmate"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.FacebookActivity" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="@string/app_name"/>
