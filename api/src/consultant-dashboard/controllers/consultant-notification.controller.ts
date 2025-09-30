@@ -1,9 +1,7 @@
 /* eslint-disable */
-// src/notifications/notifications.controller.ts
 import {
     Body,
     Controller,
-    Delete,
     Get,
     HttpCode,
     HttpStatus,
@@ -19,15 +17,15 @@ import {
     ApiResponse,
     ApiTags
 } from '@nestjs/swagger';
+import { Role } from 'src/user-auth/dto/role.enum';
+import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
 import { JwtAuthGuard } from 'src/user-auth/jwt/jwt-auth.guard';
+import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
 import { DeleteNotificationsDto } from '../dto/delete-notifications.dto';
+import { GetNotificationsDto } from '../dto/get-notifications.dto';
 import { MarkAsReadDto } from '../dto/mark-as-read.dto';
 import { PaginatedNotificationsDto } from '../dto/paginated-notifications.dto';
-import { RolesGuard } from 'src/user-auth/jwt/roles.guard';
-import { HasRoles } from 'src/user-auth/jwt/has-roles.decorator';
-import { Role } from 'src/user-auth/dto/role.enum';
 import { NotificationsService } from '../services/consultant-notification.service';
-import { GetNotificationsDto } from '../dto/get-notifications.dto';
 
 
 @ApiTags('Consultant Notifications')

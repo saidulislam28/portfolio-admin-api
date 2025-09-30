@@ -1,5 +1,4 @@
 /* eslint-disable  */
-// src/notifications/notifications.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MarkAsReadDto } from '../dto/mark-as-read.dto';
@@ -15,9 +14,6 @@ export class NotificationsService {
 
     const { page, limit, type, isRead } = dto;
     const skip = (page - 1) * limit;
-
-    // console.log("isread", isRead)
-
     const where = {
       consultant_id: userId,
       ...(type && { type }),
@@ -63,7 +59,6 @@ export class NotificationsService {
   async markAsRead(userId: number, dto: MarkAsReadDto) {
     const { notificationIds } = dto;
 
-    // Verify that all notifications belong to the user
     const notifications = await this.prisma.notification.findMany({
       where: {
         id: { in: notificationIds },

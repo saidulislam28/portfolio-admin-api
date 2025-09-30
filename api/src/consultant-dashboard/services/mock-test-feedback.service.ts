@@ -32,8 +32,6 @@ export class MockTestFeedbackService {
         consultant_id: id ? Number(id) : null
       };
 
-
-      // return console.log("joy bangla data", data)
       const feedback = await this.prisma.mockTestFeedback.create({
         data: feedbackData,
         include: {

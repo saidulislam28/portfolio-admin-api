@@ -1,5 +1,4 @@
 /* eslint-disable  */
-// src/notifications/notifications.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GetNotificationsDto } from '../dto/get-notifications.dto';

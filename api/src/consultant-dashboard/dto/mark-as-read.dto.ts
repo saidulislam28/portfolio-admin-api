@@ -1,4 +1,3 @@
-// src/notifications/dto/mark-as-read.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsInt, Min } from 'class-validator';
 

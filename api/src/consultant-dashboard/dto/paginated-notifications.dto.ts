@@ -1,4 +1,3 @@
-// src/notifications/dto/paginated-notifications.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { NotificationResponseDto } from './notification-response.dto';
 

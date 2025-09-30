@@ -10,7 +10,7 @@ export class BookApiService {
     try {
       const books = await this.prismaService.book.findMany({
         where: {
-          is_available: true // Only return available books by default
+          is_available: true 
         },
         orderBy: {
           title: 'asc'

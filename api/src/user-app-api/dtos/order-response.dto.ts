@@ -1,4 +1,3 @@
-// src/orders/dto/order-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 export class OrderResponseDto {

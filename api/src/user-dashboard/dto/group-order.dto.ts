@@ -1,4 +1,3 @@
-// src/orders/dto/order-response.dto.ts
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { ServiceType, OrderStatus, OrderPaymentStatus } from '@prisma/client';
 

@@ -1,4 +1,3 @@
-// src/notifications/dto/notification-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { NotificationType } from '@prisma/client';
 

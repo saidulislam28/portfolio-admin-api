@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable */
 import { Body, Controller, Get, Patch, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiBody } from "@nestjs/swagger";
 import { res } from "src/common/response.helper";
@@ -53,7 +51,6 @@ export class UserDashBoardController {
         @Body() data: UpdateUserProfileDto
     ) {
         const { id } = req.user;
-        console.log("req.user>>", id)
         const response = await this.userDashboardService.updateUserProfile(
             data,
             +id,

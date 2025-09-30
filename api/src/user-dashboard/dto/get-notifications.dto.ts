@@ -1,5 +1,4 @@
 /* eslint-disable  */
-// src/notifications/dto/get-notifications.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { NotificationType } from '@prisma/client';
 import { Transform, Type } from 'class-transformer';

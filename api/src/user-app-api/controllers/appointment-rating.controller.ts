@@ -1,4 +1,3 @@
-// src/ratings/ratings.controller.ts
 /* eslint-disable */
 import {
     Body,

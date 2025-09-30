@@ -1,4 +1,3 @@
-// src/orders/orders.service.ts
 import { Injectable } from '@nestjs/common';
 import { ServiceType } from '@prisma/client';
 import { GroupedOrdersResponseDto, OrderDto } from '../dto/group-order.dto';
