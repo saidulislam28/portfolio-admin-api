@@ -240,8 +240,7 @@ const ExamRegistrationFrom = () => {
 
       const payload = {
         email: formData?.email,
-        first_name: formData?.first_name,
-        last_name: formData?.last_name,
+        first_name: `${formData?.first_name} ${formData?.last_name}`,
         address: formData?.address,
         center_id: Number(center),
         phone: formData?.phone,

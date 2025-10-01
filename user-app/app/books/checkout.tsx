@@ -139,8 +139,7 @@ export default function CheckoutScreen() {
       const itemsToPurchase = prepareItemsArray();
 
       const orderData = {
-        first_name: formData.firstName ?? user?.full_name,
-        last_name: formData.lastName,
+        first_name: user?.full_name,
         email: formData.email ?? user?.email,
         phone: formData.phone ?? user?.phone,
         address: formData.address,

@@ -150,7 +150,6 @@ export default function PaymentScreen() {
     try {
       const orderData = {
         first_name: user?.full_name,
-        last_name: user?.full_name,
         email: user?.email,
         phone: user?.phone,
         address: "dhaka 1216",

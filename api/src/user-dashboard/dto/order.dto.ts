@@ -107,20 +107,12 @@ export class CreateOrderDto {
   service_type: ServiceType;
 
   @ApiProperty({
-    description: 'Customer first name',
+    description: 'Customer full name',
     example: 'Johnss'
   })
   @IsString()
   @IsNotEmpty()
   first_name: string;
-
-  @ApiProperty({
-    description: 'Customer last name',
-    example: 'Doeeeeeeee'
-  })
-  @IsString()
-  // @IsNotEmpty()
-  last_name?: string;
 
   @ApiProperty({
     description: 'Customer email address',

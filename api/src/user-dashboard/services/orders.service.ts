@@ -156,9 +156,9 @@ export class OrdersService {
     const createdAppointments = [];
 
     // Validate all appointments first
-    for (const appointment of appointments) {
-      await this.validateAppointment(appointment, orderId, prisma);
-    }
+    // for (const appointment of appointments) {
+    //   await this.validateAppointment(appointment, orderId, prisma);
+    // }
 
     for (const appointmentData of appointments) {
       const startDateTime = DateTime.fromISO(appointmentData.start_at);
@@ -275,10 +275,10 @@ export class OrdersService {
       fail_url: `${baseUrl}/api/v1/payment/redirect?status=failed`,
       cancel_url: `${baseUrl}/api/v1/payment/redirect?status=canceled`,
       ipn_url: `${baseUrl}/api/v1/payment/redirect?status=success&tran_id=${transactionId}`,
-      product_name: 'Order',
-      product_category: 'Order',
+      product_name: orderData?.Package?.name,
+      product_category: 'Appointment',
       product_profile: 'general',
-      cus_name: `${orderData.first_name} ${orderData.last_name}`,
+      cus_name: `${orderData.first_name}`,
       cus_email: orderData.email,
       cus_phone: orderData.phone,
       shipping_method: 'NO',
@@ -407,7 +407,10 @@ export class OrdersService {
       const result = await this.prisma.$transaction(async (prisma) => {
         // Create the order
         const order: any = await prisma.order.create({
-          data: dataToInsert
+          data: dataToInsert,
+          include: {
+            Package: true
+          }
         });
 
         // Create coupon order record if coupon was used
