@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 48,
     paddingHorizontal: 12,
+    color: COLORS.label, // explicitly set text color, to fix invisible text on android dark mode
   },
   inputError: {
     borderColor: COLORS.danger,

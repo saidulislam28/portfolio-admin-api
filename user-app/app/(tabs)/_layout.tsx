@@ -3,6 +3,8 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
+const ICON_SIZE = 22;
+
 export default function TabLayout() {
 
   
@@ -23,11 +25,11 @@ export default function TabLayout() {
           },
           shadowOpacity: 0.1,
           shadowRadius: 12,
-          height: 85,
-          paddingBottom: 25,
-          paddingTop: 15,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          height: 75,
+          paddingBottom: 15,
+          paddingTop: 10,
+          // borderTopLeftRadius: 20,
+          // borderTopRightRadius: 20,
         },
         tabBarLabelStyle: {
           fontSize: 11,
@@ -46,7 +48,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
             <SimpleLineIcons 
-              size={24} 
+              size={ICON_SIZE} 
               name="home" 
               color={color} 
             />
@@ -60,7 +62,7 @@ export default function TabLayout() {
           title: 'Appointments',
           tabBarIcon: ({ color, focused }) => (
             <SimpleLineIcons 
-              size={24} 
+              size={ICON_SIZE} 
               name="calendar" 
               color={color} 
             />
@@ -74,7 +76,7 @@ export default function TabLayout() {
           title: 'Orders',
           tabBarIcon: ({ color, focused }) => (
             <SimpleLineIcons 
-              size={24} 
+              size={ICON_SIZE} 
               name="grid" 
               color={color} 
             />
@@ -88,7 +90,7 @@ export default function TabLayout() {
           title: 'Account',
           tabBarIcon: ({ color, focused }) => (
             <SimpleLineIcons 
-              size={24} 
+              size={ICON_SIZE} 
               name="user" 
               color={color} 
             />
