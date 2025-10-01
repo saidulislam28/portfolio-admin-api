@@ -28,7 +28,7 @@ export class OrdersService {
   private readonly logger = new Logger(OrdersService.name)
   private sslCommerzStoreId = process.env.SSLCOMMERZ_STORE_ID;
   private sslCommerzStorePass = process.env.SSLCOMMERZ_STORE_PASS;
-  private sslCommerzMode = process.env.NODE_ENV !== 'development';
+  private sslCommerzIsLive = process.env.SSLCOMMERZ_IS_LIVE == 'true';
   private nodemailerTransport: Mail;
   private mode: string;
 
@@ -263,7 +263,7 @@ export class OrdersService {
     const sslcz = new SSLCommerzPayment(
       this.sslCommerzStoreId,
       this.sslCommerzStorePass,
-      this.sslCommerzMode,
+      this.sslCommerzIsLive,
     );
 
 
