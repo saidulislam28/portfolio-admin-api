@@ -10,6 +10,7 @@ import { PushNotificationProcessor } from './push-notification.processor';
 import { FcmModule } from 'src/fcm/fcm.module';
 import { TimezoneModule } from 'src/timezone/timezone.module';
 import { UserCacheModule } from 'src/user-cache/user-cache.module';
+import { AppNotificationsModule } from 'src/app-notifications/app-notifications.module';
 
 @Module({
     imports: [
@@ -22,7 +23,8 @@ import { UserCacheModule } from 'src/user-cache/user-cache.module';
         // }),
         FcmModule,
         TimezoneModule,
-        UserCacheModule
+        UserCacheModule,
+        AppNotificationsModule
     ],
     providers: [
         SendPdfInvoiceService,

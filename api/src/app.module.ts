@@ -48,6 +48,7 @@ import { MetricsController } from './metrics/metrics.controller';
 // sentry
 import { SentryModule } from '@sentry/nestjs/setup';
 import { SentryGlobalFilter } from "@sentry/nestjs/setup";
+import { AppNotificationsModule } from './app-notifications/app-notifications.module';
 
 
 @Module({
@@ -96,7 +97,8 @@ import { SentryGlobalFilter } from "@sentry/nestjs/setup";
     TimezoneModule,
     CommonModule,
     UserAuthModule,
-    WebsiteModule
+    WebsiteModule,
+    AppNotificationsModule
   ],
   controllers: [AppController, UsersController, MetricsController],
   providers: [

@@ -11,6 +11,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import { TimezoneService } from '../timezone/interfaces/timezone.interface';
 import { UserCacheService } from '../user-cache/interfaces/user-cache.interface';
+import { AppNotificationsService } from 'src/app-notifications/app-notifications.service';
 
 interface PushNotificationTemplate {
   title: string;
@@ -24,6 +25,7 @@ export class PushNotificationProcessor {
   constructor(
     private fcmPushService: FcmPushService,
     private prisma: PrismaService,
+    private readonly appNotificationsService: AppNotificationsService,
     @Inject('TimezoneService') private timezoneService: TimezoneService,
     @Inject('UserCacheService') private userCacheService: UserCacheService
   ) { }
@@ -134,6 +136,10 @@ export class PushNotificationProcessor {
 
       // Wait for notifications to be sent
       await Promise.allSettled(notificationPromises);
+
+      //create app notifications
+      await this.appNotificationsService.createGeneralNotificationForUser(Number(user_id), userAssignTemplate.title, userAssignTemplate.body, {appointmentId})
+      await this.appNotificationsService.createGeneralNotificationForConsultant(Number(consultant_id), consultantAssignTemplate.title, consultantAssignTemplate.body, {appointmentId})
 
       // Schedule reminder notifications (5 minutes before appointment)
       const reminderTime = subMinutes(new Date(start_at), 5);
