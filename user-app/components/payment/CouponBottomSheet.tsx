@@ -1,15 +1,19 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,
+  Keyboard,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { 
+  BottomSheetBackdrop, 
+  BottomSheetFlatList
+} from '@gorhom/bottom-sheet';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { BLACK, DARK_GRAY, LIGHT_GRAY, PRIMARY_COLOR, WHITE } from '@/lib/constants';
 import { Coupon } from '@/types/paymentTypes';
 
@@ -32,15 +36,12 @@ export const CouponBottomSheet: React.FC<CouponBottomSheetProps> = ({
   const [validatingCoupon, setValidatingCoupon] = useState(false);
   const bottomSheetRef = React.useRef<BottomSheet>(null);
 
-  const snapPoints = useMemo(() => {
-    const baseHeight = 300;
-    const itemHeight = 80;
-    const maxItems = Math.min(availableCoupons.length, 4);
-    const calculatedHeight = baseHeight + (maxItems * itemHeight);
-    return [Math.min(calculatedHeight, 600)];
-  }, [availableCoupons.length]);
+  const inputRef = useRef(null);
+  const inputTextRef = useRef('');
 
-  React.useEffect(() => {
+  const snapPoints = useMemo(() => ['75%', '90%'], []);
+
+  useEffect(() => {
     if (isVisible) {
       bottomSheetRef.current?.expand();
     } else {
@@ -48,16 +49,45 @@ export const CouponBottomSheet: React.FC<CouponBottomSheetProps> = ({
     }
   }, [isVisible]);
 
-  const handleApplyCoupon = useCallback(async () => {
-    setValidatingCoupon(true);
-    const success = await onValidateCoupon(couponCode);
-    if (success) {
-      setCouponCode('');
+  useEffect(() => {
+    const keyboardWillShow = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => {
+        // Snap to larger size when keyboard shows
+        bottomSheetRef.current?.snapToIndex(1);
+      }
+    );
+
+    const keyboardWillHide = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        // Return to smaller size when keyboard hides
+        bottomSheetRef.current?.snapToIndex(0);
+      }
+    );
+
+    return () => {
+      keyboardWillShow.remove();
+      keyboardWillHide.remove();
+    };
+  }, []);
+
+  const handleApplyCoupon = async () => {
+    if (inputTextRef.current !== '') {
+      Keyboard.dismiss();
+      setValidatingCoupon(true);
+      const success = await onValidateCoupon(inputTextRef.current);
+      if (success) {
+        setCouponCode('');
+      }
+      setValidatingCoupon(false);
+      // inputTextRef.current = ''
+      inputRef?.current?.clear();
     }
-    setValidatingCoupon(false);
-  }, [couponCode, onValidateCoupon]);
+  };
 
   const handleCouponSelect = useCallback(async (coupon: Coupon) => {
+    Keyboard.dismiss();
     setValidatingCoupon(true);
     const success = await onValidateCoupon(coupon.code);
     setValidatingCoupon(false);
@@ -83,13 +113,52 @@ export const CouponBottomSheet: React.FC<CouponBottomSheetProps> = ({
     </TouchableOpacity>
   ), [handleCouponSelect, validatingCoupon]);
 
-  const handleFocus = () => {
-    bottomSheetRef.current?.expand();
-  };
+  const ListHeaderComponent = useCallback(() => (
+    <View>
+      <View style={styles.modalHeader}>
+        <Text style={styles.modalTitle}>Apply Coupon</Text>
+        <TouchableOpacity onPress={onClose}>
+          <Ionicons name="close" size={24} color={BLACK} />
+        </TouchableOpacity>
+      </View>
 
-  const handleBlur = () => {
-    bottomSheetRef.current?.snapToIndex(0);
-  }
+      <View style={styles.couponInputContainer}>
+        <BottomSheetTextInput
+          style={styles.couponInput}
+          placeholder="Enter coupon code"
+          autoCapitalize="characters"
+          editable={!validatingCoupon}
+          ref={inputRef} 
+          onChangeText={(text) => { inputTextRef.current = text; console.log(text) }} 
+          defaultValue={inputTextRef.current}
+        />
+        <TouchableOpacity
+          style={[styles.applyButton, validatingCoupon && styles.applyButtonDisabled]}
+          onPress={handleApplyCoupon}
+          disabled={validatingCoupon}
+        >
+          {validatingCoupon ? (
+            <ActivityIndicator color={WHITE} size="small" />
+          ) : (
+            <Text style={styles.applyButtonText}>Apply</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.availableCouponsTitle}>Your Available Coupons</Text>
+
+      {loadingCoupons && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={PRIMARY_COLOR} />
+        </View>
+      )}
+    </View>
+  ), [couponCode, validatingCoupon, loadingCoupons, onClose, handleApplyCoupon]);
+
+  const ListEmptyComponent = useCallback(() => {
+    if (loadingCoupons) return null;
+    return <Text style={styles.noCouponsText}>No coupons available</Text>;
+  }, [loadingCoupons]);
 
   return (
     <BottomSheet
@@ -100,56 +169,20 @@ export const CouponBottomSheet: React.FC<CouponBottomSheetProps> = ({
       onClose={onClose}
       backdropComponent={BottomSheetBackdrop}
       handleIndicatorStyle={styles.handleIndicator}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
+      enableDynamicSizing={false}
     >
-      <BottomSheetScrollView contentContainerStyle={styles.modalContent}>
-        <View style={styles.modalHeader}>
-          <Text style={styles.modalTitle}>Apply Coupon</Text>
-          <TouchableOpacity onPress={onClose}>
-            <Ionicons name="close" size={24} color={BLACK} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.couponInputContainer}>
-          <TextInput
-            style={styles.couponInput}
-            placeholder="Enter coupon code"
-            value={couponCode}
-            onChangeText={setCouponCode}
-            autoCapitalize="characters"
-            editable={!validatingCoupon}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-          />
-          <TouchableOpacity
-            style={[styles.applyButton, validatingCoupon && styles.applyButtonDisabled]}
-            onPress={handleApplyCoupon}
-            disabled={validatingCoupon || !couponCode.trim()}
-          >
-            {validatingCoupon ? (
-              <ActivityIndicator color={WHITE} size="small" />
-            ) : (
-              <Text style={styles.applyButtonText}>Apply</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.availableCouponsTitle}>Your Available Coupons</Text>
-
-        {loadingCoupons ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={PRIMARY_COLOR} />
-          </View>
-        ) : availableCoupons.length > 0 ? (
-          <FlatList
-            data={availableCoupons}
-            renderItem={renderCouponItem}
-            keyExtractor={(item) => item.id.toString()}
-            scrollEnabled={false}
-          />
-        ) : (
-          <Text style={styles.noCouponsText}>No coupons available</Text>
-        )}
-      </BottomSheetScrollView>
+      <BottomSheetFlatList
+        data={availableCoupons}
+        renderItem={renderCouponItem}
+        keyExtractor={(item) => item.id.toString()}
+        ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={ListEmptyComponent}
+        contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
+      />
     </BottomSheet>
   );
 };
@@ -159,13 +192,15 @@ const styles = StyleSheet.create({
     backgroundColor: LIGHT_GRAY,
     width: 40,
   },
-  modalContent: {
-    padding: 20,
+  listContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 20,
     marginBottom: 20,
   },
   modalTitle: {
@@ -180,11 +215,13 @@ const styles = StyleSheet.create({
   couponInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: LIGHT_GRAY,
+    borderColor: DARK_GRAY,
     borderRadius: 8,
     padding: 15,
     marginRight: 10,
     fontSize: 16,
+    backgroundColor: WHITE,
+    color: DARK_GRAY
   },
   applyButton: {
     backgroundColor: PRIMARY_COLOR,
