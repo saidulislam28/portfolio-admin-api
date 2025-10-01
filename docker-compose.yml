@@ -86,8 +86,14 @@ services:
   dozzle:
     container_name: dozzle
     image: amir20/dozzle:latest
+    environment:
+      - DOZZLE_AUTH_PROVIDER=simple
+    secrets:
+      - source: users
+        target: /data/users.yml
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./dozzle:/data
     ports:
       - 9999:8080
 
@@ -115,6 +121,11 @@ services:
     networks:
       - starter_api
 
+# for dozzle      
+secrets:
+  users:
+    file: dozzle-users.yml
+    
 networks:
   trackify_internal:
     internal: true

@@ -42,3 +42,4 @@ public/uploads/*
 pull.sh
 
 grafana/*
+dozzle/*

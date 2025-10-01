@@ -1,0 +1,7 @@
+users:
+    admin:
+        email: rashidul69@gmail.com
+        name: Admin
+        password: $2a$11$mnH1iQyml3Z4HHIENHVnbOT/ZPEgSqI7mrQxAmo5PIq5.Z9EMwk.e # pass: 12341234, user: admin
+        filter: ""
+        roles: ""
