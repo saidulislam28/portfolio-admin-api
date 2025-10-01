@@ -13,8 +13,6 @@ export default function Index() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
 
-  console.log('user', user);
-
   useEffect(() => {
     if (!user?.id) {
       console.warn('User ID is undefined. Skipping token registration.');

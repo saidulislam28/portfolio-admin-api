@@ -108,18 +108,11 @@ export const NotificationItem = ({ notification }: { notification: Notification 
                         styles.message,
                         notification.isRead ? styles.messageRead : styles.messageUnread,
                     ]}
-                    numberOfLines={2}
                 >
                     {notification.message}
                 </Text>
 
                 <View style={styles.footer}>
-                    <View style={[styles.typeBadge, getTypeStyle(notification.type)]}>
-                        <Text style={styles.typeText}>
-                            {formatTypeText(notification.type)}
-                        </Text>
-                    </View>
-
                     {!notification.isRead && (
                         <View style={styles.unreadIndicator} />
                     )}

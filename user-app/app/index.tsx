@@ -42,7 +42,6 @@ export default function Index() {
   useEffect(() => {
     const checkFirstLaunch = async () => {
       const hasLaunched = await AsyncStorage.getItem("hasLaunched");
-      console.log("hasss", hasLaunched);
       if (!hasLaunched) {
         await AsyncStorage.setItem("hasLaunched", "true");
         router.replace(ROUTES.LANDING as any);

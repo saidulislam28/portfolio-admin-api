@@ -24,11 +24,6 @@ initApiClients(config);
 export default function HomeLayout() {
   useNotifications();
 
-  console.log(
-    'base url consultant>>>',
-    Constants.expoConfig?.extra?.apiBaseUrl
-  );
-
   return (
     <>
       <SafeAreaProvider>

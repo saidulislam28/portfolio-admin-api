@@ -102,7 +102,6 @@ export class NotificationsController {
         @Req() req: any,
         @Body() dto: DeleteNotificationsDto,
     ) {
-        console.log("deleted idsss", dto);
         const { id } = req.user;
         return this.notificationsService.deleteNotifications(+id, dto);
     }

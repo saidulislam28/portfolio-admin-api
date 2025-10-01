@@ -28,8 +28,6 @@ const config: SmPackageConfig = {
 };
 initApiClients(config);
 
-console.log("base url>>>", Constants.expoConfig?.extra?.apiBaseUrl);
-
 LogBox.ignoreLogs([
   'Warning: Some specific warning message',
   'Open debugger to view',
