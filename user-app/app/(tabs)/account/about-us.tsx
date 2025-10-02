@@ -13,6 +13,7 @@ import Logo from "@/assets/images/Logo512.png";
 import { PRIMARY_COLOR } from '@/lib/constants';
 import CommonHeader from '@/components/CommonHeader';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
+import Constants from 'expo-constants';
 
 const AboutAppScreen = () => {
 
@@ -61,7 +62,7 @@ const AboutAppScreen = () => {
           style={styles.appIcon}
         />
         <Text style={styles.appName}>SpeakingMate</Text>
-        <Text style={styles.appVersion}>Version 2.1.0</Text>
+        <Text style={styles.appVersion}>Version {Constants.expoConfig?.version }</Text>
       </View>
 
       {/* App Description Section */}
