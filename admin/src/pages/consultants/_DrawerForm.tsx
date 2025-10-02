@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { patch, post } from "~/services/api/api";
 import { getUrlForModel } from "~/services/api/endpoints";
 import * as bcrypt from 'bcryptjs';
+import { useFormMutation } from "~/hooks/useFormMutation";
 
 
 const { Option } = Select;
@@ -19,6 +20,7 @@ const timezoneOptions = [
     'America/Los_Angeles',
     'Europe/London',
     'Europe/Paris',
+    'Asia/Dhaka',
     'Asia/Tokyo',
     'Asia/Shanghai',
     'Asia/Kolkata',
@@ -29,33 +31,18 @@ export default function ConsultantDrawerForm({ title, model, onClose, open, onSu
 
     const [form] = Form.useForm();
 
-    const createData = useMutation({
-        mutationFn: async (data: any) => await post(getUrlForModel(model), data?.data),
-        onSuccess: (response) => {
-            message.success('Consultant Created Successfully');
-            form.resetFields();
-            onSubmitSuccess();
-        },
-        onError: () => {
-            message.error('Something went wrong');
-        },
-    });
-
-    const updateData = useMutation({
-        mutationFn: async (data: any) => await patch(getUrlForModel(model, data?.id), data),
-        onSuccess: (response) => {
-            message.success('Consultant Updated Successfully');
-            form.resetFields();
-            onSubmitSuccess(true);
-            // refetch()
-        },
-        onError: () => {
-            message.error('Something went wrong');
-        },
+    const { handleSubmit, isLoading } = useFormMutation({
+        model,
+        form,
+        onSuccess: onSubmitSuccess,
+        successMessage: {
+            create: 'Consultant Created Successfully',
+            update: 'Consultant Updated Successfully'
+        }
     });
 
     const onFinish = async (formValues: any) => {
-
+        // Transform numeric fields
         if (formValues?.experience) {
             formValues.experience = Number(formValues?.experience);
         }
@@ -63,21 +50,13 @@ export default function ConsultantDrawerForm({ title, model, onClose, open, onSu
             formValues.hourly_rate = Number(formValues?.hourly_rate);
         }
 
+        // Hash password if provided
         if (formValues?.password) {
             const hash = await bcrypt.hash(formValues?.password.toString(), 10);
-            formValues.password = hash
+            formValues.password = hash;
         }
 
-        if (isEditing) {
-            updateData.mutate({
-                ...formValues,
-                id: editedItem.id,
-            });
-        } else {
-            createData.mutate({
-                data: formValues,
-            });
-        }
+        handleSubmit(formValues, isEditing, editedItem?.id);
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -243,7 +222,7 @@ export default function ConsultantDrawerForm({ title, model, onClose, open, onSu
                             <Button
                                 type="primary"
                                 htmlType="submit"
-                                loading={createData.isLoading || updateData.isLoading}
+                                loading={isLoading}
                             >
                                 {isEditing ? 'Update' : 'Submit'}
                             </Button>
