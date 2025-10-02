@@ -5,6 +5,7 @@ import BottomSheet, {
   BottomSheetView,
   BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
+import { PRIMARY_COLOR } from '@/lib/constants';
 
 interface EndCallConfirmationBottomSheetProps {
   onEndCallWithFeedback: () => void;
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
     flex: 2,
     padding: 16,
     borderRadius: 12,
-    backgroundColor: '#EF4444',
+    backgroundColor: PRIMARY_COLOR,
     alignItems: 'center',
   },
   confirmButtonText: {

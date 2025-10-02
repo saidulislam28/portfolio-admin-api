@@ -27,8 +27,6 @@ export default function RegistrationLanding() {
         );
     }
 
-    console.log("dataaaa>>>", appSettingsData?.ielts_registration?.values);
-
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: 'Checkout' }} />

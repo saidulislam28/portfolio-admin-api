@@ -35,11 +35,7 @@ export const useImageUpload = () => {
       formData.append('name', 'profile_image');
 
       const baseURL = Constants.expoConfig?.extra?.apiBaseUrl;
-      // const API_UPLOAD_IMAGE = "/api/upload/image"; // Adjust this to your endpoint
       const fullURL = `${baseURL}${API_UPLOAD_IMAGE}`;
-
-      console.log('full url for upload image', fullURL);
-
       const response = await fetch(fullURL, {
         method: 'POST',
         body: formData,

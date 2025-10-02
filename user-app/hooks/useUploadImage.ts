@@ -32,7 +32,6 @@ export const useImageUpload = () => {
             const baseURL = Constants.expoConfig?.extra?.apiBaseUrl;
             const fullURL = `${baseURL}/${API_COMMON.API_UPLOAD_IMAGE}`;
 
-            console.log("full url>>", fullURL);
 
             const response = await fetch(fullURL, {
                 method: "POST",
