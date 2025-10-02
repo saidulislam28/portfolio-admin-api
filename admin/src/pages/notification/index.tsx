@@ -24,11 +24,8 @@ import { getHeader } from '~/utility/helmet';
 import History from './history';
 import Notification from './notification';
 
-const { Title, Text, Paragraph } = Typography;
-const { TextArea } = Input;
-const { Option } = Select;
+const { Title,  Paragraph } = Typography;
 const title = 'Notification';
-const model = 'User'
 
 
 

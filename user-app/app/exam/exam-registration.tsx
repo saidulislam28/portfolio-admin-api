@@ -4,7 +4,7 @@ import { ROUTES } from '@/constants/app.routes';
 import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import { PRIMARY_COLOR } from '@/lib/constants';
 import { Stack, useRouter } from 'expo-router';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 
 interface Content {
@@ -27,8 +27,6 @@ export default function RegistrationLanding() {
         );
     }
 
-    console.log("width", width);
-
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: 'Checkout' }} />
@@ -42,7 +40,7 @@ export default function RegistrationLanding() {
                     <View style={styles.imageContainer}>
                         <Image
                             source={{ uri: appSettingsData?.ielts_registration?.image }}
-                            style={[styles.bookImage, {width: width * 0.9}]}
+                            style={[styles.bookImage, { width: width * 0.9 }]}
                             resizeMode="cover"
                         />
                     </View>
@@ -50,9 +48,36 @@ export default function RegistrationLanding() {
 
                 <View style={styles.htmlContainer}>
                     <RenderHTML
-                        contentWidth={width - 40} // Account for padding
+                        contentWidth={width - 40}
                         source={{ html: appSettingsData?.ielts_registration?.values as string }}
+                        tagsStyles={{
+                            h1: {
+                                fontSize: 28,
+                                fontWeight: 'bold',
+                                marginVertical: 10,
+                            },
+                            h2: {
+                                fontSize: 24,
+                                fontWeight: '600',
+                                marginVertical: 8,
+                            },
+                            p: {
+                                fontSize: 16,
+                                color: '#333',
+                                marginBottom: 8,
+                            },
+                            strong: {
+                                fontWeight: 'bold',
+                            },
+                            em: {
+                                fontStyle: 'italic',
+                            },
+                            u: {
+                                textDecorationLine: 'underline',
+                            },
+                        }}
                     />
+
                 </View>
             </ScrollView>
 
@@ -255,7 +280,7 @@ const styles = StyleSheet.create({
         borderRadius: 8
     },
     bookImage: {
-       
+
         height: 180,
         borderRadius: 8,
     },

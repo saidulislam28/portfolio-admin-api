@@ -50,6 +50,7 @@ export class UserDashBoardController {
         @Req() req: any,
         @Body() data: UpdateUserProfileDto
     ) {
+
         const { id } = req.user;
         const response = await this.userDashboardService.updateUserProfile(
             data,

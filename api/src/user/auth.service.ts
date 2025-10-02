@@ -94,11 +94,13 @@ export class AuthService {
       data: { is_verified: true }
     });
 
+    console.log("updated user>>>", updatedUser);
+
     const access_token = await this.jwtSignService.signJwt({
       id: updatedUser.id,
       email: updatedUser.email,
       phone: updatedUser.phone,
-      role: updatedUser.role,
+      role: Role.User,
     });
 
     delete updatedUser['password'];

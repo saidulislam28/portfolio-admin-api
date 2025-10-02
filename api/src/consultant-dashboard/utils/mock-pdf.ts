@@ -254,9 +254,3 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         doc.end();
     });
 }
-
-// fds dsf dsf dsf sdf sdf sdf sdf sdf sdf sdfv sefsdfsd sdf sdf sdf sdfds sdf sd sdfsd sdfsdfvdskj sdfhsdkj sdkjfhsdkj
-// sdfjhsdkjfhsdjf sdfds sdlkfjlskd sdfjklsd sdlfjsdlkfjlsdk sdfjlsdkfjlds dslfjlsdk sdfjlsdfjlds dskfjsdlk fsdljf dslkf l
-// lsdjsdfljhsdlkjsdfjsdhsdfjsdjhsdjhsdujhdsjhdsjdsjhsdj jhdj jhdjh j d j j j j jhdjfjhjhsdjkhfdsjhfjkds dskjfdskj hsdfdsjh
-// sdfvdsjkfhsdkjfhdsjh
-

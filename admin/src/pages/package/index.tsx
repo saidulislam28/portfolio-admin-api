@@ -85,6 +85,7 @@ const PackagePage = () => {
   const showClassFields = [
     SERVICE_TYPE.ielts_gt,
     SERVICE_TYPE.ielts_academic,
+    SERVICE_TYPE.spoken,
   ].includes(selectedType);
   const showSessionField = [
     SERVICE_TYPE.speaking_mock_test,
@@ -263,7 +264,7 @@ const PackagePage = () => {
 
   const getColumns = (serviceType) => {
     const baseColumns = [
-     
+
       {
         title: "Name",
         dataIndex: "name",
@@ -284,7 +285,7 @@ const PackagePage = () => {
     ];
 
     if (
-      [SERVICE_TYPE.ielts_gt, SERVICE_TYPE.ielts_academic].includes(serviceType)
+      [SERVICE_TYPE.ielts_gt, SERVICE_TYPE.ielts_academic, SERVICE_TYPE.spoken].includes(serviceType)
     ) {
       baseColumns.push(
         {
@@ -452,11 +453,11 @@ const PackagePage = () => {
         width={600}
         onClose={() => setIsDrawerOpen(false)}
         open={isDrawerOpen}
-        bodyStyle={{ paddingBottom: 80 }}      
+        bodyStyle={{ paddingBottom: 80 }}
       >
         <Form
           form={form}
-          layout="vertical"       
+          layout="vertical"
         >
           <Form.Item name="service_type" label="Type">
             <Select placeholder="Select Type" allowClear>
