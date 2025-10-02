@@ -29,7 +29,7 @@ export class AppSettingService {
       linkedin: settingData?.linkedin,
       brand_name: settingData?.brand_name,
       brand_url: settingData?.brand_url,
-      delivery_charge: settingData?.delivery_charge
+      delivery_charge: Number(settingData?.delivery_charge ?? 0)
     };
 
     const slider_data = await this.prismaService.appSlider.findMany({
