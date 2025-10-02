@@ -1,6 +1,5 @@
-// user-profile.dto.ts
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserProfileDto {
   @ApiPropertyOptional({ description: 'User name' })
@@ -15,7 +14,6 @@ export class UpdateUserProfileDto {
 
   @ApiPropertyOptional({ description: 'User phone number' })
   @IsOptional()
-  // @IsPhoneNumber()
   phone?: string;
 
   @ApiPropertyOptional({ description: 'Profile image URL' })

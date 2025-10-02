@@ -1,8 +1,7 @@
-// src/orders/order.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import EmailService from 'src/email/email.service';
-// import { MailerService } from '@nestjs-modules/mailer';
+import { sendOrderToVendor } from '../utils/vendor-order-pdf';
 
 @Injectable()
 export class SendOrderService {
@@ -10,7 +9,6 @@ export class SendOrderService {
         private readonly prisma: PrismaService,
         private readonly emailService: EmailService,
     ) { }
-
     async sendOrderToVendor(vendor_id: number, order_id: number) {
         const vendor = await this.prisma.bookVendor.findUnique({ where: { id: vendor_id } });
         if (!vendor || !vendor.email) throw new NotFoundException('Vendor not found or missing email');
@@ -18,31 +16,34 @@ export class SendOrderService {
         const order = await this.prisma.order.findUnique({
             where: { id: order_id },
             include: {
-                OrderItem: true,
-                User: true,
+                OrderItem: {
+                    select: {
+                        Book: {
+                            select: {
+                                title: true,
+                                price: true,
+                                category: true,
+                                isbn: true,
+                                writer: true
+                            }
+                        },
+                        subtotal: true,
+                        qty: true,
+                        unit_price: true,
+                        order_id: true
+                    }
+                },
             },
         });
         if (!order) throw new NotFoundException('Order not found');
-        const sendEamil = await this.emailService.sendEmail(
+        const pdfBuffer = await sendOrderToVendor(order);
+        const sendEmail = await this.emailService.sendBookvendorOrder(
             vendor.email,
-            `You have an new Order`,
-            "",
-            `<h3>New Book Order Received </h3>
-            <p> <strong>Customer: </strong> ${order.first_name} ${order.last_name}</p>
-        <p><strong>Email: </strong> ${order.email}</p>
-        <p><strong>Phone: </strong> ${order.phone}</p>
-        <p><strong>Address: </strong> ${order.delivery_address}</p>
-        <p><strong>Order Total: </strong> ${order.total} <span>Taka </span> </p>
-        <p><strong>Order Total: </strong> ${order.subtotal} <span>Taka </span> </p>
-        <p><strong>Items: </strong></p>
-        <ul>
-        ${order.OrderItem.map(item => `<li>${JSON.stringify(item)}</li>`).join('')}
-        </ul>`
+            order.id,
+            pdfBuffer
         );
 
-
-
-        if (sendEamil.send_message) {
+        if (sendEmail.send_message) {
             await this.prisma.order.update({
                 where: { id: order.id },
                 data: {
@@ -50,10 +51,7 @@ export class SendOrderService {
                 }
             })
         }
-
-        // console.log("order send to vendor", order)
-
-        return { send_message: 'Order sent to vendor successfully.', sendEamil };
+        return { send_message: 'Order sent to vendor successfully.', sendEmail };
 
     }
 }

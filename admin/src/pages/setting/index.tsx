@@ -1,15 +1,14 @@
 /* eslint-disable */
 import { UploadOutlined } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, Card, Collapse, Form, Input, Upload, message } from 'antd';
+import { Button, Card,  Form, Input, Upload, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import React, { useCallback, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import PageTitle from '~/components/PageTitle';
 import { get, post } from '~/services/api/api';
 import { API_FILE_UPLOAD, getUrlForModel } from '~/services/api/endpoints';
 import { getHeader } from '~/utility/helmet';
 import { getImageFieldsKeys } from './settings';
-const { Panel } = Collapse;
 const model = 'Setting';
 const title = 'Setting';
 
@@ -84,12 +83,6 @@ const Settings = () => {
             const faviconImage = formValues?.favicon[0]?.response?.url ?? formValues?.favicon[0]?.thumbUrl ?? null;
             formValues.favicon = faviconImage;
         }
-
-        if (formValues?.delivery_charge) {
-            const convertedNumber = Number(formValues.delivery_charge);
-            formValues.delivery_charge = convertedNumber
-        }
-
 
         for (const key in formValues) {
             if (formValues.hasOwnProperty(key)) {

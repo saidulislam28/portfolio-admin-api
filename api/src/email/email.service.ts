@@ -77,7 +77,7 @@ export default class EmailService {
     });
 
     await transporter.sendMail({
-      from: `"Trackify" <${process.env.SMTP_USER}>`,
+      from: `"SpeakingMate" <${process.env.SMTP_USER}>`,
       to,
       subject: `Your Mock Test Feedback`,
       text: 'Please find your feedback attached. Have a nice day.',
@@ -88,6 +88,31 @@ export default class EmailService {
         },
       ],
     });
+  }
+  async sendBookvendorOrder(to: string, orderId, pdfBuffer: Buffer) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.SENDER_EMAIL,
+        pass: process.env.SENDER_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"SpeakingMate" <${process.env.SMTP_USER}>`,
+      to,
+      subject: `Book Order`,
+      text: 'Please Read the pdf carefully. And make ready the order.',
+      attachments: [
+        {
+          filename: `book-order-${orderId}.pdf`,
+          content: pdfBuffer,
+        },
+      ],
+    });
+    return {
+      send_message: true
+    }
   }
 
 

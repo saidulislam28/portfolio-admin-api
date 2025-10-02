@@ -11,7 +11,7 @@ import RenderHTML from 'react-native-render-html';
 export default function RegistrationLanding() {
     const { width } = useWindowDimensions();
     const router = useRouter();
-    const { data: appSettingsData, isLoading, error } = useAppSettings();
+    const { data: appSettingsData, isLoading, error, refetch } = useAppSettings();
     const content = appSettingsData?.study_abroad;
 
     // Show loading state
@@ -30,7 +30,7 @@ export default function RegistrationLanding() {
                 <Text style={styles.errorText}>Failed to load content</Text>
                 <TouchableOpacity
                     style={styles.retryButton}
-                    onPress={() => {/* You can add manual refetch here if needed */ }}
+                    onPress={() => refetch()}
                 >
                     <Text style={styles.retryButtonText}>Retry</Text>
                 </TouchableOpacity>
@@ -56,15 +56,41 @@ export default function RegistrationLanding() {
 
                 <View style={styles.htmlContainer}>
                     <RenderHTML
-                        contentWidth={width - 40} // Account for padding
+                        contentWidth={width - 40}
                         source={{ html: content?.values }}
+                        tagsStyles={{
+                            h1: {
+                                fontSize: 28,
+                                fontWeight: 'bold',
+                                marginVertical: 10,
+                            },
+                            h2: {
+                                fontSize: 24,
+                                fontWeight: '600',
+                                marginVertical: 8,
+                            },
+                            p: {
+                                fontSize: 16,
+                                color: '#333',
+                                marginBottom: 8,
+                            },
+                            strong: {
+                                fontWeight: 'bold',
+                            },
+                            em: {
+                                fontStyle: 'italic',
+                            },
+                            u: {
+                                textDecorationLine: 'underline',
+                            },
+                        }}
                     />
                 </View>
             </ScrollView>
 
             {/* Sticky bottom button */}
             <View style={styles.stickyButtonContainer}>
-                
+
 
                 <BaseButton title="Continue" onPress={() => router.push(ROUTES.STUDY_ABROAD_REGISTRATION as any)} disabled={false} />
             </View>

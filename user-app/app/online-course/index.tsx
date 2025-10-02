@@ -56,6 +56,32 @@ export default function RegistrationLanding() {
                 <RenderHTML
                     contentWidth={width}
                     source={{ html: appSettingsData?.online_course?.values as string }}
+                    tagsStyles={{
+                        h1: {
+                            fontSize: 28,
+                            fontWeight: 'bold',
+                            marginVertical: 10,
+                        },
+                        h2: {
+                            fontSize: 24,
+                            fontWeight: '600',
+                            marginVertical: 8,
+                        },
+                        p: {
+                            fontSize: 16,
+                            color: '#333',
+                            marginBottom: 8,
+                        },
+                        strong: {
+                            fontWeight: 'bold',
+                        },
+                        em: {
+                            fontStyle: 'italic',
+                        },
+                        u: {
+                            textDecorationLine: 'underline',
+                        },
+                    }}
                 />
             </ScrollView >
             <View style={styles.stickyButtonContainer}>

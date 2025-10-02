@@ -4,7 +4,6 @@ import { useImageUpload } from "@/hooks/useUploadImage";
 import { PRIMARY_COLOR } from "@/lib/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { API_USER, Patch } from "@sm/common";
-import { updateCurrentUserProfile } from "@sm/common/src/api/userProfile";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -19,7 +18,7 @@ import {
 } from "react-native";
 import { Card, Text } from "react-native-paper";
 import { BaseButton } from "@/components/BaseButton";
-import { InputField } from "@/components/InputField"; // Import your InputField component
+import { InputField } from "@/components/InputField"; 
 
 interface IFormData {
   name: string;
@@ -115,7 +114,6 @@ const EditProfileScreen = () => {
 
       let imageUrl = formData.profile_image;
 
-      // Upload image if it's changed and is a local file
       if (
         imageChanged &&
         formData.profile_image &&
@@ -124,7 +122,8 @@ const EditProfileScreen = () => {
         try {
           imageUrl = await uploadImage(formData.profile_image);
           console.log("Uploaded image URL:", imageUrl);
-        } catch (uploadErr) {
+        } catch (err: any) {
+          console.error("Error details:", err.response?.data || err.message);
           setErrors({ upload: "Failed to upload profile image. Please try again." });
           setSaving(false);
           return;
@@ -139,13 +138,11 @@ const EditProfileScreen = () => {
         ...(imageUrl ? { profile_image: imageUrl } : {}),
       };
 
-      console.log("Sending update data:", updateProfileData);
+      console.log("update profile >>>>", updateProfileData);
 
-      // Make API call
       const response = await Patch(API_USER.update_profile, updateProfileData);
 
       if (response && response?.data?.success) {
-        // Update user data in context and AsyncStorage
         await updateUser({
           full_name: formData.name,
           email: formData.email,
@@ -161,7 +158,7 @@ const EditProfileScreen = () => {
     } catch (err: any) {
       console.error("Profile update error:", err);
       console.error("Error details:", err.response?.data || err.message);
-      setErrors({ general: err.message || "Could not update profile" });
+      // setErrors({ general: err.message || "Could not update profile" });
     } finally {
       setSaving(false);
     }

@@ -37,7 +37,7 @@ import {
 import { getHeader } from "~/utility/helmet";
 import { formatMoney } from "~/utility/format_money";
 
-const {  Text } = Typography;
+const { Text } = Typography;
 
 const model = "Order";
 
@@ -268,17 +268,14 @@ const OrderDetailsPage: React.FC = () => {
               </Descriptions.Item>
               <Descriptions.Item label="Subtotal">
                 <Space>
-                  {/* ৳{orderData?.subtotal?.toFixed(2)} */}
                   {formatMoney(orderData?.subtotal)}
                 </Space>
               </Descriptions.Item>
               <Descriptions.Item label="Delivery Charge">
-                ৳{orderData?.delivery_charge?.toFixed(2)}
+                {formatMoney(orderData?.delivery_charge)}
               </Descriptions.Item>
               <Descriptions.Item label="Total Amount" span={2}>
                 <Text strong type="danger">
-                  {/* ৳{orderData?.total?.toFixed(2)}
-                   */}
 
                   {formatMoney(orderData?.total)}
                 </Text>
@@ -346,7 +343,7 @@ const OrderDetailsPage: React.FC = () => {
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={1} align="right">
                       <Text strong>
-                        ৳{orderData?.delivery_charge?.toFixed(2)}
+                        {formatMoney(orderData?.delivery_charge)}
                       </Text>
                     </Table.Summary.Cell>
                   </Table.Summary.Row>
@@ -358,7 +355,7 @@ const OrderDetailsPage: React.FC = () => {
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={1} align="right">
                       <Text strong type="danger">
-                        {formatMoney(orderData?.subtotal)}
+                        {formatMoney(orderData?.total)}
                       </Text>
                     </Table.Summary.Cell>
                   </Table.Summary.Row>

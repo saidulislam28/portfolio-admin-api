@@ -151,11 +151,11 @@ export default function CheckoutScreen() {
         cod: formData.isCOD,
       };
 
+
       const response = await Post(API_USER.create_order, orderData);
       const responseData = response?.data?.data;
 
       if (response?.data?.success) {
-        // Use the new clearAllItems action
         clearAllItems();
         // REMAIN ROUTES
         if (formData.isCOD) {
@@ -181,7 +181,6 @@ export default function CheckoutScreen() {
 
           }
         );
-        // `/sslpay-screen?payment_url=${responseData?.payment_url}&service_type=${PACKAGE_SERVICE_TYPE.book_purchase}&amount=${responseData?.total_amount}`
       } else {
         throw new Error("Failed to place order");
       }
@@ -358,7 +357,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingBottom: 150, // Add padding to account for sticky button
+    paddingBottom: 150, 
   },
   stickyButtonContainer: {
     backgroundColor: "#fff",
@@ -368,7 +367,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#f0f0f0",
     elevation: 8,
-    shadowColor: "#000", // iOS shadow
+    shadowColor: "#000", 
     shadowOffset: {
       width: 0,
       height: -2,

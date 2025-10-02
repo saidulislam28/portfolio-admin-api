@@ -11,7 +11,7 @@ export const useImageUpload = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const uploadImage = async (imageUri: string, options?: UploadImageOptions): Promise<string> => {
+    const uploadImage = async (imageUri: string, options?: UploadImageOptions) => {
         const { token, fieldName = 'file' } = options || {};
 
         setIsLoading(true);
@@ -29,13 +29,9 @@ export const useImageUpload = () => {
                 type: type,
             } as any);
 
-            formData.append("name", "profile_image");
-
             const baseURL = Constants.expoConfig?.extra?.apiBaseUrl;
-            // const API_UPLOAD_IMAGE = "/api/upload/image"; // Adjust this to your endpoint
             const fullURL = `${baseURL}/${API_COMMON.API_UPLOAD_IMAGE}`;
 
-            console.log("full url for upload image", fullURL)
 
             const response = await fetch(fullURL, {
                 method: "POST",
@@ -60,12 +56,13 @@ export const useImageUpload = () => {
                 throw new Error(result.message || "Upload failed - no URL returned");
             }
         } catch (err: any) {
-            const errorMessage = err instanceof Error ? err.message : "Failed to upload image";
+            console.error("Image upload error:", {
+                message: err.message,
+                stack: err.stack
+            });
+            const errorMessage = err.message || "Failed to upload image";
             setError(errorMessage);
-            console.error("Image upload error:", err);
-            console.error("Image upload resposne error:", err.response);
-            console.error("Image upload message error:", err.message);
-            throw new Error(errorMessage);
+            throw err;
         } finally {
             setIsLoading(false);
         }
@@ -80,3 +77,5 @@ export const useImageUpload = () => {
         resetError,
     };
 };
+
+
