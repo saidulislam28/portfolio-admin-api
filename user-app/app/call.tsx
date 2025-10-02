@@ -1,7 +1,9 @@
 import { CallControls } from '@/components/call/CallControls';
 import { CallInfoOverlay } from '@/components/call/CallInfoOverlay';
+import EndCallConfirmationBottomSheet from '@/components/call/EndCallConfirmationBottomSheet';
 import { LoadingScreen } from '@/components/call/LoadingScreen';
 import { VideoViews } from '@/components/call/VideoViews';
+import { ROUTES } from '@/constants/app.routes';
 import { useCallService } from '@/services/AgoraCallService';
 import { useCallControls, useCallInfo, useCallStore } from '@/zustand/callStore';
 import { useKeepAwake } from 'expo-keep-awake';
@@ -29,7 +31,8 @@ export default function CallScreen() {
   const [share, setShare] = useState(false);
   const [screenSharingUid, setScreenSharingUid] = useState<number | null>(null);
   const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
-  
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
   const {
     isInCall,
     isConnecting,
@@ -180,7 +183,7 @@ export default function CallScreen() {
     try {
       await leaveChannel();
       endCall();
-      router.back();
+      router.push(ROUTES.RATING as any);
     } catch (error) {
       console.error('Error ending call:', error);
       endCall();
@@ -223,6 +226,15 @@ export default function CallScreen() {
     }
   };
 
+  const handleConfirmEndCall = async () => {
+    setIsBottomSheetOpen(false);
+    await handleEndCall();
+  };
+
+  const handleEndCallPress = () => {
+    setIsBottomSheetOpen(true);
+  };
+
   const handleScreenShare = async () => {
     try {
       if (share) {
@@ -248,6 +260,15 @@ export default function CallScreen() {
     } catch (error) {
       console.error('Error Sharing Screen:', error);
     }
+  };
+
+  const handleEndCallWithoutFeedback = async () => {
+    setIsBottomSheetOpen(false);
+    await endCall();
+    router.back();
+  };
+  const handleCancelEndCall = () => {
+    setIsBottomSheetOpen(false);
   };
 
   const handleScreenTap = () => {
@@ -298,7 +319,7 @@ export default function CallScreen() {
               onMinimize={handleMinimize}
               onSwitchCamera={handleSwitchCamera}
               onToggleAudio={handleToggleAudio}
-              onEndCall={handleEndCall}
+              onEndCall={handleEndCallPress}
               onToggleVideo={handleToggleVideo}
               onToggleSpeaker={handleToggleSpeaker}
               isAudioMuted={isAudioMuted}
@@ -308,6 +329,13 @@ export default function CallScreen() {
           </>
         )}
       </TouchableOpacity>
+      <EndCallConfirmationBottomSheet
+        isBottomSheetOpen={isBottomSheetOpen}
+        onEndCallWithFeedback={handleConfirmEndCall}
+        onEndCallWithoutFeedback={handleEndCallWithoutFeedback}
+        onCancel={handleCancelEndCall}
+        onChange={setIsBottomSheetOpen}
+      />
     </SafeAreaView>
   );
 }
