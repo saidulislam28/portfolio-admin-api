@@ -355,7 +355,7 @@ const OrderDetailsPage: React.FC = () => {
                     </Table.Summary.Cell>
                     <Table.Summary.Cell index={1} align="right">
                       <Text strong type="danger">
-                        {formatMoney(orderData?.subtotal)}
+                        {formatMoney(orderData?.total)}
                       </Text>
                     </Table.Summary.Cell>
                   </Table.Summary.Row>
