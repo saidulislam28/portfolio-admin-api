@@ -275,7 +275,7 @@ export class OrdersService {
       fail_url: `${baseUrl}/api/v1/payment/redirect?status=failed`,
       cancel_url: `${baseUrl}/api/v1/payment/redirect?status=canceled`,
       ipn_url: `${baseUrl}/api/v1/payment/redirect?status=success&tran_id=${transactionId}`,
-      product_name: orderData?.Package?.name,
+      product_name: orderData?.Package?.name ?? "Product",
       product_category: 'Appointment',
       product_profile: 'general',
       cus_name: `${orderData.first_name}`,
@@ -286,10 +286,11 @@ export class OrdersService {
     };
 
 
-    // console.log('sslc init payload', paymentData)
 
     try {
       const sslResponse = await sslcz.init(paymentData);
+
+
 
       return {
         payment_url: sslResponse.GatewayPageURL,
@@ -465,7 +466,6 @@ export class OrdersService {
 
       // Create payment record
       const createPayment = await this.createPaymentRecord(result, userId, baseUrl, transactionId);
-
       return {
         order_id: result.id,
         payment_url: createPayment.payment_url,

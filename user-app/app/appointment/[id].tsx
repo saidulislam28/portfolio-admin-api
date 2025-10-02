@@ -7,8 +7,7 @@ import { ROUTES } from "@/constants/app.routes";
 import { useAuth } from "@/context/useAuth";
 import {
   AppointmentStatus,
-  PRIMARY_COLOR,
-  SECONDARY_COLOR,
+  PRIMARY_COLOR
 } from "@/lib/constants";
 import { callService } from "@/services/AgoraCallService";
 import { useCallStore } from "@/zustand/callStore";
@@ -18,7 +17,6 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
-  Dimensions,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -28,10 +26,6 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-
-
-
-const { width } = Dimensions.get("window");
 
 const AppointmentDetailPage = () => {
   const { id } = useLocalSearchParams();

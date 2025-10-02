@@ -151,6 +151,9 @@ export default function CheckoutScreen() {
         cod: formData.isCOD,
       };
 
+      // console.log("order data>>", orderData);
+      // return
+
       const response = await Post(API_USER.create_order, orderData);
       const responseData = response?.data?.data;
 

@@ -56,7 +56,6 @@ export class OrdersController {
     const protocol = req.protocol;
     const host = req.get('Host');
     const baseUrl = `${protocol}://${host}`;
-    // console.log("order payload", payload)
     const response = await this.ordersService.createOrder(payload, +id, baseUrl);
     return res.success(response);
   }
