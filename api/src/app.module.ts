@@ -18,36 +18,33 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersController } from './user-dashboard/controllers/user.controller';
 
 
+import { CacheModule } from '@nestjs/cache-manager';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AdminDashboardModule } from './admin-dashboard-api/admin-dashboard.module';
 import { AdminReportModule } from './admin-reports/admin-reports.module';
 import { AppAgoraModule } from './app-agora/app-agora.module';
+import { CommonModule } from './common/common.module';
 import { ConSultantModule } from './consaltant/consultant.module';
 import { ConsultantAppModule } from './consultant-dashboard/consultant-dashboard.module';
+import { FcmModule } from './fcm/fcm.module';
+import { JobsModule } from './jobs/jobs.module';
+import { MetricsService } from './metrics/metrics.service';
 import { NotificationModule } from './notifications/notifications.module';
 import { ScheduleNotificationsModule } from './schedule-notification/schedule-notifications.module';
+import { TimezoneModule } from './timezone/timezone.module';
 import { UserAppModule } from './user-app-api/user-app.module';
+import { UserAuthModule } from './user-auth/user-auth.module';
+import { UserCacheModule } from './user-cache/user-cache.module';
 import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
 import { AuthModule } from './user/auth.module';
-import { JobsModule } from './jobs/jobs.module';
-import { FcmModule } from './fcm/fcm.module';
-import { UserDashBoardController } from './user/app-user-management.controller';
-import { UserDashBoardService } from './user/app-user-management.service';
-import { UserCacheModule } from './user-cache/user-cache.module';
-import { TimezoneModule } from './timezone/timezone.module';
-import { CommonModule } from './common/common.module';
-import { CacheModule } from '@nestjs/cache-manager';
-import { UserAuthModule } from './user-auth/user-auth.module';
 import { WebsiteModule } from './website/website.module';
-import { MetricsService } from './metrics/metrics.service';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 // import { SentryExceptionFilter } from './common/filters/sentry-exception.filter';
 
 import { HttpLoggingInterceptor } from './metrics/http-logging.interceptor';
 import { MetricsController } from './metrics/metrics.controller';
 
 // sentry
-import { SentryModule } from '@sentry/nestjs/setup';
-import { SentryGlobalFilter } from "@sentry/nestjs/setup";
+import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AppNotificationsModule } from './app-notifications/app-notifications.module';
 
 

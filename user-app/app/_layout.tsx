@@ -36,6 +36,8 @@ LogBox.ignoreLogs([
 export default function HomeLayout() {
   useNotifications();
 
+
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
