@@ -17,7 +17,7 @@ export class NotificationResponseDto {
   @ApiProperty()
   user_id: number;
 
-  @ApiProperty({ type: 'object', required: false })
+  @ApiProperty()
   meta?: any;
 
   @ApiProperty({ enum: NotificationType })
