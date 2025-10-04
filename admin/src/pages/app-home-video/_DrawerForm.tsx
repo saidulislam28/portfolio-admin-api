@@ -1,18 +1,16 @@
 /* eslint-disable */
 
-import { UploadOutlined } from "@ant-design/icons";
 import { useMutation } from "@tanstack/react-query";
-import { Button, Drawer, Form, Input, Switch, Upload, message } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Drawer, Form, Input, Switch, message } from 'antd';
+import React, { useEffect } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { patch, post } from "~/services/api/api";
-import { API_FILE_UPLOAD, getUrlForModel } from "~/services/api/endpoints";
+import { getUrlForModel } from "~/services/api/endpoints";
 
 
 export default function DrawerForm({ title, model, onClose, open, onSubmitSuccess, isEditing, editedItem, ...props }) {
 
     const [form] = Form.useForm();
-    const [previewVideo, setPreviewVideo] = useState(null);
 
     const createData = useMutation({
         mutationFn: async (data: any) => await post(getUrlForModel(model), data.data),
@@ -39,10 +37,7 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
     });
 
     const onFinish = async (formValues: any) => {
-        const videoURL = formValues?.video_url[0]?.response?.url ?? formValues?.video_url[0]?.url;
-        formValues.video_url = videoURL;
-
-        formValues.sort_order = Number(formValues.sort_order)
+        formValues.sort_order = Number(formValues.sort_order);
 
         if (isEditing) {
             updateData.mutate({
@@ -62,42 +57,26 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
 
     useEffect(() => {
         if (editedItem) {
-
-            const val = {
-                ...editedItem,
-                video_url: [
-                    {
-                        uid: '-1',
-                        status: 'done',
-                        thumbUrl: editedItem?.video_url,
-                    },
-                ],
-            }
-
-            form.setFieldsValue(val);
+            form.setFieldsValue(editedItem);
         } else {
             form.resetFields();
         }
-    }, [isEditing]);
+    }, [isEditing, editedItem]);
 
-    const normFile = (e) => {
-        console.log({ e });
-        if (Array.isArray(e)) {
-            return e;
+    // YouTube URL validation
+    const validateYouTubeUrl = (_, value) => {
+        if (!value) {
+            return Promise.reject(new Error('Please enter a YouTube video URL'));
         }
-        return e && e.fileList;
-    };
-
-
-    const handlePreview = async (file) => {
-        console.log("file", file)
-        const url = file.video_url || file.response?.video_url;
-        if (url) {
-            setPreviewVideo(url);
-            window.open(url, '_blank');
+        
+        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+        
+        if (!youtubeRegex.test(value)) {
+            return Promise.reject(new Error('Please enter a valid YouTube URL'));
         }
+        
+        return Promise.resolve();
     };
-
 
     return (
         <>
@@ -105,7 +84,6 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
                 title={title}
                 width={600}
                 onClose={onClose}
-
                 open={open}
                 bodyStyle={{ paddingBottom: 80 }}>
                 <Form
@@ -118,25 +96,16 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
                 >
                     <Form.Item
                         name="video_url"
-                        label="Slider Video"
-                        rules={[{ required: true, message: 'Required' }]}
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
+                        label="YouTube Video URL"
+                        rules={[
+                            { required: true, message: 'Required' },
+                            { validator: validateYouTubeUrl }
+                        ]}
                     >
-
-                        <Upload
-                            accept='video/*'
-                            name="file"
-                            action={API_FILE_UPLOAD}
-                            maxCount={1}
-                            listType="picture-card"
-                        >
-                            <div className="flex flex-col items-center justify-center">
-                                <UploadOutlined />
-                                <span>Upload</span>
-                            </div>
-                        </Upload>                     
-
+                        <Input 
+                            placeholder="https://www.youtube.com/watch?v=..." 
+                            type="url"
+                        />
                     </Form.Item>
 
                     <Form.Item
@@ -145,17 +114,17 @@ export default function DrawerForm({ title, model, onClose, open, onSubmitSucces
                     >
                         <Input type="number" />
                     </Form.Item>
-                    <Form.Item label="Is Active" name="is_active" initialValue={false}>
+                    
+                    <Form.Item label="Is Active" name="is_active" initialValue={false} valuePropName="checked">
                         <Switch />
                     </Form.Item>
+                    
                     <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Save
                         </Button>
                     </Form.Item>
                 </Form>
-
-
             </Drawer>
         </>
     );

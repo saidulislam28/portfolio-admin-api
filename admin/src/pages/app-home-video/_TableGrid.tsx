@@ -1,12 +1,9 @@
 /* eslint-disable */
 
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, LinkOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, Image, Popconfirm, Space, Table, Tag, message } from "antd";
-import Title from "antd/es/typography/Title";
+import { Button, Popconfirm, Space, Table, Tag, message } from "antd";
 import React, { useEffect } from "react";
-import { render } from "react-dom";
-import { Link } from "react-router-dom";
 import { deleteApi, get } from "~/services/api/api";
 import { getUrlForModel } from "~/services/api/endpoints";
 
@@ -25,12 +22,12 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
         queryFn: () => get(getUrlForModel(model)),
         staleTime: 0,
     });
+    
     useEffect(() => {
         if (trigger) {
             refetch();
         }
     }, [trigger]);
-
 
     const deleteMutation = useMutation({
         mutationFn: async (id: any) => await deleteApi(getUrlForModel(model, id)),
@@ -47,38 +44,75 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
         deleteMutation.mutate(id);
     }
 
+    // Extract YouTube video ID from URL
+    const getYouTubeVideoId = (url: string) => {
+        if (!url) return null;
+        
+        // Handle youtube.com/watch?v=VIDEO_ID
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        
+        return (match && match[2].length === 11) ? match[2] : null;
+    };
+
     const columns = [
         {
             title: '#',
             dataIndex: 'sort_order',
+            width: 80,
         },
         {
-            title: 'Slider Video',
+            title: 'YouTube Video',
             dataIndex: 'video_url',
-            render: (videoUrl) => (
-                <video
-                    width={120}
-                    height={90}
-                    controls
-                    poster="https://via.placeholder.com/120x90?text=Video"
+            width: 300,
+            render: (videoUrl: string) => {
+                const videoId = getYouTubeVideoId(videoUrl);
+                
+                if (!videoId) {
+                    return <span style={{ color: '#ff4d4f' }}>Invalid YouTube URL</span>;
+                }
+                
+                return (
+                    <iframe
+                        width="280"
+                        height="158"
+                        src={`https://www.youtube.com/embed/${videoId}`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title="YouTube video player"
+                    />
+                );
+            },
+        },
+        {
+            title: 'Video Link',
+            dataIndex: 'video_url',
+            width: 120,
+            render: (videoUrl: string) => (
+                <Button
+                    type="link"
+                    icon={<LinkOutlined />}
+                    href={videoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
-                    <source src={videoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
+                    Open Link
+                </Button>
             ),
-
         },
         {
             title: 'Is Active',
             dataIndex: 'is_active',
+            width: 120,
             render: (isActive: any) => {
                 return <Tag color={isActive ? 'green' : 'red'}>{isActive ? 'Active' : 'Inactive'}</Tag>
             }
         },
         {
             title: 'Actions',
+            width: 150,
             render: (record: any) => {
-                console.log(record)
                 return <Space>
                     <Button onClick={() => onClickEdit(record)} type={'link'}><EditOutlined /></Button>
                     <Popconfirm
@@ -91,7 +125,6 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
                     >
                         <Button danger type={'link'}><DeleteOutlined /></Button>
                     </Popconfirm>
-
                 </Space>
             },
         },
@@ -108,6 +141,7 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
                 loading={isLoading}
                 columns={columns}
                 dataSource={fetchData?.data ?? []}
+                scroll={{ x: 1000 }}
             />
         </>
     );

@@ -1,32 +1,41 @@
 import { PRIMARY_COLOR } from '@/lib/constants';
-import { AVPlaybackStatus, ResizeMode, Video } from 'expo-av';
 import React, { useRef, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import YoutubePlayer from 'react-native-youtube-iframe';
 
 const { width } = Dimensions.get('window');
 
-export default function VideoCarousel({ data }: any) {
+interface VideoCarouselProps {
+  data: {
+    video_url: string;
+    poster?: string;
+  }[];
+}
+
+export default function VideoCarousel({ data }: VideoCarouselProps) {
   const [loading, SetLoading] = useState(false);
 
-  const videoRefs = useRef<(Video | null)[]>([]);
+  const playerRefs = useRef<any[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  
   const handleSnapToItem = (index: number) => {
     setActiveIndex(index);
 
     // Pause all videos except the current one
-    videoRefs.current.forEach((ref, i) => {
-      if (ref && i !== index) {
-        ref.pauseAsync();
-      }
-    });
-
-    // Play the current video
-    if (videoRefs.current[index]) {
-      videoRefs.current[index]?.playAsync();
-    }
+    // playerRefs.current.forEach((ref, i) => {
+    //   if (ref && i !== index) {
+    //     ref?.pause();
+    //   }
+    // });
   };
 
+  // Extract YouTube video ID from URL
+  const getYoutubeVideoId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   const PaginationItem = ({ isActive }: { isActive: boolean }) => (
     <View style={[styles.dot, isActive && styles.activeDot]} />
@@ -42,27 +51,26 @@ export default function VideoCarousel({ data }: any) {
         onSnapToItem={handleSnapToItem}
         onScrollEnd={() => {
           // Pause all videos when scrolling begins
-          videoRefs.current.forEach(ref => ref?.pauseAsync());
+          // playerRefs.current.forEach(ref => ref?.pause());
         }}
         renderItem={({ item, index }: any) => (
           <View style={styles.videoContainer}>
-            <Video
-              ref={(ref) => (videoRefs.current[index] = ref)}
-              source={{ uri: item?.video_url }}
-              style={styles.video}
-              resizeMode={ResizeMode.COVER}
-              isLooping
-              useNativeControls={true}
-              shouldPlay={false}
-              
-              posterSource={{ uri: item?.poster }}
-              posterStyle={styles.poster}
-              onPlaybackStatusUpdate={(status: AVPlaybackStatus) => {
-                if (!status.isLoaded) {
-                  // Handle error state
-                  console.log('Video loading error');
+            <YoutubePlayer
+              ref={(ref) => (playerRefs.current[index] = ref)}
+              height={200}
+              width={370}
+              videoId={getYoutubeVideoId(item?.video_url)}
+              play={false}
+              onChangeState={(state) => {
+                if (state === 'ended') {
+                  // Handle video ended
+                  console.log('Video ended');
                 }
               }}
+              onError={(error) => {
+                console.log('Video loading error', error);
+              }}
+              webViewStyle={styles.video}
             />
 
             <View style={styles.paginationContainer}>
@@ -81,17 +89,15 @@ const styles = StyleSheet.create({
   container: {
     height: 250,
     alignItems: 'center',
-
   },
   videoContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 10
   },
   video: {
-    width: 370,
-    height: 200,
-    backgroundColor: '#000',
-    borderRadius: 10
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   poster: {
     resizeMode: 'cover',
