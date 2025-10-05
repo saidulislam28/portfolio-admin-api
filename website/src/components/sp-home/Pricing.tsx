@@ -21,13 +21,10 @@ const Pricing = ({
                             {/* Package Name */}
                             <h3 className="text-2xl font-bold text-gray-900 mb-4">{plan?.name}</h3>
 
-                            {/* Pricing Section */}
                             <div className="mb-4">
                                 <div className="flex items-baseline gap-2">
-                                    {/* Original Price - Active */}
                                     <span className="text-4xl font-extrabold text-gray-900">BDT {plan?.price_bdt_original}</span>
 
-                                    {/* Discount Price - Inactive/Striked */}
                                     {plan?.price_bdt < plan?.price_bdt_original && (
                                         <span className="text-xl text-gray-500 line-through">BDT {plan?.price_bdt}</span>
                                     )}
@@ -48,7 +45,6 @@ const Pricing = ({
                                 </p>
                             </div>
 
-                            {/* Choose Plan Button - Always at bottom */}
                             <a href={base?.play_store ? `${base?.play_store}` : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"} target='_blank'>
                                 <button className="w-full py-3 px-4 rounded-lg font-medium transition bg-gray-100 text-gray-900 hover:bg-gray-200 mt-auto">
                                     Choose Plan

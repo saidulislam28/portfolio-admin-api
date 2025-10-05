@@ -1,4 +1,4 @@
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Image } from "react-native";
@@ -23,6 +23,7 @@ import {
   TouchableWithoutFeedback,
   View
 } from "react-native";
+import { GoogleSigninButton } from "@/components/GoogleSigninButton";
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");
@@ -33,6 +34,8 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   const [expectedLevel, setExpectedLevel] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const { signInWithGoogle }: any = useAuth();
 
   // Error states
   const [errors, setErrors] = useState({
@@ -45,7 +48,6 @@ export default function RegisterScreen() {
   });
 
   const router = useRouter();
-  const { register } = useAuth();
 
   const fillDummyData = useCallback(() => {
     const randomSuffix = Math.floor(100 + Math.random() * 900);
@@ -82,11 +84,8 @@ export default function RegisterScreen() {
     return emailRegex.test(email);
   };
 
-  // Bangladesh phone number validation regex
   const validateBDPhone = (phone: string): boolean => {
-    // Remove spaces and non-digits
     const cleanedPhone = phone.replace(/\s+/g, "").trim();
-
     // Regex for Bangladeshi phone numbers: 11 digits starting with allowed prefixes
     const bdPhoneRegex = /^(013|014|015|016|017|018|019)\d{8}$/;
 
@@ -211,6 +210,19 @@ export default function RegisterScreen() {
       Alert.alert("Registration Error", errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsGoogleLoading(true);
+      await signInWithGoogle();
+      router.replace(ROUTES.HOME as any);
+    } catch (err) {
+      console.log('Login screen, handleGoogleSignIn, failed', err);
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -399,23 +411,7 @@ export default function RegisterScreen() {
 
             {/* Social Buttons */}
             <View style={styles.socialButtonsContainer}>
-              <TouchableOpacity style={styles.socialButton}>
-                <MaterialCommunityIcons
-                  name="facebook"
-                  size={20}
-                  color="#1877F2"
-                />
-                <Text style={styles.socialButtonText}>
-                  Register With Facebook
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.socialButton}>
-                <AntDesign name="google" size={20} color="#DB4437" />
-                <Text style={styles.socialButtonText}>
-                  Register With Google
-                </Text>
-              </TouchableOpacity>
+              <GoogleSigninButton onPress={handleGoogleSignIn} isLoading={isGoogleLoading} />
             </View>
 
             {/* Login Link */}
