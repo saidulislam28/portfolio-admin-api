@@ -1,5 +1,6 @@
 /* eslint-disable  */
 import { Injectable } from '@nestjs/common';
+import { ServiceType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -46,12 +47,26 @@ export class WebDataSettingService {
         const faq = await this.prismaService.faq.findMany({
             orderBy: { sort_order: 'asc' },
         });
+
+
+        const packages = await this.prismaService.package.findMany({
+            where: {
+                service_type: ServiceType.speaking_mock_test,
+                is_active: true,
+            },
+            orderBy: {
+                sort_order: 'asc'
+            },
+            take: 3
+        })
+
+
         return {
             base_data,
             hero_data,
             testimonial,
-            faq
-
+            faq,
+            packages
         };
     }
 }

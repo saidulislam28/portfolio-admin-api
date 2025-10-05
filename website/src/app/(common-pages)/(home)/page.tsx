@@ -106,7 +106,7 @@ export default function SpeakingMateLandingPage() {
       <Testimonial testimonials={homeData?.testimonial} />
 
       {/* Pricing Section */}
-      <Pricing pricingPlans={pricingPlans} />
+      <Pricing pricingPlans={homeData?.packages || []} base={homeData?.base_data} />
 
       {/* FAQ Section */}
       <FAQSection data={homeData?.faq} />
