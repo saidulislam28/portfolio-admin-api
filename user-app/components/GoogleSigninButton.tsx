@@ -1,6 +1,7 @@
 import React from 'react';
 import { BaseButton } from '@/components/BaseButton';
 import { AntDesign } from '@expo/vector-icons';
+import { PRIMARY_COLOR } from '@/lib/constants';
 
 type GoogleSigninButtonProps = {
   onPress: () => void;
@@ -19,7 +20,7 @@ export const GoogleSigninButton = ({
       onPress={onPress}
       title={'Continue with Google'}
       variant="secondary"
-      customIcon={<AntDesign name="google" size={24} color="#4285F4" />}
+      customIcon={<AntDesign name="google" size={24} color={PRIMARY_COLOR} />}
       isLoading={isLoading}
       disabled={disabled}
       testID="google-signin-button"
