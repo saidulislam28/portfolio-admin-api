@@ -17,7 +17,7 @@ export default ({
       facebookScheme: "770838519017608"
     },
     jsEngine: "hermes",
-    version: "0.0.7",
+    version: "0.0.8",
     orientation: "portrait",
     icon: "./assets/images/Logo512.png",
     scheme: "com.bitpixelbd.speakingmate",
