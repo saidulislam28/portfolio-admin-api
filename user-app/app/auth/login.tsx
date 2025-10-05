@@ -235,44 +235,9 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.socialContainer}>
-            {/* <TouchableOpacity
-              style={[styles.socialButton, isFacebookLoading && styles.disabledButton]}
-              onPress={signInWithFacebook}
-              disabled={socialLoading !== null}
-            >
-              {isFacebookLoading ? (
-                <ActivityIndicator color="#1877F2" size="small" style={{ marginRight: 12 }} />
-              ) : (
-                <View style={styles.facebookIcon}>
-                  <Text style={styles.facebookText}>f</Text>
-                </View>
-              )}
-              <Text style={styles.socialButtonText}>
-                {isFacebookLoading ? 'Connecting...' : 'Login With Facebook'}
-              </Text>
-            </TouchableOpacity> */}
-
-
-            {/* <GoogleSigninButton onPress={handleGoogleSignIn} /> */}
+             
             <GoogleSigninButton onPress={handleGoogleSignIn} isLoading={isGoogleLoading} />
-            {/* <FacebookSigninButton onPress={handleGoogleSignIn} isLoading={isFacebookLoading} /> */}
-
-            {/* <TouchableOpacity
-              style={[styles.socialButton, isGoogleLoading && styles.disabledButton]}
-              onPress={handleGoogleSignIn}
-              disabled={socialLoading !== null}
-            >
-              {isGoogleLoading ? (
-                <ActivityIndicator color="#4285F4" size="small" style={{ marginRight: 12 }} />
-              ) : (
-                <View style={styles.googleIconContainer}>
-                  <Text style={styles.googleIcon}>G</Text>
-                </View>
-              )}
-              <Text style={styles.socialButtonText}>
-                {isGoogleLoading ? 'Connecting...' : 'Login With Google'}
-              </Text>
-            </TouchableOpacity> */}
+            {/* <FacebookSigninButton onPress={handleGoogleSignIn} isLoading={isFacebookLoading} /> */}            
           </View>
           <View style={styles.signupContainer}>
             <Text style={styles.joinText}>Don't have an account? </Text>
