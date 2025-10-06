@@ -67,21 +67,13 @@ const HelpSupportScreen = () => {
   };
 
   const contactOptions = [
-    // {
-    //   id: 1,
-    //   title: 'Live Chat',
-    //   subtitle: 'Get instant help from our support team',
-    //   icon: 'MessageCircle',
-    //   color: '#10B981',
-    //   action: () => Alert.alert('Live Chat', 'Opening chat support...'),
-    // },
     {
       id: 2,
       title: 'Call Support',
       subtitle: 'Speak directly with a support agent',
       icon: 'Phone',
       color: '#3B82F6',
-      action: () => Linking.openURL(`tel:${navigation?.phone ?? "8809678771912"}`),
+      url: `tel:${navigation?.phone ?? "8809678771912"}`,
     },
     {
       id: 3,
@@ -89,7 +81,7 @@ const HelpSupportScreen = () => {
       subtitle: 'Send us your questions via email',
       icon: 'Mail',
       color: '#8B5CF6',
-      action: () => Linking.openURL(`mailto:${navigation?.email ?? 'Info.speakingmate@gmail.co'}`),
+      url: `mailto:${navigation?.email ?? 'Info.speakingmate@gmail.co'}`,
     },
   ];
 
@@ -132,23 +124,42 @@ const HelpSupportScreen = () => {
       subtitle: 'Learn how to use all features',
       icon: 'FileText',
       color: '#F59E0B',
-      action: () => Linking.openURL(navigation?.user_guide),
+      url: navigation?.user_guide,
     },
     {
       title: 'Video Tutorials',
       subtitle: 'Watch step-by-step guides',
       icon: 'Video',
       color: '#EF4444',
-      action: () => Linking.openURL(navigation?.video_tutorial),
+      url: navigation?.video_tutorial,
     },
     {
       title: 'Privacy Policy',
       subtitle: 'Read our privacy policy',
       icon: 'Shield',
       color: '#6366F1',
-      action: () => Linking.openURL(navigation?.privacy_policy),
+      url: navigation?.privacy_policy,
     },
   ];
+
+
+  const handlePress = async (url: string) => {
+    try {
+      if (!url) {
+        console.warn('No URL provided');
+        return;
+      }
+
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        console.warn('Cannot open URL:', url);
+      }
+    } catch (error) {
+      console.error('Failed to open URL:', error);
+    }
+  }
 
 
   return (
@@ -168,7 +179,7 @@ const HelpSupportScreen = () => {
           {contactOptions.map((option) => (
             <TouchableOpacity
               key={option.id}
-              onPress={option.action}
+              onPress={() => handlePress(option.url)}
               style={styles.card}
               activeOpacity={0.7}
             >
@@ -192,7 +203,7 @@ const HelpSupportScreen = () => {
           {quickActions.map((action, index) => (
             <TouchableOpacity
               key={index}
-              onPress={action.action}
+              onPress={() => handlePress(action.url)}
               style={styles.card}
               activeOpacity={0.7}
             >
@@ -208,6 +219,7 @@ const HelpSupportScreen = () => {
               </View>
             </TouchableOpacity>
           ))}
+
         </View>
 
         {/* FAQ Section */}

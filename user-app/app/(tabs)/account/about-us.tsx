@@ -16,32 +16,24 @@ import { useAppSettings } from '@/hooks/queries/useAppSettings';
 import Constants from 'expo-constants';
 
 const AboutAppScreen = () => {
-
-
-
   const {
     data,
     isLoading,
-    error,
-    isSuccess: isSettingsFetchSuccess,
   } = useAppSettings();
 
-  const navigation = data?.navigations
-  console.log("appsettingsData", navigation);
-
-
-
-  const handleContactSupport = () => {
-    Linking.openURL(`mailto:${navigation?.email}`);
+  const navigation = data?.navigations;
+  const handleContactSupport = async () => {
+    await Linking.openURL(`mailto:${navigation?.email}`);
   };
 
-  const handleRateApp = () => {
-    // Logic to redirect to app store rating
-    Linking.openURL('https://play.google.com/store/apps/details?id=com.yourapp');
+  const handleVisitWebsite = async () => {
+    await Linking.openURL(navigation?.brand_url);
   };
-
-  const handleVisitWebsite = () => {
-    Linking.openURL(navigation?.brand_url);
+  const handleNavigatePrivacy = async () => {
+    await Linking.openURL(navigation?.privacy_policy);
+  };
+  const handleTerms = async () => {
+    await Linking.openURL(navigation?.terms);
   };
 
   if (isLoading) {
@@ -62,7 +54,7 @@ const AboutAppScreen = () => {
           style={styles.appIcon}
         />
         <Text style={styles.appName}>SpeakingMate</Text>
-        <Text style={styles.appVersion}>Version {Constants.expoConfig?.version }</Text>
+        <Text style={styles.appVersion}>Version {Constants.expoConfig?.version}</Text>
       </View>
 
       {/* App Description Section */}
@@ -143,24 +135,16 @@ const AboutAppScreen = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Legal</Text>
 
-        <TouchableOpacity onPress={() => Linking.openURL(navigation?.privacy_policy)} style={styles.legalItem}>
+        <TouchableOpacity onPress={handleNavigatePrivacy} style={styles.legalItem}>
           <Text style={styles.legalText}>Privacy Policy</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => Linking.openURL(navigation?.terms)} style={styles.legalItem}>
+        <TouchableOpacity onPress={handleTerms} style={styles.legalItem}>
           <Text style={styles.legalText}>Terms of Service</Text>
           <Ionicons name="chevron-forward" size={20} color={PRIMARY_COLOR} />
         </TouchableOpacity>
       </View>
-
-      {/* Rate App Section */}
-      {/* <View style={styles.rateSection}>
-        <TouchableOpacity style={styles.rateButton} onPress={handleRateApp}>
-          <Ionicons name="star" size={20} color={"#ffffff"} />
-          <Text style={styles.rateButtonText}>Rate Our App</Text>
-        </TouchableOpacity>
-      </View> */}
 
       {/* Footer */}
       <View style={styles.footer}>
