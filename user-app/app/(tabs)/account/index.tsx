@@ -48,12 +48,6 @@ const SettingsScreen = () => {
       iconComponent: MaterialIcons,
     },
     {
-      icon: "shield-account",
-      title: "Privacy",
-      // action: () => router.push('/privacy'),
-      iconComponent: MaterialCommunityIcons,
-    },
-    {
       icon: "help-circle",
       title: "Help & Support",
       action: () => router.push(ROUTES.HELP_AND_SUPPORT as any),
@@ -75,15 +69,6 @@ const SettingsScreen = () => {
 
   const onPressLogout = () => {
     logout();
-    // Alert.alert(
-    //   "Confirm Logout",
-    //   "Are you sure you want to log out?",
-    //   [
-    //     { text: "Cancel", style: "cancel" },
-    //     { text: "Log Out", style: "destructive", onPress: logout },
-    //   ],
-    //   { cancelable: true }
-    // );
   };
 
   return (
