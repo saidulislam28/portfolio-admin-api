@@ -43,6 +43,10 @@ export default ({
         "android.permission.CALL_PHONE",
         "android.permission.READ_PHONE_STATE",
       ],
+      blockedPermissions: [
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO"
+      ],
       config: {
         pictureInPicture: {
           enable: true,

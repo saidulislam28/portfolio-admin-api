@@ -131,7 +131,7 @@ const ExamRegistrationFrom = () => {
   const pickImageFromCamera = async () => {
     try {
       const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ["images"],
         allowsEditing: false,
         quality: 0.8,
       });
@@ -147,7 +147,7 @@ const ExamRegistrationFrom = () => {
   const pickImageFromGallery = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ["images"],
         allowsEditing: false,
         quality: 0.8,
       });
@@ -156,6 +156,7 @@ const ExamRegistrationFrom = () => {
         setSelectedImage(result.assets[0].uri);
       }
     } catch (error) {
+      console.log('err', error)
       Alert.alert("Error", "Failed to select image");
     }
   };
