@@ -110,12 +110,6 @@ export default function SpeakingMateLandingPage() {
 
       {/* FAQ Section */}
       <FAQSection data={homeData?.faq} />
-
-      {/* Final CTA Section */}
-      {/* <FinalCta /> */}
-
-      {/* Footer */}
-      {/* <Footer /> */}
     </div>
   );
 }

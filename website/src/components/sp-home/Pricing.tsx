@@ -39,11 +39,11 @@ const Pricing = ({
                             </div>
 
                             {/* Description with 3-line limit */}
-                            <div className="mb-6 flex-1">
+                            {/* <div className="mb-6 flex-1">
                                 <p className="text-gray-600 line-clamp-3 leading-relaxed">
                                     {plan?.description}
                                 </p>
-                            </div>
+                            </div> */}
 
                             <a href={base?.play_store ? `${base?.play_store}` : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"} target='_blank'>
                                 <button className="w-full py-3 px-4 rounded-lg font-medium transition bg-gray-100 text-gray-900 hover:bg-gray-200 mt-auto">
