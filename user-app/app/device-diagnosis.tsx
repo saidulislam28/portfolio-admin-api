@@ -3,7 +3,6 @@ import { Ionicons } from '@expo/vector-icons';
 import NetInfo from '@react-native-community/netinfo';
 import { Audio } from 'expo-av';
 import * as Battery from 'expo-battery';
-import * as Camera from 'expo-camera';
 import * as Clipboard from 'expo-clipboard';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -23,7 +22,7 @@ import {
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
-const DeviceDiagnosisScreen = ({ navigation }) => {
+const DeviceDiagnosisScreen = () => {
   const [diagnostics, setDiagnostics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [appState, setAppState] = useState(AppState.currentState);
@@ -54,10 +53,10 @@ const DeviceDiagnosisScreen = ({ navigation }) => {
 
       // Platform-specific checks
       if (Platform.OS === 'android') {
-        const batteryStatus = await checkBatteryOptimization();
-        results.push(batteryStatus);
-        const autostartStatus = await checkAutostartPermission();
-        results.push(autostartStatus);
+        // const batteryStatus = await checkBatteryOptimization();
+        // results.push(batteryStatus);
+        // const autostartStatus = await checkAutostartPermission();
+        // results.push(autostartStatus);
       } else {
         const backgroundStatus = await checkBackgroundAppRefresh();
         results.push(backgroundStatus);
@@ -68,28 +67,24 @@ const DeviceDiagnosisScreen = ({ navigation }) => {
       results.push(dndStatus);
 
       // Check internet connectivity
-      const internetStatus = await checkInternetConnectivity();
-      results.push(internetStatus);
+      // const internetStatus = await checkInternetConnectivity();
+      // results.push(internetStatus);
 
       // Check microphone permissions
       const micStatus = await checkMicrophonePermissions();
       results.push(micStatus);
 
       // Check device info
-      const deviceStatus = getDeviceInfo();
-      results.push(deviceStatus);
+      // const deviceStatus = getDeviceInfo();
+      // results.push(deviceStatus);
 
       // Check battery level (affects call quality)
-      const batteryLevelStatus = await checkBatteryLevel();
-      results.push(batteryLevelStatus);
-
-      // Check camera permissions (for video calls)
-      const cameraStatus = await checkCameraPermissions();
-      results.push(cameraStatus);
+      // const batteryLevelStatus = await checkBatteryLevel();
+      // results.push(batteryLevelStatus);
 
       // Check Bluetooth status (for audio routing)
-      const bluetoothStatus = await checkBluetoothStatus();
-      results.push(bluetoothStatus);
+      // const bluetoothStatus = await checkBluetoothStatus();
+      // results.push(bluetoothStatus);
     } catch (error) {
       console.error('Error running diagnostics:', error);
     }
@@ -318,33 +313,6 @@ Free Disk Storage: ${Math.round((await DeviceInfo.getFreeDiskStorage()) / (1024 
         title: 'Microphone Access',
         icon: 'mic',
         description: 'Unable to check microphone permissions.',
-        status: false,
-        action: () => openAppSettings(),
-        actionText: 'App Settings'
-      };
-    }
-  };
-
-  const checkCameraPermissions = async () => {
-    try {
-      // For video calls, check camera permission using expo-camera
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      const isGranted = status === 'granted';
-      return {
-        title: 'Camera Access',
-        icon: 'camera',
-        description: isGranted
-          ? 'Camera access is enabled for video calls.'
-          : 'Camera access is required for video calls.',
-        status: isGranted,
-        action: () => openAppSettings(),
-        actionText: 'App Settings'
-      };
-    } catch (error) {
-      return {
-        title: 'Camera Access',
-        icon: 'camera',
-        description: 'Unable to check camera permissions.',
         status: false,
         action: () => openAppSettings(),
         actionText: 'App Settings'

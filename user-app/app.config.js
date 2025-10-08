@@ -17,7 +17,7 @@ export default ({
       facebookScheme: "770838519017608"
     },
     jsEngine: "hermes",
-    version: "0.0.8",
+    version: "0.0.9",
     orientation: "portrait",
     icon: "./assets/images/Logo512.png",
     scheme: "com.bitpixelbd.speakingmate",
@@ -42,6 +42,10 @@ export default ({
         "android.permission.WAKE_LOCK",
         "android.permission.CALL_PHONE",
         "android.permission.READ_PHONE_STATE",
+      ],
+      blockedPermissions: [
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO"
       ],
       config: {
         pictureInPicture: {
