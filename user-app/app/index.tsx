@@ -1,14 +1,14 @@
-import { registerForPushNotificationsAsync } from "@/lib/notification";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_COMMON, API_USER, Get, Post } from "@sm/common";
-import { useRouter } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, ToastAndroid, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useAuth } from "@/context/useAuth";
-import "react-native-reanimated";
 import { ROUTES } from "@/constants/app.routes";
+import { useAuth } from "@/context/useAuth";
+import { registerForPushNotificationsAsync } from "@/lib/notification";
 import { getUserDeviceTimezone } from "@/utils/userTimezone";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_COMMON, Post } from "@sm/common";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import "react-native-reanimated";
 
 export default function Index() {
   const { user, isLoading } = useAuth();

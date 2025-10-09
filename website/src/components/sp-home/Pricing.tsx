@@ -23,10 +23,10 @@ const Pricing = ({
 
                             <div className="mb-4">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-extrabold text-gray-900">BDT {plan?.price_bdt_original}</span>
+                                    <span className="text-4xl font-extrabold text-gray-900">BDT {plan?.price_bdt}</span>
 
                                     {plan?.price_bdt < plan?.price_bdt_original && (
-                                        <span className="text-xl text-gray-500 line-through">BDT {plan?.price_bdt}</span>
+                                        <span className="text-xl text-gray-500 line-through">BDT {plan?.price_bdt_original}</span>
                                     )}
                                 </div>
                             </div>

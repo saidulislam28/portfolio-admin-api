@@ -1,4 +1,3 @@
-// app/page.tsx or components/LandingPage.tsx
 'use client';
 
 import CtaSection from '@/src/components/sp-home/CtaSection';

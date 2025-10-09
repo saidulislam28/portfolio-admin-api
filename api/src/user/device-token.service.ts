@@ -1,14 +1,12 @@
 import {
-  BadRequestException,
   Inject,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { UserUpdatedEvent } from 'src/common/events/user-updated.event';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { RegisterDeviceTokenDto } from './dto/device-token.dto';
 import { UserCacheService } from 'src/user-cache/interfaces/user-cache.interface';
+import { RegisterDeviceTokenDto } from './dto/device-token.dto';
 
 @Injectable()
 export class DeviceTokenService {
