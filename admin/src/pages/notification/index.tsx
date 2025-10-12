@@ -24,7 +24,7 @@ import { getHeader } from '~/utility/helmet';
 import History from './history';
 import Notification from './notification';
 
-const { Title,  Paragraph } = Typography;
+const { Title, Paragraph } = Typography;
 const title = 'Notification';
 
 
@@ -94,13 +94,6 @@ export default function AdminNotificationPanel() {
                         setRecipientType={setRecipientType}
                         setShowPreview={setShowPreview}
                     />
-
-                    {/* Notification History */}
-                    <History
-                        getNotificationIcon={getNotificationIcon}
-                        notificationHistory={notificationHistory}
-                    />
-
                     {/* Preview Modal */}
                     <Modal
                         title="Notification Preview"
@@ -116,7 +109,7 @@ export default function AdminNotificationPanel() {
                             <Space direction="vertical" style={{ width: '100%' }}>
                                 {getNotificationIcon(previewData?.notificationType)}
                                 <Title level={4}>{previewData?.title}</Title>
-                                <Paragraph>{previewData?.message}</Paragraph>                              
+                                <Paragraph>{previewData?.message}</Paragraph>
                             </Space>
                         </Card>
                     </Modal>

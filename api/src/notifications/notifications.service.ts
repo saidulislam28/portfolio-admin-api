@@ -48,7 +48,6 @@ export class NotificationService {
       all_user,
     } = sendNotificationDto;
 
-    // console.log("sendNotificationDto", sendNotificationDto)
 
     let recipients: { token: string | null }[] = [];
 

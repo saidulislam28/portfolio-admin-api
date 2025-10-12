@@ -113,9 +113,9 @@ const Notification = ({
         const payload = {
             title: values.title,
             message: values.message,
-            recipient_type: recipientCategory,     
-            all_user: recipientType === 'all',   
-            selected_users: recipientType === 'specific' ? selectedRecipients : [], 
+            recipient_type: recipientCategory,
+            all_user: recipientType === 'all',
+            selected_users: recipientType === 'specific' ? selectedRecipients : [],
         };
         try {
 
@@ -137,6 +137,8 @@ const Notification = ({
         setPreviewData(values);
         setShowPreview(true);
     };
+
+
 
     return (
         <Row gutter={[24, 24]}>
@@ -323,20 +325,6 @@ const Notification = ({
                         <Row gutter={16}>
                             <Col xs={24} md={12}>
                                 <Form.Item
-                                    label="Schedule (Optional)"
-                                >
-                                    <DatePicker
-                                        showTime
-                                        placeholder="Send immediately"
-                                        style={{ width: '100%' }}
-                                        value={scheduleTime}
-                                        onChange={setScheduleTime}
-                                    />
-                                </Form.Item>
-                            </Col>
-
-                            <Col xs={24} md={12}>
-                                <Form.Item
                                     label="Priority"
                                     initialValue="normal"
                                 >
@@ -348,6 +336,23 @@ const Notification = ({
                                     </Select>
                                 </Form.Item>
                             </Col>
+                            <Col xs={24} md={12}>
+                                {
+                                    !pushNotification && <Form.Item
+                                        label="Schedule (Optional)"
+                                    >
+                                        <DatePicker
+                                            showTime
+                                            placeholder="Send immediately"
+                                            style={{ width: '100%' }}
+                                            value={scheduleTime}
+                                            onChange={setScheduleTime}
+                                        />
+                                    </Form.Item>
+                                }
+                            </Col>
+
+
                         </Row>
 
                         <Form.Item valuePropName="checked">
@@ -357,16 +362,6 @@ const Notification = ({
                                     onChange={setPushNotification}
                                 />
                                 <Text>Send as push notification</Text>
-                            </Space>
-                        </Form.Item>
-
-                        <Form.Item valuePropName="checked">
-                            <Space>
-                                <Switch
-                                    checked={emailNotification}
-                                    onChange={setEmailNotification}
-                                />
-                                <Text>Send as email notification</Text>
                             </Space>
                         </Form.Item>
 
@@ -404,27 +399,6 @@ const Notification = ({
             {/* Stats and Quick Actions */}
             <Col xs={24} lg={8}>
                 <Space direction="vertical" style={{ width: '100%' }} size="large">
-                    {/* Stats Cards */}
-                    <Card>
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <div style={{ textAlign: 'center' }}>
-                                    <Title level={3} style={{ margin: 0, color: '#52c41a' }}>
-                                        1,234
-                                    </Title>
-                                    <Text type="secondary">Total Sent</Text>
-                                </div>
-                            </Col>
-                            <Col span={12}>
-                                <div style={{ textAlign: 'center' }}>
-                                    <Title level={3} style={{ margin: 0, color: '#1677ff' }}>
-                                        95%
-                                    </Title>
-                                    <Text type="secondary">Delivery Rate</Text>
-                                </div>
-                            </Col>
-                        </Row>
-                    </Card>
 
                     {/* Active Users */}
                     <Card
