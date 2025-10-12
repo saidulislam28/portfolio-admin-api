@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { $Enums, Prisma, USER_ROLE } from '@prisma/client';
+import { $Enums, NotificationChannel, NotificationType, Prisma, USER_ROLE } from '@prisma/client';
 import * as admin from 'firebase-admin';
 import { RECIPIENT_TYPE } from 'src/common/constants';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -12,6 +12,7 @@ import {
   CallPushNotificationDataPayload,
   CallPushNotificationEventType,
 } from 'src/types/push-notifications';
+import { ScheduleNotificationService } from 'src/schedule-notification/schedule-notification.service';
 
 type AppointmentWithRelations = Prisma.AppointmentGetPayload<{
   include: { User: true; Consultant: true };
@@ -21,7 +22,7 @@ type AppointmentWithRelations = Prisma.AppointmentGetPayload<{
 export class NotificationService {
   private firebaseAdmin: admin.app.App;
 
-  constructor(private prisma: PrismaService) {
+  constructor(private prisma: PrismaService, private readonly scheduleNotification: ScheduleNotificationService) {
     this.initializeFirebase();
   }
 
@@ -46,6 +47,9 @@ export class NotificationService {
       message,
       recipient_type,
       all_user,
+      schedule_notification,
+      time
+
     } = sendNotificationDto;
 
 
@@ -54,34 +58,47 @@ export class NotificationService {
     if (recipient_type === RECIPIENT_TYPE.User) {
       recipients = all_user
         ? await this.prisma.user.findMany({
-            where: { token: { not: null } },
-            select: { token: true },
-          })
+          where: { token: { not: null } },
+          select: { token: true, id: true },
+        })
         : await this.prisma.user.findMany({
-            where: {
-              id: { in: selected_users },
-              token: { not: null },
-            },
-            select: { token: true },
-          });
+          where: {
+            id: { in: selected_users },
+            token: { not: null },
+          },
+          select: { token: true, id: true },
+        });
     } else if (recipient_type === RECIPIENT_TYPE.Consultant) {
       recipients = all_user
         ? await this.prisma.consultant.findMany({
-            where: { token: { not: null } },
-            select: { token: true },
-          })
+          where: { token: { not: null } },
+          select: { token: true, id: true },
+        })
         : await this.prisma.consultant.findMany({
-            where: {
-              id: { in: selected_users },
-              token: { not: null },
-            },
-            select: { token: true },
-          });
+          where: {
+            id: { in: selected_users },
+            token: { not: null },
+          },
+          select: { token: true, id: true },
+        });
     }
 
     const deviceTokens = recipients
       .map((r) => r.token)
       .filter(Boolean) as string[];
+
+    if (recipients.length > 0 && schedule_notification) {
+      return await Promise.all(
+        recipients.map((dev: any) => this.scheduleNotification.createNotification({
+          userId: dev.id,
+          sendAt: time,
+          type: NotificationType.GENERAL,
+          channel: NotificationChannel.PUSH,
+          payload: { title, message }
+        }))
+      )
+    }
+
 
     if (deviceTokens.length > 0) {
       const messages = deviceTokens.map((token) => ({

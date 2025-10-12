@@ -6,7 +6,7 @@ import { NotificationService } from 'src/notifications/notifications.service';
 @Injectable()
 export class PushNotificationService implements NotificationChannelService {
   private readonly logger = new Logger(PushNotificationService.name);
-  constructor(private notificationService: NotificationService) {}
+  constructor(private notificationService: NotificationService) { }
 
   async send(
     notification: ScheduleNotification,
@@ -20,6 +20,8 @@ export class PushNotificationService implements NotificationChannelService {
           recipient_type: 'User',
           title: payload?.title,
           selected_users: [user_id],
+          schedule_notification: payload?.schedule_notification ?? false,
+          time: payload?.time ?? undefined
         });
         return { success: true };
       } catch (error) {
@@ -37,6 +39,8 @@ export class PushNotificationService implements NotificationChannelService {
           recipient_type: 'Consultant',
           title: payload?.title,
           selected_users: [consultant_id],
+          schedule_notification: payload.schedule_notification ?? false,
+          time: payload?.time ?? undefined
         });
         return { success: true };
       } catch (error) {

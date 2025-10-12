@@ -36,7 +36,7 @@ import { post } from '~/services/api/api';
 import { API_CRUD_FIND_WHERE } from '~/services/api/endpoints';
 import { RECIPIENT_TYPE } from '~/store/slices/app/constants';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 const model = 'User'
@@ -48,12 +48,12 @@ const Notification = ({
     setShowPreview,
 }) => {
     const [loading, setLoading] = useState(false);
-    const [recipientCategory, setRecipientCategory] = useState(RECIPIENT_TYPE.User); // 'users' or 'consultants'
+    const [recipientCategory, setRecipientCategory] = useState(RECIPIENT_TYPE.User);
     const [selectedRecipients, setSelectedRecipients] = useState([]);
     const [scheduleTime, setScheduleTime] = useState(null);
     const [notificationType, setNotificationType] = useState('info');
     const [priority, setPriority] = useState('normal');
-    const [pushNotification, setPushNotification] = useState(false);
+    const [scheduleNotification, setScheduleNotification] = useState(false);
     const [emailNotification, setEmailNotification] = useState(false);
     const [userSearchText, setUserSearchText] = useState('');
     const [consultantSearchText, setConsultantSearchText] = useState('');
@@ -116,11 +116,17 @@ const Notification = ({
             recipient_type: recipientCategory,
             all_user: recipientType === 'all',
             selected_users: recipientType === 'specific' ? selectedRecipients : [],
+            schedule_notification: scheduleNotification,
+            time: scheduleNotification ? scheduleTime : undefined,
         };
         try {
-
-            createMutation.mutate(payload);
-            form.resetFields()
+            createMutation.mutate(payload, {
+                onSuccess: () => {
+                    form.resetFields();
+                    setScheduleTime(null);
+                    setScheduleNotification(false);
+                },
+            });
 
         } catch (error) {
             notification.error({
@@ -338,7 +344,7 @@ const Notification = ({
                             </Col>
                             <Col xs={24} md={12}>
                                 {
-                                    !pushNotification && <Form.Item
+                                    scheduleNotification && <Form.Item
                                         label="Schedule (Optional)"
                                     >
                                         <DatePicker
@@ -358,10 +364,10 @@ const Notification = ({
                         <Form.Item valuePropName="checked">
                             <Space>
                                 <Switch
-                                    checked={pushNotification}
-                                    onChange={setPushNotification}
+                                    checked={scheduleNotification}
+                                    onChange={setScheduleNotification}
                                 />
-                                <Text>Send as push notification</Text>
+                                <Text>Schedule Notification</Text>
                             </Space>
                         </Form.Item>
 

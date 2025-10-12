@@ -1,17 +1,17 @@
 /* eslint-disable */
-import { OnQueueError, Process, Processor } from '@nestjs/bull';
+import { Process, Processor } from '@nestjs/bull';
 import { Inject, Logger } from '@nestjs/common';
 import { Appointment, NotificationChannel, NotificationType } from '@prisma/client';
 import { Job } from 'bull';
-import { format, subMinutes } from 'date-fns';
+import { subMinutes } from 'date-fns';
 import { QUEUE_JOBS, QUEUE_NAME } from 'src/common/constants';
 import { FcmPushService } from 'src/fcm/fcm.push.service';
 import { getPushTemplate } from 'src/notifications/templates/push-templates';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+import { AppNotificationsService } from 'src/app-notifications/app-notifications.service';
 import { TimezoneService } from '../timezone/interfaces/timezone.interface';
 import { UserCacheService } from '../user-cache/interfaces/user-cache.interface';
-import { AppNotificationsService } from 'src/app-notifications/app-notifications.service';
 
 interface PushNotificationTemplate {
   title: string;
@@ -108,7 +108,7 @@ export class PushNotificationProcessor {
       });
 
       // Send immediate assignment notifications
-      const notificationPromises: Promise<void>[] = [];
+     const notificationPromises: Promise<void>[] = [];
 
       if (userInfo?.pushToken) {
         notificationPromises.push(
