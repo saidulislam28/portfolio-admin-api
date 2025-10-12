@@ -21,12 +21,17 @@ const Pricing = ({
                             {/* Package Name */}
                             <h3 className="text-2xl font-bold text-gray-900 mb-4">{plan?.name}</h3>
 
+                            {/* Price */}
                             <div className="mb-4">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-extrabold text-gray-900">BDT {plan?.price_bdt}</span>
+                                    <span className="text-4xl font-extrabold text-gray-900">
+                                        BDT {plan?.price_bdt}
+                                    </span>
 
                                     {plan?.price_bdt < plan?.price_bdt_original && (
-                                        <span className="text-xl text-gray-500 line-through">BDT {plan?.price_bdt_original}</span>
+                                        <span className="text-xl text-gray-500 line-through">
+                                            BDT {plan?.price_bdt_original}
+                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -34,24 +39,27 @@ const Pricing = ({
                             {/* Sessions Count */}
                             <div className="mb-4">
                                 <p className="text-lg font-medium text-gray-700">
-                                    {plan?.sessions_count} Session{plan?.sessions_count > 1 ? 's' : ''}
+                                    {plan?.sessions_count} Session{plan?.sessions_count > 1 ? "s" : ""}
                                 </p>
                             </div>
 
-                            {/* Description with 3-line limit */}
-                            {/* <div className="mb-6 flex-1">
-                                <p className="text-gray-600 line-clamp-3 leading-relaxed">
-                                    {plan?.description}
-                                </p>
-                            </div> */}
-
-                            <a href={base?.play_store ? `${base?.play_store}` : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"} target='_blank'>
-                                <button className="w-full py-3 px-4 rounded-lg font-medium transition bg-gray-100 text-gray-900 hover:bg-gray-200 mt-auto">
+                            <div className="flex-grow"></div>
+                            <a
+                                href={
+                                    base?.play_store
+                                        ? `${base?.play_store}`
+                                        : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <button className="w-full py-3 px-4 rounded-lg font-medium transition bg-gray-100 text-gray-900 hover:bg-gray-200">
                                     Choose Plan
                                 </button>
                             </a>
                         </div>
                     ))}
+
                 </div>
             </div>
         </section>
