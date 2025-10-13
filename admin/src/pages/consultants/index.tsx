@@ -35,7 +35,7 @@ const ConsultantsPage: React.FC = () => {
     page: 1,
     limit: 10,
   });
-  const [filters, setFilters] = useState(null);
+  const [filters, setFilters] = useState<any>(null);
   const navigate = useNavigate();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -60,7 +60,7 @@ const ConsultantsPage: React.FC = () => {
     data: fetchData,
     refetch,
   } = useQuery({
-    queryKey: [`get-consultant-list-all`, filters?.OR, filters?.is_active, filters?.is_conversation, filters?.is_mocktest],
+    queryKey: [`get-consultant-list-all--all`, filters?.OR, filters?.is_active, filters?.is_conversation, filters?.is_mocktest, filters?.is_test_user],
     queryFn: () =>
       post(`${API_CRUD_FIND_WHERE}?model=${model}`, {
         where: filters,
@@ -78,7 +78,7 @@ const ConsultantsPage: React.FC = () => {
     console.log(isUpdate ? 'Consultant updated!' : 'Consultant created!');
     closeDrawer();
     refetch();
-   
+
   };
   console.log("filters consultant data", fetchData)
 
@@ -150,6 +150,9 @@ const ConsultantsPage: React.FC = () => {
     if (values.isConversation) {
       whereClouse.is_conversation = true;
     }
+    if (values?.isTest) {
+      whereClouse.is_test_user = true;
+    }
 
     setFilters(whereClouse)
 
@@ -194,7 +197,7 @@ const ConsultantsPage: React.FC = () => {
       title: "Average Rating",
       dataIndex: "Rating",
       render: (ratings: any[]) => {
-        if (!ratings || ratings.length === 0) return "___"; 
+        if (!ratings || ratings.length === 0) return "___";
 
         const avg =
           ratings.reduce((sum, r) => sum + (r.rating || 0), 0) / ratings.length;
@@ -309,6 +312,10 @@ const ConsultantsPage: React.FC = () => {
 
 
               <Form.Item name="isConversation" label="Conversation" valuePropName='checked'>
+                <Checkbox ></Checkbox>
+              </Form.Item>
+
+              <Form.Item name="isTest" label="Is test" valuePropName='checked'>
                 <Checkbox ></Checkbox>
               </Form.Item>
             </Col>

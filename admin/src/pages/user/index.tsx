@@ -1,4 +1,4 @@
-// src/pages/UserManagement/index.jsx
+/* eslint-disable  */
 import {
   DeleteOutlined,
   EditOutlined,
@@ -14,7 +14,6 @@ import {
   Card,
   Checkbox,
   Col,
-  DatePicker,
   Drawer,
   Form,
   Input,
@@ -25,8 +24,7 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
-  Typography,
+  Tooltip
 } from "antd";
 import dayjs from "dayjs";
 import React, { useState } from "react";
@@ -73,8 +71,6 @@ const UserManagement = () => {
       }),
     select(data) {
       const list = data?.data ?? [];
-
-      // sort by created_at (latest first)
       return list.sort(
         (a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -164,8 +160,8 @@ const UserManagement = () => {
     if (values?.isVerified) {
       whereClouse.is_verified = values.isVerified === "true";
     }
-    if (values?.is_test_user) {
-      whereClouse.is_test_user = values.is_test_user === "true";
+    if (values?.isTest) {
+      whereClouse.is_test_user = true;
     }
 
     setFilters(whereClouse);
@@ -380,6 +376,9 @@ const UserManagement = () => {
                   <Option value={"false"}>Unverified</Option>
                 </Select>
               </Form.Item>
+              <Form.Item name="isTest" label="Is test" valuePropName='checked'>
+                <Checkbox ></Checkbox>
+              </Form.Item>
             </Col>
             <Col>
               <Space size={"middle"}>
@@ -517,7 +516,7 @@ const UserManagement = () => {
             </Button>
           </Space>
         </Form>
-      </Drawer>    
+      </Drawer>
     </div>
   );
 };
