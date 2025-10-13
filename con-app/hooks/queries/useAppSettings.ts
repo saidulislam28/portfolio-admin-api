@@ -1,3 +1,4 @@
+import { setAgoraAppID } from '@/utils/agoraAppID';
 import { API_USER, Get } from '@sm/common';
 import { useQuery } from '@tanstack/react-query';
 
@@ -33,6 +34,10 @@ export const useAppSettings = () => {
     queryKey: ['appSettings'],
     queryFn: async (): Promise<AppSettingsResponse> => {
       const data = await Get(API_USER.app_settings);
+
+      // Save to AsyncStorage after successful fetch
+      await setAgoraAppID(data?.data?.base_data?.agora_app_id);
+
       return data;
     },
     staleTime: __DEV__ ? 0 : Infinity,

@@ -12,6 +12,7 @@ import {
   StatusBar,
   StyleSheet,
 } from 'react-native';
+import { useAppSettings } from '@/hooks/queries/useAppSettings';
 
 export default function HomeScreen() {
   const { logout }: any = useAuth();
@@ -26,9 +27,11 @@ export default function HomeScreen() {
     Alert.alert('Error', response.error ?? 'Failed to load data!');
   };
 
-  useEffect(() => {
-    handleGetAppointments();
-  }, []);
+  const {
+    data: appSettingsData,
+    isLoading,
+    isSuccess: isSettingsFetchSuccess,
+  } = useAppSettings();
 
   return (
     <SafeAreaView style={styles.container}>

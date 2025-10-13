@@ -65,12 +65,6 @@ export const TIME_SLOTS = [
   '11:00 PM',
 ];
 
-export const APP_ID = '6bf20fe3fefb46d290d6c2a088ecd468'; // Replace with your Agora App ID
-export const TOKEN =
-  '0066bf20fe3fefb46d290d6c2a088ecd468IACNjTjYEzgDL2ojXrYUTX1xiFrQUB0rNyB/Q5s6UDGcTwAAAAAAAAAAIgB/NqOOSyJPaAQAAQBLC1doAgBLC1doAwBLC1doBABLC1do'; // Replace with your temporary token
-// export const TOKEN = '007eJxTYLBmzN4Vkbzia1mJ0x6J34arc4x27JE891nsrY/fhOuZhsUKDGZJaUYGaanGaalpSSZmKUaWBilmyUaJBhYWqckpJmYWOtNVMxoCGRnSLjazMjJAIIjPw1CSWlyim5yRmJeXmsPAAABjRiKv'; // Replace with your temporary token
-export const CHANNEL_NAME = 'test-channel'; // Channel name for testing
-
 export const PACKAGE_SERVICE_TYPE = {
   book_purchase: 'book_purchase',
   ielts_gt: 'ielts_gt',

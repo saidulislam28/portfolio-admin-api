@@ -1,4 +1,4 @@
-import { APP_ID } from '@/lib/constants';
+import { getAgoraAppID } from '@/utils/agoraAppID';
 import { useCallStore } from '@/zustand/callStore';
 import { Dimensions, Platform } from 'react-native';
 import {
@@ -18,7 +18,6 @@ import {
   VideoContentHint,
   VideoSourceType,
 } from 'react-native-agora';
-const { width, height } = Dimensions.get('window');
 
 class CallService {
   private engine: IRtcEngine | null = null;
@@ -45,9 +44,10 @@ class CallService {
 
       // 2. Set up event handlers BEFORE initializing using the registerEventHandler syntax.
       this.setupEventHandlers();
+      const agoraAppid = await getAgoraAppID();
 
       // 3. Now, initialize the engine.
-      await this.engine.initialize({ appId: APP_ID });
+      await this.engine.initialize({ appId: agoraAppid });
       await this.engine.enableVideo();
       console.log('Agora engine initialized successfully!');
       this.isInitialized = true;
