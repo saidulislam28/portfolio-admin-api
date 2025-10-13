@@ -278,15 +278,16 @@ model VideoCall {
 }
 
 model Payment {
-  id             Int            @id @default(autoincrement())
-  user_id        Int?
-  order_id       Int?           @unique
-  amount         Int?
-  currency       String?
-  status         PAYMENT_STATUS @default(PENDING)
-  payment_method String?
-  transaction_id String?
-  paid_at        DateTime?
+  id              Int            @id @default(autoincrement())
+  user_id         Int?
+  order_id        Int?           @unique
+  amount          Int?
+  currency        String?
+  status          PAYMENT_STATUS @default(PENDING)
+  payment_method  String?
+  transaction_id  String?
+  paid_at         DateTime?
+  is_test_payment Boolean?
 
   User  User?  @relation(fields: [user_id], references: [id], onDelete: Cascade)
   Order Order? @relation(fields: [order_id], references: [id], onDelete: SetNull)
