@@ -26,7 +26,7 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         const margin = 40;
         const contentWidth = pageWidth - margin * 2;
         let currentY = 0;
-        const logoPath = path.join(process.cwd(), "public", "uploads", "Logo512.png");
+        const logoPath = path.join(process.cwd(), "public", "img", "Logo512.png");
 
         console.log("logo path", logoPath);
         // Helper: draw checkbox
