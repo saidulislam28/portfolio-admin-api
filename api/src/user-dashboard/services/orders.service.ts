@@ -19,12 +19,19 @@ interface CouponCalculationResult {
   originalTotal: number;
 }
 
+interface SSLCommerzCredentials {
+  storeId: string;
+  storePass: string;
+  isLive: boolean;
+}
+
 @Injectable()
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name)
-  private sslCommerzStoreId = process.env.SSLCOMMERZ_STORE_ID;
-  private sslCommerzStorePass = process.env.SSLCOMMERZ_STORE_PASS;
-  private sslCommerzIsLive = process.env.SSLCOMMERZ_IS_LIVE == 'true';
+  private sslCommerzLiveStoreId = process.env.SSLCOMMERZ_STORE_ID;
+  private sslCommerzLiveStorePass = process.env.SSLCOMMERZ_STORE_PASS;
+  private sslCommerzTestStoreId = process.env.SSLCOMMERZ_TEST_STORE_ID;
+  private sslCommerzTestStorePass = process.env.SSLCOMMERZ_TEST_STORE_PASS;
   private nodemailerTransport: Mail;
   private mode: string;
 
@@ -46,6 +53,45 @@ export class OrdersService {
     this.mode = process.env.NODE_ENV;
   }
 
+
+  private async getSSLCommerzCredentials(userId: number): Promise<SSLCommerzCredentials> {
+    try {
+      // Find user to check if they are a test user
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { is_test_user: true, id: true }
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      if (user.is_test_user) {
+        this.logger.log(`Using SSLCommerz test credentials for user ${userId}`);
+        return {
+          storeId: this.sslCommerzTestStoreId,
+          storePass: this.sslCommerzTestStorePass,
+          isLive: false
+        };
+      } else {
+        this.logger.log(`Using SSLCommerz live credentials for user ${userId}`);
+        return {
+          storeId: this.sslCommerzLiveStoreId,
+          storePass: this.sslCommerzLiveStorePass,
+          isLive: true
+        };
+      }
+    } catch (error) {
+      this.logger.error('Error getting SSLCommerz credentials, falling back to test mode', error);
+      // Fallback to test credentials if there's an error
+      return {
+        storeId: this.sslCommerzTestStoreId,
+        storePass: this.sslCommerzTestStorePass,
+        isLive: false
+      };
+    }
+  }
+
   /**
    * Validate and calculate coupon discount
    */
@@ -60,7 +106,7 @@ export class OrdersService {
       where: {
         code: {
           equals: couponCode,
-          mode: 'insensitive' // Case insensitive search
+          mode: 'insensitive'
         },
         is_active: true,
       },
@@ -252,17 +298,16 @@ export class OrdersService {
   }
 
 
-  private async createSSlPayment(orderData, transactionId: string, baseUrl: string) {
+  private async createSSlPayment(orderData, transactionId: string, baseUrl: string, user_id) {
 
-    // console.log("create ssl payment order Data>>", orderData)
+    const credentials = await this.getSSLCommerzCredentials(user_id);
+
 
     const sslcz = new SSLCommerzPayment(
-      this.sslCommerzStoreId,
-      this.sslCommerzStorePass,
-      this.sslCommerzIsLive,
+      credentials.storeId,
+      credentials.storePass,
+      credentials.isLive,
     );
-
-
     const paymentData = {
       total_amount: orderData?.total,
       currency: 'BDT',
@@ -281,19 +326,18 @@ export class OrdersService {
       value_a: orderData?.id
     };
 
-
-
     try {
-      const sslResponse = await sslcz.init(paymentData);
-
-
+      const sslResponse = await sslcz.init(paymentData);     
+      this.logger.log(`SSLCommerz payment initialized for user ${user_id}. Test mode: ${!credentials.isLive}`);
 
       return {
         payment_url: sslResponse.GatewayPageURL,
         order_id: orderData.id,
         transaction_id: transactionId,
+        is_test_payment: !credentials.isLive
       };
     } catch (error) {
+      console.log("ssl init error payment:", error);
       throw new HttpException(
         'Payment Initialization Failed',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -302,7 +346,7 @@ export class OrdersService {
   }
 
   private async createPaymentRecord(orderData: any, user_id: number, baseUrl: string, transactionId: string) {
-    const createSslPay = await this.createSSlPayment(orderData, transactionId, baseUrl);
+    const createSslPay = await this.createSSlPayment(orderData, transactionId, baseUrl, user_id);
 
     if (!createSslPay) {
       throw new HttpException(
@@ -315,10 +359,11 @@ export class OrdersService {
       data: {
         order_id: orderData.id,
         user_id: user_id,
-        amount: orderData.total, // Use final total after discount
+        amount: orderData.total,
         currency: 'BDT',
         payment_method: 'sslcommerz',
         transaction_id: transactionId,
+        is_test_payment: createSslPay.is_test_payment,
       },
     });
 
@@ -335,6 +380,7 @@ export class OrdersService {
       payment_url: createSslPay.payment_url,
       order_id: createSslPay.order_id,
       payment_id: createPayment.id,
+      is_test_payment: createSslPay.is_test_payment
     }
 
   }
@@ -468,7 +514,8 @@ export class OrdersService {
         total_amount: result?.total,
         discount_applied: couponResult.discountAmount,
         coupon_used: couponResult.coupon?.code || null,
-        original_amount: couponResult.originalTotal
+        original_amount: couponResult.originalTotal,
+        is_test_payment: createPayment.is_test_payment
       };
     } catch (error) {
       console.log("error from create order service>>", error);

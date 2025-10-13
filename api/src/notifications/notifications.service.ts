@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { $Enums, NotificationChannel, NotificationType, Prisma, USER_ROLE } from '@prisma/client';
 import * as admin from 'firebase-admin';
@@ -94,7 +95,7 @@ export class NotificationService {
           sendAt: time,
           type: NotificationType.GENERAL,
           channel: NotificationChannel.PUSH,
-          payload: { title, message }
+          payload: { title, body: message }
         }))
       )
     }
