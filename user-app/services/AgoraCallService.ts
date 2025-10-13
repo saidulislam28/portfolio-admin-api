@@ -1,4 +1,3 @@
-// services/callService.ts
 import {
   createAgoraRtcEngine,
   IRtcEngine,
@@ -8,7 +7,6 @@ import {
   ConnectionStateType,
   UserOfflineReasonType,
   ErrorCodeType,
-  LeaveChannelOptions,
   ConnectionChangedReasonType,
   LocalVideoStats,
   RemoteVideoStats,
@@ -17,7 +15,7 @@ import {
   VideoSourceType,
 } from 'react-native-agora';
 import { useCallStore } from '@/zustand/callStore';
-import { APP_ID } from '@/lib/constants';
+import { getAgoraAppID } from '@/utils/agoraAppID';
 
 class CallService {
   private engine: IRtcEngine | null = null;
@@ -34,6 +32,8 @@ class CallService {
       return;
     }
 
+    const agoraAppId = await getAgoraAppID();
+
     try {
       // 1. Create the engine instance first.
       this.engine = createAgoraRtcEngine();
@@ -42,7 +42,7 @@ class CallService {
       this.setupEventHandlers();
 
       // 3. Now, initialize the engine.
-      await this.engine.initialize({ appId: APP_ID });
+      await this.engine.initialize({ appId: agoraAppId });
       await this.engine.enableVideo();
       console.log('Agora engine initialized successfully!');
       this.isInitialized = true;
@@ -182,8 +182,8 @@ class CallService {
       // Start the local video preview.
       await this.engine.startPreview();
 
-      const tempChannel = 'test-channel'
-      const tempToken = '007eJxTYPj4d9n+BdbaTmYbi90a5qutzHxnxbPPNvDxK0aWf39W7z2nwGCWlGZkkJZqnJaalmRilmJkaZBilmyUaGBhkZqcYmJmMXm2X0ZDICODcskUVkYGCATxeRhKUotLdJMzEvPyUnMYGAD0hiQ7'
+      // const tempChannel = 'test-channel'
+      // const tempToken = '007eJxTYPj4d9n+BdbaTmYbi90a5qutzHxnxbPPNvDxK0aWf39W7z2nwGCWlGZkkJZqnJaalmRilmJkaZBilmyUaGBhkZqcYmJmMXm2X0ZDICODcskUVkYGCATxeRhKUotLdJMzEvPyUnMYGAD0hiQ7'
 
       // The joinChannel method is asynchronous and signals the intent to join.
       // The actual success/failure is reported via the onJoinChannelSuccess or onError callbacks.
