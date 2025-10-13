@@ -38,6 +38,8 @@ COPY --from=builder /app/dist ./dist
 # 👇 copy prisma directory
 COPY --from=builder /app/src/database ./src/database
 
+COPY --from=builder /app/public ./public
+
 EXPOSE 8000
 
 CMD [  "npm", "run", "start:migrate:prod" ]

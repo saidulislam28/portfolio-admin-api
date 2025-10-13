@@ -19,16 +19,15 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
 
         // Colors
         const primaryColor = '#f25a29'; // orange from screenshot
-        const darkGray = '#333333';
-
-
-        const logoPath = path.join(__dirname, "../../../public/img/Logo512.png");
-
+        const darkGray = '#333333';      
+        
+        
         // Page setup
         const pageWidth = doc.page.width;
         const margin = 40;
         const contentWidth = pageWidth - margin * 2;
         let currentY = 0;
+        const logoPath = path.join(__dirname, "../../../public/img/Logo512.png");
         // const logoPath = path.join(process.cwd(), "public", "img", "Logo512.png");
 
         console.log("logo path", logoPath);
@@ -44,7 +43,7 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         // ---------------- HEADER ----------------
         doc.rect(0, 0, pageWidth, 100).fill(primaryColor);
 
-        doc.image(logoPath ?? "", margin, 20, { width: 60, height: 60 });
+        doc.image(logoPath, margin, 20, { width: 60, height: 60 });
 
 
         doc.fillColor('white').font('Helvetica-Bold').fontSize(16).text('SpeakingMate', margin + 70, 30);
