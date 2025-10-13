@@ -32,7 +32,6 @@ export class OrdersService {
   private sslCommerzLiveStorePass = process.env.SSLCOMMERZ_STORE_PASS;
   private sslCommerzTestStoreId = process.env.SSLCOMMERZ_TEST_STORE_ID;
   private sslCommerzTestStorePass = process.env.SSLCOMMERZ_TEST_STORE_PASS;
-  private sslCommerzIsLive = process.env.SSLCOMMERZ_IS_LIVE == 'true';
   private nodemailerTransport: Mail;
   private mode: string;
 
@@ -309,8 +308,6 @@ export class OrdersService {
       credentials.storePass,
       credentials.isLive,
     );
-
-
     const paymentData = {
       total_amount: orderData?.total,
       currency: 'BDT',
@@ -329,11 +326,8 @@ export class OrdersService {
       value_a: orderData?.id
     };
 
-
-
     try {
-      const sslResponse = await sslcz.init(paymentData);
-
+      const sslResponse = await sslcz.init(paymentData);     
       this.logger.log(`SSLCommerz payment initialized for user ${user_id}. Test mode: ${!credentials.isLive}`);
 
       return {
@@ -343,6 +337,7 @@ export class OrdersService {
         is_test_payment: !credentials.isLive
       };
     } catch (error) {
+      console.log("ssl init error payment:", error);
       throw new HttpException(
         'Payment Initialization Failed',
         HttpStatus.INTERNAL_SERVER_ERROR,

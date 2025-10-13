@@ -14,6 +14,7 @@ export async function seedUsers() {
     timezone: 'UTC',
     is_active: true,
     is_verified: true,
+    is_test_user: true,
   }));
 
   await prisma.user.createMany({

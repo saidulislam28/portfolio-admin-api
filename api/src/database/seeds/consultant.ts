@@ -16,6 +16,7 @@ export async function seedConsultants() {
     is_mocktest: i % 3 === 0,
     is_conversation: i % 4 === 0,
     is_verified: i % 2 === 0,
+    is_test_user: true,
     bio: `Experienced consultant in domain ${i + 1}.`,
     experience: 2 + i, // Years of experience
     skills: ['JavaScript', 'Python', 'SQL', 'React'][i % 4],
