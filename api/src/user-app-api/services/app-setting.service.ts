@@ -8,7 +8,6 @@ export class AppSettingService {
   constructor(private readonly prismaService: PrismaService) { }
 
   async getHomeData() {
-    console.log('app set sevice called')
     const settings = await this.prismaService.setting.findMany();
     const settingData: any = settings.reduce((acc, item) => {
       acc[item.key] = item.value;
@@ -29,7 +28,8 @@ export class AppSettingService {
       linkedin: settingData?.linkedin,
       brand_name: settingData?.brand_name,
       brand_url: settingData?.brand_url,
-      delivery_charge: Number(settingData?.delivery_charge ?? 0)
+      delivery_charge: Number(settingData?.delivery_charge ?? 0),
+      agora_app_id: process.env.AGORA_APP_ID
     };
 
     const slider_data = await this.prismaService.appSlider.findMany({
