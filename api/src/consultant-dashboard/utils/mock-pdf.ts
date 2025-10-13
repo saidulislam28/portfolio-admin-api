@@ -21,16 +21,37 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         const primaryColor = '#f25a29'; // orange from screenshot
         const darkGray = '#333333';      
         
-        
         // Page setup
         const pageWidth = doc.page.width;
+        const pageHeight = doc.page.height;
         const margin = 40;
         const contentWidth = pageWidth - margin * 2;
         let currentY = 0;
+        const footerHeight = 100;
+        const maxContentHeight = pageHeight - margin - footerHeight;
+        
         const logoPath = path.join(__dirname, "../../../public/img/Logo512.png");
-        // const logoPath = path.join(process.cwd(), "public", "img", "Logo512.png");
 
         console.log("logo path", logoPath);
+
+        // Helper: Check if we need a new page
+        function checkPageHeight(requiredHeight = 0) {
+            if (currentY + requiredHeight > maxContentHeight) {
+                addNewPage();
+            }
+        }
+
+        // Helper: Add new page with header
+        function addNewPage() {
+            doc.addPage();
+            currentY = margin;
+            
+            // Add header to new page (optional - you can customize this)
+            doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold')
+               .text('Speaking Mock Test Report - Continued', margin, currentY);
+            currentY += 30;
+        }
+
         // Helper: draw checkbox
         function drawCheckbox(x, y, label, checked = false) {
             doc.rect(x, y, 10, 10).stroke();
@@ -45,7 +66,6 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
 
         doc.image(logoPath, margin, 20, { width: 60, height: 60 });
 
-
         doc.fillColor('white').font('Helvetica-Bold').fontSize(16).text('SpeakingMate', margin + 70, 30);
         doc.font('Helvetica').fontSize(9).text('MASTER IELTS SPEAKING WITH CONFIDENCE', margin + 70, 50);
 
@@ -58,6 +78,8 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
 
         // ---------------- MOCK TEST INFO ----------------
         currentY += 30;
+        checkPageHeight(80); // Check if we have space for info box
+        
         const infoBoxHeight = 80;
         doc.rect(margin, currentY, contentWidth, infoBoxHeight).stroke('#d9d9d9');
 
@@ -72,6 +94,7 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         currentY += infoBoxHeight + 30;
 
         // ---------------- CRITERIA TABLE ----------------
+        checkPageHeight(40);
         doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Criteria', margin, currentY);
         doc.text('Star Rating (1.0–9.0)', margin + 200, currentY);
         doc.text('Feedback', margin + 380, currentY);
@@ -122,6 +145,8 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         ];
 
         criteria.forEach((c) => {
+            checkPageHeight(50); // Check space for each criteria row
+            
             doc.fillColor(darkGray).font('Helvetica-Bold').text(c.title, margin, currentY);
             doc.font('Helvetica').text(c.rating, margin + 200, currentY);
             let y = currentY;
@@ -141,6 +166,7 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         currentY += 30;
 
         // ---------------- SECTION FEEDBACK ----------------
+        checkPageHeight(40);
         doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Section Wise Feedback', margin, currentY);
         currentY += 20;
 
@@ -173,6 +199,8 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         ];
 
         sectionFeedbacks.forEach((s) => {
+            checkPageHeight(18); // Check space for each section feedback
+            
             doc.fontSize(10).fillColor(darkGray).font('Helvetica-Bold').text(s.title, margin, currentY, { continued: true });
             const selected = s.items.filter((i) => i.val).map((i) => i.label);
             if (selected.length) {
@@ -185,6 +213,7 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
 
         // ---------------- RECOMMENDATIONS ----------------
         currentY += 15;
+        checkPageHeight(40);
         doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Recommendation', margin, currentY);
         currentY += 20;
 
@@ -202,6 +231,8 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         const col1X = margin;
         const col2X = margin + colWidth;
         for (let i = 0; i < recs.length; i += 2) {
+            checkPageHeight(15); // Check space for each recommendation row
+            
             // First column
             doc.fontSize(10).fillColor(darkGray).text(`• ${recs[i].label}`, col1X, currentY, {
                 width: colWidth - 10,
@@ -220,6 +251,8 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
 
         // ---------------- EXAMINER COMMENT ----------------
         currentY += 15;
+        checkPageHeight(60); // Reserve some space for examiner comment section
+        
         doc.fillColor(primaryColor).fontSize(12).font('Helvetica-Bold').text('Examiner Comment', margin, currentY);
         currentY += 20;
 
@@ -229,6 +262,9 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
             width: contentWidth - 20,
         };
         const textHeight = doc.heightOfString(examinerText, examinerTextOptions);
+
+        // Check if we have enough space for the comment box
+        checkPageHeight(textHeight + 40);
 
         // Draw border rectangle with dynamic height
         const rectHeight = textHeight + 20; // add padding
@@ -240,8 +276,9 @@ export function MockFeedbackPdfGenerate(feedback): Promise<Buffer> {
         // Update currentY
         currentY += rectHeight + 20;
 
-
-        const footerY = doc.page.height - 100;
+        // ---------------- FOOTER ----------------
+        // Always add footer at the bottom of the current page
+        const footerY = doc.page.height - footerHeight;
         try {
             doc.image('qr.png', margin, footerY, { width: 50, height: 50 }); // QR placeholder
         } catch {
