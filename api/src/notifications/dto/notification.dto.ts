@@ -8,9 +8,11 @@ import {
   IsBoolean,
   IsEnum,
   IsNumber,
+  IsDate,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { RECIPIENT_TYPE } from 'src/common/constants';
+import { Expose, Type } from 'class-transformer';
 
 export class SendNotificationDto {
   @ApiProperty({
@@ -53,6 +55,21 @@ export class SendNotificationDto {
   })
   @IsBoolean()
   all_user: boolean;
+  @ApiProperty({
+    description: 'Send Notification based on time.',
+    type: Boolean,
+    example: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  schedule_notification: boolean;
+
+
+  @Expose({ name: 'time' })
+  @IsDate()
+  @IsOptional()
+  @Type(() => Date)
+  time: Date;
 }
 
 export class SendAllUserDto {

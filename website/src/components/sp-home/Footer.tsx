@@ -1,7 +1,42 @@
-"use client"
-import { fetchHomeContent } from '@/utils/fetchData';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+"use client";
+import { fetchHomeContent } from "@/utils/fetchData";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+
+const footerSections = [
+    {
+        title: "Product",
+        links: [
+            { label: "Features", href: "#" },
+            { label: "Pricing", href: "#" },
+            { label: "Testimonials", href: "#" },
+            { label: "FAQ", href: "#" },
+        ],
+    },
+    {
+        title: "Company",
+        links: [
+            { label: "About", href: "/about-us" },
+            { label: "Careers", href: "/career" },
+            { label: "Blog", href: "#" },
+            {
+                label: "Contact",
+                href: (homeData: any) =>
+                    `https://mail.google.com/mail/?view=cm&fs=1&to=${homeData?.email}`,
+                external: true,
+            },
+        ],
+    },
+    {
+        title: "Support",
+        links: [
+            { label: "Help Center", href: "/help-center" },
+            { label: "Privacy Policy", href: "/privacy-policy" },
+            { label: "Terms of Service", href: "/terms-condition" },
+            { label: "Request Data Delete", href: "/request-data-delete" },
+        ],
+    },
+];
 
 const Footer = () => {
     const [homeData, setHomeData] = useState<any>(null);
@@ -11,96 +46,112 @@ const Footer = () => {
         setHomeData(data?.base_data);
     };
 
-    // console.log("navbar data >>", homeData);
-
     useEffect(() => {
         response();
     }, []);
+
     return (
         <footer className="bg-gray-900 text-white py-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+                    {/* Brand / App Section */}
                     <div>
-                        <Link href={'/'}>
-
+                        <Link href={"/"}>
                             <div className="flex-shrink-0 mb-2 flex items-center">
-                                <div className='mr-2 '>
+                                <div className="mr-2">
                                     <img
-                                        src={homeData?.logo ? homeData?.logo : "/img/sp-logo-new.jpg"}
+                                        src={
+                                            homeData?.logo
+                                                ? homeData?.logo
+                                                : "/img/sp-logo-new.jpg"
+                                        }
                                         alt={homeData?.brand_name}
-                                        className='w-[45px] h-auto rounded-xl'
+                                        className="w-[45px] h-auto rounded-xl"
                                     />
                                 </div>
-                                <span className="text-2xl font-bold text-primary">{homeData?.brand_name?.split(" ")}</span>
+                                <span className="text-2xl font-bold text-primary">
+                                    {homeData?.brand_name?.split(" ")}
+                                </span>
                             </div>
                         </Link>
                         <p className="text-gray-400 mb-4">
-                            Master English speaking with real instructors and personalized feedback.
+                            Master English speaking with real instructors and personalized
+                            feedback.
                         </p>
                         <div className="flex space-x-4">
                             <a
-                                href={homeData?.play_store ? `${homeData?.play_store}` : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"}
+                                href={
+                                    homeData?.play_store
+                                        ? `${homeData?.play_store}`
+                                        : "https://play.google.com/store/apps/details?id=com.bitpixelbd.speakingmate"
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-
-                                <div className=" px-4 py-2 rounded-md  flex gap-4 items-center bg-black text-white ">
-                                    <img className='w-10 h-10' src="/img/Playstore.png" alt="Click for app" />
-                                    <div className='flex flex-col text-start'>
-                                        <p className='text-sm text-gray-200'>GET IT ON</p>
-                                        <p className='font-bold'>Google Play</p>
+                                <div className="px-4 py-2 rounded-md flex gap-4 items-center bg-black text-white">
+                                    <img
+                                        className="w-10 h-10"
+                                        src="/img/Playstore.png"
+                                        alt="Click for app"
+                                    />
+                                    <div className="flex flex-col text-start">
+                                        <p className="text-sm text-gray-200">GET IT ON</p>
+                                        <p className="font-bold">Google Play</p>
                                     </div>
                                 </div>
-
-                                {/* <div className="flex-shrink-0 flex items-center">
-                                    <i className="fa-brands fa-google-play mr-2"></i> Download Now
-                                </div> */}
                             </a>
                         </div>
                     </div>
 
-                    <div>
-                        <h4 className="font-semibold mb-4">Product</h4>
-                        <ul className="space-y-2 text-gray-400">
-                            <li><a href="#" className="hover:text-white transition">Features</a></li>
-                            <li><a href="#" className="hover:text-white transition">Pricing</a></li>
-                            <li><a href="#" className="hover:text-white transition">Testimonials</a></li>
-                            <li><a href="#" className="hover:text-white transition">FAQ</a></li>
-                        </ul>
-                    </div>
+                    {/* Reusable Footer Sections */}
+                    {footerSections.map((section) => (
+                        <div key={section.title}>
+                            <h4 className="font-semibold mb-4">{section.title}</h4>
+                            <ul className="space-y-2 text-gray-400">
+                                {section.links.map((link) => {
+                                    const href =
+                                        typeof link.href === "function"
+                                            ? link.href(homeData)
+                                            : link.href;
 
-                    <div>
-                        <h4 className="font-semibold mb-4">Company</h4>
-                        <ul className="space-y-2 text-gray-400">
-                            <li><a href="/about-us" className="hover:text-white transition">About</a></li>
-                            <li><a href="/career" className="hover:text-white transition">Careers</a></li>
-                            <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                            <li>
-                                <a
-                                    className="hover:text-white transition"
-                                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${homeData?.email}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Contact
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                                    return (
+                                        <li key={link.label}>
+                                            <a
+                                                href={href}
+                                                className="hover:text-white transition"
+                                                {...(link.external && {
+                                                    target: "_blank",
+                                                    rel: "noopener noreferrer",
+                                                })}
+                                            >
+                                                {link.label}
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    ))}
 
+                    {/* Payment Section */}
                     <div>
-                        <h4 className="font-semibold mb-4">Support</h4>
-                        <ul className="space-y-2 text-gray-400">
-                            <li><a href="/help-center" className="hover:text-white transition">Help Center</a></li>
-                            <li><a href="/privacy-policy" className="hover:text-white transition">Privacy Policy</a></li>
-                            <li><a href="/terms-condition" className="hover:text-white transition">Terms of Service</a></li>
-                            <li><a href="/request-data-delete" className="hover:text-white transition">Request Data Delete</a></li>
-                        </ul>
+                        <h4 className="font-semibold mb-4">Payment Methods</h4>
+                        <div className="mr-2">
+                            <img
+                                src={"/img/payment.png"}
+                                alt={homeData?.brand_name}
+                                className="h-auto rounded-xl object-cover"
+                            />
+                        </div>
                     </div>
                 </div>
 
+                {/* Footer Bottom Text */}
                 <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-                    <p>&copy; {new Date().getFullYear()} {homeData?.brand_name?.split(" ")}. All rights reserved.</p>
+                    <p>
+                        &copy; {new Date().getFullYear()}{" "}
+                        {homeData?.brand_name?.split(" ")}. All rights reserved.
+                    </p>
                 </div>
             </div>
         </footer>

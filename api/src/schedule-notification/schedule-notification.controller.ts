@@ -12,6 +12,5 @@ export class ScheduleNotificationsController {
     @ApiCreatedResponse({ description: 'Notification scheduled successfully' })
     async create(@Body() createNotificationDto: CreateNotificationDto): Promise<ScheduleNotification> {
         return this.notificationService.createNotification(createNotificationDto);
-        // return res.success(response);
     }
 }

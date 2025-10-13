@@ -34,17 +34,6 @@ export class NotificationController {
     const response = await this.notificationService.sendNotification(sendNotificationDto);
     return res.success(response);
   }
-
-  // @Post('send-to-all')
-  // @ApiOperation({ summary: 'Send notification to all users' })
-  // @ApiBody({ type: SendAllUserDto })
-  // @ApiResponse({ status: 200, description: 'Broadcast notification sent successfully.' })
-  // @ApiResponse({ status: 400, description: 'Bad Request.' })
-  // async sendToAll(@Body() sendNotificationDto: SendAllUserDto) {
-  //   const response = await this.notificationService.sendToAllUsers(sendNotificationDto);
-  //   return res.success(response);
-  // }
-
   @Get('user/:userId')
   @ApiOperation({ summary: 'Get all notifications for a specific user' })
   @ApiParam({
