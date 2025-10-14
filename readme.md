@@ -1,4 +1,4 @@
-# SpeakingMate Platform
+# Guideline
 
 1. `npm run setup`
 2. `npm run install`
@@ -12,20 +12,9 @@ Docker PG Container Dump
 
 ` for show container--->  docker ps -a`
 
-# BitPixel BD
+# Portfolio
 
-## [Facebook Page](https://www.facebook.com/bitpixelbd)
+## [Facebook Page](https://www.facebook.com/saidul.islam.721132)
 
 
-
-### Grafana
-
-3. Import Ready-Made Dashboards
-
-Grafana has community dashboards for Prometheus HTTP metrics.
-For example:
-
-Go to Dashboards → Import → Enter ID 3662 (Prometheus Stats).
-
-Or search on Grafana Dashboards
 
