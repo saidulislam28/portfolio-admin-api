@@ -1,8 +1,5 @@
 /* eslint-disable  */
-import {
-  PlusOutlined,
-  SearchOutlined
-} from "@ant-design/icons";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Button,
@@ -15,31 +12,25 @@ import {
   Row,
   Select,
   Space,
-  Typography
+  Typography,
 } from "antd";
 import React, { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import PageTitle from "~/components/PageTitle";
 import { deleteApi, patch, post } from "~/services/api/api";
-import {
-  API_CRUD_FIND_WHERE,
-  getUrlForModel
-} from "~/services/api/endpoints";
+import { API_CRUD_FIND_WHERE, getUrlForModel } from "~/services/api/endpoints";
 import { getHeader } from "~/utility/helmet";
-import DrawerForm from './_DrawerForm';
-import DetailsModal from "./DetailsModal";
+import DrawerForm from "./_DrawerForm";
 import TableGrid from "./TableGrid";
 
-const { Title } = Typography;
 const { Option } = Select;
-const model = "Book";
-const title = "Book";
+const model = "Skills";
+const title = "Skills";
 
 const BookManagement = () => {
   const [filterForm] = Form.useForm();
   const [bookForm] = Form.useForm();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [currentBook, setCurrentBook] = useState<any>(null);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -60,7 +51,7 @@ const BookManagement = () => {
     refetch,
   } = useQuery({
     queryKey: [
-      `get-books-list`,
+      `get-skills-list`,
       filters?.OR,
       filters?.price,
       filters?.is_available,
@@ -178,11 +169,9 @@ const BookManagement = () => {
     setCurrentBook(book);
     bookForm.setFieldsValue({
       title: book.title,
-      description: book.description,
-      writer: book.writer,
-      isbn: book.isbn,
-      price: book.price,
-      is_available: book.is_available,
+      level: book.level,
+      sort_order: Number(book.sort_order),
+      is_active: book.is_active,
       image: [
         {
           uid: "-1",
@@ -199,15 +188,6 @@ const BookManagement = () => {
     bookForm.resetFields();
   };
 
-  const showBookDetails = (book) => {
-    setCurrentBook(book);
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
   const handleFormSubmit = (values) => {
     if (values?.image) {
       const img_url =
@@ -222,12 +202,9 @@ const BookManagement = () => {
     }
   };
 
-
-
   if (error) {
     return <div>Error loading books: {error.message}</div>;
   }
-
 
   return (
     <div>
@@ -306,7 +283,6 @@ const BookManagement = () => {
           booksList={booksList}
           deleteMutation={deleteMutation}
           showEditDrawer={showEditDrawer}
-          showBookDetails={showBookDetails}
         />
       </Card>
 
@@ -319,13 +295,6 @@ const BookManagement = () => {
         bookForm={bookForm}
         updateMutation={updateMutation}
         createMutation={createMutation}
-      />
-
-      {/* View Details Modal */}
-      <DetailsModal
-        currentBook={currentBook}
-        modalVisible={modalVisible}
-        closeModal={closeModal}
       />
     </div>
   );
