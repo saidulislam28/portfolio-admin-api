@@ -92,6 +92,9 @@ const WebTestimonial = lazy(
 const HelpRequest = lazy(
   () => import("./pages/help-req")
 );
+const MYSKILLS = lazy(
+  () => import("./pages/my-skills")
+);
 
 const routes = [
   { path: "/", element: Dashboard },
@@ -136,6 +139,7 @@ const routes = [
   { path: "/web-faq", element: WebFaq },
   { path: "/web-testimonial", element: WebTestimonial },
   { path: "/web-help-req", element: HelpRequest },
+  { path: "/skills", element: MYSKILLS },
 ];
 
 export default routes;

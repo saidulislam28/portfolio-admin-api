@@ -1,3 +1,4 @@
+/* eslint-disable  */
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button, Popconfirm, Space, Table, Tag } from 'antd';
 import dayjs from 'dayjs';
@@ -10,7 +11,7 @@ const _TableGrid = ({
     deleteMutation,
     handleTableChange,
     isLoading,
-    fetchData,
+    fetchData, 
 }) => {
 
     const navigate = useNavigate();

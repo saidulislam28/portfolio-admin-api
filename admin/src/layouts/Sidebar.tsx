@@ -28,6 +28,11 @@ const menuItems = [
     key: "/users",
     icon: <ContactsFilled />,
   },
+  {
+    label: "Skills",
+    key: "/skills",
+    icon: <ContactsFilled />,
+  },
 
   {
     label: "Package",

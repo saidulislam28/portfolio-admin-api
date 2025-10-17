@@ -925,3 +925,45 @@ model HelpRequest {
 
   @@map("help-request")
 }
+
+model Skills {
+  id         Int     @id @default(autoincrement())
+  title      String?
+  level      String?
+  image      String?
+  sort_order Int?
+  is_active  Boolean @default(false)
+
+  @@map("skills")
+}
+
+model Projects {
+  id         Int     @id @default(autoincrement())
+  title      String?
+  short_desc String?
+  desc       String?
+  live_url   String?
+  git_url    String?
+  image      String?
+  sort_order Int?
+  is_active  Boolean @default(false)
+
+  @@map("projects")
+}
+
+model Education {
+  id          Int     @id @default(autoincrement())
+  title       String?
+  institute   String?
+  session     String?
+  department  String?
+  gpa         String?
+  out_of_gpa  String?
+  level       String?
+  sort_order  Int?
+  passed_year Boolean @default(false)
+  is_passed   Boolean @default(false)
+  is_active   Boolean @default(false)
+
+  @@map("education")
+}

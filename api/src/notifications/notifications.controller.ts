@@ -6,16 +6,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { res } from 'src/common/response.helper';
 import { OptionalJwtAuthGuard } from 'src/user-auth/jwt/optional-jwt-auth.guard';
 import {
-  SendAllUserDto,
   SendCallingNotificationDto,
-  SendNotificationDto,
+  SendNotificationDto
 } from './dto/notification.dto';
 import { NotificationService } from './notifications.service';
 
