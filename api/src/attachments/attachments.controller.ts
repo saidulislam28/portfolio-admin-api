@@ -10,8 +10,6 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { AttachmentsService } from "./attachments.service";
 import { multerOptionsLocal } from "./utils/multerOptionsLocal";
 
-
-
 @Controller('attachments')
 export class AttachmentsController {
   constructor(private readonly attachmentsService: AttachmentsService) { }

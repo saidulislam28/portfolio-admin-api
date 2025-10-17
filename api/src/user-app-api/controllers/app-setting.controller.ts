@@ -18,8 +18,7 @@ export class AppSettingsController {
   @ApiOperation({ summary: 'Get all essential app data for the home screen' })
   @ApiResponse({
     status: 200,
-    description: 'Returns a complex object with all app-specific settings and data.',
-    type: GetHomeDataResponseDto,
+    description: 'Returns a complex object with all app-specific settings and data.',  
   })
   async getHomeData() {
     const response = await this.appSettingService.getHomeData();

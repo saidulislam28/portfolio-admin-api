@@ -16,20 +16,24 @@ export class AppSettingService {
 
     const base_data = {
       email: settingData?.email,
-      map: settingData?.map,
       phone: settingData?.phone,
       address: settingData?.address,
       logo: settingData?.logo,
       favicon: settingData?.favicon,
-      facebook: settingData?.facebook,
+      messenger: settingData?.messenger,
       twitter: settingData?.twitter,
       instagram: settingData?.instagram,
-      youtube: settingData?.youtube,
+      github: settingData?.github,
       linkedin: settingData?.linkedin,
+      resume: settingData?.linkedin,
+      cv: settingData?.cv,
       brand_name: settingData?.brand_name,
       brand_url: settingData?.brand_url,
-      delivery_charge: Number(settingData?.delivery_charge ?? 0),
-      agora_app_id: process.env.AGORA_APP_ID
+      name: settingData?.name,
+      hero_title: settingData?.hero_title,
+      hero_desc: settingData?.hero_desc,
+      hero_image: settingData?.hero_image,
+      web_name: settingData?.web_name,
     };
 
     const slider_data = await this.prismaService.appSlider.findMany({
@@ -42,16 +46,6 @@ export class AppSettingService {
     });
 
 
-    const navigations = {
-      privacy_policy: settingData.privacy_policy,
-      terms: settingData.terms,
-      help_chat: settingData.help_chat,
-      user_guide: settingData.user_guide,
-      video_tutorial: settingData.video_tutorial,
-      brand_url: settingData.brand_url,
-      email: settingData.email,
-      phone: settingData.phone,
-    }
 
     const ielts_registration = {
       values: settingData.ielts_description,
@@ -77,7 +71,6 @@ export class AppSettingService {
       online_course,
       study_abroad,
       video_slider_data,
-      navigations
     };
   }
 }

@@ -1,13 +1,6 @@
 import { Layout, Menu, theme } from 'antd';
+import React, { useState } from 'react';
 const { Header, Sider, Content } = Layout;
-import {
-    BellOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    RightOutlined,
-} from '@ant-design/icons'
-import { Avatar, Badge, List,Popover } from 'antd'
-import React, { Fragment,useState  } from 'react';
 
 const { SubMenu } = Menu
 
