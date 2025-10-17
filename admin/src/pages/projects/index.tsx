@@ -23,8 +23,8 @@ import DrawerForm from "./_DrawerForm";
 import TableGrid from "./TableGrid";
 
 const { Option } = Select;
-const model = "Skills";
-const title = "Skills";
+const model = "Projects";
+const title = "Projects";
 
 const BookManagement = () => {
   const [filterForm] = Form.useForm();
@@ -41,7 +41,7 @@ const BookManagement = () => {
     OR?: any;
     sort_order?: number;
     is_active?: boolean;
-  }>(null);
+  }>();
 
   const {
     isLoading,
@@ -50,7 +50,7 @@ const BookManagement = () => {
     refetch,
   } = useQuery({
     queryKey: [
-      `get-skills-list`,
+      `get-projects-list`,
       filters?.OR,
       filters?.sort_order,
       filters?.is_active,
@@ -131,7 +131,7 @@ const BookManagement = () => {
           },
         },
         {
-          level: {
+          short_desc: {
             contains: values?.search,
             mode: "insensitive",
           },
@@ -161,7 +161,10 @@ const BookManagement = () => {
     setCurrentBook(book);
     bookForm.setFieldsValue({
       title: book.title,
-      level: book.level,
+      short_desc: book.short_desc,
+      desc: book.desc,
+      live_url: book.live_url,
+      git_url: book.git_url,
       sort_order: Number(book.sort_order),
       is_active: book.is_active,
       image: [

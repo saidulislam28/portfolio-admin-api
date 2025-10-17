@@ -28,10 +28,16 @@ const TableGrid = ({
       render: (title) => <Tag color={"blue"}>{title}</Tag>,
     },
     {
-      title: "Level",
-      dataIndex: "level",
-      key: "level",
-      render: (title) => <Tag color={"orange"}>{title}</Tag>,
+      title: "Live Link",
+      dataIndex: "live_url",
+      key: "live_url",
+      // render: (title) => <Tag color={"orange"}>{title}</Tag>,
+    },
+    {
+      title: "Github Link",
+      dataIndex: "git_url",
+      key: "git_url",
+      // render: (title) => <Tag color={"orange"}>{title}</Tag>,
     },
 
     {

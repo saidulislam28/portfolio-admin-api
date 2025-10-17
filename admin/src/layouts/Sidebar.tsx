@@ -33,12 +33,11 @@ const menuItems = [
     key: "/skills",
     icon: <ContactsFilled />,
   },
-
   {
-    label: "Package",
-    key: "/package",
-    icon: <GiftFilled />,
-  },
+    label: "Projects",
+    key: "/projects",
+    icon: <ContactsFilled />,
+  },  
 
   {
     label: "Book",
