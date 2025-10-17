@@ -961,7 +961,7 @@ model Education {
   out_of_gpa  String?
   level       String?
   sort_order  Int?
-  passed_year Boolean @default(false)
+  passed_year String?
   is_passed   Boolean @default(false)
   is_active   Boolean @default(false)
 

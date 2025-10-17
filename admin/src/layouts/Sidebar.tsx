@@ -34,10 +34,15 @@ const menuItems = [
     icon: <ContactsFilled />,
   },
   {
+    label: "Education",
+    key: "/education",
+    icon: <ContactsFilled />,
+  },
+  {
     label: "Projects",
     key: "/projects",
     icon: <ContactsFilled />,
-  },  
+  },
 
   {
     label: "Book",
