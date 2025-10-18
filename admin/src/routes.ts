@@ -101,6 +101,12 @@ const Projects = lazy(
 const Education = lazy(
   () => import("./pages/education")
 );
+const Competencies = lazy(
+  () => import("./pages/competencies")
+);
+const Experience = lazy(
+  () => import("./pages/experience")
+);
 
 const routes = [
   { path: "/", element: Dashboard },
@@ -148,6 +154,8 @@ const routes = [
   { path: "/skills", element: MYSKILLS },
   { path: "/projects", element: Projects },
   { path: "/education", element: Education },
+  { path: "/competencies", element: Competencies },
+  { path: "/experience", element: Experience },
 ];
 
 export default routes;

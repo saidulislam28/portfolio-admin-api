@@ -36,41 +36,26 @@ export class AppSettingService {
       web_name: settingData?.web_name,
     };
 
-    const slider_data = await this.prismaService.appSlider.findMany({
+    const skills = await this.prismaService.skills.findMany({
       where: { is_active: true },
       orderBy: { sort_order: 'asc' },
     });
-    const video_slider_data = await this.prismaService.videoSlider.findMany({
+    const projects = await this.prismaService.projects.findMany({
+      where: { is_active: true },
+      orderBy: { sort_order: 'asc' },
+    });
+    const education = await this.prismaService.education.findMany({
       where: { is_active: true },
       orderBy: { sort_order: 'asc' },
     });
 
 
-
-    const ielts_registration = {
-      values: settingData.ielts_description,
-      image: settingData.ielts_image,
-    };
-    const online_course = {
-      values: settingData.online_course_description,
-      image: settingData.online_course_image_1,
-      image1: settingData.online_course_image_2,
-      image2: settingData.online_course_image_3,
-    };
-    const study_abroad = {
-      values: settingData.study_abroad_description,
-      image: settingData.study_abroad_image_1,
-      image1: settingData.study_abroad_image_2,
-      image2: settingData.study_abroad_image_3,
-    };
 
     return {
       base_data,
-      ielts_registration,
-      slider_data,
-      online_course,
-      study_abroad,
-      video_slider_data,
+      skills,
+      education,
+      projects,
     };
   }
 }

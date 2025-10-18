@@ -967,3 +967,28 @@ model Education {
 
   @@map("education")
 }
+
+model Competencies {
+  id          Int     @id @default(autoincrement())
+  title       String?
+  sort_order  Int?
+  is_frontend Boolean @default(false)
+  is_backend  Boolean @default(false)
+  is_database Boolean @default(false)
+  is_other    Boolean @default(false)
+  is_active   Boolean @default(false)
+
+  @@map("competencies")
+}
+
+model Experience {
+  id         Int     @id @default(autoincrement())
+  title      String?
+  company    String?
+  session    String?
+  desc       String?
+  sort_order Int?
+  is_active  Boolean @default(false)
+
+  @@map("experience")
+}
