@@ -49,6 +49,14 @@ export class AppSettingService {
       orderBy: { sort_order: 'asc' },
     });
 
+    const competencies = await this.prismaService.competencies.findMany({
+      where: { is_active: true },
+      orderBy: { sort_order: 'asc' }
+    })
+    const experience = await this.prismaService.experience.findMany({
+      where: { is_active: true },
+      orderBy: { sort_order: 'asc' }
+    })
 
 
     return {
@@ -56,6 +64,8 @@ export class AppSettingService {
       skills,
       education,
       projects,
+      competencies,
+      experience
     };
   }
 }
