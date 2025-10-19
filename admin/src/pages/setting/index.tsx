@@ -4,11 +4,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Card, Form, Input, Upload, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React, { useEffect } from "react";
-import PageTitle from "~/components/PageTitle";
 import { get, post } from "~/services/api/api";
 import { API_FILE_UPLOAD, getUrlForModel } from "~/services/api/endpoints";
 import { getHeader } from "~/utility/helmet";
 import { getImageFieldsKeys } from "./settings";
+import PageTitle from "~/components/PageTitle";
 const model = "Setting";
 const title = "Setting";
 

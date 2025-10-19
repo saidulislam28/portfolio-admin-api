@@ -19,6 +19,9 @@ const Experience = lazy(
 const Dashboard = lazy(
   () => import("./pages/Home")
 );
+const Settings = lazy(
+  () => import("./pages/setting")
+);
 
 const routes = [
   { path: "/", element: Dashboard },
@@ -27,6 +30,7 @@ const routes = [
   { path: "/education", element: Education },
   { path: "/competencies", element: Competencies },
   { path: "/experience", element: Experience },
+  { path: "/setting", element: Settings },
 ];
 
 export default routes;

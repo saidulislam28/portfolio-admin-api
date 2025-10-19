@@ -15,12 +15,12 @@ import {
 } from "antd";
 import React, { useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import PageTitle from "~/components/PageTitle";
 import { deleteApi, patch, post } from "~/services/api/api";
 import { API_CRUD_FIND_WHERE, getUrlForModel } from "~/services/api/endpoints";
 import { getHeader } from "~/utility/helmet";
 import DrawerForm from "./_DrawerForm";
 import TableGrid from "./TableGrid";
+import PageTitle from "~/components/PageTitle";
 
 const { Option } = Select;
 const model = "Projects";
