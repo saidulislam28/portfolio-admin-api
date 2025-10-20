@@ -15,27 +15,19 @@ import { CrudModule } from './crud/crud.module';
 import { EmailModule } from './email/email.module';
 import { PrismaModule } from './prisma/prisma.module';
 
-import { UsersController } from './user-dashboard/controllers/user.controller';
 
 
 import { CacheModule } from '@nestjs/cache-manager';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { AdminDashboardModule } from './admin-dashboard-api/admin-dashboard.module';
-import { AdminReportModule } from './admin-reports/admin-reports.module';
 import { AppAgoraModule } from './app-agora/app-agora.module';
 import { CommonModule } from './common/common.module';
-import { ConSultantModule } from './consaltant/consultant.module';
-import { ConsultantAppModule } from './consultant-dashboard/consultant-dashboard.module';
 import { FcmModule } from './fcm/fcm.module';
 import { JobsModule } from './jobs/jobs.module';
 import { MetricsService } from './metrics/metrics.service';
-import { NotificationModule } from './notifications/notifications.module';
-import { ScheduleNotificationsModule } from './schedule-notification/schedule-notifications.module';
 import { TimezoneModule } from './timezone/timezone.module';
 import { UserAppModule } from './user-app-api/user-app.module';
 import { UserAuthModule } from './user-auth/user-auth.module';
 import { UserCacheModule } from './user-cache/user-cache.module';
-import { UserDashboardModule } from './user-dashboard/user-dashboard.module';
 import { AuthModule } from './user/auth.module';
 import { WebsiteModule } from './website/website.module';
 // import { SentryExceptionFilter } from './common/filters/sentry-exception.filter';
@@ -45,7 +37,6 @@ import { MetricsController } from './metrics/metrics.controller';
 
 // sentry
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
-import { AppNotificationsModule } from './app-notifications/app-notifications.module';
 
 
 @Module({
@@ -78,16 +69,9 @@ import { AppNotificationsModule } from './app-notifications/app-notifications.mo
     AdminModule,
     EmailModule,
     AdminAuthModule,
-    ConSultantModule,
     AuthModule,
-    NotificationModule,
     AppAgoraModule,
-    ScheduleNotificationsModule,
-    AdminDashboardModule,
-    ConsultantAppModule,
     UserAppModule,
-    AdminReportModule,
-    UserDashboardModule,
     JobsModule,
     FcmModule,
     UserCacheModule,
@@ -95,9 +79,8 @@ import { AppNotificationsModule } from './app-notifications/app-notifications.mo
     CommonModule,
     UserAuthModule,
     WebsiteModule,
-    AppNotificationsModule
   ],
-  controllers: [AppController, UsersController, MetricsController],
+  controllers: [AppController,  MetricsController],
   providers: [
     AppService,
     MetricsService,

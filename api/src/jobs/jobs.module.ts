@@ -4,13 +4,9 @@ import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 
 import { QUEUE_NAME } from '../common/constants';
-import { InvoicePdfGeneratorService } from './invoice-pdf-generator.service';
-import { SendPdfInvoiceService } from './send-pdf-invoice.service';
-import { PushNotificationProcessor } from './push-notification.processor';
 import { FcmModule } from 'src/fcm/fcm.module';
 import { TimezoneModule } from 'src/timezone/timezone.module';
 import { UserCacheModule } from 'src/user-cache/user-cache.module';
-import { AppNotificationsModule } from 'src/app-notifications/app-notifications.module';
 
 @Module({
     imports: [
@@ -24,12 +20,8 @@ import { AppNotificationsModule } from 'src/app-notifications/app-notifications.
         FcmModule,
         TimezoneModule,
         UserCacheModule,
-        AppNotificationsModule
     ],
     providers: [
-        SendPdfInvoiceService,
-        InvoicePdfGeneratorService,
-        PushNotificationProcessor
     ],
     controllers: [
     ],
