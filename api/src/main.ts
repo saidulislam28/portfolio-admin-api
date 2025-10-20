@@ -22,7 +22,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
   });
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  // app.useStaticAssets(join(__dirname, '..', 'public'));
   const options = {
     origin: [
       'http://82.29.161.73:3200',
@@ -33,7 +33,9 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://localhost:5173',
       'http://localhost:3002',
-      'http://www.speakingmate.org'
+      'http://www.speakingmate.org',
+      'https://portfolio-admin-xi-three.vercel.app',
+      'https://saidul-portfolio.netlify.app'
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     preflightContinue: false,

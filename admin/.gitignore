@@ -26,3 +26,5 @@ yarn-error.log*
 dist/
 src/router.ts
 .env
+
+.vercel

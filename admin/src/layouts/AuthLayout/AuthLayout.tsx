@@ -19,21 +19,7 @@ const AuthLayout: FC = () => {
 
     const { signIn } = useAuth()
 
-    /*const onSignIn = async (
-        values: SignInFormSchema,
-        setSubmitting: (isSubmitting: boolean) => void
-    ) => {
-        const { email, password } = values
-        setSubmitting(true)
-
-        const result = await signIn({ email, password })
-
-        if (result?.status === 'failed') {
-            setMessage(result.message)
-        }
-
-        setSubmitting(false)
-    }*/
+  
 
     const onFinish = async (values: Values) => {
         const { email, password } = values
@@ -45,11 +31,7 @@ const AuthLayout: FC = () => {
             setMessage(result.message)
         }
         setLoading(false)
-        /*console.log("Received values of form: ", values);
-        if (values.remember) {
-            localStorage.setItem("username", values.username);
-            localStorage.setItem("password", values.password);
-        }*/
+        
     };
 
     const handleForgotPassword = (e: FormEvent) => {
