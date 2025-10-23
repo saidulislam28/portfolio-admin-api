@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { config } from 'dotenv';
-config();
+// import { config } from 'dotenv';
+// config();
 import { join } from 'path';
 
 import "./instrument";
@@ -21,8 +21,14 @@ const cloneBuffer = require('clone-buffer');
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
+    logger: ['error', 'warn', 'log']
   });
   // app.useStaticAssets(join(__dirname, '..', 'public'));
+
+  const isVercel = process.env.VERCEL === '1';
+  if (isVercel) {
+    process.env.DOTENV_CONFIG_QUIET = 'true';
+  }
   const options = {
     origin: [
       'http://82.29.161.73:3200',
@@ -116,8 +122,7 @@ async function bootstrap() {
     },
   }));
   /*end*/
-
-  const PORT = process.env.PORT || 80;
+  const PORT = process.env.PORT || 3000;
   await app.listen(PORT);
 }
 bootstrap();
