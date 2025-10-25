@@ -26,11 +26,10 @@ export class AttachmentsController {
     @Req() req: Request
   ) {
 
-    console.log('request reached: attachements/upload-image', file)
 
     // TODO allow chose between local & cloudinary based on .env
     return {
-      url: `${process.env.APP_URL}/uploads/${file.filename}`,
+      url: `${process.env.APP_URL}/uploads/${file.originalname}`,
       name,
       message: 'Success',
     };

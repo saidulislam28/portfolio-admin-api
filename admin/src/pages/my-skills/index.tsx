@@ -180,12 +180,13 @@ const BookManagement = () => {
     bookForm.resetFields();
   };
 
-  const handleFormSubmit = (values) => {
+  const handleFormSubmit = (values) => {    
+
     if (values?.image) {
       const img_url =
         values?.image[0]?.response?.url ?? values?.image[0]?.thumbUrl;
       values.image = img_url;
-    }
+    }   
 
     if (currentBook) {
       updateMutation.mutate({ id: currentBook.id, book: values });

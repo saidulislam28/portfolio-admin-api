@@ -26,7 +26,7 @@ import { extname } from 'path';
 
 // Multer configuration (keep for reference, not used for storage path anymore)
 export const multerConfig = {
-  dest: process.env.UPLOAD_LOCATION || './public/uploads', // fallback for local dev
+  dest: process.env.UPLOAD_LOCATION || './public/uploads',
 };
 
 // ✅ Use memory storage (Vercel-safe)
@@ -35,6 +35,6 @@ export const multerOptionsLocal = {
 
   fileFilter: (req, file, cb) => {
     console.log('Uploading file:', file.originalname, 'MIME:', file.mimetype);
-    cb(null, true); // Allow all file types
+    cb(null, true);
   },
 };

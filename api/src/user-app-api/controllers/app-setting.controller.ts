@@ -12,7 +12,7 @@ import { AppSettingService } from '../services/app-setting.service';
 export class AppSettingsController {
   constructor(private readonly appSettingService: AppSettingService) { }
 
-  // @CacheTTL(CACHE_TTL.threeminute)
+  @CacheTTL(CACHE_TTL.threeminute)
   @Get('web-data')
   @ApiOperation({ summary: 'Get all essential app data for the home screen' })
   @ApiResponse({
