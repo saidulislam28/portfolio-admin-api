@@ -12,8 +12,10 @@ import {
 } from "antd";
 import React from "react";
 import { API_FILE_UPLOAD } from "~/services/api/endpoints";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 const { Option } = Select;
-
+const { TextArea } = Input;
 const _DrawerForm = ({
   currentBook,
   drawerVisible,
@@ -33,7 +35,7 @@ const _DrawerForm = ({
   return (
     <Drawer
       title={currentBook ? "Edit Skill" : "Add New Skill"}
-      width={500}
+      width={800}
       open={drawerVisible}
       onClose={closeDrawer}
     >
@@ -47,11 +49,36 @@ const _DrawerForm = ({
         </Form.Item>
 
         <Form.Item name="short_desc" label="Short Description">
-          <Input placeholder="Enter Short Description" />
+          <TextArea rows={4} placeholder="Enter Short Description" />
         </Form.Item>
-        <Form.Item name="desc" label="Description">
-          <Input placeholder="Enter Skill title" />
+        <Form.Item
+          name="desc"
+          label="Description"
+          rules={[{ required: true, message: "Content is required" }]}
+        >
+          <ReactQuill
+            theme="snow"
+            style={{ height: "400px", marginBottom: "50px" }}
+            modules={{
+              toolbar: [
+                [{ header: "1" }, { header: "2" }, { font: [] }],
+                ["bold", "italic", "underline", "strike", "blockquote"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                ["link", "image"],
+                ["clean"],
+              ],
+            }}
+          />
         </Form.Item>
+
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        {/* <Form.Item name="desc" label="Description">
+          <TextArea rows={4} placeholder="Enter Description" />
+        </Form.Item> */}
 
         <Form.Item name="git_url" label="Github">
           <Input placeholder="" />
